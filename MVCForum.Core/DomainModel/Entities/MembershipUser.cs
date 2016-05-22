@@ -84,6 +84,8 @@ namespace MVCForum.Domain.DomainModel
         public string Latitude { get; set; }
         public string Longitude { get; set; }
 
+        public string QQ { get; set; }
+
         public virtual IList<MembershipRole> Roles { get; set; }
         public virtual IList<Post> Posts { get; set; }
         public virtual IList<Topic> Topics { get; set; }

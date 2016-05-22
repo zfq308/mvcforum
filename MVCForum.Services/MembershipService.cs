@@ -769,8 +769,8 @@ namespace MVCForum.Services
         public string ToCsv()
         {
             var csv = new StringBuilder();
-
-            foreach (var user in GetAll())
+            var userlist = GetAll();
+            foreach (var user in userlist)
             {
                 csv.AppendFormat("{0},{1},{2},{3},{4},{5},{6},{7}", user.UserName, user.Email, user.CreateDate, user.Age,
                     user.Location, user.Website, user.Facebook, user.Signature);

@@ -271,6 +271,7 @@ namespace MVCForum.Website.Controllers
                         Password = user.Password,
                         IsApproved = user.IsApproved,
                         Comment = user.Comment,
+                        QQ = user.QQ,
                         AllRoles = RoleService.AllRoles()
                     };
 
@@ -341,7 +342,7 @@ namespace MVCForum.Website.Controllers
                 return MemberRegisterLogic(userModel);
             }
 
-            
+
 
             ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
             return View("Register");
@@ -681,7 +682,7 @@ namespace MVCForum.Website.Controllers
                             UserName = model.UserName,
                             Password = model.Password,
                             RememberMe = model.RememberMe,
-                            ReturnUrl = model.ReturnUrl, 
+                            ReturnUrl = model.ReturnUrl,
                             UnitOfWork = unitOfWork
                         };
                         EventManager.Instance.FireBeforeLogin(this, e);
@@ -860,6 +861,7 @@ namespace MVCForum.Website.Controllers
                 Facebook = user.Facebook,
                 DisableFileUploads = user.DisableFileUploads == true,
                 Avatar = user.Avatar,
+                QQ = user.QQ,
                 DisableEmailNotifications = user.DisableEmailNotifications == true,
                 AmountOfPoints = user.TotalPoints
             };
@@ -976,6 +978,8 @@ namespace MVCForum.Website.Controllers
                     user.Website = _bannedWordService.SanitiseBannedWords(userModel.Website, bannedWords);
                     user.DisableEmailNotifications = userModel.DisableEmailNotifications;
 
+                    user.QQ = userModel.QQ;
+
                     // User is trying to change username, need to check if a user already exists
                     // with the username they are trying to change to
                     var changedUsername = false;
@@ -1070,7 +1074,7 @@ namespace MVCForum.Website.Controllers
         public PartialViewResult SideAdminPanel(bool isDropDown)
         {
             var privateMessageCount = 0;
-            var moderateCount = 0;    
+            var moderateCount = 0;
             var settings = SettingsService.GetSettings();
             if (LoggedOnReadOnlyUser != null)
             {
@@ -1090,7 +1094,7 @@ namespace MVCForum.Website.Controllers
                 ModerateCount = moderateCount,
                 IsDropDown = isDropDown
             };
-            
+
             return PartialView(viewModel);
         }
 
@@ -1149,11 +1153,11 @@ namespace MVCForum.Website.Controllers
                 {
                     var user = MembershipService.GetUser(viewModel.Id);
                     var report = new Report
-                                     {
-                                         Reason = viewModel.Reason,
-                                         ReportedMember = user,
-                                         Reporter = LoggedOnReadOnlyUser
-                                     };
+                    {
+                        Reason = viewModel.Reason,
+                        ReportedMember = user,
+                        Reporter = LoggedOnReadOnlyUser
+                    };
                     _reportService.MemberReport(report);
 
                     try
@@ -1187,12 +1191,12 @@ namespace MVCForum.Website.Controllers
 
                 // Redisplay list of users
                 var allViewModelUsers = allUsers.Select(user => new PublicSingleMemberListViewModel
-                                                                    {
-                                                                        UserName = user.UserName,
-                                                                        NiceUrl = user.NiceUrl,
-                                                                        CreateDate = user.CreateDate,
-                                                                        TotalPoints = user.TotalPoints,
-                                                                    }).ToList();
+                {
+                    UserName = user.UserName,
+                    NiceUrl = user.NiceUrl,
+                    CreateDate = user.CreateDate,
+                    TotalPoints = user.TotalPoints,
+                }).ToList();
 
                 var memberListModel = new PublicMemberListViewModel
                 {

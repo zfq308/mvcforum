@@ -21,6 +21,12 @@ namespace MVCForum.Website.ViewModels
         [StringLength(150, MinimumLength = 4)]
         public string UserName { get; set; }
 
+
+
+        [Required]
+        [StringLength(12, MinimumLength = 4)]
+        public string QQ { get; set; }
+
         [Required]
         [EmailAddress]
         [ForumMvcResourceDisplayName("Members.Label.EmailAddress")]
@@ -94,6 +100,11 @@ namespace MVCForum.Website.ViewModels
         [Url]
         [StringLength(60)]
         public string Twitter { get; set; }
+
+        [Required]
+        [StringLength(12, MinimumLength = 4)]
+        public string QQ { get; set; }
+
 
         [ForumMvcResourceDisplayName("Members.Label.UploadNewAvatar")]
         public HttpPostedFileBase[] Files { get; set; }

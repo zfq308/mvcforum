@@ -197,7 +197,7 @@ namespace MVCForum.Website.Controllers
                             Description = string.Empty,
                             Title = LocalizationService.GetResourceString("Activity.UserJoined"),
                             PublishedDate = memberJoinedActivity.ActivityMapped.Timestamp,
-                            RssImage = memberJoinedActivity.User.MemberImage(SiteConstants.Instance.GravatarPostSize),
+                            //RssImage = memberJoinedActivity.User.MemberImage(SiteConstants.Instance.GravatarPostSize),
                             Link = activityLink
                         });
                     }
@@ -209,7 +209,7 @@ namespace MVCForum.Website.Controllers
                             Description = string.Empty,
                             Title = LocalizationService.GetResourceString("Activity.ProfileUpdated"),
                             PublishedDate = profileUpdatedActivity.ActivityMapped.Timestamp,
-                            RssImage = profileUpdatedActivity.User.MemberImage(SiteConstants.Instance.GravatarPostSize),
+                            //RssImage = profileUpdatedActivity.User.MemberImage(SiteConstants.Instance.GravatarPostSize),
                             Link = activityLink
                         });
                     }
