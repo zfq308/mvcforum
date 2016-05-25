@@ -7,7 +7,6 @@
     var upVotes = Model.Votes.Where(x => x.Amount > 0).ToList();
 }
 <div class="post solution-@Model.Post.IsSolution.ToString().ToLower() post-@postId" data-id="@postId">
-
     <div class="rowcreater hidden-xs">
         <a id="comment-@postId"></a>
         <a href="@Model.Post.User.NiceUrl">
@@ -28,8 +27,6 @@
     </div>
 
     <div class="rowdetails clearfix">
-
-
         @if (Html.CurrentMember() != null && !Model.MinimalPost)
         {
             <div class="postadmin">
@@ -113,8 +110,8 @@
                         else
                         {
                             <text> - @Html.LanguageString("Post.LastEdited")  @DatesUI.GetPrettyDate(Model.Post.DateEdited.ToString())</text>
-    }
-}
+                        }
+                    }
                 </span>
             </div>
 
@@ -275,11 +272,6 @@
             }
 
             @Html.Partial("_PostLikedBy", new MVCForum.Website.ViewModels.PostLikedByViewModel { Post = Model.Post, Votes = upVotes })
-
         </div>
-
-
-
-
     </div>
 </div>

@@ -1,0 +1,401 @@
+﻿Layout.Nav.Register,用户注册
+Layout.Nav.Logon,登录
+Layout.Nav.Activity,Activity
+Layout.Nav.Leaderboard,Leaderboard
+Layout.Nav.Home,Home
+Layout.Nav.Admin,管理员
+Layout.CreateButton,创建活动
+Layout.PoweredBy,Powered by 
+Topic.Votes,Votes
+Topic.Comments,Answers
+Topic.StartedBy,Started {0} by {1}
+Topic.InCategory, in 
+Topic.LatestBy,Latest By
+Topic.Views,Views
+Post.VoteUp,Like
+Post.VotedUp,Liked
+Post.VoteDown,Dislike
+Post.VotedDown,Disliked
+Post.IsSolution,Is Solution
+Post.PostedThis,posted this
+Post.Posts,Posts
+Post.Points,Points
+Post.LastEdited,Last edited
+Post.Report,Report
+Post.Edit,编辑
+Post.Delete,删除
+Post.Move,移动
+Post.Reply,Reply
+Post.ReplyingTo,Replying To:
+LogOn.LogOn,登录
+LogOn.LogOff,登出
+Post.PleaseWait,正在提交，请稍等...
+Topic.DiscussionTaggedWith,Discussions Tagged With: 
+Topic.TitleFallBack,Discussion Topic
+Topic.Subscribe,关注
+Topic.UnSubscribe,取消关注
+Topic.IsLocked,内容被锁定
+Topic.CreateDiscussion,Create Discussion
+Topic.TagThisTopic,Tag this topic
+Topic.Choose,Choose Existing Topic
+Tags.PopularTags,Popular Tags
+Stats.FooterMainStatText,Our {0} members have posted {1} times in {2} discussions
+Stats.LatestMembers,Latest Members:
+PM.Title,Message: 
+PM.From,From: 
+PM.Sent,Sent:
+PM.BackToInbox,Back To Inbox
+PM.Reply,Reply
+PM.SentPrivateMessages,Sent Private Messages
+PM.To,To
+PM.Subject,Subject
+PM.Date,Date
+PM.Read,Read
+PM.Delete,删除
+PM.NoMessages,You currently don't have any private messages
+PM.Create,Create
+PM.ReceivedPrivateMessages,Received Private Messages
+PM.CreatePrivateMessage,Create Private Message
+PM.Send,Send
+PM.OriginalMessage,Original Message
+Buttons.Send,发送
+Report.ReportPostBy,Report Post By: 
+Buttons.Edit,编辑
+Points.ThisWeeksHighEarners,This Weeks High Earners
+SideBox.MyTools,操作菜单
+PM.PrivateMessages,私信
+Members.SearchMembers,搜索会员
+Buttons.Search,搜索
+Members.Users,Users
+Members.Points,Points
+Members.DateJoined,Date Joined
+Report.Report,Report 
+Members.Register,Register
+Members.AlreadyRegistered,You are already registered? Why would you want to do it again?
+Members.LogOnMessage,Please enter your user name and password. Or {0} if you don't have an account
+Buttons.LogOn,Log On
+Members.ProfileTitle, Profile
+Members.Profile.Joined,Joined:
+Members.Profile.Posts,Posts:
+Members.Profile.Points,Points:
+Buttons.Report,Report
+Members.Profile.Age,年龄:
+Members.Profile.Location,Location:
+Members.Profile.Website,Website
+Members.Profile.Twitter,Twitter
+Members.Profile.Facebook,Facebook:
+Members.Profile.DiscussionActivity,Discussion Activity
+Ajax.PleaseWait,请稍等...
+Members.Profile.Badges,Badges
+Members.EditProfile,Edit Profile
+Buttons.Save,Save
+Buttons.Continue,Continue
+Members.EditMember,Edit Member
+Leaderboard.ThisWeeksStars,This Weeks Stars
+Leaderboard.ThisYearsStars,This Years Rock Stars
+Leaderboard.LeaderboardTitle,Global Leaderboard
+Home.LatestDiscussions,Latest Discussions
+Home.Rss,Rss
+Activity.ActivityTitle,Activity
+Notification.Subscribe,Follow
+Notification.UnSubscribe,UnFollow
+Category.NoDiscussions,Currently no discussions in this category
+Category.CategoriesSideHeading,Categories
+PM.RecipientUsername,Recipient Username
+PM.MessageSubject,Subject
+Post.Label.TopicName,Topic Name
+Post.Label.IsStickyTopic,Is Sticky Topic
+Post.Label.LockTopic,Lock Topic
+Post.label.TopicCategory,Topic Category
+Members.Label.Username,账号
+Members.Label.EmailAddress,电子邮件
+Members.Label.Password,密码
+Members.Label.ConfirmPassword,确认密码
+Members.Label.UserIsApproved,User is Approved
+Members.Label.Comment,Comment
+Members.Label.Roles,Roles
+Members.Label.Signature,Signature
+Members.Label.Age,Age
+Members.Label.Location,Location
+Members.Label.Website,Website
+Members.Label.Twitter,Twitter Url
+Members.Label.Facebook,Facebook Page
+Members.Label.RememberMe,记住登录
+Members.Label.Users,Users
+Members.Label.DateJoined,Date Joined
+Errors.NoAccess,No Access
+Errors.GenericMessage,Sorry an error occured
+Errors.NoPermission,You do not have permission to perform this action
+Topic.Notification.NewTopics,A new topic or tag has been created in the {0} category
+Topic.Notification.Subject,New Discussion On 
+PM.SendingToQuickly,You are trying to send messages to quickly
+PM.SentItemsOverCapcity,Your sent items is over capacity - delete messages to be able to send
+PM.ReceivedItemsOverCapcity,{0} has exceeded their inbox size - unable to send message
+PM.MessageSent,Message Sent
+PM.UnableFindMember,Unable to find that member
+PM.TalkToSelf,Talking to yourself is a bit weird. isn't it?
+Post.Updated,Post Updated
+Topic.Deleted,Topic Deleted
+Post.Deleted,Post Deleted
+Post.Notification.NewPosts,A new post has been created in the {0} topic
+Post.Notification.Subject,New Post On 
+Report.ReportSent,Report Sent
+Members.NowRegistered,You are now registered
+Members.NowRegisteredNeedApproval,You are now registered. But the forum admin must authorise your account
+Members.NowLoggedIn,You are now logged in
+Members.Errors.PasswordIncorrect,The user or password provided is incorrect.
+Members.Errors.PasswordAttemptsExceeded,The maximum number of password attempts has been exceeded.
+Members.Errors.UserLockedOut,User is locked out.
+Members.Errors.UserNotApproved,User has not been approved.
+Members.Errors.LogonGeneric,Unable to login.
+Members.NowLoggedOut,You are now logged out
+Member.ProfileUpdated,Profile Updated
+Language.Changed,Language Changed
+Rss.LatestActivity.Title,Latest Forum Discussions
+Rss.LatestActivity.Description,Recent discussions
+Errors.NothingToDisplay,Nothing To Display
+Rss.Category.Title,{0} Discussions
+Rss.Category.Description,Latest discussions happening in the {0} category
+Report.Reporter,Reporter
+Report.MemberReported,Member Reported
+Report.Reason,Reason
+Report.MemberReport,Member Report
+Report.Admin,Admin
+Report.PostReported,Post Reported In
+Report.PostReport,Post Report
+Badges.UnableToAward,Unable to award badges as badge collection is null for user {0}
+Badge.UnknownBadge,Unknown badge type {0}
+Badge.BadegEnumNoClass,The badge enum type {0} has no corresponding class specified.
+Members.Errors.DuplicateUserName,User name already exists. Please enter a different user name.
+Members.Errors.DuplicateEmail,A user name for that e-mail address already exists. Please enter a different e-mail address.
+Members.Errors.InvalidPassword,The password provided is invalid. Please enter a valid password value.
+Members.Errors.InvalidEmail,The e-mail address provided is invalid. Please check the value and try again.
+Members.Errors.InvalidAnswer,The password retrieval answer provided is invalid. Please check the value and try again.
+Members.Errors.InvalidQuestion,The password retrieval question provided is invalid. Please check the value and try again.
+Members.Errors.InvalidUserName,The user name provided is invalid. Please check the value and try again.
+Members.Errors.ProviderError,The authentication provider returned an error. Please verify your entry and try again. If the problem persists please contact your system administrator.
+Members.Errors.UserRejected,The user creation request has been canceled. Please verify your entry and try again. If the problem persists please contact your system administrator.
+Members.Errors.Unknown,An unknown error occurred. Please verify your entry and try again. If the problem persists please contact your system administrator.
+Members.NewMemberRegistered,New member registered on {0} ({1})
+Members.Admin,Admin
+Members.NewMemberSubject,New Member Registered
+Members.CantUnlock,User does not exist - cannot unlock.
+Members.ForgotPassword.Email,You have requested that your password is reset on {0}. Your new password is below
+Members.ForgotPassword.Subject,密码重置
+Members.ForgotPassword.SuccessMessage,新的密码已通过邮件的方式发送给您
+Members.ForgotPassword.ErrorMessage,Error resetting password
+Members.ChangePassword.Success,密码已被修改
+Members.ChangePassword.Error,当前密码不正确或新密码无效
+Buttons.ChangePassword,修改密码
+Members.ChangePassword.Title,修改密码
+Members.ChangePassword.Text,New passwords are required to be a minimum of {0} characters in length.
+Members.ChangePassword.Link,Click here if you want to {0}
+Members.ForgotPassword.Title,忘记密码
+Buttons.ResetPassword,重置密码
+Members.ForgotPassword.Link,忘记密码了
+Members.Label.CurrentPassword,当前密码
+Members.Label.NewPassword,新的密码
+Members.Label.ConfirmNewPassword,确认新密码
+Members.Label.EmailAddressBlank,输入你的电邮地址
+Activity.Badge,badge 
+Activity.UserAwardedBadge,has been awarded the
+Activity.UserJoined,is a new member in the forum
+Activity.ProfileUpdated,has an updated profile
+Topic.Label.SubscribeToTopic,Get notified of replies?
+Badges.PageTitle,Badges
+Layout.Nav.Badges,Badges
+Topic.Label.TopicTitle,标题
+Poll.Button.Create,Add A Poll To This Topic
+Poll.Placeholder.TypeAnswerHere,Type A Poll Answer Here
+Topic.OptionsHeading,Topic Options
+Poll.Button.Remove,Remove Poll From Topic
+Poll.Button.Vote,Submit Vote
+Error.WrongAnswerRegistration,There was an error with your answer. Please try again
+Members.LoginOrText,Or
+Facebook.Error.EnabledButNotAddedKeys,You have enabled Facebook login but not added your AppId or Secret key to the forum.config
+Microsoft.Error.EnabledButNotAddedKeys,You have enabled Microsoft login but not added your AppId or Secret key to the forum.config
+Members.Profile.IsSocialAccount,Social Account
+Date.JustNow,刚才
+Date.OneMinuteAgo,1分钟前
+Date.MinutesAgo,{0}分钟前
+Date.OneHourAgo,1小时前
+Date.HoursAgo,{0}小时前
+Date.Yesterday,昨天
+Date.DaysAgo,{0}天前
+Date.WeeksAgo,{0}星期前
+Side.Search,搜索
+Search.NoResults,未找到相关记录
+Topic.CommentsDetails,Comments
+Members.DeleteAllPosts,删除全部回复
+Buttons.CreatePost,Add Post
+Topic.Label.Category,选择类别
+Editor.NeedHelp,Need formatting help?
+Members.BanUser,Ban User
+Members.UnBanUser,Unban User
+Errors.NoPermissionPolls,Topic Created. But you do not have permission to create polls
+Topic.ShowMorePosts,显示更多回复
+Topic.ShowMorePostsLoading,Loading Posts...
+Topic.AlreadyAnswered,Questions that may already have your answer
+Topic.Comment,Answer
+Stats.FooterActiveUsersText,Members Currently Online:
+PostFilter.OrderBy,Order By:
+PostFilter.Standard,Standard
+PostFilter.Newest,最新
+PostFilter.Votes,Votes
+PM.NewPrivateMessageSubject,New Private Message
+PM.NewPrivateMessageBody,{0} has just sent you a private message.
+Post.DeleteConfirmation,Are you sure you want to delete?
+Category.SubCategoriesHeading,Sub Categories In
+Category.AllCategories,全部类别
+Category.MostRecent,Most recent:
+Members.LogonFacebookButton,Login with Facebook
+Members.LogonGoogleButton,Login with Google
+Twitter.Error.EnabledButNotAddedKeys,You have enabled social logins but not added the Twitter id and secret key in the forum.config
+Google.Error.EnabledButNotAddedKeys,You have enabled social logins but not added the Google id and secret key in the forum.config
+Error.EmailIsBanned,The email address or domain you are trying to use is banned
+Post.FilesUploaded,文件上传成功
+Post.Attach,Attach
+Post.Upload,附加文件
+Post.UploadBannedFileExtension,文件类型不被支持
+Post.UploadFileTooBig,上传的文件体积太大
+File.SuccessfullyDeleted,File deleted
+Members.MemberEmailAuthorisationNeeded,We have sent you a confirmation email - please click the confirmation link in your email to approve your account.
+Members.MemberEmailAuthorisation.EmailBody,You have registered on {0} - In order to continue you must confirm your email address by clicking the link below. {1}
+Members.MemberEmailAuthorisation.Subject,Email Confirmation
+Members.NowApproved,Your account has now been approved - Thank you
+Members.MemberEmailAuthorisationNeededMessage,Click the link in your confirmation email to approve your account.
+Members.MemberEmailAuthorisationResend,Resend Confirmation Email
+Members.MessageMe,Message Me
+Confirmation.DeleteMembersPosts,Are you sure? This will delete all the members posts and topics!
+Moderate.AwaitingModeration,Your post is currently awaiting moderation. Once approved it will appear on the site
+Badges.AwardsPoints,Awards {0} points
+Language.Change,选择语言
+Post.Quote,引用
+Members.Label.UploadNewAvatar,上传头像
+Member.HasNewPrivateMessages,You have new unread Private messages
+Badge.AuthorMarkAsSolution.Name,Your Question Solved
+Badge.AuthorMarkAsSolution.Desc,This badge is awarded to a user when they mark another users post as the solution to their topic
+Badge.UserVoteUp.Name,You've Given Your First Vote Up
+Badge.UserVoteUp.Desc,This badge is awarded to users after they make their first vote up
+Badge.PostMentionsUmbraco.Name,Umbraco Fan
+Badge.PostMentionsUmbraco.Desc,This badge is awarded to a user who mentions Umbraco in their latest post
+Badge.PosterVoteUp.Name,First Vote Up Received
+Badge.PosterVoteUp.Desc,This badge is awarded to users after they receive their first vote up from another user
+Badge.PosterMarkAsSolution.Name,Post Selected As Answer
+Badge.PosterMarkAsSolution.Desc,This badge is awarded to a user when their post is marked as the solution to a topic
+Badge.Padawan.Name,Padawan
+Badge.Padawan.Desc,Had 10 or more posts successfully marked as an answer
+Badge.OneThousandPoints.Name,Thousand Pointer
+Badge.OneThousandPoints.Desc,This badge is awarded to users who have received 1000 points
+Badge.MemberForAYear.Name,First Anniversary
+Badge.MemberForAYear.Desc,This badge is awarded to a user after their first year anniversary
+Badge.TheGrouch.Name,The Grouch
+Badge.TheGrouch.Desc,This badge is awarded to users who have voted down other users posts 10 or more times
+Badge.JediMaster.Name,Jedi Master
+Badge.JediMaster.Desc,Had 50 or more posts successfully marked as an answer
+Badge.Photogenic.Name,Photogenic
+Badge.Photogenic.Desc,Little things like uploading a profile picture make the community a better place. Thanks!
+Badge.FavouriteFirstPost.Name,First Favourite
+Badge.FavouriteFirstPost.Desc,You have Favourited your first post
+Badge.YourPostFavouritedTenTimes.Name,Recognised Post
+Badge.YourPostFavouritedTenTimes.Desc,One or more of your posts have been Favourited by 10 or more people
+Badge.YourPostFavourited.Name,Favourited Post
+Badge.YourPostFavourited.Desc,You have one or more posts that have been Favourited by another member
+Site.MvcForum,MvcForum
+Layout.Nav.Utilities,Utilities
+Side.Search.SearchFor,搜索...
+Side.Search.Go,Go
+Topic.IsSticky,Topic Is Sticky
+Topic.IsSolved,Topic Is Solved
+Topic.Category,类别
+Topic.IsPoll,Poll
+Topic.LastPost,Last Post
+Topic.HotTopics,Hot Topics
+Notifications.NoActiveMembers,当前无人在线
+Post.LikedBy,Liked by
+Post.Browse,浏览...
+Post.AttachedFiles,附加文件
+SubNav.Latest,最新信息
+SubNav.Following,Following
+SubNav.PostedIn,Posted In
+SubNav.Favourites,My Favourites
+Favourites.PageTitle,My Favourites
+Favourites.NoMemberFavourites,You have not starred any posts
+Following.PageTitle,Topics & Categories
+Following.Categories,Categories you are following
+SubscribedCats.NothingToShow,You are not following to any Categories
+Following.Topics,Topics your are following
+SubscribedTopics.NothingToShow,You are not following to any Topics
+PostedIn.PageTitle,Topics & Posts you have posted in
+Topic.Label.Tags,添加标签
+Topic.Label.UploadFiles,上传文件
+Search.Searching,搜索中
+Search.InTopic,In Topic
+Members.SrubAndBan,Scrub Member
+Confirmation.SrubAndBan,Are you sure you want to do this? It will delete all their posts and then ban them
+Admin,Admin
+Members.SuccessfulSrub,All done
+Post.Favourite,Favourite
+Post.Favourited,Favourited
+Members.NowBanned,Member is now banned
+Members.NowUnBanned,Member is now NOT banned
+PM.AboutToExceedInboxSizeBody,You are about to exceed your private message inbox allowance
+PM.AboutToExceedInboxSizeSubject,Private Message Inbox Allowance
+PM.NewPrivateMessage,New Private Message
+PM.LastActivity,Last Activity
+StopWord.Error,You have tried to enter a word or url that is not allowed on this site
+Post.Permalink,静态连结
+Members.Profile.LastOnline,最后上线
+Members.UnableToGetEmailAddress,Unable to gain access to your email address - please check your permissions
+Members.ResetPassword.Title,密码重置请求已发出
+Members.ResetPassword.Text,An email has been sent with details on how to reset your password. 
+Members.ResetPassword.EmailText,A request has been made to reset your password on {0}. To reset your password follow the link below. If you did not make this request then please ignore this email. No further action is required and your password will not be changed.
+Members.ResetPassword.SuccessText,你的密码已成功修改.
+Members.ResetPassword.InvalidToken,This request is either invalid or has expired. Please make a password reset request again.
+Members.ResetPassword.Error,There was an error resetting your password. Please try again.
+Tasks.MarkAsSolutionReminderJob.EmailBody,Your topic {0} on {1} has {2} replies but has still not been marked as solved. Please check again to see if any answers are appropriate and mark them as the solution if they are.
+Tasks.MarkAsSolutionReminderJob.Subject,Your post on {0}
+Post.MemberIsOnline,在线
+PM.MemberIsOnline,在线
+Topic.Label.PollCloseAfterDays,Close Poll After Specified Amount Of Days? Leave as 0 to disable
+Topic.PollClosed,Closed
+Post.OthersLiked,and {0} others
+Members.Label.DisableEmailNotifications,Disable Email Notifications
+TinyMCE.InsertImage.ButtonTitle,插入图片
+TinyMCE.InsertImage.ButtonOk,确定
+TinyMCE.InsertImage.ButtonClose,关闭
+TinyMCE.InsertImage.EnterValidUrl,请输入有效的网址
+TinyMCE.InsertImage.SelectFile,请选择一个文件
+TinyMCE.InsertImage.MaxFileSize,图片文件的最大为2M
+TinyMCE.InsertImage.OnlyImages,仅JPEG, PNG和 GIF类型的图片文件支持上传
+TinyMCE.InsertImage.LabelUploadImage,上传图片
+TinyMCE.InsertImage.Browse,选择
+TinyMCE.InsertImage.ExternalImage,外部图片文件
+TinyMCE.InsertImage.ImageDescription,图片描述
+Post.Options,View Post Options
+SlidePanel.CloseConfirmation,Are you sure you want to close?
+PM.Block,Block
+PM.Blocked,Blocked
+PM.BlockedMessage,Unable to send message
+PM.ShowMore,Show More Messages
+PM.ShowMoreLoading,载入中...
+Members.LogonMicrosoftButton,Login with Microsoft
+Search.Results,Results Found
+Post.Move.Label.Topic,Topic
+Post.Move.Label.NewTopicTitle,Create New Topic
+Post.Move.Label.ReplyToPosts,Move Replies and Quotes Too
+Post.Move.PostTitle,移动回复
+Post.Move.Description,Move post to an existing topic, or create a new one.
+TermsAndConditions.Label.同意，我已经阅读和同意本网站的相关协议和免责声明
+TermsAndConditions.PageTitle,同意本网站的相关协议和免责声明
+TermsAndConditions.Label.AgreeError,You must Agree to the Terms and Conditions
+PostEdit.Panel.Name,Post Edit History
+PostEdit.None,This post has not post edit history at the moment
+PostEdit.EditedBy,Edited By
+PostEdit.OriginalVersion,Original
+PostEdit.EditedVersion,Edited
+Moderate.Title,Moderate
+Moderate.NothingHere,Nothing here at the moment
+Moderate.Topics,Topics
+Moderate.Posts,Posts
+Moderate.NavText,Pending Posts/Topics

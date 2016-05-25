@@ -2,7 +2,6 @@
 @if (Model.Votes.Any())
 {
     <div class="postlikedby">
-
         <ul>
             <li class="text">@Html.Lang("Post.LikedBy")</li>
             @foreach (var vote in Model.Votes.Take(4))
@@ -13,7 +12,6 @@
                     </a>
                 </li>
             }
-
             @if (Model.Votes.Count > 4)
             {
                 <li class="text othersliked" data-postid="@Model.Post.Id">
