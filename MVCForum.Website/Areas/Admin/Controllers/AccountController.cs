@@ -16,7 +16,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 {
     public partial class AccountController : BaseAdminController
     {
-        public readonly IActivityService _activityService;    
+        public readonly IActivityService _activityService;
         private readonly IRoleService _roleService;
         private readonly IPostService _postService;
         private readonly ITopicService _topicService;
@@ -48,7 +48,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             IMembershipService membershipService,
             ILocalizationService localizationService,
             IRoleService roleService,
-            ISettingsService settingsService, IPostService postService, ITopicService topicService, IMembershipUserPointsService membershipUserPointsService, 
+            ISettingsService settingsService, IPostService postService, ITopicService topicService, IMembershipUserPointsService membershipUserPointsService,
             IActivityService activityService, IPollService pollService, IPollVoteService pollVoteService, IPollAnswerService pollAnswerService, IUploadedFileService uploadedFileService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
         {
@@ -101,7 +101,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 
             // Replace the roles in the user's collection
             user.Roles.Clear();
-            foreach(var role in updatedRolesSet)
+            foreach (var role in updatedRolesSet)
             {
                 user.Roles.Add(role);
             }
@@ -214,7 +214,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             using (var uow = UnitOfWorkManager.NewUnitOfWork())
             {
                 var point = _membershipUserPointsService.Get(pointToRemove);
-                var user = point.User;        
+                var user = point.User;
                 _membershipUserPointsService.Delete(point);
 
                 try
@@ -238,9 +238,9 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     });
                 }
 
-                return RedirectToAction("ManageUserPoints", new {id = user.Id });
+                return RedirectToAction("ManageUserPoints", new { id = user.Id });
 
-            }            
+            }
         }
 
         /// <summary>
@@ -278,7 +278,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 var user = MembershipService.GetUser(userModel.Id);
 
                 // Map everything in model except properties hidden on page
-                user.Age = userModel.Age;
+                // user.Birthday = userModel.Birthday;  //TODO: Benjamin fix the issue,
                 user.Comment = userModel.Comment;
                 user.Email = userModel.Email;
                 user.Facebook = userModel.Facebook;
@@ -350,7 +350,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                         MessageType = GenericMessages.danger
                     };
                 }
-                return RedirectToAction("Manage", new {p, search});
+                return RedirectToAction("Manage", new { p, search });
             }
         }
 
@@ -389,9 +389,9 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var roles = new RoleListViewModel
-                        {
-                            MembershipRoles = _roleService.AllRoles()
-                        };
+                {
+                    MembershipRoles = _roleService.AllRoles()
+                };
                 return View(roles);
             }
         }
@@ -417,7 +417,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             {
                 var existingRole = _roleService.GetRole(role.Id);
                 existingRole.RoleName = role.RoleName;
-               
+
                 try
                 {
                     unitOfWork.Commit();

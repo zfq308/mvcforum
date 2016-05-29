@@ -2,10 +2,13 @@
 
 namespace MVCForum.Utilities
 {
+    /// <summary>
+    /// GUID 工具类
+    /// </summary>
     public class GuidComb
     {
         /// <summary>
-        /// Generates a sequential guid
+        /// 生成GUID值
         /// Based on http://stackoverflow.com/questions/665417/sequential-guid-in-linq-to-sql
         /// </summary>
         /// <returns></returns>

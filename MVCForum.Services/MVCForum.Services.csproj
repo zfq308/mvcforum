@@ -124,7 +124,9 @@
     <Compile Include="Data\Mapping\LanguageMapping.cs" />
     <Compile Include="Data\Mapping\LocaleResourceKeyMapping.cs" />
     <Compile Include="Data\Mapping\LocaleStringResourceMapping.cs" />
+    <Compile Include="Data\Mapping\MembershipPropertyChangeMapping.cs" />
     <Compile Include="Data\Mapping\MembershipRoleMapping.cs" />
+    <Compile Include="Data\Mapping\MembershipTodayStarMapping.cs" />
     <Compile Include="Data\Mapping\MembershipUserMapping.cs" />
     <Compile Include="Data\Mapping\MembershipUserPointsMapping.cs" />
     <Compile Include="Data\Mapping\PermissionMapping.cs" />
@@ -140,6 +142,7 @@
     <Compile Include="Data\Mapping\TopicNotificationMapping.cs" />
     <Compile Include="Data\Mapping\TopicTagMapping.cs" />
     <Compile Include="Data\Mapping\UploadedFileMapping.cs" />
+    <Compile Include="Data\Mapping\VerifyCodeMapping.cs" />
     <Compile Include="Data\Mapping\VoteMapping.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Data\UnitOfWork\UnitOfWork.cs" />

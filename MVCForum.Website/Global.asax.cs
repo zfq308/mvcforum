@@ -14,6 +14,7 @@ using MVCForum.Utilities;
 using MVCForum.Website.Application;
 using MVCForum.Website.Application.ScheduledJobs;
 using MVCForum.Website.Application.ViewEngine;
+using System.Web.Helpers;
 
 namespace MVCForum.Website
 {
@@ -33,6 +34,9 @@ namespace MVCForum.Website
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
+
+
+            AntiForgeryConfig.SuppressIdentityHeuristicChecks = true;
 
             // Start unity
             var unityContainer = UnityHelper.Start();
@@ -91,11 +95,23 @@ namespace MVCForum.Website
         protected void Application_Error(object sender, EventArgs e)
         {
             var lastError = Server.GetLastError();
+
+
+            if (lastError is HttpAntiForgeryException)
+            {
+                Response.Clear();
+                Server.ClearError(); //make sure you log the exception first
+                Response.Redirect("/error/antiforgery", true);
+            }
+
             // Don't flag missing pages or changed urls, as just clogs up the log
             if (!lastError.Message.Contains("was not found or does not implement IController"))
             {
                 LoggingService.Error(lastError);
             }
+
+
+
         }
 
     }

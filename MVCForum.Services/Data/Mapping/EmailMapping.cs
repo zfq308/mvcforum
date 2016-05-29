@@ -16,4 +16,5 @@ namespace MVCForum.Services.Data.Mapping
             Property(x => x.DateCreated).IsRequired();
         }
     }
+
 }

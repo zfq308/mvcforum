@@ -82,7 +82,9 @@ namespace MVCForum.Utilities
 		string StemTerm( string s );
 	}
 
-
+    /// <summary>
+    /// 英文波特词干算法，能够实现还原英文单词原型
+    /// </summary>
 	public class PorterStemmer : IStemmerInterface
 	{
 		private char[] _b;

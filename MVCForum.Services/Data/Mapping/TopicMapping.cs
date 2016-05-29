@@ -5,13 +5,18 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Services.Data.Mapping
 {
+    /// <summary>
+    /// 话题实体属性映射配置类
+    /// </summary>
     public class TopicMapping : EntityTypeConfiguration<Topic>
     {
+
         public TopicMapping()
         {
             HasKey(x => x.Id);
             Property(x => x.Id).IsRequired();
             Property(x => x.Name).IsRequired().HasMaxLength(450);
+            Property(x => x.TopicType).IsRequired().HasMaxLength(50);
             Property(x => x.CreateDate).IsRequired();
             Property(x => x.Solved).IsRequired();
             Property(x => x.SolvedReminderSent).IsOptional();
@@ -29,6 +34,7 @@ namespace MVCForum.Services.Data.Mapping
             HasRequired(t => t.User).WithMany(t => t.Topics).Map(m => m.MapKey("MembershipUser_Id")).WillCascadeOnDelete(false);
             HasMany(x => x.Posts).WithRequired(x => x.Topic).Map(x => x.MapKey("Topic_Id")).WillCascadeOnDelete(false);
             HasMany(x => x.TopicNotifications).WithRequired(x => x.Topic).Map(x => x.MapKey("Topic_Id")).WillCascadeOnDelete(false);
+
             HasMany(t => t.Tags)
             .WithMany(t => t.Topics)
             .Map(m =>

@@ -145,7 +145,9 @@ namespace MVCForum.Domain.Constants
         public string PermissionEditMembers => GetConfig("PermissionEditMembers");
         public string PermissionInsertEditorImages => GetConfig("PermissionInsertEditorImages");
 
-        // Database Connection Key
+        /// <summary>
+        /// 数据库连接字符串的Name
+        /// </summary>
         public string MvcForumContext => GetConfig("MvcForumContext");
 
         // Default Theme folder

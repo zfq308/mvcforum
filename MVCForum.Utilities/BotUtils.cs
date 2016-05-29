@@ -4,8 +4,15 @@ using System.Web;
 
 namespace MVCForum.Utilities
 {
+    /// <summary>
+    /// 搜索引擎工具类
+    /// </summary>
     public static class BotUtils
     {
+        /// <summary>
+        /// 判断当前用户的请求是否来源于外缘网址的爬虫机器人
+        /// </summary>
+        /// <returns></returns>
         public static bool UserIsBot()
         {
             if (HttpContext.Current.Request.UserAgent != null)

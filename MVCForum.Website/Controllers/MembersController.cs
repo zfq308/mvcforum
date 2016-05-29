@@ -970,7 +970,7 @@ namespace MVCForum.Website.Controllers
                     userModel.Avatar = user.Avatar;
 
                     // Update other users properties
-                    user.Age = userModel.Age;
+                    // user.Age = userModel.Age; //TODO:Benjamin ,Need to fix the readonly issue.
                     user.Facebook = _bannedWordService.SanitiseBannedWords(userModel.Facebook, bannedWords);
                     user.Location = _bannedWordService.SanitiseBannedWords(userModel.Location, bannedWords);
                     user.Signature = _bannedWordService.SanitiseBannedWords(StringUtils.ScrubHtml(userModel.Signature, true), bannedWords);

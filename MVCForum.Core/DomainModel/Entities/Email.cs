@@ -17,4 +17,6 @@ namespace MVCForum.Domain.DomainModel
         public string NameTo { get; set; }
         public DateTime DateCreated { get; set; }
     }
+
+
 }

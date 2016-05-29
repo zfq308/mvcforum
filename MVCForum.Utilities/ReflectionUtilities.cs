@@ -6,6 +6,9 @@ using System.Reflection;
 
 namespace MVCForum.Utilities
 {
+    /// <summary>
+    /// 反射工具类
+    /// </summary>
     public class ReflectionUtilities
     {
         // http://rogeralsing.com/2008/02/28/linq-expressions-creating-objects/

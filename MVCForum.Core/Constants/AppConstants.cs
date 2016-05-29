@@ -2,6 +2,9 @@
 
 namespace MVCForum.Domain.Constants
 {
+    /// <summary>
+    /// 常量定义类
+    /// </summary>
     public static class AppConstants
     {
         public const int SaltSize = 24;

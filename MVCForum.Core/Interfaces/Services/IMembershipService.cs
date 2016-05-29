@@ -26,6 +26,7 @@ namespace MVCForum.Domain.Interfaces.Services
         MembershipUser Get(Guid id);
         MembershipUser GetUser(string username, bool removeTracking = false);
         MembershipUser GetUserByEmail(string email, bool removeTracking = false);
+        MembershipUser GetUserByMobilePhone(string MobilePhone, bool removeTracking = false);
         MembershipUser GetUserBySlug(string slug);
         IList<MembershipUser> GetUserBySlugLike(string slug);
         MembershipUser GetUserByFacebookId(long facebookId);
@@ -48,9 +49,9 @@ namespace MVCForum.Domain.Interfaces.Services
         IList<MembershipUser> GetActiveMembers();
         void ProfileUpdated(MembershipUser user);
         bool Delete(MembershipUser user, IUnitOfWork unitOfWork);
-        IList<MembershipUser> GetLatestUsers(int amountToTake);
+        IList<MembershipUser> GetLatestUsers(int amountToTake, bool isApproved = false);
         IList<MembershipUser> GetLowestPointUsers(int amountToTake);
-        int MemberCount();
+        int MemberCount(bool isApproved = false);
         string ToCsv();
         CsvReport FromCsv(List<string> allLines);
         /// <summary>

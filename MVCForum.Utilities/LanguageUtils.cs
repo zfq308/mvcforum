@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace MVCForum.Utilities
 {
+    /// <summary>
+    /// 语言工具类
+    /// </summary>
     public static class LanguageUtils
     {
         private static SortedDictionary<string, CultureInfo> _allCultures;
