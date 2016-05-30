@@ -39,12 +39,12 @@ namespace MVCForum.Domain.DomainModel
         /// </summary>
         public Guid Id { get; set; }
         /// <summary>
-        /// 账户名称
+        /// 账号
         /// </summary>
         public string UserName { get; set; }
 
         /// <summary>
-        /// 真实姓名
+        /// 用户真实姓名
         /// </summary>
         public string RealName { get; set; }
         /// <summary>
@@ -229,7 +229,9 @@ namespace MVCForum.Domain.DomainModel
         #endregion
 
         #region 相关管理集合属性定义
-
+        /// <summary>
+        /// 用户拥有的角色清单
+        /// </summary>
         public virtual IList<MembershipRole> Roles { get; set; }
         public virtual IList<Post> Posts { get; set; }
         public virtual IList<Topic> Topics { get; set; }

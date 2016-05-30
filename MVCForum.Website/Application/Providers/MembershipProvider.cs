@@ -9,30 +9,8 @@ namespace MVCForum.Website.Membership
     public class MvcForumMembershipProvider : MembershipProvider
     {
         // MSDN how to implement a custom provider: http://msdn.microsoft.com/en-us/library/6tc47t75.aspx
-
         // ALL THE METHODS MUST BE USED WITHIN A UNIT OF WORK IN THE CONTROLLERS
 
-        // TODO - Need to implement this properly
-
-        private string _applicationName;
-        private bool _enablePasswordReset;
-        private bool _enablePasswordRetrieval = false;
-        private bool _requiresQuestionAndAnswer;
-        private bool _requiresUniqueEmail;
-        private int _maxInvalidPasswordAttempts;
-        private int _passwordAttemptWindow;
-        private int _minRequiredNonAlphanumericCharacters;
-        private int _minRequiredPasswordLength;
-
-        // Use Dependency Resolver
-        //public IUnitOfWorkManager UnitOfWorkManager
-        //{
-        //    get { return DependencyResolver.Current.GetService<IUnitOfWorkManager>(); }
-        //}
-        public IMembershipService MembershipService
-        {
-            get { return ServiceFactory.Get<IMembershipService>(); }
-        }
 
         /// <summary>
         /// Read a config file value
@@ -65,52 +43,44 @@ namespace MVCForum.Website.Membership
             if (String.IsNullOrEmpty(config["description"]))
             {
                 config.Remove("description");
-                config.Add("description", "MVCForum Standard Membership Provider");
+                config.Add("description", "Custom Standard Membership Provider");
             }
 
             // Initialize the abstract base class.
             base.Initialize(name, config);
 
             _applicationName = GetConfigValue(config["applicationName"], System.Web.Hosting.HostingEnvironment.ApplicationVirtualPath);
-            _maxInvalidPasswordAttempts = Convert.ToInt32(GetConfigValue(config["maxInvalidPasswordAttempts"], "5"));
+            _maxInvalidPasswordAttempts = Convert.ToInt32(GetConfigValue(config["maxInvalidPasswordAttempts"], "5"));  //密码错误最多尝试次数
             _passwordAttemptWindow = Convert.ToInt32(GetConfigValue(config["passwordAttemptWindow"], "10"));
             _minRequiredNonAlphanumericCharacters = Convert.ToInt32(GetConfigValue(config["minRequiredNonAlphanumericCharacters"], "1"));
-            _minRequiredPasswordLength = Convert.ToInt32(GetConfigValue(config["minRequiredPasswordLength"], "7"));
+            _minRequiredPasswordLength = Convert.ToInt32(GetConfigValue(config["minRequiredPasswordLength"], "7"));   //密码最短长度
             _requiresQuestionAndAnswer = Convert.ToBoolean(GetConfigValue(config["requiresQuestionAndAnswer"], "false"));
             _requiresUniqueEmail = Convert.ToBoolean(GetConfigValue(config["requiresUniqueEmail"], "true"));
             _enablePasswordReset = Convert.ToBoolean(GetConfigValue(config["enablePasswordReset"], "true"));
         }
 
-        //var user = MembershipService.GetUser(username);
-        //if (user != null)
-        //{
-        //    return 
-        //}
-        //return false;
-
-        /// <summary>
-        /// Validate the user (required for membership in MVC)
-        /// </summary>
-        /// <param name="username"></param>
-        /// <param name="password"></param>
-        /// <returns></returns>
-        public override bool ValidateUser(string username, string password)
+        #region 覆写的属性清单
+        public IMembershipService MembershipService
         {
-            // use the data in the graph object to authorise the user
-            return MembershipService.ValidateUser(username, password, MaxInvalidPasswordAttempts);
+            get { return ServiceFactory.Get<IMembershipService>(); }
         }
 
+        private bool _requiresQuestionAndAnswer;
+        private bool _requiresUniqueEmail;
+
+        private int _minRequiredPasswordLength;
         public override int MinRequiredPasswordLength
         {
             get { return _minRequiredPasswordLength; }
         }
 
+        private int _maxInvalidPasswordAttempts;
         public override int MaxInvalidPasswordAttempts
         {
             get { return _maxInvalidPasswordAttempts; }
         }
 
-
+        private string _applicationName;
         public override string ApplicationName
         {
             get
@@ -123,6 +93,55 @@ namespace MVCForum.Website.Membership
             }
         }
 
+        private bool _enablePasswordReset;
+        public override bool EnablePasswordReset
+        {
+            get { return _enablePasswordReset; }
+        }
+
+        private bool _enablePasswordRetrieval = false;
+        public override bool EnablePasswordRetrieval
+        {
+            get { return _enablePasswordRetrieval; }
+        }
+
+        private int _minRequiredNonAlphanumericCharacters;
+        public override int MinRequiredNonAlphanumericCharacters
+        {
+            get { return _minRequiredNonAlphanumericCharacters; }
+        }
+
+        private int _passwordAttemptWindow;
+        /// <summary>
+        /// 在锁定用户之前允许的最大无效密码或无效密码提示问题答案尝试次数的分钟数。
+        /// </summary>
+        public override int PasswordAttemptWindow
+        {
+            get { return _passwordAttemptWindow; }
+        }
+
+        #endregion
+
+        #region 覆写的方法
+
+        /// <summary>
+        /// 用账号密码校验用户身份
+        /// </summary>
+        /// <param name="username">账号</param>
+        /// <param name="password">密码</param>
+        /// <returns></returns>
+        public override bool ValidateUser(string username, string password)
+        {
+            return MembershipService.ValidateUser(username, password, MaxInvalidPasswordAttempts);
+        }
+
+        /// <summary>
+        /// 变更密码，此方法需在校验用户身份后执行
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="oldPassword"></param>
+        /// <param name="newPassword"></param>
+        /// <returns></returns>
         public override bool ChangePassword(string username, string oldPassword, string newPassword)
         {
             var user = MembershipService.GetUser(username);
@@ -133,6 +152,14 @@ namespace MVCForum.Website.Membership
             return false;
         }
 
+        /// <summary>
+        /// 修改密码提示问题和答案
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <param name="newPasswordQuestion"></param>
+        /// <param name="newPasswordAnswer"></param>
+        /// <returns></returns>
         public override bool ChangePasswordQuestionAndAnswer(string username, string password, string newPasswordQuestion, string newPasswordAnswer)
         {
             if (ValidateUser(username, password))
@@ -145,25 +172,11 @@ namespace MVCForum.Website.Membership
             return false;
         }
 
-        public override bool EnablePasswordReset
-        {
-            get { return _enablePasswordReset; }
-        }
+        #endregion
 
-        public override bool EnablePasswordRetrieval
-        {
-            get { return _enablePasswordRetrieval; }
-        }
 
-        public override int MinRequiredNonAlphanumericCharacters
-        {
-            get { return _minRequiredNonAlphanumericCharacters; }
-        }
-
-        public override int PasswordAttemptWindow
-        {
-            get { return _passwordAttemptWindow; }
-        }
+        //===============================================
+        #region 无需覆写的方法
 
         public override bool DeleteUser(string username, bool deleteAllRelatedData)
         {
@@ -249,6 +262,7 @@ namespace MVCForum.Website.Membership
         {
             throw new NotImplementedException();
         }
-        
+
+        #endregion
     }
 }

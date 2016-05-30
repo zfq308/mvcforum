@@ -17,7 +17,7 @@ namespace MVCForum.Services
         private readonly ILoggingService _loggingService;
 
         /// <summary>
-        /// Constructor
+        /// 建构式
         /// </summary>
         public ActivityService(IBadgeService badgeService, ILoggingService loggingService, IMVCForumContext context)
         {
@@ -187,7 +187,7 @@ namespace MVCForum.Services
                 }
             }
             return listedResults;
-        } 
+        }
         #endregion
 
         /// <summary>
@@ -257,6 +257,10 @@ namespace MVCForum.Services
             return specificActivities;
         }
 
+        #region 以下情况时加入Activity记录
+
+
+
         /// <summary>
         /// New badge has been awarded
         /// </summary>
@@ -289,8 +293,13 @@ namespace MVCForum.Services
             Add(profileUpdatedActivity);
         }
 
+
+        #endregion
+
+        #region Activity对象的基本操作
+
         /// <summary>
-        /// Delete a list of activities
+        /// 删除Activity集合
         /// </summary>
         /// <param name="activities"></param>
         public void Delete(IList<Activity> activities)
@@ -301,20 +310,38 @@ namespace MVCForum.Services
             }
         }
 
+        /// <summary>
+        /// 加入Activity对象
+        /// </summary>
+        /// <param name="newActivity"></param>
+        /// <returns></returns>
         public Activity Add(Activity newActivity)
         {
             return _context.Activity.Add(newActivity);
         }
 
+        /// <summary>
+        /// 取得Activity对象
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public Activity Get(Guid id)
         {
             return _context.Activity.FirstOrDefault(x => x.Id == id);
         }
 
+        /// <summary>
+        /// 删除Activity对象
+        /// </summary>
+        /// <param name="item"></param>
         public void Delete(Activity item)
         {
             _context.Activity.Remove(item);
         }
+
+
+
+        #endregion
     }
 }
 

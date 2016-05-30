@@ -7,11 +7,29 @@ namespace MVCForum.Domain.Interfaces.Services
 {
     public enum LoginAttemptStatus
     {
+        /// <summary>
+        /// 用户登录成功
+        /// </summary>
         LoginSuccessful,
+        /// <summary>
+        /// 查无此人
+        /// </summary>
         UserNotFound,
+        /// <summary>
+        /// 密码不匹配
+        /// </summary>
         PasswordIncorrect,
+        /// <summary>
+        /// 尝试多次登录失败
+        /// </summary>
         PasswordAttemptsExceeded,
+        /// <summary>
+        /// 账户被锁定
+        /// </summary>
         UserLockedOut,
+        /// <summary>
+        /// 用户账户还没通过审核
+        /// </summary>
         UserNotApproved,
         Banned
     }

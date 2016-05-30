@@ -324,7 +324,7 @@ namespace MVCForum.Services
                     .FirstOrDefault(name => name.UserName.Equals(username, StringComparison.CurrentCultureIgnoreCase));
             }
 
-
+            // TODO: Benjamin, 需要Review这块的必要性！
             // Do a check to log out the user if they are logged in and have been deleted
             if (member == null && HttpContext.Current.User.Identity.Name == username)
             {
@@ -450,63 +450,17 @@ namespace MVCForum.Services
             }
         }
 
-
-
-
-        //  =================以下代码还需要Review=================
-
-
-        #region Status Codes
-        public string ErrorCodeToString(MembershipCreateStatus createStatus)
-        {
-            // See http://go.microsoft.com/fwlink/?LinkID=177550 for
-            // a full list of status codes.
-            switch (createStatus)
-            {
-                case MembershipCreateStatus.DuplicateUserName:
-                    return _localizationService.GetResourceString("Members.Errors.DuplicateUserName");
-
-                case MembershipCreateStatus.DuplicateEmail:
-                    return _localizationService.GetResourceString("Members.Errors.DuplicateEmail");
-
-                case MembershipCreateStatus.InvalidPassword:
-                    return _localizationService.GetResourceString("Members.Errors.InvalidPassword");
-
-                case MembershipCreateStatus.InvalidEmail:
-                    return _localizationService.GetResourceString("Members.Errors.InvalidEmail");
-
-                case MembershipCreateStatus.InvalidAnswer:
-                    return _localizationService.GetResourceString("Members.Errors.InvalidAnswer");
-
-                case MembershipCreateStatus.InvalidQuestion:
-                    return _localizationService.GetResourceString("Members.Errors.InvalidQuestion");
-
-                case MembershipCreateStatus.InvalidUserName:
-                    return _localizationService.GetResourceString("Members.Errors.InvalidUserName");
-
-                case MembershipCreateStatus.ProviderError:
-                    return _localizationService.GetResourceString("Members.Errors.ProviderError");
-
-                case MembershipCreateStatus.UserRejected:
-                    return _localizationService.GetResourceString("Members.Errors.UserRejected");
-
-                default:
-                    return _localizationService.GetResourceString("Members.Errors.Unknown");
-            }
-        }
-        #endregion
-
         /// <summary>
-        /// Return last login status
+        /// 返回最后的登录状态
         /// </summary>
         public LoginAttemptStatus LastLoginStatus { get; private set; } = LoginAttemptStatus.LoginSuccessful;
 
         /// <summary>
-        /// Validate a user by password
+        /// 通过账号密码校验用户实例，并返回校验状态
         /// </summary>
-        /// <param name="userName"></param>
-        /// <param name="password"></param>
-        /// <param name="maxInvalidPasswordAttempts"> </param>
+        /// <param name="userName">账号</param>
+        /// <param name="password">密码</param>
+        /// <param name="maxInvalidPasswordAttempts">最大无效密码尝试的次数</param>
         /// <returns></returns>
         public bool ValidateUser(string userName, string password, int maxInvalidPasswordAttempts)
         {
@@ -570,7 +524,7 @@ namespace MVCForum.Services
         }
 
         /// <summary>
-        /// Return the roles found for this username
+        /// 取得特定用户所拥有的角色清单
         /// </summary>
         /// <param name="username"></param>
         /// <returns></returns>
@@ -586,6 +540,53 @@ namespace MVCForum.Services
             }
 
             return roles.ToArray();
+        }
+
+
+
+
+
+
+        //  =================以下代码还需要Review=================
+
+
+
+        public string ErrorCodeToString(MembershipCreateStatus createStatus)
+        {
+            // See http://go.microsoft.com/fwlink/?LinkID=177550 for a full list of status codes.
+            // Benjamin: 具体的状态描述请参见：  https://msdn.microsoft.com/zh-cn/library/system.web.security.membershipcreatestatus.aspx
+            switch (createStatus)
+            {
+                case MembershipCreateStatus.DuplicateUserName:  //用户名已存在于应用程序的数据库中。
+                    return _localizationService.GetResourceString("Members.Errors.DuplicateUserName");
+
+                case MembershipCreateStatus.DuplicateEmail:  //电子邮件地址已存在于应用程序的数据库中。
+                    return _localizationService.GetResourceString("Members.Errors.DuplicateEmail");
+
+                case MembershipCreateStatus.InvalidPassword:   //密码的格式设置不正确。
+                    return _localizationService.GetResourceString("Members.Errors.InvalidPassword");
+
+                case MembershipCreateStatus.InvalidEmail:
+                    return _localizationService.GetResourceString("Members.Errors.InvalidEmail");
+
+                case MembershipCreateStatus.InvalidAnswer:
+                    return _localizationService.GetResourceString("Members.Errors.InvalidAnswer");
+
+                case MembershipCreateStatus.InvalidQuestion:
+                    return _localizationService.GetResourceString("Members.Errors.InvalidQuestion");
+
+                case MembershipCreateStatus.InvalidUserName:
+                    return _localizationService.GetResourceString("Members.Errors.InvalidUserName");
+
+                case MembershipCreateStatus.ProviderError:
+                    return _localizationService.GetResourceString("Members.Errors.ProviderError");
+
+                case MembershipCreateStatus.UserRejected:
+                    return _localizationService.GetResourceString("Members.Errors.UserRejected");
+
+                default:
+                    return _localizationService.GetResourceString("Members.Errors.Unknown");
+            }
         }
 
         public PagedList<MembershipUser> GetAll(int pageIndex, int pageSize)
@@ -972,6 +973,7 @@ namespace MVCForum.Services
             }
         }
 
+        #region Membership账号的导入和导出
 
         /// <summary>
         /// Convert all users into CSV format (e.g. for export)
@@ -1135,7 +1137,7 @@ namespace MVCForum.Services
             return report;
         }
 
-
+        #endregion
 
         #region 密码管理
 
