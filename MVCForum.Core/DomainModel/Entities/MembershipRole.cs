@@ -4,6 +4,9 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Domain.DomainModel
 {
+    /// <summary>
+    /// 用户角色实体定义类
+    /// </summary>
     public partial class MembershipRole : Entity
     {
         public MembershipRole()
@@ -11,9 +14,22 @@ namespace MVCForum.Domain.DomainModel
             Id = GuidComb.GenerateComb();
         }
 
+        ///用户角色实体定义流水Id
         public Guid Id { get; set; }
+
+        /// <summary>
+        /// 角色名称
+        /// </summary>
         public string RoleName { get; set; }
+
+        /// <summary>
+        /// 特定用户角色实例对应的用户集合
+        /// </summary>
         public virtual IList<MembershipUser> Users { get; set; }
+
+        /// <summary>
+        /// 系统设定类的实例
+        /// </summary>
         public virtual Settings Settings { get; set; }
 
         // Category Permissions

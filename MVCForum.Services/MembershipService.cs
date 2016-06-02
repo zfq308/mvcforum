@@ -126,6 +126,7 @@ namespace MVCForum.Services
                 UserName = string.Empty,
                 Password = string.Empty,
                 Email = string.Empty,
+                RealName = string.Empty,
                 PasswordQuestion = string.Empty,
                 PasswordAnswer = string.Empty,
                 CreateDate = now,

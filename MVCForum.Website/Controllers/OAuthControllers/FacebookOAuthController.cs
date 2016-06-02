@@ -211,7 +211,7 @@ namespace MVCForum.Website.Controllers.OAuthControllers
                                 // Not registered already so register them
                                 var viewModel = new MemberAddViewModel
                                 {
-                                    Email = email,
+                                    //Email = email,
                                     LoginType = LoginType.Facebook,
                                     Password = StringUtils.RandomString(8),
                                     UserName = user.Body.Name,

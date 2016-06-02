@@ -27,6 +27,9 @@ namespace MVCForum.Domain.DomainModel
         public bool IsTopicStarter { get; set; }
         public bool? FlaggedAsSpam { get; set; }
         public string IpAddress { get; set; }
+        /// <summary>
+        /// 当前帖子是否被设定为“待定”
+        /// </summary>
         public bool? Pending { get; set; }
         public string SearchField { get; set; }
         public Guid? InReplyTo { get; set; }

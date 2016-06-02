@@ -75,6 +75,9 @@ namespace MVCForum.Domain.DomainModel
         public virtual IList<TopicNotification> TopicNotifications { get; set; }
         public virtual IList<Favourite> Favourites { get; set; }
         public virtual Poll Poll { get; set; }
+        /// <summary>
+        /// 当前话题是否被设定为“待定”
+        /// </summary>
         public bool? Pending { get; set; }
         public string NiceUrl
         {

@@ -267,11 +267,11 @@ namespace MVCForum.Website.Controllers
                     var viewModel = new MemberAddViewModel
                     {
                         UserName = user.UserName,
-                        Email = user.Email,
+                        MobilePhone = user.MobilePhone,
                         Password = user.Password,
                         IsApproved = user.IsApproved,
                         Comment = user.Comment,
-                        QQ = user.QQ,
+                        RealName = user.RealName,
                         AllRoles = RoleService.AllRoles()
                     };
 
@@ -313,12 +313,12 @@ namespace MVCForum.Website.Controllers
                         }
                     }
 
-                    // Secondly see if the email is banned
-                    if (_bannedEmailService.EmailIsBanned(userModel.Email))
-                    {
-                        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Error.EmailIsBanned"));
-                        return View();
-                    }
+                    //// Secondly see if the email is banned
+                    //if (_bannedEmailService.EmailIsBanned(userModel.Email))
+                    //{
+                    //    ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Error.EmailIsBanned"));
+                    //    return View();
+                    //}
                 }
 
                 // Standard Login
@@ -348,6 +348,11 @@ namespace MVCForum.Website.Controllers
             return View("Register");
         }
 
+        /// <summary>
+        /// 用户注册
+        /// </summary>
+        /// <param name="userModel"></param>
+        /// <returns></returns>
         public ActionResult MemberRegisterLogic(MemberAddViewModel userModel)
         {
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
@@ -360,10 +365,54 @@ namespace MVCForum.Website.Controllers
                 var userToSave = new MembershipUser
                 {
                     UserName = _bannedWordService.SanitiseBannedWords(userModel.UserName),
-                    Email = userModel.Email,
+                    RealName = "",
+                    Email = "",
+                    Gender = 1,
+                    Birthday = new DateTime(2000, 1, 1),
+                    IsLunarCalendar = false,
+                    IsMarried = false,
+                    Height = 0,
+                    Weight = 0,
+                    Education = "",
+                    Location = "",
+                    SchoolProvince = "",
+                    SchoolCity = "",
+                    SchoolName = "",
+                    HomeTownProvince = "",
+                    HomeTownCity = "",
+                    HomeTownCounty = "",
+                    Job = "",
+                    IncomeRange = 0,
+                    Interest = "",
+                    MobilePhone = "",
+
+
+
                     Password = userModel.Password,
-                    IsApproved = userModel.IsApproved,
+                    //IsApproved = userModel.IsApproved,  // Original code,
+                    IsApproved = false, // 设定每个用户注册都需要审核，系统不允许自动审核
+
+
+                    CreateDate = DateTime.Now,
+                    LastLoginDate = DateTime.Now,
+                    LastUpdateTime = DateTime.Now,
+                    UserType = 1,
+                    Slug = "",
+
+
+
+                    DisablePosting = false,
+                    DisablePrivateMessages = false,
+                    DisableFileUploads = false,
+
+
+
                     Comment = userModel.Comment,
+
+                  
+                  
+                   
+                    
                 };
 
                 var createStatus = MembershipService.CreateUser(userToSave);

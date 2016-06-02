@@ -21,16 +21,18 @@ namespace MVCForum.Website.ViewModels
         [StringLength(150, MinimumLength = 4)]
         public string UserName { get; set; }
 
-
+        [Required]
+        [StringLength(24, MinimumLength = 2)]
+        public string RealName { get; set; }
 
         [Required]
-        [StringLength(12, MinimumLength = 4)]
-        public string QQ { get; set; }
+        [StringLength(11, MinimumLength = 11)]
+        public string MobilePhone { get; set; }
 
-        [Required]
-        [EmailAddress]
-        [ForumMvcResourceDisplayName("Members.Label.EmailAddress")]
-        public string Email { get; set; }
+        //[Required]
+        //[EmailAddress]
+        //[ForumMvcResourceDisplayName("Members.Label.EmailAddress")]
+        //public string Email { get; set; }
 
         [Required]
         [StringLength(100, MinimumLength = 6)]

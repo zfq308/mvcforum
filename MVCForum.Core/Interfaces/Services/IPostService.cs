@@ -20,6 +20,12 @@ namespace MVCForum.Domain.Interfaces.Services
         PagedList<Post> SearchPosts(int pageIndex, int pageSize, int amountToTake, string searchTerm, List<Category> allowedCategories);
         PagedList<Post> GetPagedPostsByTopic(int pageIndex, int pageSize, int amountToTake, Guid topicId, PostOrderBy order);
         PagedList<Post> GetPagedPendingPosts(int pageIndex, int pageSize, List<Category> allowedCategories);
+        /// <summary>
+        /// 取得特定条件下的“待定”帖子集合
+        /// </summary>
+        /// <param name="allowedCategories"></param>
+        /// <param name="usersRole"></param>
+        /// <returns></returns>
         IList<Post> GetPendingPosts(List<Category> allowedCategories, MembershipRole usersRole);
         int GetPendingPostsCount(List<Category> allowedCategories);
         Post Add(Post post);

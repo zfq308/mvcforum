@@ -4,8 +4,15 @@ using MVCForum.Domain.DomainModel.Enums;
 
 namespace MVCForum.Services
 {
+
+    /// <summary>
+    /// 站点配置类
+    /// </summary>
     internal class SiteConfig
     {
+        /// <summary>
+        /// 配置文件地址
+        /// </summary>
         private static string ConfigLocation => HostingEnvironment.MapPath("~/App_Data/forum.config");
         private readonly CacheService _cacheService;
 

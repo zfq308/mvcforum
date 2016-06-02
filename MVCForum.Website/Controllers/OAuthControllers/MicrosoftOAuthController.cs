@@ -194,7 +194,7 @@ namespace MVCForum.Website.Controllers.OAuthControllers
                                 // Not registered already so register them
                                 var viewModel = new MemberAddViewModel
                                 {
-                                    Email = user.Emails.Preferred,
+                                    //Email = user.Emails.Preferred,
                                     LoginType = LoginType.Microsoft,
                                     Password = StringUtils.RandomString(8),
                                     UserName = user.Name,

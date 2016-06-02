@@ -302,6 +302,12 @@ namespace MVCForum.Services
             return new PagedList<Post>(results.ToList(), pageIndex, pageSize, total);
         }
 
+        /// <summary>
+        /// 取得特定条件下的“待定”帖子集合
+        /// </summary>
+        /// <param name="allowedCategories">帖子所属类别集合</param>
+        /// <param name="usersRole"></param>
+        /// <returns></returns>
         public IList<Post> GetPendingPosts(List<Category> allowedCategories, MembershipRole usersRole)
         {
             var allowedCatIds = allowedCategories.Select(x => x.Id);

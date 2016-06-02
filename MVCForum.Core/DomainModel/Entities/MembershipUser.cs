@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using MVCForum.Domain.DomainModel.Entities;
 using MVCForum.Utilities;
+using System.Data.SqlTypes;
 
 namespace MVCForum.Domain.DomainModel
 {
@@ -31,6 +32,19 @@ namespace MVCForum.Domain.DomainModel
         public MembershipUser()
         {
             Id = GuidComb.GenerateComb();
+            PasswordQuestion = "";
+            PasswordAnswer = "";
+            LastPasswordChangedDate = (DateTime)SqlDateTime.MinValue;
+            FailedPasswordAnswerAttempt = 0;
+            PasswordResetToken = "";
+            PasswordResetTokenCreatedAt = (DateTime)SqlDateTime.MinValue;
+            IsLockedOut = false;
+            IsBanned = false;
+            LastLockoutDate = (DateTime)SqlDateTime.MinValue;
+            LastActivityDate = null;
+            LoginIdExpires = null;
+            HasAgreedToTermsAndConditions = true;
+            DisableEmailNotifications = false;
         }
 
         #region 用户基本信息属性
