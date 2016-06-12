@@ -16,10 +16,9 @@ namespace MVCForum.Services
             _context = context;
         }
 
-
         public UploadedFile Add(UploadedFile uploadedFile)
         {
-            uploadedFile.DateCreated = DateTime.UtcNow;
+            uploadedFile.DateCreated = DateTime.Now;
             return _context.UploadedFile.Add(uploadedFile);
         }
 
@@ -50,4 +49,5 @@ namespace MVCForum.Services
                 .FirstOrDefault(x => x.Id == id);
         }
     }
+
 }

@@ -49,27 +49,20 @@
                                     <li class="active">
                                         <i class="fa fa-dashboard"></i> Breadcrumb
                                     </li>
-                                </ol>*@
+                              </ol>*@
                         </div>
                     </div>
                 }
 
                 <div class="mainadminbody">
-                    @RenderBody()                    
+                    @RenderBody()
                 </div>
                 <footer>
                     @RenderSection("AdminFooter", false)
-                    <p>&copy; <a href="http://www.aptitude.co.uk">Aptitude</a> @DateTime.UtcNow.Year - @Html.Partial("_GetCurrentVersion")</p>
+                    <p>&copy; <a href="http://www.aptitude.co.uk">Aptitude</a> @DateTime.Now.Year - @Html.Partial("_GetCurrentVersion")</p>
                 </footer>
-
             </div>
         </div>
     </div>
-
-
-
-
-
-
 </body>
 </html>

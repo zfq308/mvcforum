@@ -3,6 +3,9 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Domain.DomainModel
 {
+    /// <summary>
+    /// 上传文件类
+    /// </summary>
     public partial class UploadedFile
     {
         public UploadedFile()

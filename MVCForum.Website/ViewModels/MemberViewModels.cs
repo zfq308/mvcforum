@@ -22,12 +22,19 @@ namespace MVCForum.Website.ViewModels
         public string UserName { get; set; }
 
         [Required]
+        [ForumMvcResourceDisplayName("Members.Label.RealName")]
         [StringLength(24, MinimumLength = 2)]
         public string RealName { get; set; }
 
         [Required]
+        [ForumMvcResourceDisplayName("Members.Label.MobilePhone")]
         [StringLength(11, MinimumLength = 11)]
         public string MobilePhone { get; set; }
+
+        [Required]
+        [ForumMvcResourceDisplayName("Members.Label.VerifyCode")]
+        [StringLength(6, MinimumLength = 6)]
+        public string VerifyCode { get; set; }
 
         //[Required]
         //[EmailAddress]
@@ -39,6 +46,8 @@ namespace MVCForum.Website.ViewModels
         [DataType(DataType.Password)]
         [ForumMvcResourceDisplayName("Members.Label.Password")]
         public string Password { get; set; }
+
+
 
         [DataType(DataType.Password)]
         [System.ComponentModel.DataAnnotations.Compare("Password")]
@@ -75,56 +84,143 @@ namespace MVCForum.Website.ViewModels
         [StringLength(150, MinimumLength = 4)]
         public string UserName { get; set; }
 
-        [ForumMvcResourceDisplayName("Members.Label.EmailAddress")]
-        [EmailAddress]
         [Required]
-        public string Email { get; set; }
+        [ForumMvcResourceDisplayName("Members.Label.RealName")]
+        [StringLength(16, MinimumLength = 4)]
+        public string RealName { get; set; }
+
+        [Required]
+        [ForumMvcResourceDisplayName("Members.Label.Gender")]
+        public int Gender { get; set; }
+
+        [Required]
+        [ForumMvcResourceDisplayName("Members.Label.Birthday")]
+        public DateTime Birthday { get; set; }
+
+        [Required]
+        [ForumMvcResourceDisplayName("Members.Label.IsLunarCalendar")]
+        public bool IsLunarCalendar { get; set; }
+
+        [Required]
+        [ForumMvcResourceDisplayName("Members.Label.IsMarried")]
+        public bool IsMarried { get; set; }
+
+        [ForumMvcResourceDisplayName("Members.Label.Height")]
+        [Range(0, 250)]
+        public int Height { get; set; }
+
+        [ForumMvcResourceDisplayName("Members.Label.Weight")]
+        [Range(0, 250)]
+        public int Weight { get; set; }
+
+        [Required]
+        [ForumMvcResourceDisplayName("Members.Label.Education")]
+        [StringLength(10, MinimumLength = 2)]
+        public string Education { get; set; }
+
+        [Required]
+        [ForumMvcResourceDisplayName("Members.Label.Location")]
+        [StringLength(100, MinimumLength = 2)]
+        public string Location { get; set; }
+
+        [Required]
+        [ForumMvcResourceDisplayName("Members.Label.SchoolProvince")]
+        [StringLength(20, MinimumLength = 2)]
+        public string SchoolProvince { get; set; }
+
+        [Required]
+        [ForumMvcResourceDisplayName("Members.Label.SchoolCity")]
+        [StringLength(20, MinimumLength = 2)]
+        public string SchoolCity { get; set; }
+
+        [Required]
+        [ForumMvcResourceDisplayName("Members.Label.SchoolName")]
+        [StringLength(20, MinimumLength = 2)]
+        public string SchoolName { get; set; }
+
+        [Required]
+        [ForumMvcResourceDisplayName("Members.Label.HomeTownProvince")]
+        [StringLength(20, MinimumLength = 2)]
+        public string HomeTownProvince { get; set; }
+
+        [Required]
+        [ForumMvcResourceDisplayName("Members.Label.HomeTownCity")]
+        [StringLength(20, MinimumLength = 2)]
+        public string HomeTownCity { get; set; }
+
+        [Required]
+        [ForumMvcResourceDisplayName("Members.Label.HomeTownCounty")]
+        [StringLength(20, MinimumLength = 2)]
+        public string HomeTownCounty { get; set; }
+
+        [Required]
+        [ForumMvcResourceDisplayName("Members.Label.Job")]
+        [StringLength(20, MinimumLength = 2)]
+        public string Job { get; set; }
+
+        [Required]
+        [ForumMvcResourceDisplayName("Members.Label.IncomeRange")]
+        [Range(0, 10)]
+        public int IncomeRange { get; set; }
+
+        [Required]
+        [ForumMvcResourceDisplayName("Members.Label.Interest")]
+        [StringLength(100, MinimumLength = 2)]
+        public string Interest { get; set; }
+
+        [Required]
+        [ForumMvcResourceDisplayName("Members.Label.MobilePhone")]
+        [StringLength(11, MinimumLength = 11)]
+        public string MobilePhone { get; set; }
 
         [ForumMvcResourceDisplayName("Members.Label.Signature")]
         [StringLength(1000)]
         [AllowHtml]
         public string Signature { get; set; }
 
-        [ForumMvcResourceDisplayName("Members.Label.Age")]
-        [Range(0, int.MaxValue)]
-        public int? Age { get; set; }
+        #region Unuse code
 
-        [ForumMvcResourceDisplayName("Members.Label.Location")]
-        [StringLength(100)]
-        public string Location { get; set; }
+        //[ForumMvcResourceDisplayName("Members.Label.EmailAddress")]
+        //[EmailAddress]
+        //[Required]
+        //public string Email { get; set; }
 
-        [ForumMvcResourceDisplayName("Members.Label.Website")]
-        [Url]
-        [StringLength(100)]
-        public string Website { get; set; }
+        //[ForumMvcResourceDisplayName("Members.Label.UploadNewAvatar")]
+        //public HttpPostedFileBase[] Files { get; set; }
 
-        [ForumMvcResourceDisplayName("Members.Label.Twitter")]
-        [Url]
-        [StringLength(60)]
-        public string Twitter { get; set; }
+        //[ForumMvcResourceDisplayName("Members.Label.Facebook")]
+        //[Url]
+        //[StringLength(60)]
+        //public string Facebook { get; set; }
 
-        [Required]
-        [StringLength(12, MinimumLength = 4)]
-        public string QQ { get; set; }
+        //public string Avatar { get; set; }
 
+        //public bool DisableFileUploads { get; set; }
 
-        [ForumMvcResourceDisplayName("Members.Label.UploadNewAvatar")]
-        public HttpPostedFileBase[] Files { get; set; }
+        //[ForumMvcResourceDisplayName("Members.Label.DisableEmailNotifications")]
+        //public bool DisableEmailNotifications { get; set; }
 
-        [ForumMvcResourceDisplayName("Members.Label.Facebook")]
-        [Url]
-        [StringLength(60)]
-        public string Facebook { get; set; }
+        //public int AmountOfPoints { get; set; }
 
-        public string Avatar { get; set; }
-        public bool DisableFileUploads { get; set; }
+        //[ForumMvcResourceDisplayName("Members.Label.Age")]
+        //[Range(0, int.MaxValue)]
+        //public int? Age { get; set; }
 
-        [ForumMvcResourceDisplayName("Members.Label.DisableEmailNotifications")]
-        public bool DisableEmailNotifications { get; set; }
+        //[ForumMvcResourceDisplayName("Members.Label.Website")]
+        //[Url]
+        //[StringLength(100)]
+        //public string Website { get; set; }
 
+        //[ForumMvcResourceDisplayName("Members.Label.Twitter")]
+        //[Url]
+        //[StringLength(60)]
+        //public string Twitter { get; set; }
 
-        public int AmountOfPoints { get; set; }
+        //[Required]
+        //[StringLength(12, MinimumLength = 4)]
+        //public string QQ { get; set; }
 
+        #endregion
     }
 
     public class LogOnViewModel
@@ -142,6 +238,10 @@ namespace MVCForum.Website.ViewModels
 
         [ForumMvcResourceDisplayName("Members.Label.RememberMe")]
         public bool RememberMe { get; set; }
+
+        [Required]
+        [ForumMvcResourceDisplayName("Members.Label.VerifyCode")]
+        public string VerifyCode { get; set; }
     }
 
     public class ViewMemberViewModel

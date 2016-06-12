@@ -52,6 +52,10 @@
       <HintPath>..\packages\EntityFramework.SqlServerCompact.6.1.3\lib\net45\EntityFramework.SqlServerCompact.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
@@ -152,6 +156,7 @@
     <Compile Include="BlockService.cs" />
     <Compile Include="PostEditService.cs" />
     <Compile Include="ReflectionService.cs" />
+    <Compile Include="SendSMSService.cs" />
     <Compile Include="SiteConfig\SiteConfig.cs" />
     <Compile Include="TagNotificationService.cs" />
     <Compile Include="UploadedFileService.cs" />
@@ -176,6 +181,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RoleService.cs" />
     <Compile Include="TopicService.cs" />
+    <Compile Include="VerifyCodeService.cs" />
     <Compile Include="VoteService.cs" />
   </ItemGroup>
   <ItemGroup>

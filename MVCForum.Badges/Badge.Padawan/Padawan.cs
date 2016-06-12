@@ -31,7 +31,7 @@ namespace Badge.Padawan
 
             // Get all categories as we want to check all the members solutions, even across
             // categories that he no longer is allowed to access
-            var cats = _categoryService.GetAll();
+            var cats = _categoryService.GetAllUserLevelCategory();
 
             var usersSolutions = _postService.GetSolutionsByMember(user.Id, cats);
 

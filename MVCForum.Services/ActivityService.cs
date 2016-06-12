@@ -289,7 +289,7 @@ namespace MVCForum.Services
         /// <param name="user"></param>
         public void ProfileUpdated(MembershipUser user)
         {
-            var profileUpdatedActivity = ProfileUpdatedActivity.GenerateMappedRecord(user, DateTime.UtcNow);
+            var profileUpdatedActivity = ProfileUpdatedActivity.GenerateMappedRecord(user, DateTime.Now);
             Add(profileUpdatedActivity);
         }
 

@@ -13,4 +13,6 @@ namespace MVCForum.Domain.Interfaces.Services
         IList<UploadedFile> GetAllByUser(Guid membershipUserId);
         UploadedFile Get(Guid id);  
     }
+
+
 }

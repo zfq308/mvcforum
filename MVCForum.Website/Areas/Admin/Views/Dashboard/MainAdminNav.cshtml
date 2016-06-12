@@ -19,39 +19,40 @@
             </li>
             <li class="divider"></li>
             <li>
-                <a href="@Url.Action("LogOff", "Members", new { area = "" })"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
+                <a href="@Url.Action("LogOff", "Members", new { area = "" })"><i class="fa fa-fw fa-power-off"></i>@Html.LanguageString("LogOn.LogOff")</a>
             </li>
         </ul>
     </li>
 </ul>
 <div class="collapse navbar-collapse mvcforum-nav">
+    <!-- MainAdminNav.cshtml-->
     <ul class="nav navbar-nav side-nav">
         <li>
-            <a href="@Url.Content("~/")"><i class="fa fa-fw fa-arrow-left"></i> Main Site</a>
+            <a href="@Url.Content("~/")"><i class="fa fa-fw fa-arrow-left"></i> @Html.LanguageString("Site.BackendDashboard")</a>
         </li>
         <li>
             <a href="@Url.Action("Index", "Admin", new { area = "Admin" })" class="@(currentController == "admin" && currentAction == "index" ? "active" : "")">
-                <i class="fa fa-fw fa-dashboard"></i> Dashboard
+                <i class="fa fa-fw fa-dashboard"></i> @Html.LanguageString("Backend.Menu.Dashboard")
             </a>
         </li>
         <li>
             <a href="@Url.Action("Index", "Settings", new { area = "Admin" }, null)" class="@(currentController == "settings" && currentAction == "index" ? "active" : "")">
-                <i class="fa fa-fw fa-cogs"></i> Main Settings
+                <i class="fa fa-fw fa-cogs"></i> @Html.LanguageString("Backend.Menu.MainSettings")
             </a>
         </li>
         <li>
             <a href="@Url.Action("Index", "AdminCategory", new { area = "Admin" }, null)" class="@(currentController == "admincategory" && currentAction == "index" ? "active" : "")">
-                <i class="fa fa-fw fa-folder-open-o"></i> Categories
+                <i class="fa fa-fw fa-folder-open-o"></i> @Html.LanguageString("Backend.Menu.Categories")
             </a>
         </li>
         <li>
             <a href="#" data-toggle="collapse" data-target="#tags">
-                <i class="fa fa-fw fa-tags"></i> Tags <i class="fa fa-fw fa-caret-down"></i>
+                <i class="fa fa-fw fa-tags"></i> @Html.LanguageString("Backend.Menu.Tags")  <i class="fa fa-fw fa-caret-down"></i>
             </a>
             <ul id="tags" class="collapse">
                 <li>
                     <a href="@Url.Action("Index", "AdminTag", new { area = "Admin" })" class="@(currentController == "admintag" && currentAction == "index" ? "active" : "")">
-                        Manage Tags
+                        @Html.LanguageString("Backend.Menu.ManageTags")
                     </a>
                 </li>
                 <li>
@@ -64,103 +65,143 @@
         </li>
         <li>
             <a href="@Url.Action("Index", "AdminBadge", new { area = "Admin" })" class="@(currentController == "adminbadge" && currentAction == "index" ? "active" : "")">
-                <i class="fa fa-fw fa-trophy"></i> Badges
+                <i class="fa fa-fw fa-trophy"></i>  @Html.LanguageString("Backend.Menu.Badges")
             </a>
         </li>
         <li>
             <a href="#" data-toggle="collapse" data-target="#permissions">
-                <i class="fa fa-fw fa-check-square-o"></i> Permissions <i class="fa fa-fw fa-caret-down"></i>
+                <i class="fa fa-fw fa-check-square-o"></i>    @Html.LanguageString("Backend.Menu.Permissions") <i class="fa fa-fw fa-caret-down"></i>
             </a>
             <ul id="permissions" class="collapse">
                 <li>
-                    <a href="@Url.Action("Index", "Permissions", new { area = "Admin" }, null)" class="@(currentController == "permissions" && currentAction == "index" ? "active" : "")">Manage Permissions</a>
+                    <a href="@Url.Action("Index", "Permissions", new { area = "Admin" }, null)" class="@(currentController == "permissions" && currentAction == "index" ? "active" : "")"> @Html.LanguageString("Backend.Menu.ManagePermissions")</a>
                 </li>
                 <li>
-                    <a href="@Url.Action("PermissionTypes", "Permissions", new { area = "Admin" }, null)" class="@(currentController == "permissions" && currentAction == "permissiontypes" ? "active" : "")">Add/Remove Permission Types</a>
+                    <a href="@Url.Action("PermissionTypes", "Permissions", new { area = "Admin" }, null)" class="@(currentController == "permissions" && currentAction == "permissiontypes" ? "active" : "")">@Html.LanguageString("Backend.Menu.ManagePermissionType")</a>
                 </li>
             </ul>
         </li>
         <li>
             <a href="#" data-toggle="collapse" data-target="#membership">
-                <i class="fa fa-fw fa-users"></i> Membership <i class="fa fa-fw fa-caret-down"></i>
+                <i class="fa fa-fw fa-users"></i>   @Html.LanguageString("Backend.Menu.Membership")   <i class="fa fa-fw fa-caret-down"></i>
             </a>
             <ul id="membership" class="collapse">
                 <li>
-                    <a href="@Url.Action("Manage", "Account", new { area = "Admin" }, null)" class="@(currentController == "account" && currentAction == "manage" ? "active" : "")">Manage Users</a>
+                    <a href="@Url.Action("Manage", "Account", new { area = "Admin" }, null)" class="@(currentController == "account" && currentAction == "manage" ? "active" : "")">
+                        @Html.LanguageString("Backend.Menu.ManageUsers")
+                    </a>
                 </li>
                 <li>
-                    <a href="@Url.Action("ListAllRoles", "Account", new { area = "Admin" }, null)" class="@(currentController == "account" && currentAction == "listallroles" ? "active" : "")">Manage Roles</a>
+                    <a href="@Url.Action("ListAllRoles", "Account", new { area = "Admin" }, null)" class="@(currentController == "account" && currentAction == "listallroles" ? "active" : "")">
+                        @Html.LanguageString("Backend.Menu.ManageRoles")
+                    </a>
                 </li>
                 <li>
-                    <a href="@Url.Action("AddRole", "Account", new { area = "Admin" }, null)" class="@(currentController == "account" && currentAction == "addrole" ? "active" : "")">Add Roles</a>
+                    <a href="@Url.Action("AddRole", "Account", new { area = "Admin" }, null)" class="@(currentController == "account" && currentAction == "addrole" ? "active" : "")">
+                        @Html.LanguageString("Backend.Menu.AddRoles")
+                    </a>
                 </li>
                 <li>
-                    <a href="@Url.Action("Index", "AdminSocial", new { area = "Admin" }, null)" class="@(currentController == "adminsocial" && currentAction == "index" ? "active" : "")">Social Logins</a>
+                    <a href="@Url.Action("Index", "AdminSocial", new { area = "Admin" }, null)" class="@(currentController == "adminsocial" && currentAction == "index" ? "active" : "")">
+                        @Html.LanguageString("Backend.Menu.SocialLogins")
+                    </a>
                 </li>
                 <li>
-                    <a href="@Url.Action("Members", "ImportExport", new { area = "Admin" }, null)" class="@(currentController == "importexport" && currentAction == "members" ? "active" : "")">Import / Export</a>
+                    <a href="@Url.Action("Members", "ImportExport", new { area = "Admin" }, null)" class="@(currentController == "importexport" && currentAction == "members" ? "active" : "")">
+                        @Html.LanguageString("Backend.Menu.ImportExport")
+                    </a>
                 </li>
             </ul>
         </li>
         <li>
             <a href="#" data-toggle="collapse" data-target="#spam">
-                <i class="fa fa-fw fa-frown-o"></i> Spam Prevention <i class="fa fa-fw fa-caret-down"></i>
+                <i class="fa fa-fw fa-frown-o"></i>  @Html.LanguageString("Backend.Menu.SpamPrevention") <i class="fa fa-fw fa-caret-down"></i>
             </a>
             <ul id="spam" class="collapse">
                 <li>
-                    <a href="@Url.Action("Index", "BannedEmail", new { area = "Admin" })" class="@(currentController == "bannedemail" && currentAction == "index" ? "active" : "")">Ban Emails</a>
+                    <a href="@Url.Action("Index", "BannedEmail", new { area = "Admin" })" class="@(currentController == "bannedemail" && currentAction == "index" ? "active" : "")">
+                        Ban Emails
+                    </a>
                 </li>
                 <li>
-                    <a href="@Url.Action("Index", "BannedWord", new { area = "Admin" })" class="@(currentController == "bannedword" && currentAction == "index" ? "active" : "")">Banned &amp; Stop Words</a>
+                    <a href="@Url.Action("Index", "BannedWord", new { area = "Admin" })" class="@(currentController == "bannedword" && currentAction == "index" ? "active" : "")">
+                        @Html.LanguageString("Backend.Menu.BannedStopWords")
+
+                    </a>
                 </li>
                 <li>
-                    <a href="@Url.Action("Akismet", "AdminSpam", new { area = "Admin" })" class="@(currentController == "adminspam" && currentAction == "akismet" ? "active" : "")">Akismet</a>
+                    <a href="@Url.Action("Akismet", "AdminSpam", new { area = "Admin" })" class="@(currentController == "adminspam" && currentAction == "akismet" ? "active" : "")">
+                        Akismet
+                    </a>
                 </li>
                 <li>
-                    <a href="@Url.Action("RegistrationQuestion", "AdminSpam", new { area = "Admin" })" class="@(currentController == "adminspam" && currentAction == "registrationquestion" ? "active" : "")">Registration Question</a>
+                    <a href="@Url.Action("RegistrationQuestion", "AdminSpam", new { area = "Admin" })" class="@(currentController == "adminspam" && currentAction == "registrationquestion" ? "active" : "")">
+                        Registration Question
+                    </a>
                 </li>
                 <li>
-                    <a href="@Url.Action("SpamReporting", "AdminSpam", new { area = "Admin" })" class="@(currentController == "adminspam" && currentAction == "spamreporting" ? "active" : "")">Spam Reporting</a>
+                    <a href="@Url.Action("SpamReporting", "AdminSpam", new { area = "Admin" })" class="@(currentController == "adminspam" && currentAction == "spamreporting" ? "active" : "")">
+                        Spam Reporting
+                    </a>
                 </li>
             </ul>
         </li>
         <li>
             <a href="#" data-toggle="collapse" data-target="#language">
-                <i class="fa fa-fw fa-language"></i> Languages <i class="fa fa-fw fa-caret-down"></i>
+                <i class="fa fa-fw fa-language"></i> @Html.LanguageString("Backend.Menu.Languages") <i class="fa fa-fw fa-caret-down"></i>
             </a>
             <ul id="language" class="collapse">
                 <li>
-                    <a href="@Url.Action("Create", "AdminLanguage", new { area = "Admin" })" class="@(currentController == "adminlanguage" && currentAction == "create" ? "active" : "")">Add Language</a>
+                    <a href="@Url.Action("Create", "AdminLanguage", new { area = "Admin" })" class="@(currentController == "adminlanguage" && currentAction == "create" ? "active" : "")">
+                        @Html.LanguageString("Backend.Menu.AddLanguage")
+                    </a>
                 </li>
                 <li>
-                    <a href="@Url.Action("Index", "AdminLanguage", new { area = "Admin" })" class="@(currentController == "adminlanguage" && currentAction == "index" ? "active" : "")">Edit Language</a>
+                    <a href="@Url.Action("Index", "AdminLanguage", new { area = "Admin" })" class="@(currentController == "adminlanguage" && currentAction == "index" ? "active" : "")">
+                        @Html.LanguageString("Backend.Menu.EditLanguage")
+                    </a>
                 </li>
                 <li>
-                    <a href="@Url.Action("Languages", "ImportExport", new { area = "Admin" })" class="@(currentController == "importexport" && currentAction == "languages" ? "active" : "")">Import / Export</a>
+                    <a href="@Url.Action("Languages", "ImportExport", new { area = "Admin" })" class="@(currentController == "importexport" && currentAction == "languages" ? "active" : "")">
+                        @Html.LanguageString("Backend.Menu.LanguageImportExport")
+                    </a>
                 </li>
             </ul>
         </li>
         <li>
-            <a href="@Url.Action("CustomCode", "Settings", new { area = "Admin" }, null)" class="@(currentController == "settings" && currentAction == "customcode" ? "active" : "")"><i class="fa fa-fw fa-code"></i> Custom Code</a>
+            <a href="@Url.Action("CustomCode", "Settings", new { area = "Admin" }, null)" class="@(currentController == "settings" && currentAction == "customcode" ? "active" : "")">
+                <i class="fa fa-fw fa-code"></i>
+                @Html.LanguageString("Backend.Menu.CustomCode")
+            </a>
         </li>
         <li>
             <a href="#" data-toggle="collapse" data-target="#batch">
-                <i class="fa fa-fw fa-bolt"></i> Batch Tools <i class="fa fa-fw fa-caret-down"></i>
+                <i class="fa fa-fw fa-bolt"></i>   @Html.LanguageString("Backend.Menu.BatchTools")  <i class="fa fa-fw fa-caret-down"></i>
             </a>
             <ul id="batch" class="collapse">
                 <li>
-                    <a href="@Url.Action("BatchDeleteMembers", "Batch", new { area = "Admin" }, null)" class="@(currentController == "batch" && currentAction == "batchdeletemembers" ? "active" : "")">Batch Delete Members</a>
+                    <a href="@Url.Action("BatchDeleteMembers", "Batch", new { area = "Admin" }, null)" class="@(currentController == "batch" && currentAction == "batchdeletemembers" ? "active" : "")">
+                        @Html.LanguageString("Backend.Menu.BatchDeleteMembers")
+
+                    </a>
                 </li>
                 <li>
-                    <a href="@Url.Action("BatchMoveTopics", "Batch", new { area = "Admin" }, null)" class="@(currentController == "batch" && currentAction == "batchmovetopics" ? "active" : "")">Batch Move Topics</a>
+                    <a href="@Url.Action("BatchMoveTopics", "Batch", new { area = "Admin" }, null)" class="@(currentController == "batch" && currentAction == "batchmovetopics" ? "active" : "")">
+                        @Html.LanguageString("Backend.Menu.BatchMoveTopics")
+                    </a>
                 </li>
                 <li>
-                    <a href="@Url.Action("BatchDeletePrivateMessages", "Batch", new { area = "Admin" }, null)" class="@(currentController == "batch" && currentAction == "batchdeleteprivatemessages" ? "active" : "")">Batch Delete Private Messages</a>
+                    <a href="@Url.Action("BatchDeletePrivateMessages", "Batch", new { area = "Admin" }, null)" class="@(currentController == "batch" && currentAction == "batchdeleteprivatemessages" ? "active" : "")">
+                        @Html.LanguageString("Backend.Menu.BatchDeletePrivateMessages")
+                    </a>
                 </li>
             </ul>
         </li>
         <li>
-            <a href="@Url.Action("Index", "Log", new { area = "Admin" })" class="@(currentController == "log" && currentAction == "index" ? "active" : "")"><i class="fa fa-fw fa-file-text-o"></i> Log</a>
+            <a href="@Url.Action("Index", "Log", new { area = "Admin" })" class="@(currentController == "log" && currentAction == "index" ? "active" : "")">
+                <i class="fa fa-fw fa-file-text-o"></i>
+                @Html.LanguageString("Backend.Menu.Log")
+            </a>
         </li>
     </ul>
 </div>

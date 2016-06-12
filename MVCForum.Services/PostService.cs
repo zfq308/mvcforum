@@ -564,8 +564,8 @@ namespace MVCForum.Services
                                    User = user,
                                    Topic = topic,
                                    IpAddress = StringUtils.GetUsersIpAddress(),
-                                   DateCreated = DateTime.UtcNow,
-                                   DateEdited = DateTime.UtcNow
+                                   DateCreated = DateTime.Now,
+                                   DateEdited = DateTime.Now
                                };
 
             // Sort the search field out

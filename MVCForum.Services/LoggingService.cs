@@ -47,7 +47,7 @@ namespace MVCForum.Services
         private static string MakeLogFileName(bool isArchive)
         {
             return !isArchive ? $"{_logFileFolder}//{LogFileNameOnly}{LogFileExtension}"
-                : $"{_logFileFolder}//{LogFileNameOnly}_{DateTime.UtcNow.ToString("ddMMyyyy_hhmmss")}{LogFileExtension}";
+                : $"{_logFileFolder}//{LogFileNameOnly}_{DateTime.Now.ToString("ddMMyyyy_hhmmss")}{LogFileExtension}";
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace MVCForum.Services
                         {
                             var callStack = new StackFrame(2, true); // Go back one stack frame to get module info
 
-                            tw.WriteLine("{0} | {1} | {2} | {3} | {4} | {5}", DateTime.UtcNow.ToString(DateTimeFormat), callStack.GetMethod().Module.Name, callStack.GetMethod().Name, callStack.GetMethod().DeclaringType, callStack.GetFileLineNumber(), message);
+                            tw.WriteLine("{0} | {1} | {2} | {3} | {4} | {5}", DateTime.Now.ToString(DateTimeFormat), callStack.GetMethod().Module.Name, callStack.GetMethod().Name, callStack.GetMethod().DeclaringType, callStack.GetFileLineNumber(), message);
                         }
                     }
                 }

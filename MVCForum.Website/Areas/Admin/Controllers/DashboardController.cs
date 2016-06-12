@@ -5,6 +5,7 @@ using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Utilities;
 using MVCForum.Website.Areas.Admin.ViewModels;
+using System.Collections.Generic;
 
 namespace MVCForum.Website.Areas.Admin.Controllers
 {
@@ -20,7 +21,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         const int AmountToShow = 7;
 
         public DashboardController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService,
-            ILocalizationService localizationService, ISettingsService settingsService, IPostService postService, 
+            ILocalizationService localizationService, ISettingsService settingsService, IPostService postService,
             ITopicService topicService, ITopicTagService topicTagService, IMembershipUserPointsService membershipUserPointsService, ICategoryService categoryService, IPrivateMessageService privateMessageService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
         {
@@ -41,8 +42,8 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             }
 
             var moderateCount = 0;
-            var topicsToModerate = _topicService.GetPendingTopicsCount(_categoryService.GetAll());
-            var postsToModerate = _postService.GetPendingPostsCount(_categoryService.GetAll());
+            var topicsToModerate = _topicService.GetPendingTopicsCount(_categoryService.GetAllUserLevelCategory());
+            var postsToModerate = _postService.GetPendingPostsCount(_categoryService.GetAllUserLevelCategory());
             if (topicsToModerate > 0 || postsToModerate > 0)
             {
                 moderateCount = (topicsToModerate + postsToModerate);
@@ -60,7 +61,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         public PartialViewResult TodaysTopics()
         {
             // Get all cats as only admins can view this page
-            var allCats = _categoryService.GetAll();
+            var allCats = _categoryService.GetAllUserLevelCategory();
 
             if (Request.IsAjaxRequest())
             {
@@ -117,7 +118,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             if (Request.IsAjaxRequest())
             {
                 // Get all cats as only admins can view this page
-                var allCats = _categoryService.GetAll();
+                var allCats = _categoryService.GetAllUserLevelCategory();
                 using (UnitOfWorkManager.NewUnitOfWork())
                 {
                     return PartialView(new HighestViewedTopics { Topics = _topicService.GetHighestViewedTopics(AmountToShow, allCats) });
@@ -131,9 +132,18 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         {
             if (Request.IsAjaxRequest())
             {
-                    var reader = new RssReader();
-                    var viewModel = new LatestNewsViewModel { RssFeed = reader.GetRssFeed("http://www.mvcforum.com/rss").Take(AmountToShow).ToList() };
-                    return PartialView(viewModel);
+                var reader = new RssReader();
+                List<RssItem> feed = reader.GetRssFeed("http://www.mvcforum.com/rss");
+                LatestNewsViewModel viewModel = null;
+                if (feed != null)
+                {
+                    viewModel = new LatestNewsViewModel { RssFeed = feed.Take(AmountToShow).ToList() };
+                }
+                else
+                {
+                    viewModel = new LatestNewsViewModel();
+                }
+                return PartialView(viewModel);
             }
             return null;
         }

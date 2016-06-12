@@ -54,6 +54,7 @@ namespace MVCForum.Services.Data.Context
         public DbSet<GlobalPermissionForRole> GlobalPermissionForRole { get; set; }
         public DbSet<Email> Email { get; set; }
         public DbSet<PostEdit> PostEdit { get; set; }
+        public DbSet<VerifyCode> VerifyCode { get; set; }
 
 
         public override int SaveChanges()

@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
+using MVCForum.Website.Application;
 
 namespace MVCForum.Website.Areas.Admin.ViewModels
 {
@@ -180,12 +181,10 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         public Guid Id { get; set; }
 
         [Required]
-        [Display(Name = "Role Name")]
+        [ForumMvcResourceDisplayName("RoleView.Label.RoleName")]
         public string RoleName { get; set; }
 
     }
-
-
     #endregion
 
 }

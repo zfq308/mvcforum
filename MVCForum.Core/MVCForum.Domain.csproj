@@ -136,7 +136,10 @@
     <Compile Include="DomainModel\Entities\Post.cs" />
     <Compile Include="DomainModel\Entities\Settings.cs" />
     <Compile Include="DomainModel\Entities\Topic.cs" />
+    <Compile Include="DomainModel\General\TCity.cs" />
+    <Compile Include="DomainModel\General\TCountry.cs" />
     <Compile Include="DomainModel\General\Theme.cs" />
+    <Compile Include="DomainModel\General\TProvince.cs" />
     <Compile Include="DomainModel\General\UploadedFile.cs" />
     <Compile Include="DomainModel\General\UploadFileResult.cs" />
     <Compile Include="DomainModel\Entities\Vote.cs" />
@@ -171,6 +174,7 @@
     <Compile Include="Interfaces\Badges\IVoteUpBadge.cs" />
     <Compile Include="Interfaces\Events\IEventHandler.cs" />
     <Compile Include="Interfaces\Events\IEventManager.cs" />
+    <Compile Include="Interfaces\Services\ISendSMSProvider.cs" />
     <Compile Include="Interfaces\Providers\IStorageProvider.cs" />
     <Compile Include="Interfaces\Services\IBlockService.cs" />
     <Compile Include="Interfaces\Services\ICacheService.cs" />
@@ -208,6 +212,7 @@
     <Compile Include="Interfaces\Services\ISettingsService.cs" />
     <Compile Include="Interfaces\Services\ITopicService.cs" />
     <Compile Include="Interfaces\Services\IUploadedFileService.cs" />
+    <Compile Include="Interfaces\Services\IVerifyCodeService.cs" />
     <Compile Include="Interfaces\Services\IVoteService.cs" />
     <Compile Include="Interfaces\UnitOfWork\IUnitOfWork.cs" />
     <Compile Include="Interfaces\UnitOfWork\IUnitOfWorkManager.cs" />

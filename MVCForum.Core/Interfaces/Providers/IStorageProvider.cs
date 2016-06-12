@@ -10,4 +10,6 @@ namespace MVCForum.Domain.Interfaces.Providers
 
         string SaveAs(string uploadFolderPath, string fileName, HttpPostedFileBase file);
     }
+
+
 }

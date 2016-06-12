@@ -29,7 +29,7 @@ namespace Badge.AuthorMarkAsSolution
         /// <returns></returns>
         public bool Rule(MembershipUser user)
         {
-            var allCats = _categoryService.GetAll();
+            var allCats = _categoryService.GetAllUserLevelCategory();
             return _topicService.GetSolvedTopicsByMember(user.Id, allCats).Count >= 1;
 
         }

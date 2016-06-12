@@ -67,6 +67,7 @@
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Helpers">
@@ -102,6 +103,7 @@
   <ItemGroup>
     <Compile Include="BotUtils.cs" />
     <Compile Include="CensorUtils.cs" />
+    <Compile Include="ValidateCode.cs" />
     <Compile Include="ConfigUtils.cs" />
     <Compile Include="DateUtils.cs" />
     <Compile Include="EnumUtils.cs" />

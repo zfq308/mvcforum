@@ -75,7 +75,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         {
             var viewModel = new BatchMoveTopicsViewModel
                 {
-                    Categories = _categoryService.GetAll()
+                    Categories = _categoryService.GetAllUserLevelCategory()
                 };
             return View(viewModel);
         }
@@ -103,7 +103,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 
                     categoryFrom.Topics.Clear();
 
-                    viewModel.Categories = _categoryService.GetAll();
+                    viewModel.Categories = _categoryService.GetAllUserLevelCategory();
 
                     unitOfWork.Commit();
 

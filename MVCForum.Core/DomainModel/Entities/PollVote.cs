@@ -3,6 +3,9 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Domain.DomainModel
 {
+    /// <summary>
+    /// 投票表决类
+    /// </summary>
     public partial class PollVote
     {
         public PollVote()

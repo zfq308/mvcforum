@@ -10,6 +10,7 @@ using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Services.Data.Context;
 using MVCForum.Utilities;
+using System.Diagnostics;
 
 namespace MVCForum.Services.Migrations
 {
@@ -21,21 +22,32 @@ namespace MVCForum.Services.Migrations
             AutomaticMigrationDataLossAllowed = true;
         }
 
+        /// <summary>
+        /// 初始化系统安装代码
+        /// </summary>
+        /// <param name="context"></param>
         protected override void Seed(MVCForumContext context)
         {
+            const string langCulture = "zh-CN";   // 系统默认使用的语言
+            const string defaultAdminUsername = "admin";  //系统默认管理员账号名称
+            const string defaultAdminstratorPassword = "password"; //系统默认管理员账号密码
 
-            #region Initial Installer Code
+            log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+            logger.Debug("Start Configuration.Seed.");
+
+            Stopwatch MyStopWatch = new Stopwatch();
+            MyStopWatch.Start();
 
 
-            //var isFirstInstall = false;
-
-            // Add the language - If it's not already there
-            const string langCulture = "en-GB";
+            logger.Debug("Start to get Language.");
             var language = context.Language.FirstOrDefault(x => x.LanguageCulture == langCulture);
-            if (language == null)
-            {
+            logger.Debug("Stop to get Language.");
+            bool IsInitProcess = (language == null);  // 以默认语言是否被安装作为是否初始化的依据
 
-                //isFirstInstall = true;
+            if (IsInitProcess)
+            {
+                #region 写入系统默认的语言定义
+
                 var cultureInfo = LanguageUtils.GetCulture(langCulture);
                 language = new Language
                 {
@@ -43,12 +55,14 @@ namespace MVCForum.Services.Migrations
                     LanguageCulture = cultureInfo.Name,
                 };
                 context.Language.Add(language);
-
-                // Save the language
                 context.SaveChanges();
 
+                #endregion
+
+                #region 载入默认的语言本地化资源文件，并将其写入数据库
+
                 // Now add the default language strings
-                var file = HostingEnvironment.MapPath(@"~/Installer/en-GB.csv");
+                var file = HostingEnvironment.MapPath(@"~/Installer/zh-CN.csv");
                 var commaSeparator = new[] { ',' };
                 if (file != null)
                 {
@@ -62,7 +76,8 @@ namespace MVCForum.Services.Migrations
                         }
                     }
 
-                    // Read the CSV file and import all the keys and values
+                    #region Read the CSV file and import all the keys and values
+
                     var lineCounter = 0;
                     foreach (var csvline in allLines)
                     {
@@ -101,7 +116,7 @@ namespace MVCForum.Services.Migrations
                         var resourceKey = new LocaleResourceKey
                         {
                             Name = key,
-                            DateAdded = DateTime.UtcNow,
+                            DateAdded = DateTime.Now,
                         };
                         context.LocaleResourceKey.Add(resourceKey);
 
@@ -114,13 +129,15 @@ namespace MVCForum.Services.Migrations
                         };
                         context.LocaleStringResource.Add(stringResource);
                     }
+                    #endregion
 
-                    // Save the language strings
+                    // 保存本地化的语言条目
                     context.SaveChanges();
                 }
 
+                #endregion
 
-
+                #region 创建系统的默认角色
                 var saveRoles = false;
                 // Create the admin role if it doesn't exist
                 var adminRole = context.MembershipRole.FirstOrDefault(x => x.RoleName == AppConstants.AdminRoleName);
@@ -153,12 +170,13 @@ namespace MVCForum.Services.Migrations
                 {
                     context.SaveChanges();
                 }
+                #endregion
 
-                // Create an example Category
+                #region 创建一个Sample 类型定义和系统自带的三类系统级类型
 
                 if (!context.Category.Any())
                 {
-                    // Doesn't exist so add the example category
+                    #region 创建默认Sample类型
                     const string exampleCatName = "Example Category";
                     var exampleCat = new Category
                     {
@@ -166,19 +184,76 @@ namespace MVCForum.Services.Migrations
                         ModeratePosts = false,
                         ModerateTopics = false,
                         Slug = ServiceHelpers.CreateUrl(exampleCatName),
-                        DateCreated = DateTime.UtcNow
+                        DateCreated = DateTime.Now,
+                        IsSystemCategory = false,
+                        ShowTheCategoryCondition = 0
                     };
-
                     context.Category.Add(exampleCat);
+                    #endregion
+
+                    #region 创建每日心情日记本（系统）类型
+                    const string DailyRecordCatName = "Sys_DailyRecord";
+                    var DailyRecordCat = new Category
+                    {
+                        Name = DailyRecordCatName,
+                        ModeratePosts = false,
+                        ModerateTopics = false,
+                        Slug = ServiceHelpers.CreateUrl(DailyRecordCatName),
+                        DateCreated = DateTime.Now,
+
+                        IsSystemCategory = true,
+                        ShowTheCategoryCondition = 0
+                    };
+                    context.Category.Add(DailyRecordCat);
+
+                    #endregion
+
+                    #region 创建最新资讯（系统）类型
+                    const string LatestNewsCatName = "Sys_LatestNews";
+                    var LatestNewsCat = new Category
+                    {
+                        Name = LatestNewsCatName,
+                        ModeratePosts = false,
+                        ModerateTopics = false,
+                        Slug = ServiceHelpers.CreateUrl(LatestNewsCatName),
+                        DateCreated = DateTime.Now,
+
+                        IsSystemCategory = true,
+                        ShowTheCategoryCondition = 0
+                    };
+                    context.Category.Add(LatestNewsCat);
+
+                    #endregion
+
+                    #region 创建服务信息（系统）类型
+                    const string ProvideServiceCatName = "Sys_ProvideService";
+                    var ProvideServiceCat = new Category
+                    {
+                        Name = ProvideServiceCatName,
+                        ModeratePosts = false,
+                        ModerateTopics = false,
+                        Slug = ServiceHelpers.CreateUrl(ProvideServiceCatName),
+                        DateCreated = DateTime.Now,
+
+                        IsSystemCategory = true,
+                        ShowTheCategoryCondition = 0
+                    };
+                    context.Category.Add(ProvideServiceCat);
+
+                    #endregion
+
                     context.SaveChanges();
                 }
 
-                // if the settings already exist then do nothing
-                // If not then add default settings
+                #endregion
+
+                #region 检查系统的参数设置类，若当前还在初始化阶段，则按默认设置条件设定参数设置值
+
                 var currentSettings = context.Setting.FirstOrDefault();
                 if (currentSettings == null)
                 {
-                    // create the settings
+                    #region 创建默认的系统设置参数
+
                     var settings = new Settings
                     {
                         ForumName = "MVCForum",
@@ -223,33 +298,39 @@ namespace MVCForum.Services.Migrations
 
                     context.Setting.Add(settings);
                     context.SaveChanges();
+
+                    #endregion
                 }
 
-                // Create the initial category permissions
+                #endregion
 
-                // Edit Posts
+                #region 建立系统的全局权限定义和局部权限定义
+                // 检查是否有“Edit Posts”的权限作为依据
                 if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionEditPosts) == null)
                 {
+                    #region 创建局部权限
+
+                    //创建“Edit Posts”权限
                     var permission = new Permission { Name = SiteConstants.Instance.PermissionEditPosts };
                     context.Permission.Add(permission);
 
                     // NOTE: Because this is null - We assumed it's a new install so carry on checking and adding the other permissions
 
-                    // Read Only
+                    // 创建“Read Only”权限
                     if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionReadOnly) == null)
                     {
                         var p = new Permission { Name = SiteConstants.Instance.PermissionReadOnly };
                         context.Permission.Add(p);
                     }
 
-                    // Delete Posts
+                    // 创建“Delete Posts”权限
                     if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionDeletePosts) == null)
                     {
                         var p = new Permission { Name = SiteConstants.Instance.PermissionDeletePosts };
                         context.Permission.Add(p);
                     }
 
-                    // Sticky Topics
+                    // 创建“Sticky Topics”权限
                     if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionCreateStickyTopics) ==
                         null)
                     {
@@ -257,80 +338,85 @@ namespace MVCForum.Services.Migrations
                         context.Permission.Add(p);
                     }
 
-                    // Lock Topics
+                    // 创建“Lock Topics”权限
                     if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionLockTopics) == null)
                     {
                         var p = new Permission { Name = SiteConstants.Instance.PermissionLockTopics };
                         context.Permission.Add(p);
                     }
 
-                    // Vote In Polls
+                    // 创建“Vote In Polls”权限
                     if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionVoteInPolls) == null)
                     {
                         var p = new Permission { Name = SiteConstants.Instance.PermissionVoteInPolls };
                         context.Permission.Add(p);
                     }
 
-                    // Create Polls
+                    // 创建“Create Polls”权限
                     if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionCreatePolls) == null)
                     {
                         var p = new Permission { Name = SiteConstants.Instance.PermissionCreatePolls };
                         context.Permission.Add(p);
                     }
 
-                    // Create Topics
+                    // 创建“Create Topics”权限
                     if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionCreateTopics) == null)
                     {
                         var p = new Permission { Name = SiteConstants.Instance.PermissionCreateTopics };
                         context.Permission.Add(p);
                     }
 
-                    // Attach Files
+                    // 创建“Attach Files”权限
                     if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionAttachFiles) == null)
                     {
                         var p = new Permission { Name = SiteConstants.Instance.PermissionAttachFiles };
                         context.Permission.Add(p);
                     }
 
-                    // Deny Access
+                    // 创建“Deny Access”权限
                     if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionDenyAccess) == null)
                     {
                         var p = new Permission { Name = SiteConstants.Instance.PermissionDenyAccess };
                         context.Permission.Add(p);
                     }
+                    #endregion
 
-                    // === Global Permissions === //
+                    #region 全局权限
 
-                    // Deny Access
+                    // 创建“Deny Access”全局权限
                     if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionEditMembers) == null)
                     {
                         var p = new Permission { Name = SiteConstants.Instance.PermissionEditMembers, IsGlobal = true };
                         context.Permission.Add(p);
                     }
 
-                    // Insert Editor Images
-                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionInsertEditorImages) ==
-                        null)
+                    // 创建“Insert Editor Images”全局权限
+                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionInsertEditorImages) == null)
                     {
                         var p = new Permission { Name = SiteConstants.Instance.PermissionInsertEditorImages, IsGlobal = true };
                         context.Permission.Add(p);
                     }
 
-                    // Save to the database
+                    #endregion
+
                     context.SaveChanges();
                 }
 
-                // If the admin user exists then don't do anything else
-                const string adminUsername = "admin";
-                if (context.MembershipUser.FirstOrDefault(x => x.UserName == adminUsername) == null)
+                #endregion
+
+                #region 若默认管理员账号不存在，则创建默认的系统管理员账号
+
+                if (context.MembershipUser.FirstOrDefault(x => x.UserName == defaultAdminUsername) == null)
                 {
-                    // create the admin user and put him in the admin role
+                    #region  创建管理员账号并分配管理员角色
                     var admin = new MembershipUser
                     {
+                        #region 基本属性赋值
+
                         #region 基本信息
-                        UserName = adminUsername,
-                        RealName = "Administrator",
-                        Email = "you@email.com",
+                        UserName = defaultAdminUsername,
+                        RealName = "默认管理员",
+                        Email = "admin@email.com",
                         Gender = 1,
                         Birthday = new DateTime(2000, 1, 1),
                         IsLunarCalendar = false,
@@ -351,34 +437,25 @@ namespace MVCForum.Services.Migrations
                         MobilePhone = "13686886937",
                         #endregion
 
-                        Password = "password",
+                        Password = defaultAdminstratorPassword,
                         IsApproved = true,
                         CreateDate = DateTime.Now,
                         LastLoginDate = DateTime.Now,
                         LastUpdateTime = DateTime.Now,
                         UserType = 1,
-                        Slug = ServiceHelpers.CreateUrl(adminUsername),
-
-
-                   
+                        Slug = ServiceHelpers.CreateUrl(defaultAdminUsername),
                         DisablePosting = false,
                         DisablePrivateMessages = false,
                         DisableFileUploads = false,
-
-
-                        Comment = "",
-
-                       
+                        Comment = "系统管理员默认账号",
                         Signature = "",
                         Website = "",
                         Twitter = "",
                         Facebook = "",
                         Avatar = ""
 
-
-
+                        #endregion
                     };
-
                     // Hash the password
                     var salt = StringUtils.CreateSalt(AppConstants.SaltSize);
                     var hash = StringUtils.GenerateSaltedHash(admin.Password, salt);
@@ -391,22 +468,32 @@ namespace MVCForum.Services.Migrations
                     context.MembershipUser.Add(admin);
                     context.SaveChanges();
 
-                    // Now add read me
-                    const string name = "Read Me";
-                    var category = context.Category.FirstOrDefault();
+                    #endregion
+
+                    #region 生成“创建管理员”话题并发布内容
+
+                    const string ReadmeTopicName = "Read Me";
+
+                    #region 创建Readme的话题
+                    //var category = context.Category.FirstOrDefault();
+                    var SampleCategory = context.Category.Where(x => x.Name == "Example Category").SingleOrDefault();
                     var topic = new Topic
                     {
                         TopicType = "BasicTopic",
-                        Category = category,
+                        Category = SampleCategory,
                         CreateDate = DateTime.Now,
                         User = admin,
                         IsSticky = true,
-                        Name = name,
-                        Slug = ServiceHelpers.CreateUrl(name)
+                        Name = ReadmeTopicName,
+                        Slug = ServiceHelpers.CreateUrl(ReadmeTopicName)
                     };
 
                     context.Topic.Add(topic);
                     context.SaveChanges();
+
+                    #endregion
+
+                    #region 创建Readme的公示帖子
 
                     const string readMeText = @"<h2>Administration</h2>
 <p>We have auto created an admin user for you to manage the site</p>
@@ -420,37 +507,39 @@ namespace MVCForum.Services.Migrations
 
                     var post = new Post
                     {
-                        DateCreated = DateTime.UtcNow,
-                        DateEdited = DateTime.UtcNow,
+                        DateCreated = DateTime.Now,
+                        DateEdited = DateTime.Now,
                         Topic = topic,
                         IsTopicStarter = true,
                         User = admin,
                         PostContent = readMeText,
-                        SearchField = name
+                        SearchField = ReadmeTopicName
                     };
 
                     topic.LastPost = post;
 
                     context.Post.Add(post);
                     context.SaveChanges();
-                }
 
+                    #endregion
+
+                    #endregion
+
+                }
+                #endregion
             }
             else
             {
-                // ---- Do Data Updates here
+                #region 系统已上线，后续有其他的拓展数据需要加入时，请在此处编码
 
-                // Data to update on versions v1.7+
-
-                // Insert Editor Images
-                if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionInsertEditorImages) == null)
-                {
-                    var p = new Permission { Name = SiteConstants.Instance.PermissionInsertEditorImages, IsGlobal = true };
-                    context.Permission.Add(p);
-                }
+                #endregion
             }
 
-            #endregion
+            MyStopWatch.Stop();
+            decimal t = MyStopWatch.ElapsedMilliseconds;
+
+            logger.Debug(string.Format("timecost:{0} seconds, flag:{1}.", t / 1000, IsInitProcess.ToString()));
+           
         }
     }
 }

@@ -41,7 +41,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             {
                 var viewModel = new ListCategoriesViewModel
                                     {
-                                        Categories = _categoryService.GetAll().OrderBy(x => x.SortOrder)
+                                        Categories = _categoryService.GetAllUserLevelCategory().OrderBy(x => x.SortOrder)
                                     };
                 return PartialView(viewModel);
             }
@@ -51,7 +51,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var categoryViewModel = new CategoryViewModel { AllCategories = _categoryService.GetBaseSelectListCategories(_categoryService.GetAll()) };
+                var categoryViewModel = new CategoryViewModel { AllCategories = _categoryService.GetBaseSelectListCategories(_categoryService.GetAllUserLevelCategory()) };
                 return View(categoryViewModel);
             }
         }
@@ -161,7 +161,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 Image = category.Image,
                 CategoryColour = category.Colour,
                 ParentCategory = category.ParentCategory == null ? Guid.Empty : category.ParentCategory.Id,
-                AllCategories = _categoryService.GetBaseSelectListCategories(_categoryService.GetAll()
+                AllCategories = _categoryService.GetBaseSelectListCategories(_categoryService.GetAllUserLevelCategory()
                     .Where(x => x.Id != category.Id)
                     .ToList())
             };
@@ -358,7 +358,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 try
                 {
                     // var all categories
-                    var all = _categoryService.GetAll();
+                    var all = _categoryService.GetAllUserLevelCategory();
 
                     // Get all the categories
                     var maincategories = all.Where(x => x.ParentCategory == null).ToList();

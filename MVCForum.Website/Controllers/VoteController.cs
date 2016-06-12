@@ -164,7 +164,7 @@ namespace MVCForum.Website.Controllers
                         User = postWriter,
                         Amount = (postType == PostType.Negative) ? (-1) : (1),
                         VotedByMembershipUser = voter,
-                        DateVoted = DateTime.UtcNow
+                        DateVoted = DateTime.Now
                     };
                     _voteService.Add(vote);
 

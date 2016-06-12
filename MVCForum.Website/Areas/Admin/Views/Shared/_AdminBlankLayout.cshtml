@@ -14,18 +14,12 @@
     @Html.Partial("_AdminScripts")
     @RenderSection("AdminHeader", false)
 </head>
-
 <body class="@globalClass">
-
     <div class="container blankcontainer">
-
         @Html.Partial("_GenericMessage")
-
         <div class="row">
             @RenderBody()
         </div>
-
     </div>
-
 </body>
 </html>

@@ -84,7 +84,7 @@ namespace MVCForum.Services
             if (points.Points != 0)
             {
                 // Add Date
-                points.DateAdded = DateTime.UtcNow;
+                points.DateAdded = DateTime.Now;
 
                 // Check this point has not already been awarded
                 var canAddPoints = true;
@@ -115,7 +115,7 @@ namespace MVCForum.Services
         public Dictionary<MembershipUser, int> GetCurrentWeeksPoints(int? amountToTake)
         {
             amountToTake = amountToTake ?? int.MaxValue;
-            var date = DateTime.UtcNow;
+            var date = DateTime.Now;
             var start = date.Date.AddDays(-(int)date.DayOfWeek);
             var end = start.AddDays(7);
 
@@ -139,7 +139,7 @@ namespace MVCForum.Services
         public Dictionary<MembershipUser, int> GetThisYearsPoints(int? amountToTake)
         {
             amountToTake = amountToTake ?? int.MaxValue;
-            var thisYear = DateTime.UtcNow.Year;
+            var thisYear = DateTime.Now.Year;
 
             var results = _context.MembershipUserPoints
                 .Include(x => x.User)

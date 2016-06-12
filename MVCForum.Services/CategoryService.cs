@@ -38,11 +38,89 @@ namespace MVCForum.Services
             _context = context as MVCForumContext;
         }
 
+
+        #region 系统目前自带的三个系统级Category
+
+        public Category SystemDailyRecordCategory
+        {
+            get
+            {
+                const string key = "get-SystemDailyRecordCategory";
+                Category mSystemCategory = null;
+                if (HttpContext.Current != null)
+                {
+                    if (!HttpContext.Current.Items.Contains(key))
+                    {
+                        mSystemCategory = _context.Category
+                             .Where(x => x.IsSystemCategory == true && x.Name == "Sys_DailyRecord")
+                                .AsNoTracking().FirstOrDefault();
+                        if (mSystemCategory != null)
+                        {
+                            HttpContext.Current.Items.Add(key, mSystemCategory);
+                        }
+                    }
+                    return (Category)HttpContext.Current.Items[key];
+                }
+                return mSystemCategory;
+            }
+        }
+
+        public Category SystemLatestNewsCategory
+        {
+            get
+            {
+                const string key = "get-SystemLatestNewsCategory";
+                Category mSystemCategory = null;
+                if (HttpContext.Current != null)
+                {
+                    if (!HttpContext.Current.Items.Contains(key))
+                    {
+                        mSystemCategory = _context.Category
+                             .Where(x => x.IsSystemCategory == true && x.Name == "Sys_LatestNews")
+                                .AsNoTracking().FirstOrDefault();
+                        if (mSystemCategory != null)
+                        {
+                            HttpContext.Current.Items.Add(key, mSystemCategory);
+                        }
+                    }
+                    return (Category)HttpContext.Current.Items[key];
+                }
+                return mSystemCategory;
+            }
+        }
+
+        public Category SystemProvideServiceCategory
+        {
+            get
+            {
+                const string key = "get-SystemProvideServiceCategory";
+                Category mSystemCategory = null;
+                if (HttpContext.Current != null)
+                {
+                    if (!HttpContext.Current.Items.Contains(key))
+                    {
+                        mSystemCategory = _context.Category
+                             .Where(x => x.IsSystemCategory == true && x.Name == "Sys_ProvideService")
+                                .AsNoTracking().FirstOrDefault();
+                        if (mSystemCategory != null)
+                        {
+                            HttpContext.Current.Items.Add(key, mSystemCategory);
+                        }
+                    }
+                    return (Category)HttpContext.Current.Items[key];
+                }
+                return mSystemCategory;
+            }
+        }
+
+        #endregion
+
+
         /// <summary>
-        /// Return all categories
+        /// Return all User Level Category
         /// </summary>
         /// <returns></returns>
-        public List<Category> GetAll()
+        public List<Category> GetAllUserLevelCategory()
         {
             // Cache per request for speed - As this is hit constantly for permissions
             if (HttpContext.Current != null)
@@ -54,6 +132,7 @@ namespace MVCForum.Services
                     var orderedCategories = new List<Category>();
                     var allCats = _context.Category
                             .Include(x => x.ParentCategory)
+                            .Where(x => x.IsSystemCategory == false)
                             .AsNoTracking()
                             .OrderBy(x => x.SortOrder)
                             .ToList();
@@ -78,10 +157,18 @@ namespace MVCForum.Services
                             .ToList();
         }
 
+        /// <summary>
+        /// 递归取Category集合
+        /// </summary>
+        /// <param name="category"></param>
+        /// <param name="allCategories"></param>
+        /// <param name="level"></param>
+        /// <returns></returns>
         public List<Category> GetSubCategories(Category category, List<Category> allCategories, int level = 2)
         {
             var catsToReturn = new List<Category>();
-            var cats = allCategories.Where(x => x.ParentCategory != null && x.ParentCategory.Id == category.Id).OrderBy(x =>x.SortOrder);
+            var cats = allCategories.Where(x => x.ParentCategory != null && x.ParentCategory.Id == category.Id && x.IsSystemCategory == false)
+                                    .OrderBy(x => x.SortOrder);
             foreach (var cat in cats)
             {
                 cat.Level = level;
@@ -91,6 +178,11 @@ namespace MVCForum.Services
 
             return catsToReturn;
         }
+
+
+
+
+
 
         public List<SelectListItem> GetBaseSelectListCategories(List<Category> allowedCategories)
         {
@@ -102,13 +194,12 @@ namespace MVCForum.Services
             }
             return cats;
         }
-
         private static string LevelDashes(int level)
         {
             if (level > 1)
             {
                 var sb = new StringBuilder();
-                for (var i = 0; i < level-1; i++)
+                for (var i = 0; i < level - 1; i++)
                 {
                     sb.Append("-");
                 }
@@ -116,6 +207,9 @@ namespace MVCForum.Services
             }
             return string.Empty;
         }
+
+
+
 
         /// <summary>
         /// Return all sub categories from a parent category id
@@ -131,16 +225,16 @@ namespace MVCForum.Services
         }
 
         /// <summary>
-        /// Get all main categories (Categories with no parent category)
+        /// Get all User level main categories (Categories with no parent category and isSystemCategory is false)
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Category> GetAllMainCategories()
+        public IEnumerable<Category> GetAllUserLevelMainCategories()
         {
             var categories = _context.Category
                                 .Include(x => x.ParentCategory)
                                 .Include(x => x.Topics.Select(l => l.LastPost))
                                 .Include(x => x.Topics.Select(l => l.Posts))
-                                .Where(cat => cat.ParentCategory == null)
+                                .Where(cat => cat.ParentCategory == null && cat.IsSystemCategory == false)
                                 .OrderBy(x => x.SortOrder)
                                 .ToList();
 
@@ -175,30 +269,39 @@ namespace MVCForum.Services
         private List<Category> GetAllowedCategoriesCode(MembershipRole role, string actionType)
         {
             var filteredCats = new List<Category>();
-            var allCats = GetAll();
+            var allCats = GetAllUserLevelCategory();
             foreach (var category in allCats)
             {
                 var permissionSet = _roleService.GetPermissions(category, role);
                 if (!permissionSet[actionType].IsTicked)
                 {
-                        // Only add it category is NOT locked
-                        filteredCats.Add(category);
+                    // Only add it category is NOT locked
+                    filteredCats.Add(category);
                 }
             }
             return filteredCats;
         }
 
+
+
+
+
+
         /// <summary>
-        /// Add a new category
+        /// 新加一个新的用户级Category
         /// </summary>
         /// <param name="category"></param>
         public Category Add(Category category)
         {
-            // Sanitize
+            // 对category实例进行属性过滤
             category = SanitizeCategory(category);
 
+            category.IsSystemCategory = false;
+            category.ShowTheCategoryCondition = 0;
+
+
             // Set the create date
-            category.DateCreated = DateTime.UtcNow;
+            category.DateCreated = DateTime.Now;
 
             // url slug generator
             category.Slug = ServiceHelpers.GenerateSlug(category.Name, GetBySlugLike(ServiceHelpers.CreateUrl(category.Name)), null);
@@ -230,14 +333,14 @@ namespace MVCForum.Services
 
             if (updateSlug)
             {
-                category.Slug = ServiceHelpers.GenerateSlug(category.Name, GetBySlugLike(category.Slug), category.Slug);   
+                category.Slug = ServiceHelpers.GenerateSlug(category.Name, GetBySlugLike(category.Slug), category.Slug);
             }
         }
 
         /// <summary>
-        /// Sanitizes a category
+        /// 对category实例进行属性过滤
         /// </summary>
-        /// <param name="category"></param>
+        /// <param name="category">要过滤的category实例</param>
         /// <returns></returns>
         public Category SanitizeCategory(Category category)
         {
@@ -257,7 +360,7 @@ namespace MVCForum.Services
             return _context.Category.FirstOrDefault(x => x.Id == id);
         }
 
-        public IList<Category> Get(IList<Guid> ids, bool fullGraph = false)
+        public IList<Category> Get(IList<Guid> CategoryIds, bool fullGraph = false)
         {
             IList<Category> categories;
 
@@ -267,17 +370,17 @@ namespace MVCForum.Services
                     _context.Category.AsNoTracking()
                         .Include(x => x.Topics.Select(l => l.LastPost.User))
                         .Include(x => x.ParentCategory)
-                        .Where(x => ids.Contains(x.Id))
+                        .Where(x => CategoryIds.Contains(x.Id))
                         .ToList();
             }
             else
             {
                 categories = _context.Category
-                    .AsNoTracking().Where(x => ids.Contains(x.Id)).ToList();
+                    .AsNoTracking().Where(x => CategoryIds.Contains(x.Id)).ToList();
             }
 
             // make sure categories are returned in order of ids (not in Database order)
-            return ids.Select(id => categories.Single(c => c.Id == id)).ToList();
+            return CategoryIds.Select(id => categories.Single(c => c.Id == id)).ToList();
         }
 
         /// <summary>
@@ -289,12 +392,12 @@ namespace MVCForum.Services
         {
             slug = StringUtils.SafePlainText(slug);
             var cat = (from category in _context.Category
-                       where category.Slug == slug
+                       where category.Slug == slug && category.IsSystemCategory == false
                        select new CategoryWithSubCategories
                        {
                            Category = category,
                            SubCategories = (from cats in _context.Category
-                                            where cats.ParentCategory.Id == category.Id
+                                            where cats.ParentCategory.Id == category.Id && cats.IsSystemCategory == false
                                             select cats)
                        }).FirstOrDefault();
 
@@ -329,7 +432,7 @@ namespace MVCForum.Services
             {
                 allowedCatIds.AddRange(allowedCategories.Select(x => x.Id));
             }
-            return cats.Where(x => allowedCatIds.Contains(x.Id)).ToList();
+            return cats.Where(x => allowedCatIds.Contains(x.Id) && x.IsSystemCategory == false).ToList();
         }
 
         /// <summary>
@@ -338,46 +441,56 @@ namespace MVCForum.Services
         /// <param name="category"></param>
         public void Delete(Category category)
         {
-            // Check if anyone else if using this role
-            var okToDelete = !category.Topics.Any();
-
-            if (okToDelete)
+            if (category != null && category.IsSystemCategory == false)
             {
-                // Get any categorypermissionforoles and delete these first
-                var rolesToDelete = _categoryPermissionForRoleService.GetByCategory(category.Id);
+                // Check if anyone else if using this role
+                var okToDelete = !category.Topics.Any();
 
-                foreach (var categoryPermissionForRole in rolesToDelete)
+                if (okToDelete)
                 {
-                    _categoryPermissionForRoleService.Delete(categoryPermissionForRole);
+                    // Get any categorypermissionforoles and delete these first
+                    var rolesToDelete = _categoryPermissionForRoleService.GetByCategory(category.Id);
+
+                    foreach (var categoryPermissionForRole in rolesToDelete)
+                    {
+                        _categoryPermissionForRoleService.Delete(categoryPermissionForRole);
+                    }
+
+                    var categoryNotificationsToDelete = new List<CategoryNotification>();
+                    categoryNotificationsToDelete.AddRange(category.CategoryNotifications);
+                    foreach (var categoryNotification in categoryNotificationsToDelete)
+                    {
+                        _categoryNotificationService.Delete(categoryNotification);
+                    }
+
+                    _context.Category.Remove(category);
+                }
+                else
+                {
+                    var inUseBy = new List<Entity>();
+                    inUseBy.AddRange(category.Topics);
+                    throw new InUseUnableToDeleteException(inUseBy);
                 }
 
-                var categoryNotificationsToDelete = new List<CategoryNotification>();
-                categoryNotificationsToDelete.AddRange(category.CategoryNotifications);
-                foreach (var categoryNotification in categoryNotificationsToDelete)
-                {
-                    _categoryNotificationService.Delete(categoryNotification);
-                }
-
-                _context.Category.Remove(category);
             }
             else
             {
-                var inUseBy = new List<Entity>();
-                inUseBy.AddRange(category.Topics);
-                throw new InUseUnableToDeleteException(inUseBy);
+                throw new Exception("You can't delete the system Category.");
             }
         }
 
         public Category GetBySlug(string slug)
         {
             //StringUtils.GetSafeHtml(slug)
-            return _context.Category.FirstOrDefault(x => x.Slug == slug);
+            return _context.Category
+                .Where(x => x.IsSystemCategory == false)
+                .FirstOrDefault(x => x.Slug == slug);
         }
 
         public IList<Category> GetBySlugLike(string slug)
         {
             return _context.Category
-                    .Where(x => x.Slug.Contains(slug))
+                    .Where(x => x.IsSystemCategory == false && x.Slug.Contains(slug))
                     .ToList();
         }
 
@@ -390,7 +503,7 @@ namespace MVCForum.Services
         {
             var catGuid = category.Id.ToString().ToLower();
             return _context.Category
-                    .Where(x => x.Path != null && x.Path.ToLower().Contains(catGuid))
+                    .Where(x => x.Path != null && x.Path.ToLower().Contains(catGuid) && x.IsSystemCategory == false)
                     .OrderBy(x => x.SortOrder)
                     .ToList();
         }

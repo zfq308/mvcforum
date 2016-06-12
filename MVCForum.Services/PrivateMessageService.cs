@@ -38,7 +38,7 @@ namespace MVCForum.Services
         {
             // This is the message that the other user sees
             message = SanitizeMessage(message);
-            message.DateSent = DateTime.UtcNow;
+            message.DateSent = DateTime.Now;
             message.IsSentMessage = false;
 
             var e = new PrivateMessageEventArgs { PrivateMessage = message };
@@ -168,7 +168,7 @@ namespace MVCForum.Services
 
         public IList<PrivateMessage> GetPrivateMessagesOlderThan(int days)
         {
-            var date = DateTime.UtcNow.AddDays(-days);
+            var date = DateTime.Now.AddDays(-days);
             return _context.PrivateMessage.Where(x => x.DateSent <= date).ToList();
         }
 

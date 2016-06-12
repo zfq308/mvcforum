@@ -106,12 +106,12 @@ namespace MVCForum.Services
         {
             if (from == null)
             {
-                from = DateTime.UtcNow.AddDays(-14);
+                from = DateTime.Now.AddDays(-14);
             }
 
             if (to == null)
             {
-                to = DateTime.UtcNow;
+                to = DateTime.Now;
             }
 
             // get the category ids
@@ -141,7 +141,7 @@ namespace MVCForum.Services
         {
             topic = SanitizeTopic(topic);
 
-            topic.CreateDate = DateTime.UtcNow;
+            topic.CreateDate = DateTime.Now;
 
             // url slug generator
             topic.Slug = ServiceHelpers.GenerateSlug(topic.Name, GetTopicBySlugLike(ServiceHelpers.CreateUrl(topic.Name)), null);
@@ -186,9 +186,9 @@ namespace MVCForum.Services
             // Create the post
             var post = new Post
             {
-                DateCreated = DateTime.UtcNow,
+                DateCreated = DateTime.Now,
                 IsTopicStarter = true,
-                DateEdited = DateTime.UtcNow,
+                DateEdited = DateTime.Now,
                 PostContent = postContent,
                 User = topic.User,
                 Topic = topic
@@ -204,7 +204,7 @@ namespace MVCForum.Services
 
         public List<MarkAsSolutionReminder> GetMarkAsSolutionReminderList(int days)
         {
-            var datefrom = DateTime.UtcNow.AddDays(-days);
+            var datefrom = DateTime.Now.AddDays(-days);
             return _context.Topic
                 .Include(x => x.Category)
                 .Include(x => x.User)

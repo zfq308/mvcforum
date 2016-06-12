@@ -159,7 +159,7 @@ namespace MVCForum.Website.Controllers
             if (LoggedOnReadOnlyUser != null)
             {
                 // Add all categories to a permission set
-                var allCategories = _categoryService.GetAll();
+                var allCategories = _categoryService.GetAllUserLevelCategory();
                 using (UnitOfWorkManager.NewUnitOfWork())
                 {
                     foreach (var category in allCategories)
@@ -383,7 +383,7 @@ namespace MVCForum.Website.Controllers
                             var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
 
                             // Want the same edit date on both post and postedit
-                            var dateEdited = DateTime.UtcNow;
+                            var dateEdited = DateTime.Now;
 
                             // Create a post edit
                             var postEdit = new PostEdit
@@ -1097,7 +1097,7 @@ namespace MVCForum.Website.Controllers
                         {
                             // Check the date the topic was created
                             var endDate = viewModel.Poll.Poll.DateCreated.AddDays((int)viewModel.Poll.Poll.ClosePollAfterDays);
-                            if (DateTime.UtcNow > endDate)
+                            if (DateTime.Now > endDate)
                             {
                                 topic.Poll.IsClosed = true;
                                 viewModel.Topic.Poll.IsClosed = true;

@@ -8,7 +8,7 @@ namespace MVCForum.Domain.DomainModel
         public Email()
         {
             Id = GuidComb.GenerateComb();
-            DateCreated = DateTime.UtcNow;
+            DateCreated = DateTime.Now;
         }
         public Guid Id { get; set; }
         public string EmailTo { get; set; }

@@ -67,7 +67,7 @@ namespace MVCForum.Website.Controllers
 
                 var catViewModel = new CategoryListViewModel
                 {
-                    AllPermissionSets = ViewModelMapping.GetPermissionsForCategories(_categoryService.GetAllMainCategories(), _roleService, UsersRole)
+                    AllPermissionSets = ViewModelMapping.GetPermissionsForCategories(_categoryService.GetAllUserLevelMainCategories(), _roleService, UsersRole)
                 };
                 return PartialView(catViewModel);
             }
@@ -80,7 +80,7 @@ namespace MVCForum.Website.Controllers
             {
                 var catViewModel = new CategoryListViewModel
                 {
-                    AllPermissionSets = ViewModelMapping.GetPermissionsForCategories(_categoryService.GetAll(), _roleService, UsersRole)
+                    AllPermissionSets = ViewModelMapping.GetPermissionsForCategories(_categoryService.GetAllUserLevelCategory(), _roleService, UsersRole)
                 };
                 return PartialView(catViewModel);
             }

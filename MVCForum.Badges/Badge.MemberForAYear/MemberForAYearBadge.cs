@@ -16,7 +16,7 @@ namespace Badge.MemberForAYear
         public bool Rule(MembershipUser user)
         {
             var anniversary = new DateTime(user.CreateDate.Year + 1, user.CreateDate.Month, user.CreateDate.Day);
-            return DateTime.UtcNow >= anniversary;
+            return DateTime.Now >= anniversary;
         }
     }
 }

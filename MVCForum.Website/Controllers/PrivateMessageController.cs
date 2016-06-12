@@ -140,7 +140,7 @@ namespace MVCForum.Website.Controllers
                     // If this message they are sending now, is to the same person then ignore flood control
                     if (lastMessage != null && createPrivateMessageViewModel.To != lastMessage.UserTo.Id)
                     {
-                        if (DateUtils.TimeDifferenceInSeconds(DateTime.UtcNow, lastMessage.DateSent) < settings.PrivateMessageFloodControl)
+                        if (DateUtils.TimeDifferenceInSeconds(DateTime.Now, lastMessage.DateSent) < settings.PrivateMessageFloodControl)
                         {
                             return Content(PmAjaxError(LocalizationService.GetResourceString("PM.SendingToQuickly")));
                         }
@@ -282,7 +282,7 @@ namespace MVCForum.Website.Controllers
                     var allMessages = _privateMessageService.GetUsersPrivateMessages(1, SiteConstants.Instance.PagingGroupSize, loggedOnUser, userFrom);
 
                     // Now order them into an order of messages
-                    var date = DateTime.UtcNow.AddMinutes(-AppConstants.TimeSpanInMinutesToShowMembers);
+                    var date = DateTime.Now.AddMinutes(-AppConstants.TimeSpanInMinutesToShowMembers);
 
                     var viewModel = new ViewPrivateMessageViewModel
                     {

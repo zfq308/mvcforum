@@ -119,7 +119,7 @@ namespace MVCForum.Services
         /// <returns></returns>
         public MembershipUser CreateEmptyUser()
         {
-            var now = DateTime.UtcNow;
+            var now = DateTime.Now;
 
             return new MembershipUser
             {
@@ -222,9 +222,9 @@ namespace MVCForum.Services
                     newUser.Roles = new List<MembershipRole> { settings.NewMemberStartingRole };
 
                     // Set dates
-                    newUser.CreateDate = newUser.LastPasswordChangedDate = DateTime.UtcNow;
+                    newUser.CreateDate = newUser.LastPasswordChangedDate = DateTime.Now;
                     newUser.LastLockoutDate = (DateTime)SqlDateTime.MinValue;
-                    newUser.LastLoginDate = DateTime.UtcNow;
+                    newUser.LastLoginDate = DateTime.Now;
                     newUser.IsLockedOut = false;
 
                     var manuallyAuthoriseMembers = settings.ManuallyAuthoriseNewMembers;
@@ -512,7 +512,7 @@ namespace MVCForum.Services
             if (user.FailedPasswordAttemptCount >= allowedPasswordAttempts)
             {
                 user.IsLockedOut = true;
-                user.LastLockoutDate = DateTime.UtcNow;
+                user.LastLockoutDate = DateTime.Now;
             }
 
             if (!passwordMatches)
@@ -631,7 +631,7 @@ namespace MVCForum.Services
         {
             // Get members that last activity date is valid
             //TODO:  Benjamin 需要检查统一的服务器时间模式：DateTime.Now
-            var date = DateTime.UtcNow.AddMinutes(-AppConstants.TimeSpanInMinutesToShowMembers);
+            var date = DateTime.Now.AddMinutes(-AppConstants.TimeSpanInMinutesToShowMembers);
             return _context.MembershipUser
                 .Where(x => x.LastActivityDate > date)
                 .AsNoTracking()
@@ -906,7 +906,7 @@ namespace MVCForum.Services
                 var postIds = posts.Select(x => x.Id).ToList();
 
                 // Get all categories
-                var allCategories = _categoryService.GetAll();
+                var allCategories = _categoryService.GetAllUserLevelCategory();
 
                 // Need to see if any of these are last posts on Topics
                 // If so, need to swap out last post
@@ -1103,7 +1103,7 @@ namespace MVCForum.Services
                     {
                         createDateStr = values[2];
                     }
-                    userToImport.CreateDate = createDateStr.IsNullEmpty() ? DateTime.UtcNow : DateTime.Parse(createDateStr);
+                    userToImport.CreateDate = createDateStr.IsNullEmpty() ? DateTime.Now : DateTime.Parse(createDateStr);
 
                     if (values.Length >= 4)
                     {
@@ -1171,7 +1171,7 @@ namespace MVCForum.Services
 
             existingUser.Password = newHash;
             existingUser.PasswordSalt = salt;
-            existingUser.LastPasswordChangedDate = DateTime.UtcNow;
+            existingUser.LastPasswordChangedDate = DateTime.Now;
 
             return true;
         }
@@ -1191,7 +1191,7 @@ namespace MVCForum.Services
 
             existingUser.Password = newHash;
             existingUser.PasswordSalt = salt;
-            existingUser.LastPasswordChangedDate = DateTime.UtcNow;
+            existingUser.LastPasswordChangedDate = DateTime.Now;
 
             return true;
         }
@@ -1206,7 +1206,7 @@ namespace MVCForum.Services
                 return false;
             }
             existingUser.PasswordResetToken = CreatePasswordResetToken();
-            existingUser.PasswordResetTokenCreatedAt = DateTime.UtcNow;
+            existingUser.PasswordResetTokenCreatedAt = DateTime.Now;
             return true;
         }
 
@@ -1244,7 +1244,7 @@ namespace MVCForum.Services
                 return false;
             }
             // The security token is only valid for 48 hours
-            if ((DateTime.UtcNow - existingUser.PasswordResetTokenCreatedAt.Value).TotalHours >= MaxHoursToResetPassword)
+            if ((DateTime.Now - existingUser.PasswordResetTokenCreatedAt.Value).TotalHours >= MaxHoursToResetPassword)
             {
                 return false;
             }
@@ -1306,7 +1306,7 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IList<MembershipUser> GetUsersByDaysPostsPoints(int amoutOfDaysSinceRegistered, int amoutOfPosts)
         {
-            var registerEnd = DateTime.UtcNow;
+            var registerEnd = DateTime.Now;
             var registerStart = registerEnd.AddDays(-amoutOfDaysSinceRegistered);
             return _context.MembershipUser
                 .Where(x =>

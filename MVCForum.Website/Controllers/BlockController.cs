@@ -44,7 +44,7 @@ namespace MVCForum.Website.Controllers
                         {
                             loggedOnUser.BlockedUsers.Add(new Block
                             {
-                                Blocked = otherMember, Blocker = loggedOnUser, Date = DateTime.UtcNow
+                                Blocked = otherMember, Blocker = loggedOnUser, Date = DateTime.Now
                             });
                         }
 

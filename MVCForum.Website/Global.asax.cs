@@ -15,6 +15,7 @@ using MVCForum.Website.Application;
 using MVCForum.Website.Application.ScheduledJobs;
 using MVCForum.Website.Application.ViewEngine;
 using System.Web.Helpers;
+using System.IO;
 
 namespace MVCForum.Website
 {
@@ -31,9 +32,17 @@ namespace MVCForum.Website
 
         protected void Application_Start()
         {
+            log4net.Config.XmlConfigurator.Configure(new FileInfo(Server.MapPath("~/Web.config")));
+
+            log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
             AreaRegistration.RegisterAllAreas();
+
+            logger.Debug("AreaRegistration.RegisterAllAreas completed.");
             GlobalConfiguration.Configure(WebApiConfig.Register);
+            logger.Debug("GlobalConfiguration.Configure completed.");
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
+            logger.Debug("FilterConfig.RegisterGlobalFilters completed.");
 
 
             AntiForgeryConfig.SuppressIdentityHeuristicChecks = true;
@@ -52,9 +61,10 @@ namespace MVCForum.Website
             LoggingService.Initialise(ConfigUtils.GetAppSettingInt32("LogFileMaxSizeBytes", 10000));
             LoggingService.Error("START APP");
 
+            logger.Debug("LoggingService recording completed.");
             // Get assemblies for badges, events etc...
             var loadedAssemblies = ReflectionService.GetAssemblies();
-
+            logger.Debug("Loaded Assemblies completed.");
             // Do the badge processing
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
@@ -68,7 +78,7 @@ namespace MVCForum.Website
                     LoggingService.Error($"Error processing badge classes: {ex.Message}");
                 }
             }
-
+            logger.Debug("BadgeService.SyncBadges completed.");
             // Set the view engine
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new ForumViewEngine(SettingsService.GetSettings().Theme));

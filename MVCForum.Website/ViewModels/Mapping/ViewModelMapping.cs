@@ -255,7 +255,7 @@ namespace MVCForum.Website.ViewModels.Mapping
             var userIsAuthenticated = loggedOnUser != null;
 
             // Check for online status
-            var date = DateTime.UtcNow.AddMinutes(-AppConstants.TimeSpanInMinutesToShowMembers);
+            var date = DateTime.Now.AddMinutes(-AppConstants.TimeSpanInMinutesToShowMembers);
 
             var viewModel = new TopicViewModel
             {
@@ -361,7 +361,7 @@ namespace MVCForum.Website.ViewModels.Mapping
             }
 
             // Check for online status
-            var date = DateTime.UtcNow.AddMinutes(-AppConstants.TimeSpanInMinutesToShowMembers);
+            var date = DateTime.Now.AddMinutes(-AppConstants.TimeSpanInMinutesToShowMembers);
 
             return new PostViewModel
             {

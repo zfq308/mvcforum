@@ -170,7 +170,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     // Add the new points
                     var newPoints = new MembershipUserPoints
                     {
-                        DateAdded = DateTime.UtcNow,
+                        DateAdded = DateTime.Now,
                         Notes = viewModel.Note,
                         Points = (int)viewModel.Amount,
                         PointsFor = PointsFor.Manual,

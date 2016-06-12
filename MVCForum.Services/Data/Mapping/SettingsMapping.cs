@@ -62,6 +62,11 @@ namespace MVCForum.Services.Data.Mapping
             Property(x => x.DisableStandardRegistration).IsOptional();
             Property(x => x.TermsAndConditions).IsOptional();
 
+            Property(x => x.UCPaasConfig_Account).IsOptional().HasMaxLength(50);
+            Property(x => x.UCPaasConfig_Token).IsOptional().HasMaxLength(50);
+            Property(x => x.UCPaasConfig_AppId).IsOptional().HasMaxLength(50);
+            Property(x => x.UCPaasConfig_TemplatedId).IsOptional().HasMaxLength(10);
+
             HasRequired(t => t.NewMemberStartingRole)
                 .WithOptional(x => x.Settings).Map(m => m.MapKey("NewMemberStartingRole"));
 

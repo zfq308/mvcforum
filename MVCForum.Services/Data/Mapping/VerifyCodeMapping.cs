@@ -19,6 +19,7 @@ namespace MVCForum.Services.Data.Mapping
             Property(x => x.FailNumber).IsRequired();
             Property(x => x.DateCreated).IsRequired();
             Property(x => x.LastUpdate).IsRequired();
+            Property(x => x.ReturnMessage).IsOptional().HasMaxLength(200);
         }
     }
 

@@ -183,6 +183,20 @@ namespace MVCForum.Domain.DomainModel
         public string CustomHeaderCode { get; set; }
         public string CustomFooterCode { get; set; }
 
+
+
+
+
+
+        #region 云之讯接入配置项
+       
+        public string UCPaasConfig_Account { get; set; }
+        public string UCPaasConfig_Token { get; set; }
+        public string UCPaasConfig_AppId { get; set; }
+        public string UCPaasConfig_TemplatedId { get; set; }
+
+        #endregion
+
         /// <summary>
         /// 是否支持表情图标
         /// </summary>

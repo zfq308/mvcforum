@@ -8,8 +8,8 @@ namespace MVCForum.Domain.Interfaces.Services
 {
     public partial interface ICategoryService
     {
-        List<Category> GetAll();
-        IEnumerable<Category> GetAllMainCategories();
+        List<Category> GetAllUserLevelCategory();
+        IEnumerable<Category> GetAllUserLevelMainCategories();
 
         /// <summary>
         /// Gets categories that the user has access to (i.e. There access is not denied)
