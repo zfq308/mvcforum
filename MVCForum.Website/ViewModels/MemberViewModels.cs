@@ -115,7 +115,6 @@ namespace MVCForum.Website.ViewModels
 
         [Required]
         [ForumMvcResourceDisplayName("Members.Label.Education")]
-        [StringLength(10, MinimumLength = 2)]
         public string Education { get; set; }
 
         [Required]
@@ -125,12 +124,10 @@ namespace MVCForum.Website.ViewModels
 
         [Required]
         [ForumMvcResourceDisplayName("Members.Label.SchoolProvince")]
-        [StringLength(20, MinimumLength = 2)]
         public string SchoolProvince { get; set; }
 
         [Required]
         [ForumMvcResourceDisplayName("Members.Label.SchoolCity")]
-        [StringLength(20, MinimumLength = 2)]
         public string SchoolCity { get; set; }
 
         [Required]
@@ -140,17 +137,14 @@ namespace MVCForum.Website.ViewModels
 
         [Required]
         [ForumMvcResourceDisplayName("Members.Label.HomeTownProvince")]
-        [StringLength(20, MinimumLength = 2)]
         public string HomeTownProvince { get; set; }
 
         [Required]
         [ForumMvcResourceDisplayName("Members.Label.HomeTownCity")]
-        [StringLength(20, MinimumLength = 2)]
         public string HomeTownCity { get; set; }
 
         [Required]
         [ForumMvcResourceDisplayName("Members.Label.HomeTownCounty")]
-        [StringLength(20, MinimumLength = 2)]
         public string HomeTownCounty { get; set; }
 
         [Required]
@@ -160,7 +154,6 @@ namespace MVCForum.Website.ViewModels
 
         [Required]
         [ForumMvcResourceDisplayName("Members.Label.IncomeRange")]
-        [Range(0, 10)]
         public int IncomeRange { get; set; }
 
         [Required]

@@ -493,7 +493,7 @@ namespace MVCForum.Services
             if (!user.IsApproved)
             {
                 LastLoginStatus = LoginAttemptStatus.UserNotApproved;
-                return false;
+                //return false;
             }
 
             var allowedPasswordAttempts = maxInvalidPasswordAttempts;
