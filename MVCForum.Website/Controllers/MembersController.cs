@@ -588,6 +588,161 @@ namespace MVCForum.Website.Controllers
                     var user = MembershipService.GetUser(id);
                     var viewModel = PopulateMemberViewModel(user);
 
+                    #region 绑定性别信息
+
+                    var Items_Gender = new List<SelectListItem>();
+                    Items_Gender.Add(new SelectListItem { Text = "男", Value = "1" });
+                    Items_Gender.Add(new SelectListItem { Text = "女", Value = "0" });
+
+                    foreach (SelectListItem item in Items_Gender)
+                    {
+                        if (item.Value == user.Gender.ToString())
+                        {
+                            item.Selected = true;
+                        }
+                    }
+                    ViewData["GenderList"] = Items_Gender;
+
+                    #endregion
+
+                    #region 绑定学历信息
+
+                    var Items_Education = new List<SelectListItem>();
+                    Items_Education.Add(new SelectListItem { Text = "高中以下", Value = "1" });
+                    Items_Education.Add(new SelectListItem { Text = "高中，中专", Value = "2" });
+                    Items_Education.Add(new SelectListItem { Text = "大专", Value = "3" });
+                    Items_Education.Add(new SelectListItem { Text = "本科", Value = "4" });
+                    Items_Education.Add(new SelectListItem { Text = "硕士", Value = "5" });
+                    Items_Education.Add(new SelectListItem { Text = "博士", Value = "6" });
+                    Items_Education.Add(new SelectListItem { Text = "其他", Value = "7" });
+                    foreach (SelectListItem item in Items_Education)
+                    {
+                        if (item.Text == user.Education.ToString())
+                        {
+                            item.Selected = true;
+                        }
+                    }
+                    ViewData["EducationList"] = Items_Education;
+
+                    #endregion
+
+                    #region 绑定收入信息
+
+                    var Items_IncomeRange = new List<SelectListItem>();
+                    Items_IncomeRange.Add(new SelectListItem { Text = "1万以下", Value = "1" });
+                    Items_IncomeRange.Add(new SelectListItem { Text = "1万至5万", Value = "2" });
+                    Items_IncomeRange.Add(new SelectListItem { Text = "5万以上", Value = "3" });
+                    Items_IncomeRange.Add(new SelectListItem { Text = "不好说", Value = "4" });
+                    foreach (SelectListItem item in Items_IncomeRange)
+                    {
+                        if (item.Value == user.IncomeRange.ToString())
+                        {
+                            item.Selected = true;
+                        }
+                    }
+                    ViewData["IncomeRangeList"] = Items_IncomeRange;
+
+                    #endregion
+
+                    #region 绑定毕业学校所属省信息
+                    var Items_SchoolProvince = new List<SelectListItem>();
+                    List<TProvince> SchoolProvincelst = TProvince.LoadAllProvinceList();
+                    foreach (var item in SchoolProvincelst)
+                    {
+                        if (user.SchoolProvince == item.ProvinceName)
+                        {
+                            Items_SchoolProvince.Add(new SelectListItem { Text = item.ProvinceName, Value = item.ProvinceId.ToString(), Selected = true });
+                        }
+                        else
+                        {
+                            Items_SchoolProvince.Add(new SelectListItem { Text = item.ProvinceName, Value = item.ProvinceId.ToString() });
+                        }
+                    }
+                    ViewData["SchoolProvinceList"] = Items_SchoolProvince;
+
+                    #endregion
+
+                    #region 绑定毕业学校所属市信息
+                    var Items_SchoolCity = new List<SelectListItem>();
+                    List<TCity> SchoolCitylst = TCity.LoadCityListByProvince(user.SchoolProvince); 
+                    foreach (var item in SchoolCitylst)
+                    {
+                        if (user.SchoolCity == item.CityName)
+                        {
+                            Items_SchoolCity.Add(new SelectListItem { Text = item.CityName, Value = item.CityId.ToString(), Selected = true });
+                        }
+                        else
+                        {
+                            Items_SchoolCity.Add(new SelectListItem { Text = item.CityName, Value = item.CityId.ToString() });
+                        }
+                    }
+                    ViewData["SchoolCityList"] = Items_SchoolCity;
+                    #endregion
+
+                    #region 绑定家乡所属省信息
+
+                    var Items_HomeTownProvince = new List<SelectListItem>();
+                    List<TProvince> HomeTownProvincelst = TProvince.LoadAllProvinceList();
+                    foreach (var item in HomeTownProvincelst)
+                    {
+                        if (user.HomeTownProvince == item.ProvinceName)
+                        {
+                            Items_HomeTownProvince.Add(new SelectListItem { Text = item.ProvinceName, Value = item.ProvinceId.ToString(), Selected = true });
+                        }
+                        else
+                        {
+                            Items_HomeTownProvince.Add(new SelectListItem { Text = item.ProvinceName, Value = item.ProvinceId.ToString() });
+                        }
+                    }
+                    ViewData["HomeTownProvinceList"] = Items_HomeTownProvince;
+
+                    #endregion
+
+                    #region 绑定家乡所属市信息
+
+
+                    var Items_HomeTownCity = new List<SelectListItem>();
+                    List<TCity> HomeTownCitylst = TCity.LoadCityListByProvince(user.HomeTownProvince);
+                    foreach (var item in HomeTownCitylst)
+                    {
+                        if (user.HomeTownCity == item.CityName)
+                        {
+                            Items_HomeTownCity.Add(new SelectListItem { Text = item.CityName, Value = item.CityId.ToString(), Selected = true });
+                        }
+                        else
+                        {
+                            Items_HomeTownCity.Add(new SelectListItem { Text = item.CityName, Value = item.CityId.ToString() });
+                        }
+                    }
+                    ViewData["HomeTownCityList"] = Items_HomeTownCity;
+
+
+
+
+                    #endregion
+
+                    #region 绑定家乡所属县信息
+
+
+                    var Items_HomeTownCounty = new List<SelectListItem>();
+                    List<TCountry> HomeTownCountylst = TCountry.LoadCountryByProvinceNameAndCityName(user.HomeTownProvince,user.HomeTownCity);
+                    foreach (var item in HomeTownCountylst)
+                    {
+                        if (user.HomeTownCity == item.CityName)
+                        {
+                            Items_HomeTownCounty.Add(new SelectListItem { Text = item.CountryName, Value = item.CountryId.ToString(), Selected = true });
+                        }
+                        else
+                        {
+                            Items_HomeTownCounty.Add(new SelectListItem { Text = item.CountryName, Value = item.CountryId.ToString() });
+                        }
+                    }
+                    ViewData["HomeTownCountyList"] = Items_HomeTownCounty;
+
+
+
+                    #endregion
+
                     return View(viewModel);
                 }
 
@@ -1626,7 +1781,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-    
+
 
     }
 }

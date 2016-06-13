@@ -360,6 +360,11 @@ namespace MVCForum.Domain.DomainModel.General
             Citylist.Add(new TCity() { ProvinceId = 650000, ProvinceName = "新疆", CityId = 659000, CityName = "省直辖行政单位" });
             return Citylist;
         }
+
+        public static List<TCity> LoadCityListByProvince(string ProvinceName)
+        {
+            return LoadAllCityList().Where(x => x.ProvinceName == ProvinceName).ToList();
+        }
     }
 
 }

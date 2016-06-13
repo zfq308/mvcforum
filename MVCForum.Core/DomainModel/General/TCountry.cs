@@ -2545,6 +2545,11 @@ namespace MVCForum.Domain.DomainModel.General
             Countrylist.Add(new TCountry() { ProvinceId = 520000, ProvinceName = "贵州省", CityId = 522700, CityName = "黔南布依族苗族自治州", CountryId = 522729, CountryName = "长顺县" });
             return Countrylist;
         }
+
+        public static List<TCountry> LoadCountryByProvinceNameAndCityName(string ProvinceName, string CityName)
+        {
+            return LoadAllCountry().Where(x => x.ProvinceName == ProvinceName && x.CityName == CityName).ToList();
+        }
     }
 
 }
