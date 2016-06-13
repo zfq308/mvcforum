@@ -221,7 +221,7 @@ namespace MVCForum.Website.Controllers
         /// 返回json到界面
         /// </summary>
         /// <returns>string</returns>
-        public ActionResult GetCode()
+        public ActionResult GetVerifyCode()
         {
             try
             {
@@ -250,6 +250,51 @@ namespace MVCForum.Website.Controllers
                 throw ex;
             }
         }
+
+
+        public ActionResult GetVerifyCodeByAccount()
+        {
+            try
+            {
+                bool result;
+                //接收前台传过来的参数。
+                string code = Request["Code"];
+                string UserName = Request["UserName"];
+
+                var user = MembershipService.GetUser(UserName);
+                if (user != null && string.IsNullOrEmpty(user.MobilePhone))
+                {
+                    // 短信验证码存入session
+                    Session.Add("code", code);
+                    try
+                    {
+                        _verifyCodeService.SendVerifyCode(new VerifyCode(user.MobilePhone, VerifyCodeStatus.Waiting, code));
+                        result = true;// 成功    
+                    }
+                    catch (Exception ex)
+                    {
+                        result = false;// 失败    
+                        logger.Error(ex.Message);
+                    }
+                    return Json(result, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    ModelState.AddModelError("NoExistUser", "用户信息不存在。");
+                    return View();
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", LocalizationService.GetResourceString("Members.ResetPassword.Error"));
+                return View();
+            }
+        }
+
+
+
+
+
 
         #endregion
 
@@ -664,7 +709,7 @@ namespace MVCForum.Website.Controllers
 
                     #region 绑定毕业学校所属市信息
                     var Items_SchoolCity = new List<SelectListItem>();
-                    List<TCity> SchoolCitylst = TCity.LoadCityListByProvince(user.SchoolProvince); 
+                    List<TCity> SchoolCitylst = TCity.LoadCityListByProvince(user.SchoolProvince);
                     foreach (var item in SchoolCitylst)
                     {
                         if (user.SchoolCity == item.CityName)
@@ -725,7 +770,7 @@ namespace MVCForum.Website.Controllers
 
 
                     var Items_HomeTownCounty = new List<SelectListItem>();
-                    List<TCountry> HomeTownCountylst = TCountry.LoadCountryByProvinceNameAndCityName(user.HomeTownProvince,user.HomeTownCity);
+                    List<TCountry> HomeTownCountylst = TCountry.LoadCountryByProvinceNameAndCityName(user.HomeTownProvince, user.HomeTownCity);
                     foreach (var item in HomeTownCountylst)
                     {
                         if (user.HomeTownCity == item.CityName)
@@ -1285,6 +1330,8 @@ namespace MVCForum.Website.Controllers
 
         #region 密码相关
 
+        #region 修改密码
+      
         [Authorize]
         public ActionResult ChangePassword()
         {
@@ -1337,6 +1384,9 @@ namespace MVCForum.Website.Controllers
             }
 
         }
+        #endregion
+
+        #region 忘记密码
 
         public ActionResult ForgotPassword()
         {
@@ -1355,14 +1405,11 @@ namespace MVCForum.Website.Controllers
             MembershipUser user;
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
-                user = MembershipService.GetUserByEmail(forgotPasswordViewModel.EmailAddress);
-
-                // If the email address is not registered then display the 'email sent' confirmation the same as if 
-                // the email address was registered. There is no harm in doing this and it avoids exposing registered 
-                // email addresses which could be a privacy issue if the forum is of a sensitive nature. */
+                user = MembershipService.GetUser(forgotPasswordViewModel.UserName);
                 if (user == null)
                 {
-                    return RedirectToAction("PasswordResetSent", "Members");
+                    ModelState.AddModelError("NoExistUser", "用户不存在。");
+                    return View();
                 }
 
                 try
@@ -1381,41 +1428,52 @@ namespace MVCForum.Website.Controllers
             }
 
 
-            // At this point the email address is registered and a security token has been created
-            // so send an email with instructions on how to change the password
-            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
-            {
-                var settings = SettingsService.GetSettings();
-                var url = new Uri(string.Concat(settings.ForumUrl.TrimEnd('/'), Url.Action("ResetPassword", "Members", new { user.Id, token = user.PasswordResetToken })));
+            var settings = SettingsService.GetSettings();
+            var url = new Uri(string.Concat(settings.ForumUrl.TrimEnd('/'), Url.Action("ResetPassword", "Members", new { user.Id, token = user.PasswordResetToken })));
 
-                var sb = new StringBuilder();
-                sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Members.ResetPassword.EmailText"), settings.ForumName));
-                sb.AppendFormat("<p><a href=\"{0}\">{0}</a></p>", url);
+            #region 发送重置密码的邮件
 
-                var email = new Email
-                {
-                    EmailTo = user.Email,
-                    NameTo = user.UserName,
-                    Subject = LocalizationService.GetResourceString("Members.ForgotPassword.Subject")
-                };
-                email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
-                _emailService.SendMail(email);
+            //// At this point the email address is registered and a security token has been created
+            //// so send an email with instructions on how to change the password
+            //using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            //{
+            //    var sb = new StringBuilder();
+            //    sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Members.ResetPassword.EmailText"), settings.ForumName));
+            //    sb.AppendFormat("<p><a href=\"{0}\">{0}</a></p>", url);
 
-                try
-                {
-                    unitOfWork.Commit();
-                }
-                catch (Exception ex)
-                {
-                    unitOfWork.Rollback();
-                    LoggingService.Error(ex);
-                    ModelState.AddModelError("", LocalizationService.GetResourceString("Members.ResetPassword.Error"));
-                    return View(forgotPasswordViewModel);
-                }
-            }
+            //    var email = new Email
+            //    {
+            //        EmailTo = user.Email,
+            //        NameTo = user.UserName,
+            //        Subject = LocalizationService.GetResourceString("Members.ForgotPassword.Subject")
+            //    };
+            //    email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
+            //    _emailService.SendMail(email);
 
-            return RedirectToAction("PasswordResetSent", "Members");
+            //    try
+            //    {
+            //        unitOfWork.Commit();
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        unitOfWork.Rollback();
+            //        LoggingService.Error(ex);
+            //        ModelState.AddModelError("", LocalizationService.GetResourceString("Members.ResetPassword.Error"));
+            //        return View(forgotPasswordViewModel);
+            //    }
+            //}
+
+            //return RedirectToAction("PasswordResetSent", "Members");
+
+            #endregion
+
+            return Redirect(url.ToString());
+
         }
+
+        #endregion
+
+        #region 重置密码
 
         [HttpGet]
         public ViewResult PasswordResetSent()
@@ -1490,6 +1548,7 @@ namespace MVCForum.Website.Controllers
             return View();
         }
 
+        #endregion
 
         #endregion
 

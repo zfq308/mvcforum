@@ -9,14 +9,10 @@
 
     $("#getcode").click(function () {
 
-        //获取输入的手机号码
-        var MobilePhone = $("#MobilePhone").val();
-        //alert(phoNum);
+        //获取输入的账户名
+        var UserName = $("#UserName").val();
         curCount = count;
 
-        //用正则表达式验证手机号是否合法
-        //var re = /(^1[3|5|8][0-9]{9}$)/;
-        //略
         // 产生随记验证码    
         for (var i = 0; i < codeLength; i++) {
             code += parseInt(Math.random() * 9).toString();
@@ -31,8 +27,8 @@
         $.ajax({
             type: "POST", // 用POST方式传输    
             dataType: "text", // 数据格式:JSON    
-            url: "/Members/GetVerifyCode", // 目标地址    
-            data: { "Code": code, "MobilePhone": MobilePhone },
+            url: "/Members/GetVerifyCodeByAccount", // 目标地址    
+            data: { "Code": code, "UserName": UserName },
             error: function (msg) {
                 alert(msg);
             },

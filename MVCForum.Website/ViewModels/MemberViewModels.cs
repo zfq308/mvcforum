@@ -313,10 +313,15 @@ namespace MVCForum.Website.ViewModels
 
     public class ForgotPasswordViewModel
     {
-        [ForumMvcResourceDisplayName("Members.Label.EmailAddressBlank")]
-        [EmailAddress]
+        [ForumMvcResourceDisplayName("Members.Label.Username")]
         [Required]
-        public string EmailAddress { get; set; }
+        public string UserName { get; set; }
+
+
+        [ForumMvcResourceDisplayName("Members.Label.VerifyCode")]
+        [Required]
+        public string VerifyCode { get; set; }
+
     }
 
     public class ChangePasswordViewModel
