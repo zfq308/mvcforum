@@ -14,7 +14,7 @@ namespace MVCForum.Domain.DomainModel
         /// <summary>
         /// 今日之星特权生效中
         /// </summary>
-        Valid=1,
+        Valid = 1,
         /// <summary>
         /// 今日之星特权无效中
         /// </summary>
@@ -24,7 +24,7 @@ namespace MVCForum.Domain.DomainModel
     /// <summary>
     /// 用户今日之星特权的实体类
     /// </summary>
-    public partial class MembershipTodayStar:Entity
+    public partial class MembershipTodayStar : Entity
     {
         /// <summary>
         /// 默认建构式
@@ -87,10 +87,7 @@ namespace MVCForum.Domain.DomainModel
 
         #endregion
 
-        /// <summary>
-        /// 申请今日之星的用户实例
-        /// </summary>
-        public virtual MembershipUser User { get; set; }
+
     }
 
 }

@@ -89,6 +89,10 @@ namespace MVCForum.IOC
             container.BindInRequestScope<IConfigService, ConfigService>();
             container.BindInRequestScope<IPostEditService, PostEditService>();
 
+
+            container.BindInRequestScope<IMembershipTodayStarService, MembershipTodayStarService>();
+
+
             CustomBindings(container);
 
             return container;

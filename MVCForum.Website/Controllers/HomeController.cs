@@ -46,6 +46,12 @@ namespace MVCForum.Website.Controllers
             return View();
         }
 
+
+        public ActionResult Test()
+        {
+            return View();
+        }
+
         public ActionResult PostedIn()
         {
             return View();

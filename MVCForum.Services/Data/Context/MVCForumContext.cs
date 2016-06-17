@@ -55,6 +55,7 @@ namespace MVCForum.Services.Data.Context
         public DbSet<Email> Email { get; set; }
         public DbSet<PostEdit> PostEdit { get; set; }
         public DbSet<VerifyCode> VerifyCode { get; set; }
+        public DbSet<MembershipTodayStar> MembershipTodayStar { get; set; }
 
 
         public override int SaveChanges()

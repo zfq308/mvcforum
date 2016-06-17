@@ -148,6 +148,7 @@
     <Compile Include="Data\Mapping\UploadedFileMapping.cs" />
     <Compile Include="Data\Mapping\VerifyCodeMapping.cs" />
     <Compile Include="Data\Mapping\VoteMapping.cs" />
+    <Compile Include="MembershipTodayStarService.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Data\UnitOfWork\UnitOfWork.cs" />
     <Compile Include="Data\UnitOfWork\UnitOfWorkManager.cs" />

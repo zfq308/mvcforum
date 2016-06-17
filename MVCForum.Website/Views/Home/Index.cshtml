@@ -4,18 +4,40 @@
     ViewBag.Title = Html.Settings().PageTitle ?? Html.Settings().ForumName;
     ViewBag.MetaDesc = Html.Settings().MetaDesc;
 }
-    
+
 
 @section side
 {
     @Html.Partial("_CommonSideNav")
 }
 
-@* ### Remove ME - Not needed, just for our forum ### *@
-@* @Html.Partial("_DocumentationBlock")*@
-@* ### Remove ME - Not needed, just for our forum ### *@
 
-@Html.Action("LatestTopics", "Topic")
+@Html.Action("HotTopics", "Topic")
+
+
+@Html.Action("HotTopics", "Topic")
+
+@Html.Action("HotTopics", "Topic")
+
+@Html.Action("HotTopics", "Topic")
+
+@Html.Action("HotTopics", "Topic")
+
+@Html.Action("HotTopics", "Topic")
+
+
+
+
+
+
+
+
+
+@*@Html.Action("LatestTopics", "Topic")*@
+
+
+@*@Html.Partial("_DocumentationBlock")*@
+
 
 @*
     If you want to show categories on the home page instead of topics
