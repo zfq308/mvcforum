@@ -23,99 +23,137 @@
 
     <div class="col-md-6 col-md-offset-3">
 
-        @*<script type="text/javascript">
-                $(document).ready(function () {
-                    GetByJquery();
-                    $("#ddlHometownProvince").change(function () { GetHometownCity(); });
-                    $("#ddlHometownCity").change(function () { GetHometownCountry(); });
+        <script type="text/javascript">
+            $(document).ready(function () {
+                GetByJquery();
+                $("#HomeTownProvince").change(function () { GetHometownCity(); });
+                $("#HomeTownCity").change(function () { GetHometownCountry(); });
 
-                    $("#ddlEducationProvince").change(function () { GetEducationCity(); });
+                $("#SchoolProvince").change(function () { GetEducationCity(); });
+            });
+
+            function GetByJquery() {
+                var htprovince = $("#HomeTownProvince").val();
+                $("#HomeTownProvince").empty();
+                $.getJSON("/Members/GetHometownProvince/", function (data) {
+                    $.each(data, function (i, item) {
+                        if (item["ProvinceId"] == htprovince) {
+                            $("<option selected ></option>")
+                                     .val(item["ProvinceId"])
+                                     .text(item["ProvinceName"])
+                                     .appendTo($("#HomeTownProvince"));
+                        }
+                        else {
+                            $("<option></option>")
+                                     .val(item["ProvinceId"])
+                                     .text(item["ProvinceName"])
+                                     .appendTo($("#HomeTownProvince"));
+                        }
+
+                    });
+                    GetHometownCity();
                 });
 
-                function GetByJquery() {
-
-                    $("#ddlHometownProvince").empty();
-                    $.getJSON("/Members/GetHometownProvince/", function (data) {
-                        $.each(data, function (i, item) {
+                var htprovince2 = $("#SchoolProvince").val();
+                $("#SchoolProvince").empty();
+                $.getJSON("/Members/GetHometownProvince/", function (data) {
+                    $.each(data, function (i, item) {
+                        if (item["ProvinceId"] == htprovince2) {
+                            $("<option selected></option>")
+                                     .val(item["ProvinceId"])
+                                     .text(item["ProvinceName"])
+                                     .appendTo($("#SchoolProvince"));
+                        }
+                        else
+                        {
                             $("<option></option>")
-                                            .val(item["ProvinceId"])
-                                            .text(item["ProvinceName"])
-                                            .appendTo($("#ddlHometownProvince"));
-                        });
-                        GetHometownCity();
+                                        .val(item["ProvinceId"])
+                                        .text(item["ProvinceName"])
+                                        .appendTo($("#SchoolProvince"));
+                        }
                     });
+                    GetEducationCity();
+                });
+            }
 
-                    $("#ddlEducationProvince").empty();
-                    $.getJSON("/Members/GetHometownProvince/", function (data) {
-                        $.each(data, function (i, item) {
+            function GetEducationCity() {
+                var htcity = $("#SchoolCity").val();
+
+                $("#SchoolCity").empty();
+                var url = "/Members/GetEducationCity/" + $("#SchoolProvince").val() + "/";
+                $.getJSON(url, function (data) {
+                    $.each(data, function (i, item) {
+
+                        if (item["CityId"] == htcity) {
+                            $("<option selected></option>")
+                                     .val(item["CityId"])
+                                     .text(item["CityName"])
+                                     .appendTo($("#SchoolCity"));
+                        }
+                        else
+                        {
                             $("<option></option>")
-                                            .val(item["ProvinceId"])
-                                            .text(item["ProvinceName"])
-                                            .appendTo($("#ddlEducationProvince"));
-                        });
-                        GetEducationCity();
+                                     .val(item["CityId"])
+                                     .text(item["CityName"])
+                                     .appendTo($("#SchoolCity"));
+                        }
                     });
-                }
+                });
+            }
 
-                function GetEducationCity() {
-                    $("#ddlEducationCity").empty();
-                    var url = "/Members/GetEducationCity/" + $("#ddlEducationProvince").val() + "/";
-                    $.getJSON(url, function (data) {
-                        $.each(data, function (i, item) {
+            function GetHometownCity() {
+                var htcity = $("#HomeTownCity").val();
+
+                $("#HomeTownCity").empty();
+                var url = "/Members/GetHometownCity/" + $("#HomeTownProvince").val() + "/";
+                var a = $(".HomeTownProvince");
+
+                $.getJSON(url, function (data) {
+
+                    $.each(data, function (i, item) {
+                        if (item["CityId"] == htcity) {
+                            $("<option selected ></option>")
+                                      .val(item["CityId"])
+                                      .text(item["CityName"])
+                                      .appendTo($("#HomeTownCity"));
+                        }
+                        else {
                             $("<option></option>")
-                                            .val(item["CityId"])
-                                            .text(item["CityName"])
-                                            .appendTo($("#ddlEducationCity"));
-                        });
+                                      .val(item["CityId"])
+                                      .text(item["CityName"])
+                                      .appendTo($("#HomeTownCity"));
+                        }
+
                     });
-                }
+                    GetHometownCountry();
+                });
+            }
 
-                function GetHometownCity() {
-                    $("#ddlHometownCity").empty();
-                    var url = "/Members/GetHometownCity/" + $("#ddlHometownProvince").val() + "/";
-                    var a = $(".ddlHometownProvince");
+            function GetHometownCountry() {
+                var County = $("#HomeTownCounty").val();
 
-                    $.getJSON(url, function (data) {
+                $("#HomeTownCounty").empty();
+                var url = "/Members/GetHometownCountry/" + $("#HomeTownProvince").val() + "," + $("#HomeTownCity").val() + "/";
+                $.getJSON(url, function (data) {
+                    $.each(data, function (i, item) {
 
-                        $.each(data, function (i, item) {
+                        if (item["CountryId"] == County) {
+                            $("<option selected ></option>")
+                                      .val(item["CountryId"])
+                                      .text(item["CountryName"])
+                                      .appendTo($("#HomeTownCounty"));
+                        }
+                        else {
                             $("<option></option>")
-                                            .val(item["CityId"])
-                                            .text(item["CityName"])
-                                            .appendTo($("#ddlHometownCity"));
-                        });
-                        GetHometownCountry();
-                    });
-                }
+                                      .val(item["CountryId"])
+                                      .text(item["CountryName"])
+                                      .appendTo($("#HomeTownCounty"));
+                        }
 
-                function GetHometownCountry() {
-                    $("#ddlHometownCountry").empty();
-                    var url = "/Members/GetHometownCountry/" + $("#ddlHometownProvince").val() + "," + $("#ddlHometownCity").val() + "/";
-                    $.getJSON(url, function (data) {
-                        $.each(data, function (i, item) {
-                            $("<option></option>")
-                                            .val(item["CountryId"])
-                                            .text(item["CountryName"])
-                                            .appendTo($("#ddlHometownCountry"));
-                        });
                     });
-                }
-            </script>
-
-            <div >
-                <select id="ddlHometownProvince" />
-            </div>
-            <div >
-                <select id="ddlHometownCity" />
-            </div>
-            <div >
-                <select id="ddlHometownCountry" />
-            </div>
-            <div >
-                <select id="ddlEducationProvince" />
-            </div>
-            <div >
-                <select id="ddlEducationCity" />
-            </div>*@
+                });
+            }
+        </script>
 
         @using (Html.BeginForm("Edit", "Members", FormMethod.Post, new { enctype = "multipart/form-data", @class = "editmemberform" }))
         {
@@ -144,7 +182,7 @@
 
                 <div class="form-group">
                     @Html.LabelFor(x => x.Gender)
-                    @Html.DropDownListFor(x => x.Gender, ViewData["GenderList"] as List<SelectListItem>)
+                    @Html.DropDownListFor(x => x.Gender, ViewData["GenderList"] as List<SelectListItem>, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.Gender)
                 </div>
 
@@ -184,7 +222,7 @@
 
                 <div class="form-group">
                     @Html.LabelFor(x => x.Education)
-                    @Html.DropDownListFor(x => x.Education, ViewData["EducationList"] as List<SelectListItem>)
+                    @Html.DropDownListFor(x => x.Education, ViewData["EducationList"] as List<SelectListItem>, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.Education)
                 </div>
 
@@ -196,13 +234,13 @@
 
                 <div class="form-group">
                     @Html.LabelFor(x => x.SchoolProvince)
-                    @Html.DropDownListFor(x => x.SchoolProvince, ViewData["SchoolProvinceList"] as List<SelectListItem>)
+                    @Html.DropDownListFor(x => x.SchoolProvince, ViewData["SchoolProvinceList"] as List<SelectListItem>, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.SchoolProvince)
                 </div>
 
                 <div class="form-group">
                     @Html.LabelFor(x => x.SchoolCity)
-                    @Html.DropDownListFor(x => x.SchoolCity, ViewData["SchoolCityList"] as List<SelectListItem>)
+                    @Html.DropDownListFor(x => x.SchoolCity, ViewData["SchoolCityList"] as List<SelectListItem>, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.SchoolCity)
                 </div>
 
@@ -214,19 +252,19 @@
 
                 <div class="form-group">
                     @Html.LabelFor(x => x.HomeTownProvince)
-                    @Html.DropDownListFor(x => x.HomeTownProvince, ViewData["HomeTownProvinceList"] as List<SelectListItem>)
+                    @Html.DropDownListFor(x => x.HomeTownProvince, ViewData["HomeTownProvinceList"] as List<SelectListItem>, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.HomeTownProvince)
                 </div>
 
                 <div class="form-group">
                     @Html.LabelFor(x => x.HomeTownCity)
-                    @Html.DropDownListFor(x => x.HomeTownCity, ViewData["HomeTownCityList"] as List<SelectListItem>)
+                    @Html.DropDownListFor(x => x.HomeTownCity, ViewData["HomeTownCityList"] as List<SelectListItem>, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.HomeTownCity)
                 </div>
 
                 <div class="form-group">
                     @Html.LabelFor(x => x.HomeTownCounty)
-                    @Html.DropDownListFor(x => x.HomeTownCounty, ViewData["HomeTownCountyList"] as List<SelectListItem>)
+                    @Html.DropDownListFor(x => x.HomeTownCounty, ViewData["HomeTownCountyList"] as List<SelectListItem>, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.HomeTownCounty)
                 </div>
 
@@ -238,7 +276,7 @@
 
                 <div class="form-group">
                     @Html.LabelFor(x => x.IncomeRange)
-                    @Html.DropDownListFor(x => x.IncomeRange, ViewData["IncomeRangeList"] as List<SelectListItem>)
+                    @Html.DropDownListFor(x => x.IncomeRange, ViewData["IncomeRangeList"] as List<SelectListItem>, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.IncomeRange)
                 </div>
 

@@ -17,7 +17,7 @@ namespace MVCForum.IOC
     {
         public static void BindInRequestScope<T1, T2>(this IUnityContainer container) where T2 : T1
         {
-            container.RegisterType<T1, T2>(new HierarchicalLifetimeManager());
+            container.RegisterType<T1, T2>(new HierarchicalLifetimeManager()); 
         }
 
     }

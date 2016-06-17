@@ -69,8 +69,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.ServicesTests", "M
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExtPlugins", "ExtPlugins", "{76EFFF66-FA3B-49BF-A88D-2DCB6D34EDD8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalendarHelper", "ExtPlugins\MvcCalendar\CalendarHelper.csproj", "{A7B4DEE3-0E50-4DC8-9F4E-7D15BA563EDD}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2DCE8246-08AC-4B26-B8E9-89A986961725}"
 	ProjectSection(SolutionItems) = preProject
 		packages\MiniProfiler.Configuration.0.1.2\lib\MiniProfiler_3_1_0.xsd = packages\MiniProfiler.Configuration.0.1.2\lib\MiniProfiler_3_1_0.xsd
@@ -280,18 +278,6 @@ Global
 		{B3B494B1-51C6-4ABB-B62C-48486EBC7D4A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{B3B494B1-51C6-4ABB-B62C-48486EBC7D4A}.Release|x86.ActiveCfg = Release|Any CPU
 		{B3B494B1-51C6-4ABB-B62C-48486EBC7D4A}.Release|x86.Build.0 = Release|Any CPU
-		{A7B4DEE3-0E50-4DC8-9F4E-7D15BA563EDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A7B4DEE3-0E50-4DC8-9F4E-7D15BA563EDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A7B4DEE3-0E50-4DC8-9F4E-7D15BA563EDD}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{A7B4DEE3-0E50-4DC8-9F4E-7D15BA563EDD}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{A7B4DEE3-0E50-4DC8-9F4E-7D15BA563EDD}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{A7B4DEE3-0E50-4DC8-9F4E-7D15BA563EDD}.Debug|x86.Build.0 = Debug|Any CPU
-		{A7B4DEE3-0E50-4DC8-9F4E-7D15BA563EDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A7B4DEE3-0E50-4DC8-9F4E-7D15BA563EDD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A7B4DEE3-0E50-4DC8-9F4E-7D15BA563EDD}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{A7B4DEE3-0E50-4DC8-9F4E-7D15BA563EDD}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{A7B4DEE3-0E50-4DC8-9F4E-7D15BA563EDD}.Release|x86.ActiveCfg = Release|Any CPU
-		{A7B4DEE3-0E50-4DC8-9F4E-7D15BA563EDD}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -311,7 +297,6 @@ Global
 		{9C923D92-4963-44FE-B75B-0A8AAAB9B689} = {3E6DC3D5-3152-415C-B25B-FDF79EF45A7C}
 		{47D979DB-08A8-4C44-B21F-4B738E8334A2} = {3E6DC3D5-3152-415C-B25B-FDF79EF45A7C}
 		{097883D7-6C3E-4944-B2D8-A9CC8A9356F4} = {3E6DC3D5-3152-415C-B25B-FDF79EF45A7C}
-		{A7B4DEE3-0E50-4DC8-9F4E-7D15BA563EDD} = {76EFFF66-FA3B-49BF-A88D-2DCB6D34EDD8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35;packages\Unity.2.1.505.2\lib\NET35

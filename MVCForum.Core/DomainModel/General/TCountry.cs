@@ -2546,9 +2546,9 @@ namespace MVCForum.Domain.DomainModel.General
             return Countrylist;
         }
 
-        public static List<TCountry> LoadCountryByProvinceNameAndCityName(string ProvinceName, string CityName)
+        public static List<TCountry> LoadCountryByProvinceAndCity(int ProvinceId, int CityId)
         {
-            return LoadAllCountry().Where(x => x.ProvinceName == ProvinceName && x.CityName == CityName).ToList();
+            return LoadAllCountry().Where(x => x.ProvinceId == ProvinceId && x.CityId == CityId).ToList();
         }
     }
 

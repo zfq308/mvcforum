@@ -361,9 +361,9 @@ namespace MVCForum.Domain.DomainModel.General
             return Citylist;
         }
 
-        public static List<TCity> LoadCityListByProvince(string ProvinceName)
+        public static List<TCity> LoadCityListByProvince(int ProvinceId)
         {
-            return LoadAllCityList().Where(x => x.ProvinceName == ProvinceName).ToList();
+            return LoadAllCityList().Where(x => x.ProvinceId == ProvinceId).ToList();
         }
     }
 

@@ -633,160 +633,7 @@ namespace MVCForum.Website.Controllers
                     var user = MembershipService.GetUser(id);
                     var viewModel = PopulateMemberViewModel(user);
 
-                    #region 绑定性别信息
-
-                    var Items_Gender = new List<SelectListItem>();
-                    Items_Gender.Add(new SelectListItem { Text = "男", Value = "1" });
-                    Items_Gender.Add(new SelectListItem { Text = "女", Value = "0" });
-
-                    foreach (SelectListItem item in Items_Gender)
-                    {
-                        if (item.Value == user.Gender.ToString())
-                        {
-                            item.Selected = true;
-                        }
-                    }
-                    ViewData["GenderList"] = Items_Gender;
-
-                    #endregion
-
-                    #region 绑定学历信息
-
-                    var Items_Education = new List<SelectListItem>();
-                    Items_Education.Add(new SelectListItem { Text = "高中以下", Value = "1" });
-                    Items_Education.Add(new SelectListItem { Text = "高中，中专", Value = "2" });
-                    Items_Education.Add(new SelectListItem { Text = "大专", Value = "3" });
-                    Items_Education.Add(new SelectListItem { Text = "本科", Value = "4" });
-                    Items_Education.Add(new SelectListItem { Text = "硕士", Value = "5" });
-                    Items_Education.Add(new SelectListItem { Text = "博士", Value = "6" });
-                    Items_Education.Add(new SelectListItem { Text = "其他", Value = "7" });
-                    foreach (SelectListItem item in Items_Education)
-                    {
-                        if (item.Text == user.Education.ToString())
-                        {
-                            item.Selected = true;
-                        }
-                    }
-                    ViewData["EducationList"] = Items_Education;
-
-                    #endregion
-
-                    #region 绑定收入信息
-
-                    var Items_IncomeRange = new List<SelectListItem>();
-                    Items_IncomeRange.Add(new SelectListItem { Text = "1万以下", Value = "1" });
-                    Items_IncomeRange.Add(new SelectListItem { Text = "1万至5万", Value = "2" });
-                    Items_IncomeRange.Add(new SelectListItem { Text = "5万以上", Value = "3" });
-                    Items_IncomeRange.Add(new SelectListItem { Text = "不好说", Value = "4" });
-                    foreach (SelectListItem item in Items_IncomeRange)
-                    {
-                        if (item.Value == user.IncomeRange.ToString())
-                        {
-                            item.Selected = true;
-                        }
-                    }
-                    ViewData["IncomeRangeList"] = Items_IncomeRange;
-
-                    #endregion
-
-                    #region 绑定毕业学校所属省信息
-                    var Items_SchoolProvince = new List<SelectListItem>();
-                    List<TProvince> SchoolProvincelst = TProvince.LoadAllProvinceList();
-                    foreach (var item in SchoolProvincelst)
-                    {
-                        if (user.SchoolProvince == item.ProvinceName)
-                        {
-                            Items_SchoolProvince.Add(new SelectListItem { Text = item.ProvinceName, Value = item.ProvinceId.ToString(), Selected = true });
-                        }
-                        else
-                        {
-                            Items_SchoolProvince.Add(new SelectListItem { Text = item.ProvinceName, Value = item.ProvinceId.ToString() });
-                        }
-                    }
-                    ViewData["SchoolProvinceList"] = Items_SchoolProvince;
-
-                    #endregion
-
-                    #region 绑定毕业学校所属市信息
-                    var Items_SchoolCity = new List<SelectListItem>();
-                    List<TCity> SchoolCitylst = TCity.LoadCityListByProvince(user.SchoolProvince);
-                    foreach (var item in SchoolCitylst)
-                    {
-                        if (user.SchoolCity == item.CityName)
-                        {
-                            Items_SchoolCity.Add(new SelectListItem { Text = item.CityName, Value = item.CityId.ToString(), Selected = true });
-                        }
-                        else
-                        {
-                            Items_SchoolCity.Add(new SelectListItem { Text = item.CityName, Value = item.CityId.ToString() });
-                        }
-                    }
-                    ViewData["SchoolCityList"] = Items_SchoolCity;
-                    #endregion
-
-                    #region 绑定家乡所属省信息
-
-                    var Items_HomeTownProvince = new List<SelectListItem>();
-                    List<TProvince> HomeTownProvincelst = TProvince.LoadAllProvinceList();
-                    foreach (var item in HomeTownProvincelst)
-                    {
-                        if (user.HomeTownProvince == item.ProvinceName)
-                        {
-                            Items_HomeTownProvince.Add(new SelectListItem { Text = item.ProvinceName, Value = item.ProvinceId.ToString(), Selected = true });
-                        }
-                        else
-                        {
-                            Items_HomeTownProvince.Add(new SelectListItem { Text = item.ProvinceName, Value = item.ProvinceId.ToString() });
-                        }
-                    }
-                    ViewData["HomeTownProvinceList"] = Items_HomeTownProvince;
-
-                    #endregion
-
-                    #region 绑定家乡所属市信息
-
-
-                    var Items_HomeTownCity = new List<SelectListItem>();
-                    List<TCity> HomeTownCitylst = TCity.LoadCityListByProvince(user.HomeTownProvince);
-                    foreach (var item in HomeTownCitylst)
-                    {
-                        if (user.HomeTownCity == item.CityName)
-                        {
-                            Items_HomeTownCity.Add(new SelectListItem { Text = item.CityName, Value = item.CityId.ToString(), Selected = true });
-                        }
-                        else
-                        {
-                            Items_HomeTownCity.Add(new SelectListItem { Text = item.CityName, Value = item.CityId.ToString() });
-                        }
-                    }
-                    ViewData["HomeTownCityList"] = Items_HomeTownCity;
-
-
-
-
-                    #endregion
-
-                    #region 绑定家乡所属县信息
-
-
-                    var Items_HomeTownCounty = new List<SelectListItem>();
-                    List<TCountry> HomeTownCountylst = TCountry.LoadCountryByProvinceNameAndCityName(user.HomeTownProvince, user.HomeTownCity);
-                    foreach (var item in HomeTownCountylst)
-                    {
-                        if (user.HomeTownCity == item.CityName)
-                        {
-                            Items_HomeTownCounty.Add(new SelectListItem { Text = item.CountryName, Value = item.CountryId.ToString(), Selected = true });
-                        }
-                        else
-                        {
-                            Items_HomeTownCounty.Add(new SelectListItem { Text = item.CountryName, Value = item.CountryId.ToString() });
-                        }
-                    }
-                    ViewData["HomeTownCountyList"] = Items_HomeTownCounty;
-
-
-
-                    #endregion
+                    BindControlData(user);
 
                     return View(viewModel);
                 }
@@ -795,161 +642,330 @@ namespace MVCForum.Website.Controllers
             }
         }
 
+        private void BindControlData(MembershipUser user)
+        {
+            #region 绑定性别信息
+
+            var Items_Gender = new List<SelectListItem>();
+            Items_Gender.Add(new SelectListItem { Text = "男", Value = "1" });
+            Items_Gender.Add(new SelectListItem { Text = "女", Value = "0" });
+
+            foreach (SelectListItem item in Items_Gender)
+            {
+                if (item.Value == user.Gender.ToString())
+                {
+                    item.Selected = true;
+                }
+            }
+            ViewData["GenderList"] = Items_Gender;
+
+            #endregion
+
+            #region 绑定学历信息
+
+            var Items_Education = new List<SelectListItem>();
+            Items_Education.Add(new SelectListItem { Text = "高中以下", Value = "1" });
+            Items_Education.Add(new SelectListItem { Text = "高中，中专", Value = "2" });
+            Items_Education.Add(new SelectListItem { Text = "大专", Value = "3" });
+            Items_Education.Add(new SelectListItem { Text = "本科", Value = "4" });
+            Items_Education.Add(new SelectListItem { Text = "硕士", Value = "5" });
+            Items_Education.Add(new SelectListItem { Text = "博士", Value = "6" });
+            Items_Education.Add(new SelectListItem { Text = "其他", Value = "7" });
+            foreach (SelectListItem item in Items_Education)
+            {
+                if (item.Value == user.Education.ToString())
+                {
+                    item.Selected = true;
+                }
+            }
+            ViewData["EducationList"] = Items_Education;
+
+            #endregion
+
+            #region 绑定收入信息
+
+            var Items_IncomeRange = new List<SelectListItem>();
+            Items_IncomeRange.Add(new SelectListItem { Text = "1万以下", Value = "1" });
+            Items_IncomeRange.Add(new SelectListItem { Text = "1万至5万", Value = "2" });
+            Items_IncomeRange.Add(new SelectListItem { Text = "5万以上", Value = "3" });
+            Items_IncomeRange.Add(new SelectListItem { Text = "不好说", Value = "4" });
+            foreach (SelectListItem item in Items_IncomeRange)
+            {
+                if (item.Value == user.IncomeRange.ToString())
+                {
+                    item.Selected = true;
+                }
+            }
+            ViewData["IncomeRangeList"] = Items_IncomeRange;
+
+            #endregion
+
+            #region 绑定毕业学校所属省信息
+            var Items_SchoolProvince = new List<SelectListItem>();
+            List<TProvince> SchoolProvincelst = TProvince.LoadAllProvinceList();
+            foreach (var item in SchoolProvincelst)
+            {
+                if (user.SchoolProvince == item.ProvinceId.ToString())
+                {
+                    Items_SchoolProvince.Add(new SelectListItem { Text = item.ProvinceName, Value = item.ProvinceId.ToString(), Selected = true });
+                }
+                else
+                {
+                    Items_SchoolProvince.Add(new SelectListItem { Text = item.ProvinceName, Value = item.ProvinceId.ToString() });
+                }
+            }
+            ViewData["SchoolProvinceList"] = Items_SchoolProvince;
+
+            #endregion
+
+            #region 绑定毕业学校所属市信息
+            var Items_SchoolCity = new List<SelectListItem>();
+            List<TCity> SchoolCitylst = TCity.LoadCityListByProvince(Convert.ToInt32(user.SchoolProvince));
+            foreach (var item in SchoolCitylst)
+            {
+                if (user.SchoolCity == item.CityId.ToString())
+                {
+                    Items_SchoolCity.Add(new SelectListItem { Text = item.CityName, Value = item.CityId.ToString(), Selected = true });
+                }
+                else
+                {
+                    Items_SchoolCity.Add(new SelectListItem { Text = item.CityName, Value = item.CityId.ToString() });
+                }
+            }
+            ViewData["SchoolCityList"] = Items_SchoolCity;
+            #endregion
+
+            #region 绑定家乡所属省信息
+
+            var Items_HomeTownProvince = new List<SelectListItem>();
+            List<TProvince> HomeTownProvincelst = TProvince.LoadAllProvinceList();
+            foreach (var item in HomeTownProvincelst)
+            {
+                if (user.HomeTownProvince == item.ProvinceId.ToString())
+                {
+                    Items_HomeTownProvince.Add(new SelectListItem { Text = item.ProvinceName, Value = item.ProvinceId.ToString(), Selected = true });
+                }
+                else
+                {
+                    Items_HomeTownProvince.Add(new SelectListItem { Text = item.ProvinceName, Value = item.ProvinceId.ToString() });
+                }
+            }
+            ViewData["HomeTownProvinceList"] = Items_HomeTownProvince;
+
+            #endregion
+
+            #region 绑定家乡所属市信息
+
+            var Items_HomeTownCity = new List<SelectListItem>();
+            List<TCity> HomeTownCitylst = TCity.LoadCityListByProvince(Convert.ToInt32(user.HomeTownProvince));
+            foreach (var item in HomeTownCitylst)
+            {
+                if (user.HomeTownCity == item.CityId.ToString())
+                {
+                    Items_HomeTownCity.Add(new SelectListItem { Text = item.CityName, Value = item.CityId.ToString(), Selected = true });
+                }
+                else
+                {
+                    Items_HomeTownCity.Add(new SelectListItem { Text = item.CityName, Value = item.CityId.ToString() });
+                }
+            }
+
+            ViewData["HomeTownCityList"] = Items_HomeTownCity;
+
+            #endregion
+
+            #region 绑定家乡所属县信息
+
+
+            var Items_HomeTownCounty = new List<SelectListItem>();
+            List<TCountry> HomeTownCountylst = TCountry.LoadCountryByProvinceAndCity(Convert.ToInt32(user.HomeTownProvince), Convert.ToInt32(user.HomeTownCity));
+            foreach (var item in HomeTownCountylst)
+            {
+                if (user.HomeTownCounty == item.CountryId.ToString())
+                {
+                    Items_HomeTownCounty.Add(new SelectListItem { Text = item.CountryName, Value = item.CountryId.ToString(), Selected = true });
+                }
+                else
+                {
+                    Items_HomeTownCounty.Add(new SelectListItem { Text = item.CountryName, Value = item.CountryId.ToString() });
+                }
+            }
+            ViewData["HomeTownCountyList"] = Items_HomeTownCounty;
+
+            #endregion
+        }
+
         [HttpPost]
         [Authorize]
         public ActionResult Edit(MemberFrontEndEditViewModel userModel)
         {
-            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            if (ModelState.IsValid)
             {
-                var loggedOnUserId = LoggedOnReadOnlyUser?.Id ?? Guid.Empty;
-                var permissions = RoleService.GetPermissions(null, UsersRole);
 
-                // Check is has permissions
-                if (UserIsAdmin || loggedOnUserId == userModel.Id || permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
+                #region MyRegion
+
+
+
+                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
-                    // Get the user from DB
-                    var user = MembershipService.GetUser(userModel.Id);
+                    var loggedOnUserId = LoggedOnReadOnlyUser?.Id ?? Guid.Empty;
+                    var permissions = RoleService.GetPermissions(null, UsersRole);
 
-                    #region 停用词检查
-
-                    // Before we do anything - Check stop words
-                    var stopWords = _bannedWordService.GetAll(true);
-                    var bannedWords = _bannedWordService.GetAll().Select(x => x.Word).ToList();
-
-                    // Check the fields for bad words
-                    foreach (var stopWord in stopWords)
+                    // Check is has permissions
+                    if (UserIsAdmin || loggedOnUserId == userModel.Id || permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
                     {
-                        if ((userModel.SchoolName != null && userModel.SchoolName.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0) ||
-                            (userModel.Location != null && userModel.Location.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0) ||
-                            (userModel.Signature != null && userModel.Signature.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0) ||
-                            (userModel.Job != null && userModel.Job.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0) ||
-                            (userModel.Interest != null && userModel.Interest.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0))
+                        // Get the user from DB
+                        var user = MembershipService.GetUser(userModel.Id);
+
+                        #region 停用词检查
+
+                        // Before we do anything - Check stop words
+                        var stopWords = _bannedWordService.GetAll(true);
+                        var bannedWords = _bannedWordService.GetAll().Select(x => x.Word).ToList();
+
+                        // Check the fields for bad words
+                        foreach (var stopWord in stopWords)
                         {
-                            ShowMessage(new GenericMessageViewModel
+                            if ((userModel.SchoolName != null && userModel.SchoolName.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0) ||
+                                (userModel.Location != null && userModel.Location.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0) ||
+                                (userModel.Signature != null && userModel.Signature.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0) ||
+                                (userModel.Job != null && userModel.Job.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0) ||
+                                (userModel.Interest != null && userModel.Interest.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0))
                             {
-                                Message = LocalizationService.GetResourceString("StopWord.Error"),
-                                MessageType = GenericMessages.danger
-                            });
-
-                            // Ahhh found a stop word. Abandon operation captain.
-                            return View(userModel);
-
-                        }
-                    }
-
-                    user.SchoolName = _bannedWordService.SanitiseBannedWords(userModel.SchoolName, bannedWords);
-                    user.Location = _bannedWordService.SanitiseBannedWords(userModel.Location, bannedWords);
-                    user.Signature = _bannedWordService.SanitiseBannedWords(StringUtils.ScrubHtml(userModel.Signature, true), bannedWords);
-                    user.Job = _bannedWordService.SanitiseBannedWords(userModel.Job, bannedWords);
-                    user.Interest = _bannedWordService.SanitiseBannedWords(userModel.Interest, bannedWords);
-
-                    #endregion
-
-                    user.RealName = userModel.RealName;
-                    user.Gender = userModel.Gender;
-                    user.Birthday = userModel.Birthday;
-                    user.IsLunarCalendar = userModel.IsLunarCalendar;
-                    user.IsMarried = userModel.IsMarried;
-                    user.Height = userModel.Height;
-                    user.Weight = userModel.Weight;
-                    user.Education = userModel.Education;
-                    user.SchoolProvince = userModel.SchoolProvince;
-                    user.SchoolCity = userModel.SchoolCity;
-                    user.HomeTownProvince = userModel.HomeTownProvince;
-                    user.HomeTownCity = userModel.HomeTownCity;
-                    user.HomeTownCounty = userModel.HomeTownCounty;
-                    user.IncomeRange = userModel.IncomeRange;
-                    user.MobilePhone = userModel.MobilePhone;
-                    // User is trying to change username, need to check if a user already exists
-                    // with the username they are trying to change to
-                    var changedUsername = false;
-                    var sanitisedUsername = _bannedWordService.SanitiseBannedWords(userModel.UserName, bannedWords);
-                    if (sanitisedUsername != user.UserName)
-                    {
-                        if (MembershipService.GetUser(sanitisedUsername) != null)
-                        {
-                            unitOfWork.Rollback();
-                            ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Members.Errors.DuplicateUserName"));
-                            return View(userModel);
-                        }
-
-                        user.UserName = sanitisedUsername;
-                        changedUsername = true;
-                    }
-
-                    //// User is trying to update their email address, need to 
-                    //// check the email is not already in use
-                    //if (userModel.Email != user.Email)
-                    //{
-                    //    // Add get by email address
-                    //    if (MembershipService.GetUserByEmail(userModel.Email) != null)
-                    //    {
-                    //        unitOfWork.Rollback();
-                    //        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Members.Errors.DuplicateEmail"));
-                    //        return View(userModel);
-                    //    }
-                    //    user.Email = userModel.Email;
-                    //}
-
-                    // 按设计需求的规定，每次改动都将审核标志位置false, 再由管理员手动审核
-                    user.IsApproved = false;
-
-                    MembershipService.ProfileUpdated(user);
-
-                    ShowMessage(new GenericMessageViewModel
-                    {
-                        Message = LocalizationService.GetResourceString("Member.ProfileUpdated"),
-                        MessageType = GenericMessages.success
-                    });
-
-                    try
-                    {
-                        unitOfWork.Commit();
-
-                        if (changedUsername)
-                        {
-                            // User has changed their username so need to log them in
-                            // as there new username of 
-                            var authCookie = Request.Cookies[FormsAuthentication.FormsCookieName];
-                            if (authCookie != null)
-                            {
-                                var authTicket = FormsAuthentication.Decrypt(authCookie.Value);
-                                if (authTicket != null)
+                                ShowMessage(new GenericMessageViewModel
                                 {
-                                    var newFormsIdentity = new FormsIdentity(new FormsAuthenticationTicket(authTicket.Version,
-                                                                                                           user.UserName,
-                                                                                                           authTicket.IssueDate,
-                                                                                                           authTicket.Expiration,
-                                                                                                           authTicket.IsPersistent,
-                                                                                                           authTicket.UserData));
-                                    var roles = authTicket.UserData.Split("|".ToCharArray());
-                                    var newGenericPrincipal = new GenericPrincipal(newFormsIdentity, roles);
-                                    System.Web.HttpContext.Current.User = newGenericPrincipal;
-                                }
+                                    Message = LocalizationService.GetResourceString("StopWord.Error"),
+                                    MessageType = GenericMessages.danger
+                                });
+
+                                // Ahhh found a stop word. Abandon operation captain.
+                                return View(userModel);
+
+                            }
+                        }
+
+                        user.SchoolName = _bannedWordService.SanitiseBannedWords(userModel.SchoolName, bannedWords);
+                        user.Location = _bannedWordService.SanitiseBannedWords(userModel.Location, bannedWords);
+                        user.Signature = _bannedWordService.SanitiseBannedWords(StringUtils.ScrubHtml(userModel.Signature, true), bannedWords);
+                        user.Job = _bannedWordService.SanitiseBannedWords(userModel.Job, bannedWords);
+                        user.Interest = _bannedWordService.SanitiseBannedWords(userModel.Interest, bannedWords);
+
+                        #endregion
+
+                        user.RealName = userModel.RealName;
+                        user.Gender = userModel.Gender;
+                        user.Birthday = userModel.Birthday;
+                        user.IsLunarCalendar = userModel.IsLunarCalendar;
+                        user.IsMarried = userModel.IsMarried;
+                        user.Height = userModel.Height;
+                        user.Weight = userModel.Weight;
+                        user.Education = userModel.Education;
+                        user.SchoolProvince = userModel.SchoolProvince;
+                        user.SchoolCity = userModel.SchoolCity;
+                        user.HomeTownProvince = userModel.HomeTownProvince;
+                        user.HomeTownCity = userModel.HomeTownCity;
+                        user.HomeTownCounty = userModel.HomeTownCounty;
+                        user.IncomeRange = userModel.IncomeRange;
+                        user.MobilePhone = userModel.MobilePhone;
+                        // User is trying to change username, need to check if a user already exists
+                        // with the username they are trying to change to
+                        var changedUsername = false;
+                        var sanitisedUsername = _bannedWordService.SanitiseBannedWords(userModel.UserName, bannedWords);
+                        if (sanitisedUsername != user.UserName)
+                        {
+                            if (MembershipService.GetUser(sanitisedUsername) != null)
+                            {
+                                unitOfWork.Rollback();
+                                ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Members.Errors.DuplicateUserName"));
+                                return View(userModel);
                             }
 
-                            // sign out current user
-                            FormsAuthentication.SignOut();
-
-                            // Abandon the session
-                            Session.Abandon();
-
-                            // Sign in new user
-                            FormsAuthentication.SetAuthCookie(user.UserName, false);
+                            user.UserName = sanitisedUsername;
+                            changedUsername = true;
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        unitOfWork.Rollback();
-                        LoggingService.Error(ex);
-                        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
+
+                        //// User is trying to update their email address, need to 
+                        //// check the email is not already in use
+                        //if (userModel.Email != user.Email)
+                        //{
+                        //    // Add get by email address
+                        //    if (MembershipService.GetUserByEmail(userModel.Email) != null)
+                        //    {
+                        //        unitOfWork.Rollback();
+                        //        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Members.Errors.DuplicateEmail"));
+                        //        return View(userModel);
+                        //    }
+                        //    user.Email = userModel.Email;
+                        //}
+
+                        // 按设计需求的规定，每次改动都将审核标志位置false, 再由管理员手动审核
+                        user.IsApproved = false;
+
+                        MembershipService.ProfileUpdated(user);
+
+                        ShowMessage(new GenericMessageViewModel
+                        {
+                            Message = LocalizationService.GetResourceString("Member.ProfileUpdated"),
+                            MessageType = GenericMessages.success
+                        });
+
+                        try
+                        {
+                            unitOfWork.Commit();
+
+                            if (changedUsername)
+                            {
+                                // User has changed their username so need to log them in
+                                // as there new username of 
+                                var authCookie = Request.Cookies[FormsAuthentication.FormsCookieName];
+                                if (authCookie != null)
+                                {
+                                    var authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+                                    if (authTicket != null)
+                                    {
+                                        var newFormsIdentity = new FormsIdentity(new FormsAuthenticationTicket(authTicket.Version,
+                                                                                                               user.UserName,
+                                                                                                               authTicket.IssueDate,
+                                                                                                               authTicket.Expiration,
+                                                                                                               authTicket.IsPersistent,
+                                                                                                               authTicket.UserData));
+                                        var roles = authTicket.UserData.Split("|".ToCharArray());
+                                        var newGenericPrincipal = new GenericPrincipal(newFormsIdentity, roles);
+                                        System.Web.HttpContext.Current.User = newGenericPrincipal;
+                                    }
+                                }
+
+                                // sign out current user
+                                FormsAuthentication.SignOut();
+
+                                // Abandon the session
+                                Session.Abandon();
+
+                                // Sign in new user
+                                FormsAuthentication.SetAuthCookie(user.UserName, false);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            unitOfWork.Rollback();
+                            LoggingService.Error(ex);
+                            ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
+                        }
+
+                        BindControlData(user);
+
+                        return View(userModel);
                     }
 
-                    return View(userModel);
+                    return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
                 }
 
+                #endregion
 
-                return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
+            }
+            else
+            {
+                return Edit(userModel.Id);
             }
         }
 
@@ -1331,7 +1347,7 @@ namespace MVCForum.Website.Controllers
         #region 密码相关
 
         #region 修改密码
-      
+
         [Authorize]
         public ActionResult ChangePassword()
         {
