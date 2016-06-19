@@ -84,4 +84,6 @@ namespace MVCForum.Domain.Interfaces.Services
         bool ClearPasswordResetToken(MembershipUser user);
         bool IsPasswordResetTokenValid(MembershipUser user, string token);
     }
+
+
 }

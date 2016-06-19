@@ -277,6 +277,7 @@
     <Compile Include="Areas\Admin\Controllers\BatchController.cs" />
     <Compile Include="Areas\Admin\Controllers\BannedWordController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
+    <Compile Include="Controllers\AiLvHuoDongController.cs" />
     <Compile Include="Controllers\ErrorsController.cs" />
     <Compile Include="Controllers\ModerateController.cs" />
     <Compile Include="Areas\Admin\ViewModels\AdminBadgeViewModels.cs" />
@@ -336,6 +337,7 @@
     <Compile Include="Areas\Admin\ViewModels\AccountViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\AiLvHuoDongViewModel.cs" />
     <Compile Include="ViewModels\ModerateViewModels.cs" />
     <Compile Include="Application\ScheduledJobs\KepAliveJob.cs" />
     <Compile Include="Application\ScheduledJobs\ScheduledRunner.cs" />
@@ -1076,6 +1078,18 @@
     <Content Include="Areas\Admin\Views\Account\ManageUserPoints.cshtml" />
     <Content Include="Themes\Metro\Content\Styles\Theme.css.map" />
     <Content Include="Installer\zh-CN.csv" />
+    <Content Include="Views\AiLvHuoDong\ZuiXinHuoDong.cshtml" />
+    <Content Include="Views\AiLvHuoDong\ZuiXinHuoDongLayout.cshtml" />
+    <Content Include="Views\AiLvHuoDong\ZuiXinJiLuLayout.cshtml" />
+    <Content Include="Views\AiLvHuoDong\ZuiXinJiLu.cshtml" />
+    <Content Include="Views\AiLvHuoDong\MeiRiZhiXingLayout.cshtml" />
+    <Content Include="Views\AiLvHuoDong\MeiRiZhiXing.cshtml" />
+    <Content Include="Views\AiLvHuoDong\ZuiXinHuiYuan.cshtml" />
+    <Content Include="Views\AiLvHuoDong\ZuiXinHuiYuanLayout.cshtml" />
+    <Content Include="Views\AiLvHuoDong\ZuiXinFuWuLayout.cshtml" />
+    <Content Include="Views\AiLvHuoDong\ZuiXinFuWu.cshtml" />
+    <Content Include="Views\AiLvHuoDong\ZuiXinZiXunLayout.cshtml" />
+    <Content Include="Views\AiLvHuoDong\ZuiXinZiXun.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />
@@ -1173,7 +1187,9 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <Content Include="Views\Web.config" />
+    <Content Include="Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Views\Install\ManualUpgradeNeeded.cshtml" />
     <Content Include="Views\Install\UpgradeDb.cshtml" />
     <Content Include="Views\Snippets\GetThisWeeksTopEarners.cshtml" />

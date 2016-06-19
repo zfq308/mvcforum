@@ -104,6 +104,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AiLvHuoDongService.cs" />
     <Compile Include="BadgeService.cs" />
     <Compile Include="BannedEmailService.cs" />
     <Compile Include="CategoryNotificationService.cs" />
@@ -114,6 +115,8 @@
     <Compile Include="Data\Caching\CachingConfiguration.cs" />
     <Compile Include="Data\Context\MVCForumContext.cs" />
     <Compile Include="Data\Mapping\ActivityMapping.cs" />
+    <Compile Include="Data\Mapping\AiLvHuoDongDetailMapping.cs" />
+    <Compile Include="Data\Mapping\AiLvHuoDongMapping.cs" />
     <Compile Include="Data\Mapping\BadgeMapping.cs" />
     <Compile Include="Data\Mapping\BadgeTypeTimeLastCheckedMapping.cs" />
     <Compile Include="Data\Mapping\BannedEmailMapping.cs" />

@@ -356,4 +356,7 @@ namespace MVCForum.Website.ViewModels
         public string ConfirmPassword { get; set; }
 
     }
+
+
+   
 }

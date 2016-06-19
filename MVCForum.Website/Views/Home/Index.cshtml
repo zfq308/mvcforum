@@ -1,4 +1,7 @@
 ﻿@using MVCForum.Website.Application
+@model MVCForum.Website.ViewModels.AiLvHomeViewModel
+
+
 @{
     Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
     ViewBag.Title = Html.Settings().PageTitle ?? Html.Settings().ForumName;
@@ -11,22 +14,141 @@
     @Html.Partial("_CommonSideNav")
 }
 
+<div class="row documentation-message">
+    <div class="col-md-6">
 
-@Html.Action("HotTopics", "Topic")
-
-
-@Html.Action("HotTopics", "Topic")
-
-@Html.Action("HotTopics", "Topic")
-
-@Html.Action("HotTopics", "Topic")
-
-@Html.Action("HotTopics", "Topic")
-
-@Html.Action("HotTopics", "Topic")
+        <div class="panel panel-mvc">
+            <div class="panel-heading">最新活动</div>
+            <div class="panel-body">
+                <p>
+                    We are slowly putting up all our documentation on <a href="https://github.com/YodasMyDad/mvcforum/wiki">Github in the Wiki</a>. Please feel free to suggest areas which we are missing.
+                </p>
+                <p><a href="http://www.mvcforum.com" class="btn-mvc">Go To Main Site</a></p>
 
 
+                @if (Model.AiLv_ZuiXinHuoDongTop5.Any())
+                {
+                    <div class="tablescroll">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Entry Date
+                                    </th>
+                                    <th>
+                                        Module
+                                    </th>
 
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var log in Model.AiLv_ZuiXinHuoDongTop5)
+                                {
+                                    <tr>
+                                        <td class="logentrydate">
+                                            @log.MingCheng
+                                        </td>
+                                        <td class="logentrymodule">
+                                            @log.LeiBie
+                                        </td>
+
+
+                                    </tr>
+                                }
+                                <tr>
+                                    <td class="logentrydate" colspan="2">show more...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                }
+
+
+
+
+
+
+
+
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-md-6">
+
+        <div class="panel panel-mvc">
+            <div class="panel-heading">最新记录</div>
+            <div class="panel-body">
+                <p>
+                    We are slowly putting up all our documentation on <a href="https://github.com/YodasMyDad/mvcforum/wiki">Github in the Wiki</a>. Please feel free to suggest areas which we are missing.
+                </p>
+                <p><a href="http://www.mvcforum.com" class="btn-mvc">Go To Main Site</a></p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-md-6">
+
+        <div class="panel panel-mvc">
+            <div class="panel-heading">每日之星</div>
+            <div class="panel-body">
+                <p>
+                    We are slowly putting up all our documentation on <a href="https://github.com/YodasMyDad/mvcforum/wiki">Github in the Wiki</a>. Please feel free to suggest areas which we are missing.
+                </p>
+                <p><a href="http://www.mvcforum.com" class="btn-mvc">Go To Main Site</a></p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-md-6">
+
+        <div class="panel panel-mvc">
+            <div class="panel-heading">最新会员</div>
+            <div class="panel-body">
+                <p>
+                    We are slowly putting up all our documentation on <a href="https://github.com/YodasMyDad/mvcforum/wiki">Github in the Wiki</a>. Please feel free to suggest areas which we are missing.
+                </p>
+                <p><a href="http://www.mvcforum.com" class="btn-mvc">Go To Main Site</a></p>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="col-md-6">
+
+        <div class="panel panel-mvc">
+            <div class="panel-heading">最新服务</div>
+            <div class="panel-body">
+                <p>
+                    We are slowly putting up all our documentation on <a href="https://github.com/YodasMyDad/mvcforum/wiki">Github in the Wiki</a>. Please feel free to suggest areas which we are missing.
+                </p>
+                <p><a href="http://www.mvcforum.com" class="btn-mvc">Go To Main Site</a></p>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="col-md-6">
+
+        <div class="panel panel-mvc">
+            <div class="panel-heading">最新资讯</div>
+            <div class="panel-body">
+                <p>
+                    We are slowly putting up all our documentation on <a href="https://github.com/YodasMyDad/mvcforum/wiki">Github in the Wiki</a>. Please feel free to suggest areas which we are missing.
+                </p>
+                <p><a href="http://www.mvcforum.com" class="btn-mvc">Go To Main Site</a></p>
+            </div>
+        </div>
+
+    </div>
+
+</div>
 
 
 

@@ -90,6 +90,8 @@
     <Compile Include="DomainModel\Attributes\DescriptionAttribute.cs" />
     <Compile Include="DomainModel\Attributes\NameAttribute.cs" />
     <Compile Include="DomainModel\Attributes\IdAttribute.cs" />
+    <Compile Include="DomainModel\Entities\AiLvHuoDong.cs" />
+    <Compile Include="DomainModel\Entities\AiLvHuoDongDetail.cs" />
     <Compile Include="DomainModel\Entities\Badge.cs" />
     <Compile Include="DomainModel\Entities\BannedEmail.cs" />
     <Compile Include="DomainModel\Entities\Category.cs" />
@@ -174,6 +176,7 @@
     <Compile Include="Interfaces\Badges\IVoteUpBadge.cs" />
     <Compile Include="Interfaces\Events\IEventHandler.cs" />
     <Compile Include="Interfaces\Events\IEventManager.cs" />
+    <Compile Include="Interfaces\Services\IAiLvHongDongService.cs" />
     <Compile Include="Interfaces\Services\IMembershipTodayStarService.cs" />
     <Compile Include="Interfaces\Services\ISendSMSProvider.cs" />
     <Compile Include="Interfaces\Providers\IStorageProvider.cs" />

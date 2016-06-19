@@ -19,43 +19,48 @@ namespace MVCForum.Website.Controllers
         private readonly ITopicService _topicService;
         private readonly ICategoryService _categoryService;
         private readonly IActivityService _activityService;
+        private readonly IAiLvHuoDongService _aiLvHuoDongService;
 
-        public HomeController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IActivityService activityService, IMembershipService membershipService,
-            ITopicService topicService, ILocalizationService localizationService, IRoleService roleService,
-            ISettingsService settingsService, ICategoryService categoryService)
+
+        public HomeController(ILoggingService loggingService,
+            IUnitOfWorkManager unitOfWorkManager,
+            IActivityService activityService,
+            IMembershipService membershipService,
+            ITopicService topicService,
+            ILocalizationService localizationService,
+            IRoleService roleService,
+            ISettingsService settingsService,
+            ICategoryService categoryService,
+            IAiLvHuoDongService ailvhuodongService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _topicService = topicService;
             _categoryService = categoryService;
             _activityService = activityService;
+            _aiLvHuoDongService = ailvhuodongService;
         }
 
         public ActionResult Index()
         {
-            return View();
+            var returnView = new AiLvHomeViewModel();
+            returnView.AiLv_ZuiXinHuoDongTop5 = new List<AiLvHuoDong>();
+
+            var m1 = new AiLvHuoDong();
+            m1.MingCheng = "AAAA";
+            m1.LeiBie = 1;
+            returnView.AiLv_ZuiXinHuoDongTop5.Add(m1);
+
+
+
+
+            return View(returnView);
+
+
+
+            //return View();
         }
 
-        public ActionResult Leaderboard()
-        {
-            return View();
-        }
-
-        public ActionResult Following()
-        {
-
-            return View();
-        }
-
-
-        public ActionResult Test()
-        {
-            return View();
-        }
-
-        public ActionResult PostedIn()
-        {
-            return View();
-        }
+        #region 暂不使用的代码
 
         public ActionResult TermsAndConditions()
         {
@@ -318,5 +323,29 @@ namespace MVCForum.Website.Controllers
                 return new GoogleSitemapResult(sitemap);
             }
         }
+
+
+        public ActionResult Leaderboard()
+        {
+            return View();
+        }
+
+        public ActionResult Following()
+        {
+
+            return View();
+        }
+
+
+        public ActionResult Test()
+        {
+            return View();
+        }
+
+        public ActionResult PostedIn()
+        {
+            return View();
+        }
+        #endregion
     }
 }

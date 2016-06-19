@@ -91,7 +91,7 @@ namespace MVCForum.IOC
 
 
             container.BindInRequestScope<IMembershipTodayStarService, MembershipTodayStarService>();
-
+            container.BindInRequestScope<IAiLvHuoDongService, AiLvHuoDongService>();
 
             CustomBindings(container);
 
