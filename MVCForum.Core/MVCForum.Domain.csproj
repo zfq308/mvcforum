@@ -90,6 +90,7 @@
     <Compile Include="DomainModel\Attributes\DescriptionAttribute.cs" />
     <Compile Include="DomainModel\Attributes\NameAttribute.cs" />
     <Compile Include="DomainModel\Attributes\IdAttribute.cs" />
+    <Compile Include="DomainModel\Entities\ADSetting.cs" />
     <Compile Include="DomainModel\Entities\AiLvHuoDong.cs" />
     <Compile Include="DomainModel\Entities\AiLvHuoDongDetail.cs" />
     <Compile Include="DomainModel\Entities\Badge.cs" />

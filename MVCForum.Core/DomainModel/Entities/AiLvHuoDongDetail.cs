@@ -24,7 +24,7 @@ namespace MVCForum.Domain.DomainModel
     }
 
     /// <summary>
-    /// 
+    /// 爱驴活动报名类
     /// </summary>
     public partial class AiLvHuoDongDetail : Entity
     {
