@@ -2,57 +2,50 @@
 <li>
     <a href="@Url.Action("Index", "Home")"
        class="@(TempData[AppConstants.CurrentController].ToString() == "home" && TempData[AppConstants.CurrentAction].ToString() == "index" ? "active" : "")">
-        @Html.Lang("SubNav.Latest")
+        首页
     </a>
 </li>
-
-
-
 <li>
     <a href="@Url.Action("ZuiXinHuoDong", "AiLvHuoDong")"
-       class="@(TempData[AppConstants.CurrentController].ToString() == "home" && TempData[AppConstants.CurrentAction].ToString() == "ZuiXinHuoDong" ? "active" : "")">
-       最新活动
+       class="@(TempData[AppConstants.CurrentController].ToString() == "ailvhuodong" && TempData[AppConstants.CurrentAction].ToString() == "zuixinhuodong" ? "active" : "")">
+        爱驴活动
     </a>
 </li>
-
 <li>
     <a href="@Url.Action("ZuiXinJilu", "AiLvHuoDong")"
-       class="@(TempData[AppConstants.CurrentController].ToString() == "home" && TempData[AppConstants.CurrentAction].ToString() == "ZuiXinJilu" ? "active" : "")">
-        最新记录
+       class="@(TempData[AppConstants.CurrentController].ToString() == "ailvhuodong" && TempData[AppConstants.CurrentAction].ToString() == "zuixinjilu" ? "active" : "")">
+        爱驴记录
     </a>
 </li>
-
-<li>
-    <a href="@Url.Action("MeiRiZhiXing", "AiLvHuoDong")"
-       class="@(TempData[AppConstants.CurrentController].ToString() == "home" && TempData[AppConstants.CurrentAction].ToString() == "MeiRiZhiXing" ? "active" : "")">
-        每日之星
-    </a>
-</li>
-
 
 <li>
     <a href="@Url.Action("ZuiXinHuiYuan", "AiLvHuoDong")"
-       class="@(TempData[AppConstants.CurrentController].ToString() == "home" && TempData[AppConstants.CurrentAction].ToString() == "ZuiXinHuiYuan" ? "active" : "")">
-        最新会员
+       class="@(TempData[AppConstants.CurrentController].ToString() == "ailvhuodong" && TempData[AppConstants.CurrentAction].ToString() == "zuixinhuiyuan" ? "active" : "")">
+        爱驴会员
     </a>
 </li>
-
 <li>
     <a href="@Url.Action("ZuiXinFuWu", "AiLvHuoDong")"
-       class="@(TempData[AppConstants.CurrentController].ToString() == "home" && TempData[AppConstants.CurrentAction].ToString() == "ZuiXinFuWu" ? "active" : "")">
+       class="@(TempData[AppConstants.CurrentController].ToString() == "ailvhuodong" && TempData[AppConstants.CurrentAction].ToString() == "zuixinfuwu" ? "active" : "")">
         最新服务
     </a>
 </li>
-
 <li>
     <a href="@Url.Action("ZuiXinZixun", "AiLvHuoDong")"
-       class="@(TempData[AppConstants.CurrentController].ToString() == "home" && TempData[AppConstants.CurrentAction].ToString() == "ZuiXinZixun" ? "active" : "")">
+       class="@(TempData[AppConstants.CurrentController].ToString() == "ailvhuodong" && TempData[AppConstants.CurrentAction].ToString() == "zuixinzixun" ? "active" : "")">
         最新资讯
     </a>
 </li>
 
+<li>
+    <a href="@Url.Action("AiLvZhangHu", "AiLvHuoDong")"
+       class="@(TempData[AppConstants.CurrentController].ToString() == "ailvhuodong" && TempData[AppConstants.CurrentAction].ToString() == "ailvzhanghu" ? "active" : "")">
+        爱驴账户
+    </a>
+</li>
 
-@if (User.Identity.IsAuthenticated)
+
+@*@if (User.Identity.IsAuthenticated)
 {
     <li>
         <a href="@Url.Action("Following", "Home")"
@@ -95,4 +88,4 @@
        class="@(TempData[AppConstants.CurrentController].ToString() == "badge" && TempData[AppConstants.CurrentAction].ToString() == "allbadges" ? "active" : "")">
         @Html.LanguageString("Layout.Nav.Badges")
     </a>
-</li>
+</li>*@

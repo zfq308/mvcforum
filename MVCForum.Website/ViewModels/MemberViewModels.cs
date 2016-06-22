@@ -27,6 +27,11 @@ namespace MVCForum.Website.ViewModels
         public string RealName { get; set; }
 
         [Required]
+        [Display(Name = "昵称")]
+        [StringLength(24, MinimumLength = 2)]
+        public string AliasName { get; set; }
+
+        [Required]
         [ForumMvcResourceDisplayName("Members.Label.MobilePhone")]
         [StringLength(11, MinimumLength = 11)]
         public string MobilePhone { get; set; }
@@ -56,6 +61,10 @@ namespace MVCForum.Website.ViewModels
 
         [Required]
         public int MinPasswordLength { get; set; }
+
+        [Required]
+        [Display(Name ="已阅读并同意")]
+        public bool ReadPolicyFirst { get; set; }
 
         [ForumMvcResourceDisplayName("Members.Label.UserIsApproved")]
         public bool IsApproved { get; set; }
@@ -88,6 +97,11 @@ namespace MVCForum.Website.ViewModels
         [ForumMvcResourceDisplayName("Members.Label.RealName")]
         [StringLength(16, MinimumLength = 4)]
         public string RealName { get; set; }
+
+        [Required]
+        [Display(Name = "昵称")]
+        [StringLength(24, MinimumLength = 2)]
+        public string AliasName { get; set; }
 
         [Required]
         [ForumMvcResourceDisplayName("Members.Label.Gender")]
@@ -220,6 +234,9 @@ namespace MVCForum.Website.ViewModels
     {
         public string ReturnUrl { get; set; }
 
+        /// <summary>
+        /// 账号
+        /// </summary>
         [Required]
         [ForumMvcResourceDisplayName("Members.Label.Username")]
         public string UserName { get; set; }
@@ -358,5 +375,5 @@ namespace MVCForum.Website.ViewModels
     }
 
 
-   
+
 }

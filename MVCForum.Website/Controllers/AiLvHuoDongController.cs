@@ -78,5 +78,15 @@ namespace MVCForum.Website.Controllers
             return View();
         }
 
+
+        /// <summary>
+        /// 爱驴账户
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult AiLvZhangHu()
+        {
+            return View();
+        }
+
     }
 }

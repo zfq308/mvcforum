@@ -64,8 +64,7 @@
                                      .text(item["ProvinceName"])
                                      .appendTo($("#SchoolProvince"));
                         }
-                        else
-                        {
+                        else {
                             $("<option></option>")
                                         .val(item["ProvinceId"])
                                         .text(item["ProvinceName"])
@@ -90,8 +89,7 @@
                                      .text(item["CityName"])
                                      .appendTo($("#SchoolCity"));
                         }
-                        else
-                        {
+                        else {
                             $("<option></option>")
                                      .val(item["CityId"])
                                      .text(item["CityName"])
@@ -300,7 +298,9 @@
                         @Html.ValidationMessageFor(x => x.Signature)
                     </div>
                 }
-
+                <div class="form-group">
+                    请注意：为保证交友的严肃性，爱驴网会对您填写的资料进行审核，只有审核通过后才能使用相关功能。工作人员会在8小时内处理完毕。若需紧急处理可以拨打客服电话，谢谢！
+                </div>
                 <div class="submit-holder">
                     <button type="submit" class="btn-mvc-green btn-mvc-large">@Html.LanguageString("Buttons.Save")</button>
                 </div>

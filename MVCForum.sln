@@ -67,8 +67,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{A1510FC4-7
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.ServicesTests", "MVCForum.ServicesTests\MVCForum.ServicesTests.csproj", "{B3B494B1-51C6-4ABB-B62C-48486EBC7D4A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExtPlugins", "ExtPlugins", "{76EFFF66-FA3B-49BF-A88D-2DCB6D34EDD8}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2DCE8246-08AC-4B26-B8E9-89A986961725}"
 	ProjectSection(SolutionItems) = preProject
 		packages\MiniProfiler.Configuration.0.1.2\lib\MiniProfiler_3_1_0.xsd = packages\MiniProfiler.Configuration.0.1.2\lib\MiniProfiler_3_1_0.xsd

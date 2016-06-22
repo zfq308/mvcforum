@@ -137,7 +137,7 @@ namespace MVCForum.Services.Migrations
 
                 #endregion
 
-                #region 创建系统的默认角色
+                #region 创建系统的默认五种角色
                 var saveRoles = false;
                 // Create the admin role if it doesn't exist
                 var adminRole = context.MembershipRole.FirstOrDefault(x => x.RoleName == AppConstants.AdminRoleName);
@@ -145,6 +145,15 @@ namespace MVCForum.Services.Migrations
                 {
                     adminRole = new MembershipRole { RoleName = AppConstants.AdminRoleName };
                     context.MembershipRole.Add(adminRole);
+                    saveRoles = true;
+                }
+
+                // Create the Supplier role if it doesn't exist
+                var SupplierRole = context.MembershipRole.FirstOrDefault(x => x.RoleName == AppConstants.SupplierRoleName);
+                if (SupplierRole == null)
+                {
+                    SupplierRole = new MembershipRole { RoleName = AppConstants.SupplierRoleName };
+                    context.MembershipRole.Add(SupplierRole);
                     saveRoles = true;
                 }
 
@@ -156,6 +165,15 @@ namespace MVCForum.Services.Migrations
                     context.MembershipRole.Add(standardRole);
                     saveRoles = true;
                 }
+
+                //// Create the WaitAuditMembers role if it doesn't exist
+                //var WaitAuditMembersRole = context.MembershipRole.FirstOrDefault(x => x.RoleName == SiteConstants.Instance.WaitAuditMembers);
+                //if (WaitAuditMembersRole == null)
+                //{
+                //    WaitAuditMembersRole = new MembershipRole { RoleName = SiteConstants.Instance.WaitAuditMembers };
+                //    context.MembershipRole.Add(WaitAuditMembersRole);
+                //    saveRoles = true;
+                //}
 
                 // Create the Guest role if it doesn't exist
                 var guestRole = context.MembershipRole.FirstOrDefault(x => x.RoleName == AppConstants.GuestRoleName);
@@ -254,10 +272,13 @@ namespace MVCForum.Services.Migrations
                 {
                     #region 创建默认的系统设置参数
 
+
+
+                    //TODO: please change the ForumURL
                     var settings = new Settings
                     {
                         ForumName = "MVCForum",
-                        ForumUrl = "http://www.mydomain.com",
+                        ForumUrl = "http://localhost:9666/",
                         IsClosed = false,
                         EnableRSSFeeds = true,
                         DisplayEditedBy = true,
@@ -416,6 +437,7 @@ namespace MVCForum.Services.Migrations
                         #region 基本信息
                         UserName = defaultAdminUsername,
                         RealName = "默认管理员",
+                        AliasName="admin",
                         Email = "admin@email.com",
                         Gender = 1,
                         Birthday = new DateTime(2000, 1, 1),
@@ -425,12 +447,12 @@ namespace MVCForum.Services.Migrations
                         Weight = 100,
                         Education = "硕士",
                         Location = "深圳市",
-                        SchoolProvince = "湖南省",
-                        SchoolCity = "长沙市",
+                        SchoolProvince = "110000",
+                        SchoolCity = "110100",
                         SchoolName = "我的大学",
-                        HomeTownProvince = "湖南省",
-                        HomeTownCity = "株洲市",
-                        HomeTownCounty = "攸县",
+                        HomeTownProvince = "110000",
+                        HomeTownCity = "110100",
+                        HomeTownCounty = "110108",
                         Job = "工程师",
                         IncomeRange = 0,
                         Interest = "发呆",

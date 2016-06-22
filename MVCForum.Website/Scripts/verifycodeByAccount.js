@@ -35,9 +35,11 @@
             success: function (data) {
                 //前台给出提示语
                 if (data == "true") {
-                    $("#telephonenameTip").html("<font color='#339933'>√ 短信验证码已发到您的手机,请查收(30分钟内有效)</font>");
-                } else if (data == "false") {
-                    $("#telephonenameTip").html("<font color='red'>× 短信验证码发送失败，请重新发送</font>");
+                    $("#telephonenameTip").html("<font color='#339933'>√ 短信验证码已发到您的手机,请查收(30分钟内有效)。</font>");
+                } else if (data == "false")
+                {
+                    $("#telephonenameTip").html("<font color='red'>× 当前输入的账号不存在请检查后再操作。</font>");
+                    curCount = 0;
                     return false;
                 }
             }

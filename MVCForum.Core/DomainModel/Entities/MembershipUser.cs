@@ -61,6 +61,12 @@ namespace MVCForum.Domain.DomainModel
         /// 用户真实姓名
         /// </summary>
         public string RealName { get; set; }
+
+        /// <summary>
+        /// 用户呢称
+        /// </summary>
+        public string AliasName { get; set; }
+
         /// <summary>
         /// 性别
         /// </summary>

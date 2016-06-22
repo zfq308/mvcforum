@@ -71,6 +71,7 @@ namespace MVCForum.Domain.Constants
 
         // This is just the initial standard role
         public string StandardMembers => GetConfig("StandardMembers");
+        public string WaitAuditMembers => GetConfig("WaitAuditMembers");
 
         /// <summary>
         /// Social Login Keys

@@ -1,11 +1,5 @@
 ﻿@{
-    Layout = "_Layout.cshtml";
-}
-@section SocialMeta{
-    @RenderSection("SocialMeta", false)
-}
-@section Header {
-    @RenderSection("Header", false)
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <div class="row">
     <div class="col-md-9">
@@ -13,7 +7,7 @@
     </div>
     <div class="col-md-3 sidelayoutsection">
         <div class="main-side-box clearfix">
-            @if (User.Identity.IsAuthenticated)
+            @if (User.IsInRole("Admin"))
             {
                 @Html.Action("CreateTopicButton", "Topic")
             }

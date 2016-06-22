@@ -606,7 +606,7 @@ namespace MVCForum.Services
         {
             search = StringUtils.SafePlainText(search);
             var query = _context.MembershipUser
-    .Where(x => x.UserName.ToUpper().Contains(search.ToUpper()) || x.Email.ToUpper().Contains(search.ToUpper()));
+                                .Where(x => x.UserName.ToUpper().Contains(search.ToUpper()) || x.Email.ToUpper().Contains(search.ToUpper()));
 
             var results = query
                 .OrderBy(x => x.UserName)
@@ -627,10 +627,14 @@ namespace MVCForum.Services
                 .ToList();
         }
 
+        /// <summary>
+        /// 12分钟内的活动用户
+        /// </summary>
+        /// <returns></returns>
         public IList<MembershipUser> GetActiveMembers()
         {
             // Get members that last activity date is valid
-            //TODO:  Benjamin 需要检查统一的服务器时间模式：DateTime.Now
+
             var date = DateTime.Now.AddMinutes(-AppConstants.TimeSpanInMinutesToShowMembers);
             return _context.MembershipUser
                 .Where(x => x.LastActivityDate > date)

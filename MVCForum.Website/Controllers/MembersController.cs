@@ -262,13 +262,13 @@ namespace MVCForum.Website.Controllers
                 string UserName = Request["UserName"];
 
                 var user = MembershipService.GetUser(UserName);
-                if (user != null && string.IsNullOrEmpty(user.MobilePhone))
+                if (user != null && !string.IsNullOrEmpty(user.MobilePhone))
                 {
                     // 短信验证码存入session
                     Session.Add("code", code);
                     try
                     {
-                        _verifyCodeService.SendVerifyCode(new VerifyCode(user.MobilePhone, VerifyCodeStatus.Waiting, code));
+                        // _verifyCodeService.SendVerifyCode(new VerifyCode(user.MobilePhone, VerifyCodeStatus.Waiting, code));
                         result = true;// 成功    
                     }
                     catch (Exception ex)
@@ -276,13 +276,14 @@ namespace MVCForum.Website.Controllers
                         result = false;// 失败    
                         logger.Error(ex.Message);
                     }
-                    return Json(result, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
-                    ModelState.AddModelError("NoExistUser", "用户信息不存在。");
-                    return View();
+                    result = false;// 失败    
+                    //result = "failNoExistUser";// 失败，用户信息不存在。
+                    //ModelState.AddModelError("NoExistUser", "用户信息不存在。");
                 }
+                return Json(result, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -307,6 +308,7 @@ namespace MVCForum.Website.Controllers
         {
             if (SettingsService.GetSettings().SuspendRegistration != true)
             {
+                //系统当前允许注册
                 using (UnitOfWorkManager.NewUnitOfWork())
                 {
                     var user = MembershipService.CreateEmptyUser();
@@ -314,6 +316,7 @@ namespace MVCForum.Website.Controllers
                     // Populate empty viewmodel
                     var viewModel = new MemberAddViewModel
                     {
+                        AliasName = user.AliasName,
                         UserName = user.UserName,
                         MobilePhone = user.MobilePhone,
                         Password = user.Password,
@@ -329,11 +332,10 @@ namespace MVCForum.Website.Controllers
                     {
                         viewModel.ReturnUrl = returnUrl;
                     }
-
                     return View(viewModel);
                 }
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home");   // 调到首页
         }
 
         /// <summary>
@@ -420,7 +422,6 @@ namespace MVCForum.Website.Controllers
 
 
                     Password = userModel.Password,
-                    //IsApproved = userModel.IsApproved,  // Original code,
                     IsApproved = false, // 设定每个用户注册都需要审核，系统不允许自动审核
 
 
@@ -439,11 +440,6 @@ namespace MVCForum.Website.Controllers
 
 
                     Comment = userModel.Comment,
-
-
-
-
-
                 };
 
                 var createStatus = MembershipService.CreateUser(userToSave);
@@ -593,7 +589,8 @@ namespace MVCForum.Website.Controllers
                 FormsAuthentication.SetAuthCookie(userToSave.UserName, false);
                 TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                 {
-                    Message = LocalizationService.GetResourceString("Members.NowRegistered"),
+                    //Message = LocalizationService.GetResourceString("Members.NowRegistered"),
+                    Message = "欢迎你，",
                     MessageType = GenericMessages.success
                 };
             }
@@ -1445,7 +1442,11 @@ namespace MVCForum.Website.Controllers
 
 
             var settings = SettingsService.GetSettings();
-            var url = new Uri(string.Concat(settings.ForumUrl.TrimEnd('/'), Url.Action("ResetPassword", "Members", new { user.Id, token = user.PasswordResetToken })));
+            var s2 = settings.ForumUrl.TrimEnd('/');
+            var s = Url.Action("ResetPassword", "Members", new { user.Id, token = user.PasswordResetToken });
+            var RedirectURL = string.Concat(s2, s);
+            //var url = new Uri(RedirectURL);
+            //return Redirect(url.ToString());
 
             #region 发送重置密码的邮件
 
@@ -1483,7 +1484,8 @@ namespace MVCForum.Website.Controllers
 
             #endregion
 
-            return Redirect(url.ToString());
+            return Redirect(RedirectURL);
+
 
         }
 
@@ -1622,6 +1624,11 @@ namespace MVCForum.Website.Controllers
             }
         }
 
+
+        /// <summary>
+        /// 最新活动用户检查
+        /// </summary>
+        /// <returns></returns>
         public JsonResult LastActiveCheck()
         {
             if (UserIsAuthenticated)

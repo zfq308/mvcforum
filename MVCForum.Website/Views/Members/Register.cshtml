@@ -34,6 +34,13 @@
                         </div>
 
                         <div class="form-group">
+                            @Html.LabelFor(x => x.AliasName)
+                            @Html.TextBoxFor(x => x.AliasName, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.AliasName)
+                        </div>
+
+
+                        <div class="form-group">
                             @Html.LabelFor(x => Model.Password)
                             @Html.PasswordFor(x => Model.Password, new { @class = "form-control" })
                             @Html.ValidationMessageFor(x => x.Password)
@@ -59,16 +66,23 @@
                             @Html.LabelFor(x => Model.VerifyCode)
                             @Html.PasswordFor(x => Model.VerifyCode, new { @class = "form-control" })
                             @Html.ValidationMessageFor(x => x.VerifyCode)
-                             <span id="codenameTip"></span>
+                            <span id="codenameTip"></span>
                         </div>
 
-                        if (!string.IsNullOrEmpty(Html.Settings().SpamQuestion))
+
+                        <div class="form-group">
+                            @Html.CheckBoxFor(m => m.ReadPolicyFirst)
+                            已阅读并同意爱驴网的<a href="http://www.mvcforum.com">服务条款</a>和<a href="http://www.mvcforum.com">隐私政策</a>
+                            @Html.ValidationMessageFor(m => m.ReadPolicyFirst)
+                        </div>
+
+                        @*if (!string.IsNullOrEmpty(Html.Settings().SpamQuestion))
                         {
                             <div class="form-group">
                                 <label for="SpamAnswer">@Html.Settings().SpamQuestion</label>
                                 @Html.TextBoxFor(x => x.SpamAnswer, new { @class = "form-control" })
                             </div>
-                        }
+                        }*@
 
                         <div class="submit-holder">
                             <button type="submit" class="btn-mvc-green btn-mvc-large">

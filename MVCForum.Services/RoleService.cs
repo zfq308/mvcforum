@@ -51,7 +51,7 @@ namespace MVCForum.Services
             if (removeTracking)
             {
                 return _context.MembershipRole
-                    .Include(x => x.CategoryPermissionForRoles)
+                    //.Include(x => x.CategoryPermissionForRoles)
                     .Include(x => x.GlobalPermissionForRole)
                     .AsNoTracking()
                     .FirstOrDefault(y => y.RoleName.Contains(rolename));

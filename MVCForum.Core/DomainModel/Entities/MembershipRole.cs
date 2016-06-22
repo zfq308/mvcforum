@@ -59,7 +59,7 @@ namespace MVCForum.Domain.DomainModel
                 {
                     permissionRows[catPermissionForRole.Category.Id][catPermissionForRole.Permission.Id] = catPermissionForRole.IsTicked;
                 }
-                
+
 
             }
             return permissionRows;

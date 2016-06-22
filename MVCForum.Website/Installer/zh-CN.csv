@@ -85,7 +85,7 @@ Language.Change,选择语言
 Language.Changed,变更语言
 Layout.CreateButton,创建活动
 Layout.Nav.Activity,动态信息
-Layout.Nav.Admin,管理员
+Layout.Nav.Admin,管理员入口
 Layout.Nav.Badges,徽章
 Layout.Nav.Home,首页
 Layout.Nav.Leaderboard,积分榜

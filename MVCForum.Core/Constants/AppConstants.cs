@@ -30,15 +30,24 @@ namespace MVCForum.Domain.Constants
         public const string CurrentAction = "CurrentAction";
         public const string CurrentController = "CurrentController";
         public const string MemberRegisterViewModel = "MemberRegisterViewModel";
-        
+
+        #region System Role declare
+
         // Main admin role [This should never be changed]
         public const string AdminRoleName = "Admin";
+       
+        // Main Supplier role [This should never be changed]
+        public const string SupplierRoleName = "Supplier";
 
+        // Main admin and Supplier role [This should never be changed]
+        public const string Admin_SupplierRoleName = "Admin,Supplier";
+        
         // Main guest role [This should never be changed]
         // This is the role a non logged in user defaults to
         public const string GuestRoleName = "Guest";
 
-        //------------ End Permissions ----------
+        #endregion
+
 
         // Paging options
         public const string PagingUrlFormat = "{0}?p={1}";
@@ -61,9 +70,7 @@ namespace MVCForum.Domain.Constants
         //Mobile Check Name
         public const string IsMobileDevice = "IsMobileDevice";
 
-        /// <summary>
-        /// Cache lengths
-        /// </summary>
+
         public static List<string> ReflectionDllsToAvoid = new List<string>
         {
             "EcmaScript.NET.dll",

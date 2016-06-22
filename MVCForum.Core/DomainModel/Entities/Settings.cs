@@ -179,7 +179,15 @@ namespace MVCForum.Domain.DomainModel
         public string AkismentKey { get; set; }
         public string CurrentDatabaseVersion { get; set; }
         public bool? EnablePolls { get; set; }
+
+
+        /// <summary>
+        /// 系统暂停注册
+        /// </summary>
         public bool? SuspendRegistration { get; set; }
+
+
+
         public string CustomHeaderCode { get; set; }
         public string CustomFooterCode { get; set; }
 

@@ -2,8 +2,8 @@
 @using MVCForum.Website.Application.ExtensionMethods
 @model MVCForum.Website.Areas.Admin.ViewModels.MemberEditViewModel
 @{
-    ViewBag.Title = (Model.Id == Guid.Empty) ? "Add User" : "Edit User";
-    var buttonText = (Model.Id == Guid.Empty) ? "Create" : "Save";
+    ViewBag.Title = (Model.Id == Guid.Empty) ? "Add User" : "审核用户";
+    var buttonText = (Model.Id == Guid.Empty) ? "Create" : "保存";
 }
 
 <div class="backbutton">
@@ -164,7 +164,7 @@
                 <input type="submit" class="btn-mvc-green" value="@(buttonText)" />
                 @if (Model.Id != Guid.Empty)
                 {
-                    <a href="@Url.Action("Delete", new{Model.Id})" onclick="return confirm('Are you sure you want to delete @Model.UserName?')" class="btn-mvc-red" role="button">Delete</a>
+                    <a href="@Url.Action("Delete", new{Model.Id})" onclick="return confirm('你确认需要删除用户： @Model.UserName 吗?')" class="btn-mvc-red" role="button">Delete</a>
                 }
             </div>
         }

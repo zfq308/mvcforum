@@ -20,6 +20,7 @@ namespace MVCForum.Services.Data.Mapping
                                     new IndexAnnotation(new IndexAttribute("IX_MembershipUser_UserName", 1) { IsUnique = true }));
 
             Property(x => x.RealName).IsRequired().HasMaxLength(16);
+            Property(x => x.AliasName).IsRequired().HasMaxLength(16);
             Property(x => x.Gender).IsRequired();
             Property(x => x.Birthday).IsRequired();
             Ignore(x => x.Age);

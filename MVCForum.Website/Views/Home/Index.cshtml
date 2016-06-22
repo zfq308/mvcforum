@@ -1,19 +1,16 @@
 ﻿@using MVCForum.Website.Application
 @model MVCForum.Website.ViewModels.AiLvHomeViewModel
-
-
 @{
     Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
-    ViewBag.Title = Html.Settings().PageTitle ?? Html.Settings().ForumName;
+    //ViewBag.Title = Html.Settings().PageTitle ?? Html.Settings().ForumName;
+    ViewBag.Title = "首页";
     ViewBag.MetaDesc = Html.Settings().MetaDesc;
 }
-
-
 @section side
 {
+    @*输出侧边区块*@
     @Html.Partial("_CommonSideNav")
 }
-
 <div class="row documentation-message">
     <div class="col-md-6">
 
@@ -151,19 +148,10 @@
 </div>
 
 
-
-
-
-
 @*@Html.Action("LatestTopics", "Topic")*@
-
-
 @*@Html.Partial("_DocumentationBlock")*@
-
-
 @*
     If you want to show categories on the home page instead of topics
     Just uncomment this action out and delete this text (And comment out the above action)
     @Html.Action("ListMainCategories", "Category")
 *@
-

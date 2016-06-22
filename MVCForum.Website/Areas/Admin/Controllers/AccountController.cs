@@ -66,49 +66,6 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         #region Users
 
         /// <summary>
-        /// Take a set of role names and update a user's collection of roles accordingly
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="updatedRoles"></param>
-        private void UpdateUserRoles(MembershipUser user, IEnumerable<string> updatedRoles)
-        {
-            // ---------------------------------------------------------------------
-            // IMPORTANT - If you call this it MUST be within a unit of work
-            // ---------------------------------------------------------------------
-
-            // Not done in automapper to avoid handling services in the mapper
-            var updatedRolesSet = new List<MembershipRole>();
-            foreach (var roleStr in updatedRoles)
-            {
-                var alreadyIsRoleForUser = false;
-                foreach (var role in user.Roles)
-                {
-                    if (roleStr == role.RoleName)
-                    {
-                        // This role for this user is UNchanged
-                        updatedRolesSet.Add(role);
-                        alreadyIsRoleForUser = true;
-                        break;
-                    }
-                }
-
-                if (!alreadyIsRoleForUser)
-                {
-                    // This is a new role for this user
-                    updatedRolesSet.Add(_roleService.GetRole(roleStr));
-                }
-            }
-
-            // Replace the roles in the user's collection
-            user.Roles.Clear();
-            foreach (var role in updatedRolesSet)
-            {
-                user.Roles.Add(role);
-            }
-
-        }
-
-        /// <summary>
         /// List out users and allow editing
         /// </summary>
         /// <returns></returns>
@@ -137,6 +94,9 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 return View("List", memberListModel);
             }
         }
+
+
+        #region Manage User Points
 
         [Authorize(Roles = AppConstants.AdminRoleName)]
         public ActionResult ManageUserPoints(Guid id)
@@ -243,6 +203,12 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             }
         }
 
+        #endregion
+
+        #region Manage User
+
+       
+
         /// <summary>
         /// Manage users
         /// </summary>
@@ -273,29 +239,26 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         [Authorize(Roles = AppConstants.AdminRoleName)]
         public ActionResult Edit(MemberEditViewModel userModel)
         {
+            //TODO: 此处还需实现在Admin端变更用的功能
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
                 var user = MembershipService.GetUser(userModel.Id);
-
-                // Map everything in model except properties hidden on page
-                // user.Birthday = userModel.Birthday;  //TODO: Benjamin fix the issue,
                 user.Comment = userModel.Comment;
-                user.Email = userModel.Email;
-                user.Facebook = userModel.Facebook;
                 user.IsApproved = userModel.IsApproved;
                 user.IsLockedOut = userModel.IsLockedOut;
                 user.IsBanned = userModel.IsBanned;
-                user.Location = userModel.Location;
-                user.PasswordAnswer = userModel.PasswordAnswer;
-                user.PasswordQuestion = userModel.PasswordQuestion;
-                user.Signature = userModel.Signature;
-                user.Twitter = userModel.Twitter;
                 user.UserName = userModel.UserName;
-                user.Website = userModel.Website;
-                user.DisableEmailNotifications = userModel.DisableEmailNotifications;
-                user.DisablePosting = userModel.DisablePosting;
-                user.DisablePrivateMessages = userModel.DisablePrivateMessages;
-
+                //user.Twitter = userModel.Twitter;
+                //user.Location = userModel.Location;
+                //user.PasswordAnswer = userModel.PasswordAnswer;
+                //user.PasswordQuestion = userModel.PasswordQuestion;
+                //user.Signature = userModel.Signature;
+                //user.Website = userModel.Website;
+                //user.Email = userModel.Email;
+                //user.Facebook = userModel.Facebook;
+                //user.DisableEmailNotifications = userModel.DisableEmailNotifications;
+                //user.DisablePosting = userModel.DisablePosting;
+                //user.DisablePrivateMessages = userModel.DisablePrivateMessages;
                 try
                 {
                     unitOfWork.Commit();
@@ -328,14 +291,14 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     var user = MembershipService.GetUser(Id);
                     if (user == null)
                     {
-                        throw new ApplicationException("Cannot delete user - user does not exist");
+                        throw new ApplicationException("不能删除用户对象，用户不存在。");
                     }
 
                     MembershipService.Delete(user, unitOfWork);
 
                     ViewBag.Message = new GenericMessageViewModel
                     {
-                        Message = "User delete successfully",
+                        Message = "成功删除用户。",
                         MessageType = GenericMessages.success
                     };
                     unitOfWork.Commit();
@@ -346,7 +309,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     LoggingService.Error(ex);
                     ViewBag.Message = new GenericMessageViewModel
                     {
-                        Message = string.Format("Delete failed: {0}", ex.Message),
+                        Message = string.Format("删除失败，错误信息为: {0}", ex.Message),
                         MessageType = GenericMessages.danger
                     };
                 }
@@ -354,6 +317,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             }
         }
 
+        #endregion
         [HttpPost]
         [Authorize(Roles = AppConstants.AdminRoleName)]
         public void UpdateUserRoles(AjaxRoleUpdateViewModel ajaxRoleUpdateViewModel)
@@ -378,6 +342,49 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Take a set of role names and update a user's collection of roles accordingly
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="updatedRoles"></param>
+        private void UpdateUserRoles(MembershipUser user, IEnumerable<string> updatedRoles)
+        {
+            // ---------------------------------------------------------------------
+            // IMPORTANT - If you call this it MUST be within a unit of work
+            // ---------------------------------------------------------------------
+
+            // Not done in automapper to avoid handling services in the mapper
+            var updatedRolesSet = new List<MembershipRole>();
+            foreach (var roleStr in updatedRoles)
+            {
+                var alreadyIsRoleForUser = false;
+                foreach (var role in user.Roles)
+                {
+                    if (roleStr == role.RoleName)
+                    {
+                        // This role for this user is UNchanged
+                        updatedRolesSet.Add(role);
+                        alreadyIsRoleForUser = true;
+                        break;
+                    }
+                }
+
+                if (!alreadyIsRoleForUser)
+                {
+                    // This is a new role for this user
+                    updatedRolesSet.Add(_roleService.GetRole(roleStr));
+                }
+            }
+
+            // Replace the roles in the user's collection
+            user.Roles.Clear();
+            foreach (var role in updatedRolesSet)
+            {
+                user.Roles.Add(role);
+            }
+
         }
 
         #endregion
