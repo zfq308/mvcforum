@@ -1094,6 +1094,8 @@
     <Content Include="Views\AiLvHuoDong\ZuiXinZiXun.cshtml" />
     <Content Include="Views\AiLvHuoDong\AiLvZhangHuLayout.cshtml" />
     <Content Include="Views\AiLvHuoDong\AiLvZhangHu.cshtml" />
+    <Content Include="Views\Members\ServiceProtocal.cshtml" />
+    <Content Include="Views\Members\PrivacyPolicy.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />

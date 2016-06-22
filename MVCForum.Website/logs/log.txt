@@ -1,0 +1,128 @@
+INFO  2016-06-23 00:42:38,831  3033ms [1] MvcApplication         Application_Start  - Run AreaRegistration.RegisterAllAreas, done.
+INFO  2016-06-23 00:42:39,150  3352ms [1] MvcApplication         Application_Start  - Run GlobalConfiguration.Configure, done.
+INFO  2016-06-23 00:42:39,155  3357ms [1] MvcApplication         Application_Start  - Run FilterConfig.RegisterGlobalFilters, done.
+INFO  2016-06-23 00:42:39,373  3575ms [1] MvcApplication         Application_Start  - Start unityContainer, Done.
+INFO  2016-06-23 00:42:39,486  3688ms [1] MvcApplication         Application_Start  - LoggingService recording completed.
+INFO  2016-06-23 00:42:39,494  3696ms [1] MvcApplication         Application_Start  - Loaded Assemblies completed.
+DEBUG 2016-06-23 00:42:39,690  3892ms [1] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:42:39,696  3898ms [1] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:42:43,835  8037ms [1] Configuration          Seed               - Start Configuration.Seed.
+DEBUG 2016-06-23 00:42:43,841  8043ms [1] Configuration          Seed               - Start to get Language.
+DEBUG 2016-06-23 00:42:44,362  8564ms [1] Configuration          Seed               - Stop to get Language.
+DEBUG 2016-06-23 00:42:52,361 16563ms [1] Configuration          Seed               - timecost:8.521 seconds, flag:True.
+DEBUG 2016-06-23 00:42:53,498 17701ms [1] MvcApplication         Application_Start  - BadgeService.SyncBadges completed.
+DEBUG 2016-06-23 00:42:54,019 18222ms [DefaultQuartzScheduler_Worker-1] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:42:54,025 18228ms [DefaultQuartzScheduler_Worker-1] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:42:54,036 18239ms [DefaultQuartzScheduler_Worker-2] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:42:54,037 18240ms [DefaultQuartzScheduler_Worker-2] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:42:54,039 18242ms [DefaultQuartzScheduler_Worker-3] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:42:54,040 18243ms [DefaultQuartzScheduler_Worker-3] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:42:55,086 19289ms [5] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:42:55,089 19292ms [5] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:43:08,936 33138ms [DefaultQuartzScheduler_Worker-4] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:43:08,937 33139ms [DefaultQuartzScheduler_Worker-4] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+INFO  2016-06-23 00:44:18,565   701ms [1] MvcApplication         Application_Start  - Run AreaRegistration.RegisterAllAreas, done.
+INFO  2016-06-23 00:44:18,850   986ms [1] MvcApplication         Application_Start  - Run GlobalConfiguration.Configure, done.
+INFO  2016-06-23 00:44:18,860   996ms [1] MvcApplication         Application_Start  - Run FilterConfig.RegisterGlobalFilters, done.
+INFO  2016-06-23 00:44:19,523  1659ms [1] MvcApplication         Application_Start  - Start unityContainer, Done.
+INFO  2016-06-23 00:44:19,671  1807ms [1] MvcApplication         Application_Start  - LoggingService recording completed.
+INFO  2016-06-23 00:44:19,682  1818ms [1] MvcApplication         Application_Start  - Loaded Assemblies completed.
+DEBUG 2016-06-23 00:44:19,923  2059ms [1] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:44:19,929  2065ms [1] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:44:25,611  7746ms [1] Configuration          Seed               - Start Configuration.Seed.
+DEBUG 2016-06-23 00:44:25,616  7751ms [1] Configuration          Seed               - Start to get Language.
+DEBUG 2016-06-23 00:44:26,955  9090ms [1] Configuration          Seed               - Stop to get Language.
+DEBUG 2016-06-23 00:44:26,957  9092ms [1] Configuration          Seed               - timecost:1.34 seconds, flag:False.
+DEBUG 2016-06-23 00:44:28,054 10189ms [1] MvcApplication         Application_Start  - BadgeService.SyncBadges completed.
+DEBUG 2016-06-23 00:44:29,124 11259ms [DefaultQuartzScheduler_Worker-1] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:44:29,130 11265ms [DefaultQuartzScheduler_Worker-1] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:44:29,163 11298ms [DefaultQuartzScheduler_Worker-3] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:44:29,164 11299ms [DefaultQuartzScheduler_Worker-3] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:44:29,183 11318ms [DefaultQuartzScheduler_Worker-2] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:44:29,184 11319ms [DefaultQuartzScheduler_Worker-2] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:44:33,596 15731ms [6] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:44:33,598 15733ms [6] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:44:44,021 26156ms [DefaultQuartzScheduler_Worker-4] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:44:44,022 26157ms [DefaultQuartzScheduler_Worker-4] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:44:50,526 32661ms [6] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:44:50,527 32662ms [6] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:44:58,940 41075ms [DefaultQuartzScheduler_Worker-5] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:44:58,942 41077ms [DefaultQuartzScheduler_Worker-5] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:45:13,943 56078ms [DefaultQuartzScheduler_Worker-6] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:45:13,944 56079ms [DefaultQuartzScheduler_Worker-6] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:45:21,814 63949ms [7] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:45:21,815 63950ms [7] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:45:22,064 64199ms [7] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:45:22,065 64200ms [7] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:45:28,937 71073ms [DefaultQuartzScheduler_Worker-7] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:45:28,938 71074ms [DefaultQuartzScheduler_Worker-7] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:45:34,576 76711ms [7] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:45:34,579 76714ms [7] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:45:38,882 81017ms [7] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:45:38,882 81017ms [7] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:45:43,958 86094ms [DefaultQuartzScheduler_Worker-8] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:45:43,959 86095ms [DefaultQuartzScheduler_Worker-8] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:45:46,525 88661ms [7] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:45:46,526 88662ms [7] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+INFO  2016-06-23 00:48:55,198   269ms [1] MvcApplication         Application_Start  - Run AreaRegistration.RegisterAllAreas, done.
+INFO  2016-06-23 00:48:55,478   549ms [1] MvcApplication         Application_Start  - Run GlobalConfiguration.Configure, done.
+INFO  2016-06-23 00:48:55,483   554ms [1] MvcApplication         Application_Start  - Run FilterConfig.RegisterGlobalFilters, done.
+INFO  2016-06-23 00:48:55,886   957ms [1] MvcApplication         Application_Start  - Start unityContainer, Done.
+INFO  2016-06-23 00:48:56,146  1217ms [1] MvcApplication         Application_Start  - LoggingService recording completed.
+INFO  2016-06-23 00:48:56,156  1227ms [1] MvcApplication         Application_Start  - Loaded Assemblies completed.
+DEBUG 2016-06-23 00:48:56,354  1425ms [1] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:48:56,360  1431ms [1] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:48:59,293  4364ms [1] Configuration          Seed               - Start Configuration.Seed.
+DEBUG 2016-06-23 00:48:59,300  4371ms [1] Configuration          Seed               - Start to get Language.
+DEBUG 2016-06-23 00:48:59,853  4924ms [1] Configuration          Seed               - Stop to get Language.
+DEBUG 2016-06-23 00:48:59,854  4925ms [1] Configuration          Seed               - timecost:0.554 seconds, flag:False.
+DEBUG 2016-06-23 00:49:00,819  5890ms [1] MvcApplication         Application_Start  - BadgeService.SyncBadges completed.
+DEBUG 2016-06-23 00:49:01,736  6807ms [DefaultQuartzScheduler_Worker-1] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:49:01,736  6807ms [DefaultQuartzScheduler_Worker-2] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:49:01,802  6873ms [DefaultQuartzScheduler_Worker-2] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:49:01,803  6874ms [DefaultQuartzScheduler_Worker-1] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:49:01,793  6864ms [DefaultQuartzScheduler_Worker-3] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:49:01,866  6937ms [DefaultQuartzScheduler_Worker-3] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:49:04,280  9351ms [8] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:49:04,281  9352ms [8] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:49:11,192 16262ms [9] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:49:11,193 16263ms [9] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:49:16,572 21643ms [DefaultQuartzScheduler_Worker-4] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:49:16,573 21644ms [DefaultQuartzScheduler_Worker-4] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:49:31,385 36456ms [9] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:49:31,386 36457ms [9] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:49:31,576 36647ms [DefaultQuartzScheduler_Worker-5] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:49:31,577 36648ms [DefaultQuartzScheduler_Worker-5] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:49:35,117 40188ms [9] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:49:35,119 40190ms [9] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:49:46,573 51643ms [DefaultQuartzScheduler_Worker-6] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:49:46,574 51644ms [DefaultQuartzScheduler_Worker-6] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+INFO  2016-06-23 00:51:39,414   282ms [1] MvcApplication         Application_Start  - Run AreaRegistration.RegisterAllAreas, done.
+INFO  2016-06-23 00:51:39,711   579ms [1] MvcApplication         Application_Start  - Run GlobalConfiguration.Configure, done.
+INFO  2016-06-23 00:51:39,717   585ms [1] MvcApplication         Application_Start  - Run FilterConfig.RegisterGlobalFilters, done.
+INFO  2016-06-23 00:51:40,146  1014ms [1] MvcApplication         Application_Start  - Start unityContainer, Done.
+INFO  2016-06-23 00:51:40,299  1167ms [1] MvcApplication         Application_Start  - LoggingService recording completed.
+INFO  2016-06-23 00:51:40,308  1176ms [1] MvcApplication         Application_Start  - Loaded Assemblies completed.
+DEBUG 2016-06-23 00:51:40,473  1341ms [1] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:51:40,484  1352ms [1] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:51:43,326  4193ms [1] Configuration          Seed               - Start Configuration.Seed.
+DEBUG 2016-06-23 00:51:43,334  4201ms [1] Configuration          Seed               - Start to get Language.
+DEBUG 2016-06-23 00:51:43,941  4808ms [1] Configuration          Seed               - Stop to get Language.
+DEBUG 2016-06-23 00:51:43,942  4809ms [1] Configuration          Seed               - timecost:0.607 seconds, flag:False.
+DEBUG 2016-06-23 00:51:44,866  5733ms [1] MvcApplication         Application_Start  - BadgeService.SyncBadges completed.
+DEBUG 2016-06-23 00:51:45,586  6453ms [DefaultQuartzScheduler_Worker-1] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:51:45,594  6461ms [DefaultQuartzScheduler_Worker-1] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:51:45,621  6488ms [DefaultQuartzScheduler_Worker-3] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:51:45,622  6489ms [DefaultQuartzScheduler_Worker-3] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:51:45,643  6510ms [DefaultQuartzScheduler_Worker-2] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:51:45,644  6511ms [DefaultQuartzScheduler_Worker-2] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:51:48,193  9060ms [6] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:51:48,196  9063ms [6] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:51:55,098 15965ms [22] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:51:55,099 15966ms [22] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:52:00,468 21335ms [DefaultQuartzScheduler_Worker-4] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:52:00,468 21336ms [DefaultQuartzScheduler_Worker-4] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:52:15,464 36332ms [DefaultQuartzScheduler_Worker-5] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:52:15,465 36333ms [DefaultQuartzScheduler_Worker-5] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.
+DEBUG 2016-06-23 00:52:30,462 51329ms [DefaultQuartzScheduler_Worker-6] UnitOfWorkManager      .ctor              - Database.SetInitializer start.
+DEBUG 2016-06-23 00:52:30,463 51330ms [DefaultQuartzScheduler_Worker-6] UnitOfWorkManager      .ctor              - Database.SetInitializer completed.

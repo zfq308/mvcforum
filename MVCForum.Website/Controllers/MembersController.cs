@@ -1889,7 +1889,15 @@ namespace MVCForum.Website.Controllers
             }
         }
 
+        public ActionResult ServiceProtocal()
+        {
+            return View();
+        }
 
+        public ActionResult PrivacyPolicy()
+        {
+            return View();
+        }
 
     }
 }
