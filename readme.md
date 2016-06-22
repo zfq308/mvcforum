@@ -1,7 +1,7 @@
-Ò»Ğ©³£¼ûµÄMVC¹¦ÄÜ
-1. Êä³öÒ»¸öPartialÇø¿éµ½Ç°Ì¨Ò³Ãæ
+ï»¿ä¸€äº›å¸¸è§çš„MVCåŠŸèƒ½
+1. è¾“å‡ºä¸€ä¸ªPartialåŒºå—åˆ°å‰å°é¡µé¢
 
-2. µ÷µ½ÓÃ»§ÕË»§±à¼­Ò³
+2. è°ƒåˆ°ç”¨æˆ·è´¦æˆ·ç¼–è¾‘é¡µ
  <a href="@Url.Action("Edit", "Members", new { id = Model.CurrentUser.Id })">@Html.LanguageString("Buttons.Edit") @Model.CurrentUser.UserName</a>
 
 

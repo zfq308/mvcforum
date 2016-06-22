@@ -16,6 +16,8 @@ namespace MVCForum.Services
     /// </summary>
     public partial class LoggingService : ILoggingService
     {
+        #region 参数定义
+
         private const string LogFileNameOnly = @"LogFile";
         private const string LogFileExtension = @".txt";
         private const string LogFileDirectory = @"~/App_Data";
@@ -26,8 +28,10 @@ namespace MVCForum.Services
         private static int _maxLogSize = 10000;
         private static string _logFileName;
 
+        #endregion
+
         /// <summary>
-        /// Constructor
+        /// 建构式
         /// </summary>
         public LoggingService()
         {
@@ -249,5 +253,7 @@ namespace MVCForum.Services
         {
             return ReadLogFile();
         }
+
+     
     }
 }

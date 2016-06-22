@@ -98,9 +98,7 @@ namespace MVCForum.Domain.Events
         public void Initialize(ILoggingService loggingService, List<Assembly> assemblies)
         {
             Logger = loggingService;
-
             var interfaceFilter = new TypeFilter(_reflectionService.InterfaceFilter);
-
             foreach (var nextAssembly in assemblies)
             {
                 try

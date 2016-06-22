@@ -107,6 +107,8 @@ namespace MVCForum.Website.Controllers
 
         protected bool UserIsAdmin => User.IsInRole(AppConstants.AdminRoleName);
 
+        protected bool UserIsSupplier => User.IsInRole(AppConstants.SupplierRoleName);
+
         protected void ShowMessage(GenericMessageViewModel messageViewModel)
         {
             //ViewData[AppConstants.MessageViewBagName] = messageViewModel;
@@ -127,8 +129,4 @@ namespace MVCForum.Website.Controllers
         }
     }
 
-    public class UserNotLoggedOnException : System.Exception
-    {
-
-    }
 }

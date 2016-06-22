@@ -37,19 +37,21 @@ namespace MVCForum.Website
             log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
             AreaRegistration.RegisterAllAreas();
+            logger.Info("Run AreaRegistration.RegisterAllAreas, done.");
 
-            logger.Debug("AreaRegistration.RegisterAllAreas completed.");
             GlobalConfiguration.Configure(WebApiConfig.Register);
-            logger.Debug("GlobalConfiguration.Configure completed.");
+            logger.Info("Run GlobalConfiguration.Configure, done.");
+
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
-            logger.Debug("FilterConfig.RegisterGlobalFilters completed.");
+            logger.Info("Run FilterConfig.RegisterGlobalFilters, done.");
 
-
+            // https://msdn.microsoft.com/zh-cn/library/system.web.helpers.antiforgeryconfig.suppressidentityheuristicchecks.aspx?cs-save-lang=1&cs-lang=fsharp
+            // 获取或设置一个值，该值可指示防伪系统是否应跳过检查指示系统滥用的条件。如果防伪系统不应检查可能的滥用，则为 true；否则为 false。
             AntiForgeryConfig.SuppressIdentityHeuristicChecks = true;
 
             // Start unity
             var unityContainer = UnityHelper.Start();
-
+            logger.Info("Start unityContainer, Done.");
             // Routes
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
@@ -59,12 +61,15 @@ namespace MVCForum.Website
 
             // If the same carry on as normal
             LoggingService.Initialise(ConfigUtils.GetAppSettingInt32("LogFileMaxSizeBytes", 10000));
-            LoggingService.Error("START APP");
+            LoggingService.Error("Application_Start");
 
-            logger.Debug("LoggingService recording completed.");
+            logger.Info("LoggingService recording completed.");
+
+            #region TODO: Benjamin, 可考虑取消这一段“反射badges系列组件”的代码
+
             // Get assemblies for badges, events etc...
             var loadedAssemblies = ReflectionService.GetAssemblies();
-            logger.Debug("Loaded Assemblies completed.");
+            logger.Info("Loaded Assemblies completed.");
             // Do the badge processing
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
@@ -79,6 +84,9 @@ namespace MVCForum.Website
                 }
             }
             logger.Debug("BadgeService.SyncBadges completed.");
+
+            #endregion
+
             // Set the view engine
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new ForumViewEngine(SettingsService.GetSettings().Theme));
@@ -105,8 +113,6 @@ namespace MVCForum.Website
         protected void Application_Error(object sender, EventArgs e)
         {
             var lastError = Server.GetLastError();
-
-
             if (lastError is HttpAntiForgeryException)
             {
                 Response.Clear();
@@ -119,10 +125,6 @@ namespace MVCForum.Website
             {
                 LoggingService.Error(lastError);
             }
-
-
-
         }
-
     }
 }

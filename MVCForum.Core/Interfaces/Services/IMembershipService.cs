@@ -41,7 +41,7 @@ namespace MVCForum.Domain.Interfaces.Services
         bool ValidateUser(string userName, string password, int maxInvalidPasswordAttempts);
         LoginAttemptStatus LastLoginStatus { get; }
         string[] GetRolesForUser(string username);
-        MembershipUser Get(Guid id);
+        MembershipUser GetUser(Guid id);
         MembershipUser GetUser(string username, bool removeTracking = false);
         MembershipUser GetUserByEmail(string email, bool removeTracking = false);
         MembershipUser GetUserByMobilePhone(string MobilePhone, bool removeTracking = false);
@@ -53,15 +53,15 @@ namespace MVCForum.Domain.Interfaces.Services
         MembershipUser GetUserByOpenIdToken(string openId);
         IList<MembershipUser> GetUsersById(List<Guid> guids);
         IList<MembershipUser> GetUsersByDaysPostsPoints(int amoutOfDaysSinceRegistered, int amoutOfPosts);
-        MembershipUser GetUser(Guid id);
+      
         bool ChangePassword(MembershipUser user, string oldPassword, string newPassword);
         bool ResetPassword(MembershipUser user, string newPassword);
         void UnlockUser(string username, bool resetPasswordAttempts);
         MembershipCreateStatus CreateUser(MembershipUser newUser);
         string ErrorCodeToString(MembershipCreateStatus createStatus);
         MembershipUser CreateEmptyUser();
-        IList<MembershipUser> GetAll();
-        PagedList<MembershipUser> GetAll(int pageIndex, int pageSize);
+        IList<MembershipUser> GetAll(bool isApproved = false);
+        PagedList<MembershipUser> GetAll(int pageIndex, int pageSize,bool isApproved = false);
         PagedList<MembershipUser> SearchMembers(string search, int pageIndex, int pageSize);
         IList<MembershipUser> SearchMembers(string username, int amount);
         IList<MembershipUser> GetActiveMembers();

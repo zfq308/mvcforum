@@ -327,6 +327,7 @@
     <Compile Include="Controllers\TagController.cs" />
     <Compile Include="Controllers\TopicController.cs" />
     <Compile Include="Controllers\UploadController.cs" />
+    <Compile Include="Controllers\UserNotLoggedOnException.cs" />
     <Compile Include="Controllers\VoteController.cs" />
     <Compile Include="Events\ExampleBeforeLogin.cs" />
     <Compile Include="Global.asax.cs">

@@ -110,8 +110,7 @@ namespace MVCForum.Services
 
         #endregion
 
-        #region 用户实例操作
-
+        #region 创建用户实例
 
         /// <summary>
         /// 创建一个新的，用默认值填充的，没有保存的用户实例
@@ -189,6 +188,8 @@ namespace MVCForum.Services
             }
             else
             {
+                #region 校验基本的属性
+
                 if (string.IsNullOrEmpty(newUser.UserName))
                 {
                     status = MembershipCreateStatus.InvalidUserName;
@@ -211,58 +212,69 @@ namespace MVCForum.Services
                     status = MembershipCreateStatus.InvalidPassword;
                 }
 
+                #endregion
+
                 if (status == MembershipCreateStatus.Success)
                 {
+                    #region 生成用户的密码的HASH值和SALT值
+
                     // Hash the password
                     var salt = StringUtils.CreateSalt(AppConstants.SaltSize);
                     var hash = StringUtils.GenerateSaltedHash(newUser.Password, salt);
                     newUser.Password = hash;
                     newUser.PasswordSalt = salt;
 
+                    #endregion
+
                     newUser.Roles = new List<MembershipRole> { settings.NewMemberStartingRole };
 
                     // Set dates
                     newUser.CreateDate = newUser.LastPasswordChangedDate = DateTime.Now;
                     newUser.LastLockoutDate = (DateTime)SqlDateTime.MinValue;
-                    newUser.LastLoginDate = DateTime.Now;
+                    newUser.LastLoginDate = (DateTime)SqlDateTime.MinValue;
                     newUser.IsLockedOut = false;
-
-                    var manuallyAuthoriseMembers = settings.ManuallyAuthoriseNewMembers;
-                    var memberEmailAuthorisationNeeded = settings.NewMemberEmailConfirmation == true;
-                    if (manuallyAuthoriseMembers || memberEmailAuthorisationNeeded)
-                    {
-                        newUser.IsApproved = false;
-                    }
-                    else
-                    {
-                        newUser.IsApproved = true;
-                    }
-
-                    // url generator
                     newUser.Slug = ServiceHelpers.GenerateSlug(newUser.UserName, GetUserBySlugLike(ServiceHelpers.CreateUrl(newUser.UserName)), null);
+
+                    #region 设定审核标志位
+
+                    //var manuallyAuthoriseMembers = settings.ManuallyAuthoriseNewMembers;
+                    //var memberEmailAuthorisationNeeded = settings.NewMemberEmailConfirmation == true;
+                    //if (manuallyAuthoriseMembers || memberEmailAuthorisationNeeded)
+                    //{
+                    //    newUser.IsApproved = false;
+                    //}
+                    //else
+                    //{
+                    //    newUser.IsApproved = true;
+                    //}
+
+                    newUser.IsApproved = false;
+
+                    #endregion
 
                     try
                     {
                         Add(newUser);
 
-                        if (settings.EmailAdminOnNewMemberSignUp)
-                        {
-                            var sb = new StringBuilder();
-                            sb.AppendFormat("<p>{0}</p>", string.Format(_localizationService.GetResourceString("Members.NewMemberRegistered"), settings.ForumName, settings.ForumUrl));
-                            sb.AppendFormat("<p>{0} - {1}</p>", newUser.UserName, newUser.Email);
-                            var email = new Email
-                            {
-                                EmailTo = settings.AdminEmailAddress,
-                                NameTo = _localizationService.GetResourceString("Members.Admin"),
-                                Subject = _localizationService.GetResourceString("Members.NewMemberSubject")
-                            };
-                            email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
-                            _emailService.SendMail(email);
-                        }
+                        #region 新用户加入时给管理员发邮件（此功能已禁用）
+                        //if (settings.EmailAdminOnNewMemberSignUp)
+                        //{
+                        //    var sb = new StringBuilder();
+                        //    sb.AppendFormat("<p>{0}</p>", string.Format(_localizationService.GetResourceString("Members.NewMemberRegistered"), settings.ForumName, settings.ForumUrl));
+                        //    sb.AppendFormat("<p>{0} - {1}</p>", newUser.UserName, newUser.Email);
+                        //    var email = new Email
+                        //    {
+                        //        EmailTo = settings.AdminEmailAddress,
+                        //        NameTo = _localizationService.GetResourceString("Members.Admin"),
+                        //        Subject = _localizationService.GetResourceString("Members.NewMemberSubject")
+                        //    };
+                        //    email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
+                        //    _emailService.SendMail(email);
+                        //}
+                        #endregion
 
                         _activityService.MemberJoined(newUser);
-                        EventManager.Instance.FireAfterRegisterUser(this,
-                                                                    new RegisterUserEventArgs { User = newUser });
+                        EventManager.Instance.FireAfterRegisterUser(this, new RegisterUserEventArgs { User = newUser });
                     }
                     catch (Exception)
                     {
@@ -274,22 +286,9 @@ namespace MVCForum.Services
             return status;
         }
 
-
         #endregion
 
         #region 查询用户实例
-
-        /// <summary>
-        /// 通过用户Id取得用户实例
-        /// </summary>
-        /// <param name="id">用户Id</param>
-        /// <returns></returns>
-        public MembershipUser Get(Guid id)
-        {
-            return _context.MembershipUser
-                .Include(x => x.Roles)
-                .FirstOrDefault(x => x.Id == id);
-        }
 
         /// <summary>
         /// 按用户账号Id查找用户实例
@@ -298,41 +297,42 @@ namespace MVCForum.Services
         /// <returns></returns>
         public MembershipUser GetUser(Guid id)
         {
-            return Get(id);
+            return _context.MembershipUser
+                  .Include(x => x.Roles)
+                  .FirstOrDefault(x => x.Id == id);
         }
 
         /// <summary>
-        /// Get a user by username
+        /// 按账号名查找用户实例
         /// </summary>
-        /// <param name="username"></param>
+        /// <param name="username">账号名</param>
         /// <param name="removeTracking"></param>
         /// <returns></returns>
         public MembershipUser GetUser(string username, bool removeTracking = false)
         {
-            MembershipUser member;
-
-            if (removeTracking)
+            MembershipUser member = null;
+            if (!string.IsNullOrEmpty(username))
             {
-                member = _context.MembershipUser
-                    .Include(x => x.Roles)
-                    .AsNoTracking()
-                    .FirstOrDefault(name => name.UserName.Equals(username, StringComparison.CurrentCultureIgnoreCase));
-            }
-            else
-            {
-                member = _context.MembershipUser
-                    .Include(x => x.Roles)
-                    .FirstOrDefault(name => name.UserName.Equals(username, StringComparison.CurrentCultureIgnoreCase));
-            }
+                if (removeTracking)
+                {
+                    member = _context.MembershipUser
+                        .Include(x => x.Roles)
+                        .AsNoTracking()
+                        .FirstOrDefault(name => name.UserName.Equals(username, StringComparison.CurrentCultureIgnoreCase));
+                }
+                else
+                {
+                    member = _context.MembershipUser
+                        .Include(x => x.Roles)
+                        .FirstOrDefault(name => name.UserName.Equals(username, StringComparison.CurrentCultureIgnoreCase));
+                }
 
-            // TODO: Benjamin, 需要Review这块的必要性！
-            // Do a check to log out the user if they are logged in and have been deleted
-            if (member == null && HttpContext.Current.User.Identity.Name == username)
-            {
-                // Member is null so doesn't exist, yet they are logged in with that username - Log them out
-                FormsAuthentication.SignOut();
+                if (member == null && HttpContext.Current.User.Identity.Name.ToLower() == username.ToLower())
+                {
+                    // Member is null so doesn't exist, yet they are logged in with that username - Log them out
+                    FormsAuthentication.SignOut();
+                }
             }
-
             return member;
         }
 
@@ -349,11 +349,11 @@ namespace MVCForum.Services
             {
                 return _context.MembershipUser.AsNoTracking()
                     .Include(x => x.Roles)
-                    .FirstOrDefault(name => name.MobilePhone == MobilePhone);
+                    .FirstOrDefault(m => m.MobilePhone == MobilePhone);
             }
             return _context.MembershipUser
                 .Include(x => x.Roles)
-                .FirstOrDefault(name => name.MobilePhone == MobilePhone);
+                .FirstOrDefault(m => m.MobilePhone == MobilePhone);
         }
 
         /// <summary>
@@ -401,13 +401,41 @@ namespace MVCForum.Services
         /// 取得所有用户的实例集合
         /// </summary>
         /// <returns></returns>
-        public IList<MembershipUser> GetAll()
+        public IList<MembershipUser> GetAll(bool isApproved = false)
         {
-            return _context.MembershipUser.ToList();
+            if (isApproved)
+            {
+                return _context.MembershipUser.Where(x => x.IsApproved == true).ToList();
+            }
+            else
+            {
+                return _context.MembershipUser.ToList();
+            }
         }
 
+        /// <summary>
+        /// 分组取得用户实例集合
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="isApproved"></param>
+        /// <returns></returns>
+        public PagedList<MembershipUser> GetAll(int pageIndex, int pageSize, bool isApproved = false)
+        {
+            var totalCount = MemberCount(isApproved);
+            var results = GetAll(isApproved).OrderByDescending(x => x.CreateDate) //按账号的注册时间降序排列
+                          .Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+            return new PagedList<MembershipUser>(results, pageIndex, pageSize, totalCount);
+        }
 
         #endregion
+
+
+
+
+        //  =================以下代码还需要Review=================
+
+
 
         /// <summary>
         /// 取得最新注册的amountToTake个用户实例的集合
@@ -527,7 +555,7 @@ namespace MVCForum.Services
         /// <summary>
         /// 取得特定用户所拥有的角色清单
         /// </summary>
-        /// <param name="username"></param>
+        /// <param name="username">用户账号</param>
         /// <returns></returns>
         public string[] GetRolesForUser(string username)
         {
@@ -548,59 +576,9 @@ namespace MVCForum.Services
 
 
 
-        //  =================以下代码还需要Review=================
 
 
 
-        public string ErrorCodeToString(MembershipCreateStatus createStatus)
-        {
-            // See http://go.microsoft.com/fwlink/?LinkID=177550 for a full list of status codes.
-            // Benjamin: 具体的状态描述请参见：  https://msdn.microsoft.com/zh-cn/library/system.web.security.membershipcreatestatus.aspx
-            switch (createStatus)
-            {
-                case MembershipCreateStatus.DuplicateUserName:  //用户名已存在于应用程序的数据库中。
-                    return _localizationService.GetResourceString("Members.Errors.DuplicateUserName");
-
-                case MembershipCreateStatus.DuplicateEmail:  //电子邮件地址已存在于应用程序的数据库中。
-                    return _localizationService.GetResourceString("Members.Errors.DuplicateEmail");
-
-                case MembershipCreateStatus.InvalidPassword:   //密码的格式设置不正确。
-                    return _localizationService.GetResourceString("Members.Errors.InvalidPassword");
-
-                case MembershipCreateStatus.InvalidEmail:
-                    return _localizationService.GetResourceString("Members.Errors.InvalidEmail");
-
-                case MembershipCreateStatus.InvalidAnswer:
-                    return _localizationService.GetResourceString("Members.Errors.InvalidAnswer");
-
-                case MembershipCreateStatus.InvalidQuestion:
-                    return _localizationService.GetResourceString("Members.Errors.InvalidQuestion");
-
-                case MembershipCreateStatus.InvalidUserName:
-                    return _localizationService.GetResourceString("Members.Errors.InvalidUserName");
-
-                case MembershipCreateStatus.ProviderError:
-                    return _localizationService.GetResourceString("Members.Errors.ProviderError");
-
-                case MembershipCreateStatus.UserRejected:
-                    return _localizationService.GetResourceString("Members.Errors.UserRejected");
-
-                default:
-                    return _localizationService.GetResourceString("Members.Errors.Unknown");
-            }
-        }
-
-        public PagedList<MembershipUser> GetAll(int pageIndex, int pageSize)
-        {
-            var totalCount = _context.MembershipUser.Count();
-            var results = _context.MembershipUser
-                                .OrderBy(x => x.UserName)
-                                .Skip((pageIndex - 1) * pageSize)
-                                .Take(pageSize)
-                                .ToList();
-
-            return new PagedList<MembershipUser>(results, pageIndex, pageSize, totalCount);
-        }
 
         public PagedList<MembershipUser> SearchMembers(string search, int pageIndex, int pageSize)
         {
@@ -641,6 +619,46 @@ namespace MVCForum.Services
                 .AsNoTracking()
                 .ToList();
         }
+
+        public string ErrorCodeToString(MembershipCreateStatus createStatus)
+        {
+            // See http://go.microsoft.com/fwlink/?LinkID=177550 for a full list of status codes.
+            // Benjamin: 具体的状态描述请参见：  https://msdn.microsoft.com/zh-cn/library/system.web.security.membershipcreatestatus.aspx
+            switch (createStatus)
+            {
+                case MembershipCreateStatus.DuplicateUserName:  //用户名已存在于应用程序的数据库中。
+                    return _localizationService.GetResourceString("Members.Errors.DuplicateUserName");
+
+                case MembershipCreateStatus.DuplicateEmail:  //电子邮件地址已存在于应用程序的数据库中。
+                    return _localizationService.GetResourceString("Members.Errors.DuplicateEmail");
+
+                case MembershipCreateStatus.InvalidPassword:   //密码的格式设置不正确。
+                    return _localizationService.GetResourceString("Members.Errors.InvalidPassword");
+
+                case MembershipCreateStatus.InvalidEmail:
+                    return _localizationService.GetResourceString("Members.Errors.InvalidEmail");
+
+                case MembershipCreateStatus.InvalidAnswer:
+                    return _localizationService.GetResourceString("Members.Errors.InvalidAnswer");
+
+                case MembershipCreateStatus.InvalidQuestion:
+                    return _localizationService.GetResourceString("Members.Errors.InvalidQuestion");
+
+                case MembershipCreateStatus.InvalidUserName:
+                    return _localizationService.GetResourceString("Members.Errors.InvalidUserName");
+
+                case MembershipCreateStatus.ProviderError:
+                    return _localizationService.GetResourceString("Members.Errors.ProviderError");
+
+                case MembershipCreateStatus.UserRejected:
+                    return _localizationService.GetResourceString("Members.Errors.UserRejected");
+
+                default:
+                    return _localizationService.GetResourceString("Members.Errors.Unknown");
+            }
+        }
+
+
 
         /// <summary>
         /// Delete a member
@@ -684,7 +702,7 @@ namespace MVCForum.Services
                     throw new ApplicationException(_localizationService.GetResourceString("Members.CantUnlock"));
                 }
 
-                var existingUser = Get(user.Id);
+                var existingUser = GetUser(user.Id);
 
                 user.IsLockedOut = false;
                 user.Roles = existingUser.Roles;
@@ -1159,7 +1177,7 @@ namespace MVCForum.Services
             newPassword = StringUtils.SafePlainText(newPassword);
 
             //n3oCacheHelper.Clear(user.UserName);
-            var existingUser = Get(user.Id);
+            var existingUser = GetUser(user.Id);
             var salt = existingUser.PasswordSalt;
             var oldHash = StringUtils.GenerateSaltedHash(oldPassword, salt);
 
@@ -1188,7 +1206,7 @@ namespace MVCForum.Services
         /// <returns></returns>
         public bool ResetPassword(MembershipUser user, string newPassword)
         {
-            var existingUser = Get(user.Id);
+            var existingUser = GetUser(user.Id);
 
             var salt = StringUtils.CreateSalt(AppConstants.SaltSize);
             var newHash = StringUtils.GenerateSaltedHash(newPassword, salt);
@@ -1264,14 +1282,9 @@ namespace MVCForum.Services
         }
         #endregion
 
-        #region 未来拓展方法
+        #region ==================在爱驴网项目中禁用的方法==========================
 
-        /// <summary>
-        /// Get a user by email address
-        /// </summary>
-        /// <param name="email"></param>
-        /// <param name="removeTracking"></param>
-        /// <returns></returns>
+        [Obsolete("此方法在爱驴网项目中禁用")]
         public MembershipUser GetUserByEmail(string email, bool removeTracking = false)
         {
             email = StringUtils.SafePlainText(email);
@@ -1286,7 +1299,7 @@ namespace MVCForum.Services
                 .FirstOrDefault(name => name.Email == email);
         }
 
-
+        [Obsolete("此方法在爱驴网项目中禁用")]
         public IList<MembershipUser> GetLowestPointUsers(int amountToTake)
         {
             return _context.MembershipUser
@@ -1302,12 +1315,7 @@ namespace MVCForum.Services
                 .ToList();
         }
 
-        /// <summary>
-        /// Get by posts and date
-        /// </summary>
-        /// <param name="amoutOfDaysSinceRegistered"></param>
-        /// <param name="amoutOfPosts"></param>
-        /// <returns></returns>
+        [Obsolete("此方法在爱驴网项目中禁用")]
         public IList<MembershipUser> GetUsersByDaysPostsPoints(int amoutOfDaysSinceRegistered, int amoutOfPosts)
         {
             var registerEnd = DateTime.Now;
@@ -1320,39 +1328,30 @@ namespace MVCForum.Services
                 .ToList();
         }
 
+        #region 通过第三方登录Id取得用户实例（此功能已禁用）
 
-
-        /// <summary>
-        /// Gets a user by their facebook id
-        /// </summary>
-        /// <param name="facebookId"></param>
-        /// <returns></returns>
+        [Obsolete("此方法在爱驴网项目中禁用")]
         public MembershipUser GetUserByFacebookId(long facebookId)
         {
             return _context.MembershipUser
                 .Include(x => x.Roles)
                 .FirstOrDefault(name => name.FacebookId == facebookId);
         }
-
+        [Obsolete("此方法在爱驴网项目中禁用")]
         public MembershipUser GetUserByTwitterId(string twitterId)
         {
             return _context.MembershipUser
                 .Include(x => x.Roles)
                 .FirstOrDefault(name => name.TwitterAccessToken == twitterId);
         }
-
+        [Obsolete("此方法在爱驴网项目中禁用")]
         public MembershipUser GetUserByGoogleId(string googleId)
         {
             return _context.MembershipUser
                 .Include(x => x.Roles)
                 .FirstOrDefault(name => name.GoogleAccessToken == googleId);
         }
-
-        /// <summary>
-        /// Get users by openid token
-        /// </summary>
-        /// <param name="openId"></param>
-        /// <returns></returns>
+        [Obsolete("此方法在爱驴网项目中禁用")]
         public MembershipUser GetUserByOpenIdToken(string openId)
         {
             openId = StringUtils.GetSafeHtml(openId);
@@ -1361,6 +1360,7 @@ namespace MVCForum.Services
                 .FirstOrDefault(name => name.MiscAccessToken == openId);
         }
 
+        #endregion
 
         #endregion
 

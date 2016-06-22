@@ -31,17 +31,14 @@ namespace MVCForum.Domain.Constants
         public const string CurrentController = "CurrentController";
         public const string MemberRegisterViewModel = "MemberRegisterViewModel";
 
-        #region System Role declare
+        #region 系统角色定义
 
         // Main admin role [This should never be changed]
         public const string AdminRoleName = "Admin";
-       
+
         // Main Supplier role [This should never be changed]
         public const string SupplierRoleName = "Supplier";
 
-        // Main admin and Supplier role [This should never be changed]
-        public const string Admin_SupplierRoleName = "Admin,Supplier";
-        
         // Main guest role [This should never be changed]
         // This is the role a non logged in user defaults to
         public const string GuestRoleName = "Guest";
@@ -60,7 +57,7 @@ namespace MVCForum.Domain.Constants
         /// </summary>
         public const int TimeSpanInMinutesToDoCheck = 3;
 
-        
+
         public const string EditorTemplateColourPicker = "colourpicker";
 
         //Querystring names
@@ -73,54 +70,57 @@ namespace MVCForum.Domain.Constants
 
         public static List<string> ReflectionDllsToAvoid = new List<string>
         {
-            "EcmaScript.NET.dll",
-            "Unity.WebApi.dll",
-            "Skybrud.Social.dll",
+            "AjaxMin.dll",
+            "AntiXssLibrary.dll",
             "Antlr3.Runtime.dll",
-            "WebGrease.dll",
-            "System.Web.Optimization.dll",
             "Common.Logging.Core.dll",
             "Common.Logging.dll",
+            "DotNetOpenAuth",
+            "EcmaScript.NET.dll",
+            "EFCache.dll",
             "EntityFramework.dll",
             "EntityFramework.SqlServer.dll",
             "EntityFramework.SqlServerCompact.dll",
-            "System.Data.SqlServerCe.dll",
-            "Newtonsoft.Json.dll",
-            "Quartz.dll",
-            "SquishIt.Framework.dll",
-            "SquishIt.Mvc.dll",
-            "ImageProcessor.Web.dll",
-            "ImageProcessor.dll",
-            "AntiXssLibrary.dll",
-            "HtmlSanitizationLibrary.dll",
-            "System.Web.Http.dll",
-            "System.Web.Http.WebHost.dll",
-            "System.Net.Http.Formatting.dll",
-            "System.Web.Helpers.dll",
-            "System.Web.Mvc.dll",
-            "System.Web.WebPages.Deployment.dll",
-            "System.Web.WebPages.dll",
-            "System.Web.WebPages.Razor.dll",
-            "System.Web.Razor.dll",
-            "Quartz.Unity.45.dll",
-            "EFCache.dll",
             "HtmlAgilityPack.dll",
+            "HtmlSanitizationLibrary.dll",
+            "Iesi.Collections.dll",
+            "ImageProcessor.dll",
+            "ImageProcessor.Web.dll",
+            "log4net.dll",
+            "Microsoft",
+            "Microsoft.Owin.dll",
+            "Microsoft.Practices.ServiceLocation.dll",
             "Microsoft.Practices.Unity.Configuration.dll",
             "Microsoft.Practices.Unity.dll",
             "Microsoft.Practices.Unity.RegistrationByConvention.dll",
-            "Microsoft.Practices.ServiceLocation.dll",
-            "Unity.WebApi.dll",
-            "Unity.Mvc4.dll",
-            "WebActivator.dll",
-            "System.Net.Http.dll",
-            "System.Net.Http.WebRequest.dll",
-            "AjaxMin.dll",
-            "Iesi.Collections.dll",
-            "Yahoo.Yui.Compressor.dll",
-            "Microsoft.Web.Services3.dll",
             "Microsoft.Web.Infrastructure.dll",
-            "DotNetOpenAuth",
-            "Microsoft",
+            "Microsoft.Web.Services3.dll",
+            "Newtonsoft.Json.dll",
+            "Quartz.dll",
+            "Quartz.Unity.45.dll",
+            "Skybrud.Social.dll",
+            "SquishIt.Framework.dll",
+            "SquishIt.Mvc.dll",
+            "System.Data.SqlServerCe.dll",
+            "System.Net.Http.dll",
+            "System.Net.Http.Formatting.dll",
+            "System.Net.Http.WebRequest.dll",
+            "System.Web.Helpers.dll",
+            "System.Web.Http.dll",
+            "System.Web.Http.WebHost.dll",
+            "System.Web.Mvc.dll",
+            "System.Web.Optimization.dll",
+            "System.Web.Razor.dll",
+            "System.Web.WebPages.Deployment.dll",
+            "System.Web.WebPages.dll",
+            "System.Web.WebPages.Razor.dll",
+            "Unity.Mvc4.dll",
+            "Unity.WebApi.dll",
+            "Unity.WebApi.dll",
+            "WebActivator.dll",
+            "WebGrease.dll",
+            "Yahoo.Yui.Compressor.dll",
+
         };
 
     }

@@ -798,11 +798,6 @@ namespace MVCForum.Website.Controllers
         {
             if (ModelState.IsValid)
             {
-
-                #region MyRegion
-
-
-
                 using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
                     var loggedOnUserId = LoggedOnReadOnlyUser?.Id ?? Guid.Empty;
@@ -814,7 +809,7 @@ namespace MVCForum.Website.Controllers
                         // Get the user from DB
                         var user = MembershipService.GetUser(userModel.Id);
 
-                        #region 停用词检查
+                        #region 对用户输入的信息进行停用词检查
 
                         // Before we do anything - Check stop words
                         var stopWords = _bannedWordService.GetAll(true);
@@ -849,6 +844,8 @@ namespace MVCForum.Website.Controllers
 
                         #endregion
 
+                        #region 基本字段更新
+
                         user.RealName = userModel.RealName;
                         user.Gender = userModel.Gender;
                         user.Birthday = userModel.Birthday;
@@ -864,6 +861,11 @@ namespace MVCForum.Website.Controllers
                         user.HomeTownCounty = userModel.HomeTownCounty;
                         user.IncomeRange = userModel.IncomeRange;
                         user.MobilePhone = userModel.MobilePhone;
+
+                        #endregion
+
+                        #region 判断用户账号有无更新
+
                         // User is trying to change username, need to check if a user already exists
                         // with the username they are trying to change to
                         var changedUsername = false;
@@ -876,10 +878,14 @@ namespace MVCForum.Website.Controllers
                                 ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Members.Errors.DuplicateUserName"));
                                 return View(userModel);
                             }
-
+                            logger.Info("用户名在更新中发生变更，旧的用户名为：" + user.UserName + ",新的用户名为：" + sanitisedUsername);
                             user.UserName = sanitisedUsername;
                             changedUsername = true;
                         }
+
+                        #endregion
+
+                        #region 判断用户的邮箱是否有变更（已禁用）
 
                         //// User is trying to update their email address, need to 
                         //// check the email is not already in use
@@ -895,21 +901,43 @@ namespace MVCForum.Website.Controllers
                         //    user.Email = userModel.Email;
                         //}
 
-                        // 按设计需求的规定，每次改动都将审核标志位置false, 再由管理员手动审核
-                        user.IsApproved = false;
+                        #endregion
 
-                        MembershipService.ProfileUpdated(user);
+                        #region 重置审核标志位
+
+                        string messagestr = "";
+                        if (!user.Roles.Any(x => x.RoleName.Contains(AppConstants.AdminRoleName) || x.RoleName.Contains(AppConstants.SupplierRoleName)))
+                        {
+                            // 按设计需求的规定，注册会员的每次改动都将审核标志位置false, 再由管理员手动审核
+                            user.IsApproved = false;
+                            messagestr = "用户信息已更新，等待管理员审核。";
+                        }
+                        else
+                        {
+                            user.IsApproved = true;  //管理员和供应商无需审核
+                            messagestr = "用户信息已更新。";
+                        }
+
+                        #endregion
+
+                        MembershipService.ProfileUpdated(user); // 触发用户Profile更新事件，并将此事件记录到ProfileUpdatedActivity
+
+                        #region Show Message
 
                         ShowMessage(new GenericMessageViewModel
                         {
-                            Message = LocalizationService.GetResourceString("Member.ProfileUpdated"),
+                            //Message = LocalizationService.GetResourceString("Member.ProfileUpdated"),
+                            Message = messagestr,
                             MessageType = GenericMessages.success
                         });
+
+                        #endregion
 
                         try
                         {
                             unitOfWork.Commit();
 
+                            #region 变更过程中变更了账号（用户名），需退出后重新登录
                             if (changedUsername)
                             {
                                 // User has changed their username so need to log them in
@@ -941,6 +969,7 @@ namespace MVCForum.Website.Controllers
                                 // Sign in new user
                                 FormsAuthentication.SetAuthCookie(user.UserName, false);
                             }
+                            #endregion
                         }
                         catch (Exception ex)
                         {
@@ -956,9 +985,6 @@ namespace MVCForum.Website.Controllers
 
                     return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
                 }
-
-                #endregion
-
             }
             else
             {

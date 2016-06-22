@@ -49,7 +49,7 @@ namespace MVCForum.Domain.DomainModel
 
         #region 用户基本信息属性
         /// <summary>
-        /// 账户Id
+        /// 账户Id（GUID）码
         /// </summary>
         public Guid Id { get; set; }
         /// <summary>
