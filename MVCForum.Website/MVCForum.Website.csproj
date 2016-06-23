@@ -277,6 +277,7 @@
     <Compile Include="Areas\Admin\Controllers\BatchController.cs" />
     <Compile Include="Areas\Admin\Controllers\BannedWordController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
+    <Compile Include="Controllers\ADSettingController.cs" />
     <Compile Include="Controllers\AiLvHuoDongController.cs" />
     <Compile Include="Controllers\ErrorsController.cs" />
     <Compile Include="Controllers\ModerateController.cs" />
@@ -338,6 +339,7 @@
     <Compile Include="Areas\Admin\ViewModels\AccountViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\ADSettingListViewModel.cs" />
     <Compile Include="ViewModels\AiLvHuoDongViewModel.cs" />
     <Compile Include="ViewModels\ModerateViewModels.cs" />
     <Compile Include="Application\ScheduledJobs\KepAliveJob.cs" />
@@ -1096,6 +1098,10 @@
     <Content Include="Views\AiLvHuoDong\AiLvZhangHu.cshtml" />
     <Content Include="Views\Members\ServiceProtocal.cshtml" />
     <Content Include="Views\Members\PrivacyPolicy.cshtml" />
+    <Content Include="Views\ADSetting\ADSettingList.cshtml" />
+    <Content Include="Views\ADSetting\ADSettingListLayout.cshtml" />
+    <Content Include="Views\ADSetting\Create.cshtml" />
+    <Content Include="Views\Shared\_CreateEdit_ADSetting.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />

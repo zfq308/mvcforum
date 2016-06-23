@@ -11,6 +11,7 @@ using MVCForum.Website.Application;
 namespace MVCForum.Website.ViewModels
 {
 
+
     public class AiLvHuoDongEditModel
     {
         /// <summary>

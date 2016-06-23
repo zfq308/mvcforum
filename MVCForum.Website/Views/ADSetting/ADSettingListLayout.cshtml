@@ -1,0 +1,24 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="row">
+    <div class="col-md-9">
+        @RenderBody()
+    </div>
+    <div class="col-md-3 sidelayoutsection">
+        <div class="main-side-box clearfix">
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="createADbutton">
+                    <a href="@Url.Action("Create", "ADSetting")" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
+                      发布广告
+                    </a>
+                </div>
+            }
+            @RenderSection("side", false)
+        </div>
+    </div>
+</div>
+@section Footer {
+    @RenderSection("Footer", false)
+}    

@@ -177,6 +177,7 @@
     <Compile Include="Interfaces\Badges\IVoteUpBadge.cs" />
     <Compile Include="Interfaces\Events\IEventHandler.cs" />
     <Compile Include="Interfaces\Events\IEventManager.cs" />
+    <Compile Include="Interfaces\Services\IADSettingService.cs" />
     <Compile Include="Interfaces\Services\IAiLvHongDongService.cs" />
     <Compile Include="Interfaces\Services\IMembershipTodayStarService.cs" />
     <Compile Include="Interfaces\Services\ISendSMSProvider.cs" />

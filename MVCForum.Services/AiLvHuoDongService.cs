@@ -63,7 +63,7 @@ namespace MVCForum.Services
         }
 
         #region 检查男女性别比例
-      
+
         /// <summary>
         /// 检查特定用户user是否符合爱驴活动实例huodong的男女比例
         /// </summary>
@@ -221,7 +221,7 @@ namespace MVCForum.Services
             }
         }
 
-     
+
     }
 
 }

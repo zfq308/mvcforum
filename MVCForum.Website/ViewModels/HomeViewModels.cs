@@ -47,6 +47,8 @@ namespace MVCForum.Website.ViewModels
 
         public List<Topic> AiLv_ZuiXinZiXunTop5 { get; set; }
 
+
+        
     }
 
 }

@@ -1,0 +1,53 @@
+﻿@using MVCForum.Website.Application.ExtensionMethods
+@model MVCForum.Website.ViewModels.CreateEditADViewModel
+@{
+
+//const string displayNone = "style=\"display: none;\"";
+//ViewBag.ImageUploadType = Model.OptionalPermissions.CanInsertImages ? "forumimageinsert" : "image";
+}
+
+@*<div class="row">
+        <div class="col-md-12 topiccontent">
+            <div class="editor-field editorholder">
+                @Html.EditorFor(model => model.Content)
+                @Html.ValidationMessageFor(model => model.Content)
+            </div>
+        </div>
+    </div>*@
+
+<div class="row">
+
+    <div class="col-md-6 col-md-offset-3">
+
+        <fieldset>
+            <div class="form-group">
+                @Html.LabelFor(x => x.Link)
+                @Html.TextBoxFor(model => model.Link, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Link)
+            </div>
+          
+            @if (Model.Id == Guid.Empty)
+            {
+                <div class="form-group createuploadfiles">
+                    @Html.LabelFor(x => x.ImageName)
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                            <span class="btn btn-default btn-file">
+                                选择图片<input type="file" name="files" id="files" value="">
+                            </span>
+                        </span>
+                        <input type="text" class="form-control" readonly="">
+                    </div>
+                    @Html.ValidationMessageFor(x => x.ImageName)
+                </div>
+            }
+
+            <div class="submit-holder">
+                <button type="submit" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
+                    保存
+                </button>
+            </div>
+        </fieldset>
+    </div>
+
+</div>

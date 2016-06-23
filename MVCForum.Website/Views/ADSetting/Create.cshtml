@@ -1,0 +1,20 @@
+﻿@model MVCForum.Website.ViewModels.CreateEditADViewModel
+@{
+    ViewBag.Title = "发布广告";
+    Layout = "~/Views/Shared/_LayoutFullWidth.cshtml";
+}
+
+<h2>发布广告</h2>
+
+<div class="row">
+
+    <div class="col-md-8 col-md-offset-2">
+        @using (Html.BeginForm("Create", "ADSetting", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+            @Html.ValidationSummary(false)
+            @Html.AntiForgeryToken()
+            @Html.Partial("_CreateEdit_ADSetting", Model)
+        }
+    </div>
+</div>
+

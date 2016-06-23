@@ -60,6 +60,7 @@ namespace MVCForum.Services.Data.Context
         public DbSet<MembershipTodayStar> MembershipTodayStar { get; set; }
         public DbSet<AiLvHuoDong> AiLvHuoDong { get; set; }
         public DbSet<AiLvHuoDongDetail> AiLvHuoDongDetail { get; set; }
+        public DbSet<ADSetting> ADSetting { get; set; }
 
 
         public override int SaveChanges()
