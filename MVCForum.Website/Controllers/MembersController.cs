@@ -251,7 +251,6 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-
         public ActionResult GetVerifyCodeByAccount()
         {
             try
@@ -268,7 +267,7 @@ namespace MVCForum.Website.Controllers
                     Session.Add("code", code);
                     try
                     {
-                        // _verifyCodeService.SendVerifyCode(new VerifyCode(user.MobilePhone, VerifyCodeStatus.Waiting, code));
+                        _verifyCodeService.SendVerifyCode(new VerifyCode(user.MobilePhone, VerifyCodeStatus.Waiting, code));
                         result = true;// 成功    
                     }
                     catch (Exception ex)
@@ -279,24 +278,21 @@ namespace MVCForum.Website.Controllers
                 }
                 else
                 {
-                    result = false;// 失败    
+                    result = false;// 失败  
+                    logger.Error(UserName+"对应的用户信息不存在。");
                     //result = "failNoExistUser";// 失败，用户信息不存在。
-                    //ModelState.AddModelError("NoExistUser", "用户信息不存在。");
+                    ModelState.AddModelError("NoExistUser", "用户信息不存在。");
                 }
                 return Json(result, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
+                logger.Error("发生错误，详细信息为：" + ex.Message);
                 ModelState.AddModelError("", LocalizationService.GetResourceString("Members.ResetPassword.Error"));
                 return View();
             }
         }
-
-
-
-
-
-
+        
         #endregion
 
         #region 用户注册
