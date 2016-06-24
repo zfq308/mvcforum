@@ -32,7 +32,7 @@ namespace MVCForum.Domain.DomainModel
 
         public string ImageName { get; set; }
 
-        public string ImageOriginName { get; set; }
+        public string ImageSaveURL { get; set; }
 
         public string Link { get; set; }
 

@@ -1,12 +1,9 @@
-﻿@*@model MVCForum.Website.ViewModels.ADSettingListViewModel*@
-
-@{ 
+﻿@using MVCForum.Website.Application
+@model MVCForum.Website.ViewModels.ADSettingListViewModel
+@{
     Layout = "~/Views/ADSetting/ADSettingListLayout.cshtml";
-    ViewBag.Title = "ADSetting";
+    ViewBag.Title = "广告窗管理";
 }
-
-
-
 <div class="panel">
     <div class="panel-heading">
         <h2>@ViewBag.Title</h2>
@@ -25,7 +22,6 @@
             <tbody>
                 @foreach (var ad in Model.ADSettings)
                 {
-
                     <tr>
                         <td>
                             <a href="@Url.Action("EditAD", new { ad.Id })" class="btn-mvc">
@@ -40,7 +36,6 @@
                             </a>
                         </td>
                     </tr>
-
                 }
             </tbody>
         </table>

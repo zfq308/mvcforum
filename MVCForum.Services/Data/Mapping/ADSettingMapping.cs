@@ -14,7 +14,7 @@ namespace MVCForum.Services.Data.Mapping
             HasKey(x => x.Id);
             Property(x => x.Id).IsRequired();
             Property(x => x.ImageName).IsRequired().HasMaxLength(100);
-            Property(x => x.ImageOriginName).IsRequired().HasMaxLength(100);
+            Property(x => x.ImageSaveURL).IsRequired().HasMaxLength(100);
             Property(x => x.Link).IsRequired().HasMaxLength(300);
             Property(x => x.CreateTime).IsRequired();
         }

@@ -56,7 +56,7 @@
                 }
                 <li><a href="@Url.Action("LogOn", "Members")">@Html.LanguageString("Layout.Nav.Logon")</a></li>
             }
-            <li><a href="@Url.Action("Index", "Category")">@Html.LanguageString("Category.AllCategories")</a></li>
+            @*<li><a href="@Url.Action("Index", "Category")">@Html.LanguageString("Category.AllCategories")</a></li>*@
             @Html.Partial("SubNavigation")
         </ul>
     </nav>
@@ -138,13 +138,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="licenceblock">
-                        <!-- ########################## IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE ###########################
-
-                            If you would like to remove the powered by notice, then please vist http://www.mvcforum.com/license -->
-
-                        <p>&copy; @DateTime.Now.Year - @Html.LanguageString("Layout.PoweredBy") <a rel="nofollow" href="http://www.mvcforum.com">MVCForum.com</a></p>
-
-                        <!--########################## IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE ########################### -->
+                        <p>&copy; @DateTime.Now.Year - 版权所有 <a rel="nofollow" href="http://www.ailvlove.com">爱驴网</a></p>
                     </div>
                 </div>
             </div>

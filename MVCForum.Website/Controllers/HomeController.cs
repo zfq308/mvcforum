@@ -20,7 +20,7 @@ namespace MVCForum.Website.Controllers
         private readonly ICategoryService _categoryService;
         private readonly IActivityService _activityService;
         private readonly IAiLvHuoDongService _aiLvHuoDongService;
-
+        private readonly IADSettingService _adSettingService;
 
         public HomeController(ILoggingService loggingService,
             IUnitOfWorkManager unitOfWorkManager,
@@ -31,24 +31,31 @@ namespace MVCForum.Website.Controllers
             IRoleService roleService,
             ISettingsService settingsService,
             ICategoryService categoryService,
-            IAiLvHuoDongService ailvhuodongService)
+            IAiLvHuoDongService ailvhuodongService,
+            IADSettingService adSettingService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _topicService = topicService;
             _categoryService = categoryService;
             _activityService = activityService;
             _aiLvHuoDongService = ailvhuodongService;
+            _adSettingService = adSettingService;
         }
 
         public ActionResult Index()
         {
             var returnView = new AiLvHomeViewModel();
-            returnView.AiLv_ZuiXinHuoDongTop5 = new List<AiLvHuoDong>();
 
+
+            returnView.AiLv_ZuiXinHuoDongTop5 = new List<AiLvHuoDong>();
             var m1 = new AiLvHuoDong();
             m1.MingCheng = "AAAA";
             m1.LeiBie = 1;
             returnView.AiLv_ZuiXinHuoDongTop5.Add(m1);
+
+
+            returnView.AiLv_ADCollectionTop5 = (List<ADSetting>)_adSettingService.GetRecentTop5();
+
 
 
 

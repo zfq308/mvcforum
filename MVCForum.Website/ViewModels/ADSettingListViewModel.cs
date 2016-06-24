@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -23,15 +23,18 @@ namespace MVCForum.Website.ViewModels
         //[StringLength(6000)]
         //public string Content { get; set; }
 
-        [Display(Name = "�������")]
+        [Display(Name = "广告类型")]
         public int ADType { get; set; }
 
-        [Required]
-        [Display(Name = "�ϴ��ļ���")]
-        public HttpPostedFileBase ImageName { get; set; }
+        [Display(Name = "上传文件名")]
+        public HttpPostedFileBase UploadFile { get; set; }
 
         [Required]
-        [Display(Name = "���ӵ�ַ")]
+        [Display(Name = "上传图片文件")]
+        public string UploadFileName { get; set; }
+
+        [Required(ErrorMessage = "你是不是忘记填写链接地址了？")]
+        [Display(Name = "广告链接地址")]
         [StringLength(500)]
         public string Link { get; set; }
 
@@ -39,7 +42,7 @@ namespace MVCForum.Website.ViewModels
         [HiddenInput]
         public Guid Id { get; set; }
 
-      
+
     }
 
 }

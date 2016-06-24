@@ -16,32 +16,27 @@
     </div>*@
 
 <div class="row">
-
     <div class="col-md-6 col-md-offset-3">
-
         <fieldset>
             <div class="form-group">
                 @Html.LabelFor(x => x.Link)
                 @Html.TextBoxFor(model => model.Link, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.Link)
             </div>
-          
-            @if (Model.Id == Guid.Empty)
-            {
-                <div class="form-group createuploadfiles">
-                    @Html.LabelFor(x => x.ImageName)
-                    <div class="input-group">
-                        <span class="input-group-btn">
-                            <span class="btn btn-default btn-file">
-                                选择图片<input type="file" name="files" id="files" value="">
-                            </span>
+            <div class="form-group createuploadfiles">
+                @Html.LabelFor(x => x.UploadFileName)
+                <div class="input-group">
+                    <span class="input-group-btn">
+                        <span class="btn btn-default btn-file">
+                            选择图片<input type="file" name="files" id="files" value="" class="form-control">
                         </span>
-                        <input type="text" class="form-control" readonly="">
-                    </div>
-                    @Html.ValidationMessageFor(x => x.ImageName)
-                </div>
-            }
+                    </span>
+                    @*<input type="text" class="form-control" readonly="">*@
 
+                    @Html.TextBoxFor(model => model.UploadFileName, new { @class = "form-control", @readonly = "true" })
+                </div>
+                @Html.ValidationMessageFor(x => x.UploadFileName)
+            </div>
             <div class="submit-holder">
                 <button type="submit" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
                     保存
@@ -49,5 +44,4 @@
             </div>
         </fieldset>
     </div>
-
 </div>

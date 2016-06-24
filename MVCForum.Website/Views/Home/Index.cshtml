@@ -2,7 +2,6 @@
 @model MVCForum.Website.ViewModels.AiLvHomeViewModel
 @{
     Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
-    //ViewBag.Title = Html.Settings().PageTitle ?? Html.Settings().ForumName;
     ViewBag.Title = "首页";
     ViewBag.MetaDesc = Html.Settings().MetaDesc;
 }
@@ -11,32 +10,26 @@
     @*输出侧边区块*@
     @Html.Partial("_CommonSideNav")
 }
-
+@*广告窗区*@
 <div id="myCarousel" class="carousel sp-slider" data-ride="carousel" data-wrap="true" data-interval="3000">
-
-    <!-- 轮播（Carousel）指标 -->
     <ol class="carousel-indicators">
         <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
         <li data-target="#myCarousel" data-slide-to="1"></li>
         <li data-target="#myCarousel" data-slide-to="2"></li>
+        <li data-target="#myCarousel" data-slide-to="3"></li>
+        <li data-target="#myCarousel" data-slide-to="4"></li>
     </ol>
-    <!-- 轮播（Carousel）项目 -->
     <div class="carousel-inner">
-        <div class="item active">
-            <a href="#" class="thumbnail">
-                <img src="http://scimg.jb51.net/allimg/151015/14-151015162Z4349.jpg" alt="First slide">
-            </a>
-        </div>
-        <div class="item">
-            <a href="#" class="thumbnail">
-                <img src="http://img3.3lian.com/2013/s1/59/d/73.jpg" alt="Second slide">
-            </a>
-        </div>
-        <div class="item">
-            <a href="#" class="thumbnail">
-                <img src="http://img4.imgtn.bdimg.com/it/u=2600101638,3167992268&fm=21&gp=0.jpg" alt="Third slide">
-            </a>
-        </div>
+        @{ int idx = 0;}
+        @foreach (var ad in Model.AiLv_ADCollectionTop5)
+        {
+            <div class="item @if (idx == 0) { @Html.Raw("active"); }">
+                <a href="@ad.Link" class="thumbnail">
+                    <img src="@Html.Settings().ForumUrl.TrimEnd('/')@ad.ImageSaveURL" alt="AD">
+                </a>
+            </div>
+            idx = idx + 1;
+        }
     </div>
 </div>
 <div class="row documentation-message">
@@ -53,39 +46,39 @@
 
                 @if (Model.AiLv_ZuiXinHuoDongTop5.Any())
                 {
-                <div class="tablescroll">
-                    <table class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>
-                                    Entry Date
-                                </th>
-                                <th>
-                                    Module
-                                </th>
-
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var log in Model.AiLv_ZuiXinHuoDongTop5)
-                                {
+                    <div class="tablescroll">
+                        <table class="table table-bordered table-striped">
+                            <thead>
                                 <tr>
-                                    <td class="logentrydate">
-                                        @log.MingCheng
-                                    </td>
-                                    <td class="logentrymodule">
-                                        @log.LeiBie
-                                    </td>
-
+                                    <th>
+                                        Entry Date
+                                    </th>
+                                    <th>
+                                        Module
+                                    </th>
 
                                 </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var log in Model.AiLv_ZuiXinHuoDongTop5)
+                                {
+                                    <tr>
+                                        <td class="logentrydate">
+                                            @log.MingCheng
+                                        </td>
+                                        <td class="logentrymodule">
+                                            @log.LeiBie
+                                        </td>
+
+
+                                    </tr>
                                 }
-                            <tr>
-                                <td class="logentrydate" colspan="2">show more...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                                <tr>
+                                    <td class="logentrydate" colspan="2">show more...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 }
 
 
@@ -143,7 +136,6 @@
 
     </div>
 
-
     <div class="col-md-6">
 
         <div class="panel panel-mvc">
@@ -157,7 +149,6 @@
         </div>
 
     </div>
-
 
     <div class="col-md-6">
 

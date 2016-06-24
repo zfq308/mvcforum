@@ -35,7 +35,7 @@ namespace MVCForum.Services
             return _context.ADSetting.Add(newAD);
         }
 
-        public bool Delete(ADSetting ad, IUnitOfWork unitOfWork)
+        public bool Delete(ADSetting ad)
         {
             try
             {
@@ -57,6 +57,11 @@ namespace MVCForum.Services
         public IList<ADSetting> GetAll()
         {
             return _context.ADSetting.AsNoTracking().ToList();
+        }
+
+        public IList<ADSetting> GetRecentTop5()
+        {
+            return _context.ADSetting.OrderByDescending(x => x.CreateTime).Take(5).ToList();
         }
     }
 

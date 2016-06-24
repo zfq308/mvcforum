@@ -1124,6 +1124,10 @@ img {
   display: block;
   max-width: 100%;
   height: auto;
+
+  /*AiLvLover*/
+  height:200px;
+  /*width:auto;*/
 }
 .img-rounded {
   border-radius: 6px;

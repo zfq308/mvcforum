@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.Enums;
 using MVCForum.Website.Application;
+using MVCForum.Website.Application.ActionFilterAttributes;
 
 namespace MVCForum.Website.ViewModels
 {
@@ -16,27 +17,27 @@ namespace MVCForum.Website.ViewModels
 
     public class MemberAddViewModel
     {
-        [Required]
+        [Required(ErrorMessage ="请输入您要注册的账号。")]
         [ForumMvcResourceDisplayName("Members.Label.Username")]
         [StringLength(150, MinimumLength = 4)]
         public string UserName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "行不更名坐不改姓，你是谁？")]
         [ForumMvcResourceDisplayName("Members.Label.RealName")]
-        [StringLength(24, MinimumLength = 2)]
+        [StringLength(24, MinimumLength = 2, ErrorMessage = "姓名的长度最少为2位")]
         public string RealName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "亲，你的昵称是什么？")]
         [Display(Name = "昵称")]
-        [StringLength(24, MinimumLength = 2)]
+        [StringLength(24, MinimumLength = 2,ErrorMessage ="昵称的长度最少为2位")]
         public string AliasName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "不填电话，你让我怎么联系你？！")]
         [ForumMvcResourceDisplayName("Members.Label.MobilePhone")]
-        [StringLength(11, MinimumLength = 11)]
+        [StringLength(11, MinimumLength = 11,ErrorMessage ="你开玩笑吧，手机号码是11位哦！")]
         public string MobilePhone { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "快看手机，立即查看验证码。")]
         [ForumMvcResourceDisplayName("Members.Label.VerifyCode")]
         [StringLength(6, MinimumLength = 6)]
         public string VerifyCode { get; set; }
@@ -46,14 +47,14 @@ namespace MVCForum.Website.ViewModels
         //[ForumMvcResourceDisplayName("Members.Label.EmailAddress")]
         //public string Email { get; set; }
 
-        [Required]
+        [Required(ErrorMessage ="别忘记输入密码了。")]
         [StringLength(100, MinimumLength = 6)]
         [DataType(DataType.Password)]
         [ForumMvcResourceDisplayName("Members.Label.Password")]
         public string Password { get; set; }
 
 
-
+        [Required(ErrorMessage = "别忘记输入密码了。")]
         [DataType(DataType.Password)]
         [System.ComponentModel.DataAnnotations.Compare("Password")]
         [ForumMvcResourceDisplayName("Members.Label.ConfirmPassword")]
@@ -64,6 +65,7 @@ namespace MVCForum.Website.ViewModels
 
         [Required]
         [Display(Name ="已阅读并同意")]
+        [MustBeTrue(ErrorMessage = "TermsAndConditions.Label.AgreeError")]
         public bool ReadPolicyFirst { get; set; }
 
         [ForumMvcResourceDisplayName("Members.Label.UserIsApproved")]
