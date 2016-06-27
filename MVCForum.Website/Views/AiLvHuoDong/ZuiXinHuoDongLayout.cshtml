@@ -7,9 +7,14 @@
     </div>
     <div class="col-md-3 sidelayoutsection">
         <div class="main-side-box clearfix">
-            @if (User.IsInRole("Admin"))
+            @if (User.IsInRole(AppConstants.AdminRoleName) || User.IsInRole(AppConstants.SupplierRoleName))
             {
-                @Html.Action("CreateTopicButton", "Topic")
+                //@Html.Action("CreateAiLvHuoDong", "AiLvHuoDong")
+                <div class="createADbutton">
+                    <a href="@Url.Action("CreateAiLvHuoDong", "AiLvHuoDong")" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
+                        发布活动
+                    </a>
+                </div>
             }
             @RenderSection("side", false)
         </div>

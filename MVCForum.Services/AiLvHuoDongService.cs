@@ -144,7 +144,7 @@ namespace MVCForum.Services
         /// <param name="huodong"></param>
         /// <param name="unitOfWork"></param>
         /// <returns></returns>
-        public bool Delete(AiLvHuoDong huodong, IUnitOfWork unitOfWork)
+        public bool Delete(AiLvHuoDong huodong)
         {
             try
             {
@@ -221,7 +221,23 @@ namespace MVCForum.Services
             }
         }
 
-
+        public bool AuditAiLvHuodong(AiLvHuoDong ailvhuodongInstance, bool auditresult)
+        {
+            if (ailvhuodongInstance != null && !string.IsNullOrEmpty(ailvhuodongInstance.GongYingShangUserId))
+            {
+                var user = _membershipService.GetUser(Guid.Parse(ailvhuodongInstance.GongYingShangUserId));
+                if (user != null && user.Roles.Any(x => x.RoleName == AppConstants.SupplierRoleName))
+                {
+                    ailvhuodongInstance.ShenHeBiaoZhi = auditresult ? 1 : 0;
+                    return true;
+                }
+                return false;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 
 }

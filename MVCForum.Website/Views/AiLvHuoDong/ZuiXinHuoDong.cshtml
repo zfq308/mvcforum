@@ -1,15 +1,46 @@
-﻿@{
+﻿@using MVCForum.Website.Application
+@model MVCForum.Website.ViewModels.AiLvHuoDong_List_ViewModel
+@{
     Layout = "~/Views/AiLvHuoDong/ZuiXinHuoDongLayout.cshtml";
     ViewBag.Title = "最新活动";
 }
 
-@*@section side
-{
-    @Html.Partial("_CommonSideNav")
-}*@
+<div class="panel">
+    <div class="panel-heading">
+        <h2>@ViewBag.Title</h2>
+    </div>
+    <div class="panel-content">
+        <p><label class="label label-danger">Important</label> You must remove all users from a role before you can delete it</p>
 
-<div class="zuixinhuodong">
-    <h1>最新活动</h1>
-
-   
+        <table class="table table-bordered table-striped">
+            <tbody>
+                @foreach (var item in Model.AiLvHuoDongList)
+                {
+                    <tr>
+                        <td>
+                            <img width="64" height="64" src="/Content/Images/HuodongIcon.jpg" class="thumbnail" />
+                        </td>
+                        <td>
+                            <table>
+                                <tr><td><span>@item.MingCheng</span></td></tr>
+                                <tr><td><span>@item.LeiBie</span></td></tr>
+                                <tr><td><span>@item.BaoMingJieZhiTime</span></td></tr>
+                                <tr>
+                                    <td>
+                                        <span>
+                                            <a href="@Url.Action("EditAiLvHuoDong", new { item.Id })" class="btn class="btn-mvc">
+                                                点击查看
+                                            </a>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
+
+

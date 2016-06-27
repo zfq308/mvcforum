@@ -1,0 +1,21 @@
+﻿@model MVCForum.Website.ViewModels.AiLvHuoDong_CreateEdit_ViewModel
+
+@{
+    ViewBag.Title = "编辑活动";
+    Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
+}
+
+<h2>发布广告</h2>
+
+<div class="row">
+
+    <div class="col-md-8 col-md-offset-2">
+        @using (Html.BeginForm("EditAiLvHuoDong", "AiLvHuoDong", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.ValidationSummary(false)
+            @Html.AntiForgeryToken()
+            @Html.Partial("_CreateEdit_ZuiXinHuoDong", Model)
+            @Html.HiddenFor(x => x.Id)
+        }
+    </div>
+</div>

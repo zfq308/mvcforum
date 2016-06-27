@@ -236,6 +236,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Application\ActionFilterAttributes\MultiButtonAttribute.cs" />
     <Compile Include="Application\ActionFilterAttributes\MustBeTrueAttribute.cs" />
     <Compile Include="Application\Akismet\Comment.cs" />
     <Compile Include="Application\Akismet\IValidator.cs" />
@@ -717,6 +718,7 @@
     <Content Include="Content\Images\emoticons\unsure-emoticon.png" />
     <Content Include="Content\Images\emoticons\wink-emoticon.png" />
     <Content Include="Content\Images\emoticons\winking-face-facebook-symbol.png" />
+    <Content Include="Content\Images\HuodongIcon.jpg" />
     <Content Include="Content\Images\icon-poll.png" />
     <Content Include="Content\Images\icon-sticky.png" />
     <Content Include="Content\Images\mail-add.png" />
@@ -1103,6 +1105,9 @@
     <Content Include="Views\ADSetting\Create.cshtml" />
     <Content Include="Views\ADSetting\_CreateEdit_ADSetting.cshtml" />
     <Content Include="Views\ADSetting\EditAD.cshtml" />
+    <Content Include="Views\AiLvHuoDong\_CreateEdit_ZuiXinHuoDong.cshtml" />
+    <Content Include="Views\AiLvHuoDong\CreateAiLvHuoDong.cshtml" />
+    <Content Include="Views\AiLvHuoDong\EditAiLvHuoDong.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />

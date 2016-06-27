@@ -103,6 +103,7 @@
   <ItemGroup>
     <Compile Include="BotUtils.cs" />
     <Compile Include="CensorUtils.cs" />
+    <Compile Include="ImageHelper.cs" />
     <Compile Include="ValidateCode.cs" />
     <Compile Include="ConfigUtils.cs" />
     <Compile Include="DateUtils.cs" />

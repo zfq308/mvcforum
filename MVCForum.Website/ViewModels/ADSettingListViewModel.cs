@@ -11,7 +11,6 @@ using MVCForum.Domain.Constants;
 
 namespace MVCForum.Website.ViewModels
 {
-
     public class ADSettingListViewModel
     {
         public IList<ADSetting> ADSettings { get; set; }

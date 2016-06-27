@@ -7,7 +7,7 @@
     </div>
     <div class="col-md-3 sidelayoutsection">
         <div class="main-side-box clearfix">
-            @if (User.IsInRole("Admin"))
+            @if (User.IsInRole(AppConstants.AdminRoleName))
             {
                 <div class="createADbutton">
                     <a href="@Url.Action("Create", "ADSetting")" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">

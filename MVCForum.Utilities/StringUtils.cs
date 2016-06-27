@@ -13,6 +13,8 @@ using Microsoft.Security.Application;
 
 namespace MVCForum.Utilities
 {
+
+
     public static class StringUtils
     {
 

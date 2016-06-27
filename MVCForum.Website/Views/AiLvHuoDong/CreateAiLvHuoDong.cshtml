@@ -1,0 +1,19 @@
+﻿@model MVCForum.Website.ViewModels.AiLvHuoDong_CreateEdit_ViewModel
+
+@{
+    ViewBag.Title = "发布活动";
+    Layout = "~/Views/Shared/_LayoutFullWidth.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        @using (Html.BeginForm("CreateAiLvHuoDong", "AiLvHuoDong", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.ValidationSummary(true)
+            @Html.AntiForgeryToken()
+            @Html.Partial("_CreateEdit_ZuiXinHuoDong", Model)
+        }
+    </div>
+</div>

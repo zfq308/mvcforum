@@ -1,0 +1,122 @@
+﻿@using MVCForum.Website.Application.ExtensionMethods
+@model MVCForum.Website.ViewModels.AiLvHuoDong_CreateEdit_ViewModel
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <fieldset>
+            <div class="form-group">
+                @Html.LabelFor(x => x.MingCheng)
+                @Html.TextBoxFor(model => model.MingCheng, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.MingCheng)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.LeiBie)
+                @Html.TextBoxFor(model => model.LeiBie, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.LeiBie)
+            </div>
+
+
+
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.YaoQiu)
+                @Html.TextBoxFor(model => model.YaoQiu, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.YaoQiu)
+            </div>
+
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.StartTime)
+                @Html.TextBoxFor(model => model.StartTime, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.StartTime)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.StopTime)
+                @Html.TextBoxFor(model => model.StopTime, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.StopTime)
+            </div>
+
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.BaoMingJieZhiTime)
+                @Html.TextBoxFor(model => model.BaoMingJieZhiTime, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.BaoMingJieZhiTime)
+            </div>
+
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.DiDian)
+                @Html.TextBoxFor(model => model.DiDian, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.DiDian)
+            </div>
+
+            <div class="editor-field editorholder">
+                @Html.EditorFor(model => model.LiuCheng)
+                @Html.ValidationMessageFor(model => model.LiuCheng)
+            </div>
+
+
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Feiyong)
+                @Html.TextBoxFor(model => model.Feiyong, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Feiyong)
+            </div>
+
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.ZhuYiShiXiang)
+                @Html.TextBoxFor(model => model.ZhuYiShiXiang, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.ZhuYiShiXiang)
+            </div>
+
+
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.YuGuRenShu)
+                @Html.TextBoxFor(model => model.YuGuRenShu, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.YuGuRenShu)
+            </div>
+
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.XingBieBiLi)
+                @Html.TextBoxFor(model => model.XingBieBiLi, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.XingBieBiLi)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.YaoQingMa)
+                @Html.TextBoxFor(model => model.YaoQingMa, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.YaoQingMa)
+            </div>
+
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.ZhuangTai)
+                @Html.TextBoxFor(model => model.ZhuangTai, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.ZhuangTai)
+            </div>
+
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.ShenHeBiaoZhi)
+                @Html.TextBoxFor(model => model.ShenHeBiaoZhi, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.ShenHeBiaoZhi)
+            </div>
+
+            <div class="submit-holder">
+                <button type="submit" name="btn_Save" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
+                    保存
+                </button>
+                <button type="submit" name="btn_AuditSuccess" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
+                    审核同意
+                </button>
+                <button type="submit" name="btn_AuditFail" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
+                    审核驳回
+                </button>
+            </div>
+        </fieldset>
+    </div>
+</div>
