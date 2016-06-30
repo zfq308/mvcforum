@@ -13,11 +13,12 @@
 @*广告窗区*@
 <div id="myCarousel" class="carousel sp-slider" data-ride="carousel" data-wrap="true" data-interval="3000">
     <ol class="carousel-indicators">
-        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-        <li data-target="#myCarousel" data-slide-to="1"></li>
-        <li data-target="#myCarousel" data-slide-to="2"></li>
-        <li data-target="#myCarousel" data-slide-to="3"></li>
-        <li data-target="#myCarousel" data-slide-to="4"></li>
+        @{ int idx2 = 0;}
+        @foreach (var ad in Model.AiLv_ADCollectionTop5)
+        {
+            <li data-target="#myCarousel" data-slide-to="@Html.Raw(idx2.ToString())" class="@if (idx2 == 0) { @Html.Raw("active"); }"></li>
+            idx2 = idx2 + 1;
+        }
     </ol>
     <div class="carousel-inner">
         @{ int idx = 0;}
