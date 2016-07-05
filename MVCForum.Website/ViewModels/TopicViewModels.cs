@@ -47,13 +47,44 @@ namespace MVCForum.Website.ViewModels
         public Guid? ReplyTo { get; set; }
         public string ReplyToUsername { get; set; }
 
-        // Stats
+        /// <summary>
+        /// 帖子被跟帖次数
+        /// </summary>
         public int Answers { get; set; }
+        /// <summary>
+        /// 帖子被浏览的次数
+        /// </summary>
         public int Views { get; set; }
 
         // Misc
         public bool ShowUnSubscribedLink { get; set; }
     }
+
+    /// <summary>
+    /// 爱驴服务TopicViewModel
+    /// </summary>
+    public class AiLvFuWuTopicsViewModel
+    {
+        public List<TopicViewModel> Topics { get; set; }
+        public int? PageIndex { get; set; }
+        public int? TotalCount { get; set; }
+        public int? TotalPages { get; set; }
+    }
+
+    /// <summary>
+    /// 爱驴资讯TopicViewModel
+    /// </summary>
+    public class AiLvZiXunTopicsViewModel
+    {
+        public List<TopicViewModel> Topics { get; set; }
+        public int? PageIndex { get; set; }
+        public int? TotalCount { get; set; }
+        public int? TotalPages { get; set; }
+    }
+  
+
+    #region 待检查的
+
 
     public class ActiveTopicsViewModel
     {
@@ -178,4 +209,8 @@ namespace MVCForum.Website.ViewModels
     {
         public Guid CategoryId { get; set; }
     }
+
+    #endregion
+
+
 }

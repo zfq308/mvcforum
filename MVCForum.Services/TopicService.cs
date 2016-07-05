@@ -28,13 +28,17 @@ namespace MVCForum.Services
         private readonly IRoleService _roleService;
         private readonly IPollService _pollService;
         private readonly IPollAnswerService _pollAnswerService;
+        private readonly ICategoryService _categoryService;
 
-        public TopicService(IMVCForumContext context, IMembershipUserPointsService membershipUserPointsService,
+        public TopicService(IMVCForumContext context,
+            ICategoryService categoryService,
+            IMembershipUserPointsService membershipUserPointsService,
             ISettingsService settingsService, ITopicNotificationService topicNotificationService,
             IVoteService voteService, IUploadedFileService uploadedFileService, IFavouriteService favouriteService,
             IPostService postService, IRoleService roleService, IPollService pollService, IPollAnswerService pollAnswerService)
         {
             _membershipUserPointsService = membershipUserPointsService;
+            _categoryService = categoryService;
             _settingsService = settingsService;
             _topicNotificationService = topicNotificationService;
             _voteService = voteService;
@@ -52,6 +56,8 @@ namespace MVCForum.Services
             topic.Name = StringUtils.SafePlainText(topic.Name);
             return topic;
         }
+
+
 
         /// <summary>
         /// Get all topics
@@ -133,23 +139,6 @@ namespace MVCForum.Services
         }
 
         /// <summary>
-        /// Create a new topic and also the topic starter post
-        /// </summary>
-        /// <param name="topic"></param>
-        /// <returns></returns>
-        public Topic Add(Topic topic)
-        {
-            topic = SanitizeTopic(topic);
-
-            topic.CreateDate = DateTime.Now;
-
-            // url slug generator
-            topic.Slug = ServiceHelpers.GenerateSlug(topic.Name, GetTopicBySlugLike(ServiceHelpers.CreateUrl(topic.Name)), null);
-
-            return _context.Topic.Add(topic);
-        }
-
-        /// <summary>
         /// Get todays topics
         /// </summary>
         /// <param name="amountToTake"></param>
@@ -172,54 +161,7 @@ namespace MVCForum.Services
         }
 
         /// <summary>
-        /// Add a last post to a topic. Must be part of a separate database update
-        /// in EF because of circular dependencies. So save the topic before calling this.
-        /// </summary>
-        /// <param name="topic"></param>
-        /// <param name="postContent"></param>
-        /// <returns></returns>
-        public Post AddLastPost(Topic topic, string postContent)
-        {
-
-            topic = SanitizeTopic(topic);
-
-            // Create the post
-            var post = new Post
-            {
-                DateCreated = DateTime.Now,
-                IsTopicStarter = true,
-                DateEdited = DateTime.Now,
-                PostContent = postContent,
-                User = topic.User,
-                Topic = topic
-            };
-
-            // Add the post
-            _postService.Add(post);
-
-            topic.LastPost = post;
-
-            return post;
-        }
-
-        public List<MarkAsSolutionReminder> GetMarkAsSolutionReminderList(int days)
-        {
-            var datefrom = DateTime.Now.AddDays(-days);
-            return _context.Topic
-                .Include(x => x.Category)
-                .Include(x => x.User)
-                .Include(x => x.Posts)
-                .Where(x => x.CreateDate <= datefrom && !x.Solved && x.Posts.Count > 1 && x.SolvedReminderSent != true)
-                .Select(x => new MarkAsSolutionReminder
-                {
-                    Topic = x,
-                    PostCount = x.Posts.Count
-                })
-                .ToList();
-        }
-
-        /// <summary>
-        /// Returns a paged list of topics, ordered by most recent
+        ///  分页取得最近的Topic清单-----Returns a paged list of topics, ordered by most recent
         /// </summary>
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
@@ -280,6 +222,9 @@ namespace MVCForum.Services
 
             return results;
         }
+
+
+
 
         /// <summary>
         /// Returns all topics by a specified user
@@ -619,21 +564,7 @@ namespace MVCForum.Services
             return topics;
         }
 
-        /// <summary>
-        /// Return a topic by url slug
-        /// </summary>
-        /// <param name="slug"></param>
-        /// <returns></returns>
-        public Topic GetTopicBySlug(string slug)
-        {
-            slug = StringUtils.GetSafeHtml(slug);
-            return _context.Topic
-                    .Include(x => x.Category)
-                    .Include(x => x.LastPost.User)
-                    .Include(x => x.User)
-                    .Include(x => x.Poll)
-                    .FirstOrDefault(x => x.Slug == slug);
-        }
+
 
         /// <summary>
         /// Return a topic by Id
@@ -869,6 +800,20 @@ namespace MVCForum.Services
             return results;
         }
 
+
+        public IList<Topic> GetAllTopicsByCategory(EnumCategoryType mCategoryType)
+        {
+            var cat=_categoryService.GetCategoryByEnumCategoryType(mCategoryType);
+            if (cat != null)
+            {
+                return GetAllTopicsByCategory(cat.Id);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         public PagedList<Topic> GetPagedTopicsAll(int pageIndex, int pageSize, int amountToTake, List<Category> allowedCategories)
         {
             // get the category ids
@@ -900,6 +845,21 @@ namespace MVCForum.Services
             return new PagedList<Topic>(results, pageIndex, pageSize, total);
         }
 
+        /// <summary>
+        /// Return a topic by url slug
+        /// </summary>
+        /// <param name="slug"></param>
+        /// <returns></returns>
+        public Topic GetTopicBySlug(string slug)
+        {
+            slug = StringUtils.GetSafeHtml(slug);
+            return _context.Topic
+                    .Include(x => x.Category)
+                    .Include(x => x.LastPost.User)
+                    .Include(x => x.User)
+                    .Include(x => x.Poll)
+                    .FirstOrDefault(x => x.Slug == slug);
+        }
         public IList<Topic> GetTopicBySlugLike(string slug)
         {
             return _context.Topic
@@ -910,5 +870,77 @@ namespace MVCForum.Services
                             .Where(x => x.Slug.Contains(slug))
                             .ToList();
         }
+
+
+
+
+
+
+        /// <summary>
+        /// Create a new topic and also the topic starter post
+        /// </summary>
+        /// <param name="topic"></param>
+        /// <returns></returns>
+        public Topic Add(Topic topic)
+        {
+            topic = SanitizeTopic(topic);
+
+            topic.CreateDate = DateTime.Now;
+
+            // url slug generator
+            topic.Slug = ServiceHelpers.GenerateSlug(topic.Name, GetTopicBySlugLike(ServiceHelpers.CreateUrl(topic.Name)), null);
+
+            return _context.Topic.Add(topic);
+        }
+
+
+        /// <summary>
+        /// Add a last post to a topic. Must be part of a separate database update
+        /// in EF because of circular dependencies. So save the topic before calling this.
+        /// </summary>
+        /// <param name="topic"></param>
+        /// <param name="postContent"></param>
+        /// <returns></returns>
+        public Post AddLastPost(Topic topic, string postContent)
+        {
+
+            topic = SanitizeTopic(topic);
+
+            // Create the post
+            var post = new Post
+            {
+                DateCreated = DateTime.Now,
+                IsTopicStarter = true,
+                DateEdited = DateTime.Now,
+                PostContent = postContent,
+                User = topic.User,
+                Topic = topic
+            };
+
+            // Add the post
+            _postService.Add(post);
+
+            topic.LastPost = post;
+
+            return post;
+        }
+
+        public List<MarkAsSolutionReminder> GetMarkAsSolutionReminderList(int days)
+        {
+            var datefrom = DateTime.Now.AddDays(-days);
+            return _context.Topic
+                .Include(x => x.Category)
+                .Include(x => x.User)
+                .Include(x => x.Posts)
+                .Where(x => x.CreateDate <= datefrom && !x.Solved && x.Posts.Count > 1 && x.SolvedReminderSent != true)
+                .Select(x => new MarkAsSolutionReminder
+                {
+                    Topic = x,
+                    PostCount = x.Posts.Count
+                })
+                .ToList();
+        }
+
+
     }
 }

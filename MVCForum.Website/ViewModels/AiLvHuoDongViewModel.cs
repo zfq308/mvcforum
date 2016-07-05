@@ -12,7 +12,7 @@ using MVCForum.Domain.Constants;
 namespace MVCForum.Website.ViewModels
 {
 
-    public class AiLvHuoDong_List_ViewModel
+    public class AiLvHuoDong_TopicsViewModel
     {
         public IList<AiLvHuoDong> AiLvHuoDongList { get; set; }
     }

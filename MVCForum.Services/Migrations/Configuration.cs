@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
 using System.Data.SqlTypes;
@@ -23,14 +23,14 @@ namespace MVCForum.Services.Migrations
         }
 
         /// <summary>
-        /// ³õÊ¼»¯ÏµÍ³°²×°´úÂë
+        /// åˆå§‹åŒ–ç³»ç»Ÿå®‰è£…ä»£ç 
         /// </summary>
         /// <param name="context"></param>
         protected override void Seed(MVCForumContext context)
         {
-            const string langCulture = "zh-CN";   // ÏµÍ³Ä¬ÈÏÊ¹ÓÃµÄÓïÑÔ
-            const string defaultAdminUsername = "admin";  //ÏµÍ³Ä¬ÈÏ¹ÜÀíÔ±ÕËºÅÃû³Æ
-            const string defaultAdminstratorPassword = "password"; //ÏµÍ³Ä¬ÈÏ¹ÜÀíÔ±ÕËºÅÃÜÂë
+            const string langCulture = "zh-CN";   // ç³»ç»Ÿé»˜è®¤ä½¿ç”¨çš„è¯­è¨€
+            const string defaultAdminUsername = "admin";  //ç³»ç»Ÿé»˜è®¤ç®¡ç†å‘˜è´¦å·åç§°
+            const string defaultAdminstratorPassword = "password"; //ç³»ç»Ÿé»˜è®¤ç®¡ç†å‘˜è´¦å·å¯†ç 
 
             log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
             logger.Debug("Start Configuration.Seed.");
@@ -42,11 +42,11 @@ namespace MVCForum.Services.Migrations
             logger.Debug("Start to get Language.");
             var language = context.Language.FirstOrDefault(x => x.LanguageCulture == langCulture);
             logger.Debug("Stop to get Language.");
-            bool IsInitProcess = (language == null);  // ÒÔÄ¬ÈÏÓïÑÔÊÇ·ñ±»°²×°×÷ÎªÊÇ·ñ³õÊ¼»¯µÄÒÀ¾İ
+            bool IsInitProcess = (language == null);  // ä»¥é»˜è®¤è¯­è¨€æ˜¯å¦è¢«å®‰è£…ä½œä¸ºæ˜¯å¦åˆå§‹åŒ–çš„ä¾æ®
 
             if (IsInitProcess)
             {
-                #region Ğ´ÈëÏµÍ³Ä¬ÈÏµÄÓïÑÔ¶¨Òå
+                #region å†™å…¥ç³»ç»Ÿé»˜è®¤çš„è¯­è¨€å®šä¹‰
 
                 var cultureInfo = LanguageUtils.GetCulture(langCulture);
                 language = new Language
@@ -59,7 +59,7 @@ namespace MVCForum.Services.Migrations
 
                 #endregion
 
-                #region ÔØÈëÄ¬ÈÏµÄÓïÑÔ±¾µØ»¯×ÊÔ´ÎÄ¼ş£¬²¢½«ÆäĞ´ÈëÊı¾İ¿â
+                #region è½½å…¥é»˜è®¤çš„è¯­è¨€æœ¬åœ°åŒ–èµ„æºæ–‡ä»¶ï¼Œå¹¶å°†å…¶å†™å…¥æ•°æ®åº“
 
                 // Now add the default language strings
                 var file = HostingEnvironment.MapPath(@"~/Installer/zh-CN.csv");
@@ -131,13 +131,13 @@ namespace MVCForum.Services.Migrations
                     }
                     #endregion
 
-                    // ±£´æ±¾µØ»¯µÄÓïÑÔÌõÄ¿
+                    // ä¿å­˜æœ¬åœ°åŒ–çš„è¯­è¨€æ¡ç›®
                     context.SaveChanges();
                 }
 
                 #endregion
 
-                #region ´´½¨ÏµÍ³µÄÄ¬ÈÏÎåÖÖ½ÇÉ«
+                #region åˆ›å»ºç³»ç»Ÿçš„é»˜è®¤äº”ç§è§’è‰²
                 var saveRoles = false;
                 // Create the admin role if it doesn't exist
                 var adminRole = context.MembershipRole.FirstOrDefault(x => x.RoleName == AppConstants.AdminRoleName);
@@ -190,87 +190,37 @@ namespace MVCForum.Services.Migrations
                 }
                 #endregion
 
-                #region ´´½¨Ò»¸öSample ÀàĞÍ¶¨ÒåºÍÏµÍ³×Ô´øµÄÈıÀàÏµÍ³¼¶ÀàĞÍ
+                #region åˆ›å»ºä¸€ä¸ªSample ç±»å‹å®šä¹‰å’Œç³»ç»Ÿè‡ªå¸¦çš„ä¸‰ç±»ç³»ç»Ÿçº§ç±»å‹
 
                 if (!context.Category.Any())
                 {
-                    #region ´´½¨Ä¬ÈÏSampleÀàĞÍ
-                    const string exampleCatName = "Example Category";
-                    var exampleCat = new Category
-                    {
-                        Name = exampleCatName,
-                        ModeratePosts = false,
-                        ModerateTopics = false,
-                        Slug = ServiceHelpers.CreateUrl(exampleCatName),
-                        DateCreated = DateTime.Now,
-                        IsSystemCategory = false,
-                        ShowTheCategoryCondition = 0
-                    };
-                    context.Category.Add(exampleCat);
-                    #endregion
+                    //åˆ›å»ºé»˜è®¤Sampleç±»å‹
+                    context.Category.Add(Category.GenerateCategory(EnumCategoryType.SampleCategory));
 
-                    #region ´´½¨Ã¿ÈÕĞÄÇéÈÕ¼Ç±¾£¨ÏµÍ³£©ÀàĞÍ
-                    const string DailyRecordCatName = "Sys_DailyRecord";
-                    var DailyRecordCat = new Category
-                    {
-                        Name = DailyRecordCatName,
-                        ModeratePosts = false,
-                        ModerateTopics = false,
-                        Slug = ServiceHelpers.CreateUrl(DailyRecordCatName),
-                        DateCreated = DateTime.Now,
+                    //åˆ›å»ºæ¯æ—¥å¿ƒæƒ…æ—¥è®°æœ¬ï¼ˆç³»ç»Ÿï¼‰ç±»å‹
+                    context.Category.Add(Category.GenerateCategory(EnumCategoryType.MeiRiXinqing));
 
-                        IsSystemCategory = true,
-                        ShowTheCategoryCondition = 0
-                    };
-                    context.Category.Add(DailyRecordCat);
+                    // åˆ›å»ºæœ€æ–°èµ„è®¯ï¼ˆç³»ç»Ÿï¼‰ç±»å‹
+                    context.Category.Add(Category.GenerateCategory(EnumCategoryType.AiLvZiXun ));
 
-                    #endregion
+                    // åˆ›å»ºæœ€æ–°æœåŠ¡ï¼ˆç³»ç»Ÿï¼‰ç±»å‹
+                    context.Category.Add(Category.GenerateCategory(EnumCategoryType.AiLvFuWu ));
 
-                    #region ´´½¨×îĞÂ×ÊÑ¶£¨ÏµÍ³£©ÀàĞÍ
-                    const string LatestNewsCatName = "Sys_LatestNews";
-                    var LatestNewsCat = new Category
-                    {
-                        Name = LatestNewsCatName,
-                        ModeratePosts = false,
-                        ModerateTopics = false,
-                        Slug = ServiceHelpers.CreateUrl(LatestNewsCatName),
-                        DateCreated = DateTime.Now,
+                    // åˆ›å»ºæœ€æ–°æœåŠ¡ï¼ˆç³»ç»Ÿï¼‰ç±»å‹
+                    context.Category.Add(Category.GenerateCategory(EnumCategoryType.AiLvJiLu));
 
-                        IsSystemCategory = true,
-                        ShowTheCategoryCondition = 0
-                    };
-                    context.Category.Add(LatestNewsCat);
-
-                    #endregion
-
-                    #region ´´½¨·şÎñĞÅÏ¢£¨ÏµÍ³£©ÀàĞÍ
-                    const string ProvideServiceCatName = "Sys_ProvideService";
-                    var ProvideServiceCat = new Category
-                    {
-                        Name = ProvideServiceCatName,
-                        ModeratePosts = false,
-                        ModerateTopics = false,
-                        Slug = ServiceHelpers.CreateUrl(ProvideServiceCatName),
-                        DateCreated = DateTime.Now,
-
-                        IsSystemCategory = true,
-                        ShowTheCategoryCondition = 0
-                    };
-                    context.Category.Add(ProvideServiceCat);
-
-                    #endregion
 
                     context.SaveChanges();
                 }
 
                 #endregion
 
-                #region ¼ì²éÏµÍ³µÄ²ÎÊıÉèÖÃÀà£¬Èôµ±Ç°»¹ÔÚ³õÊ¼»¯½×¶Î£¬Ôò°´Ä¬ÈÏÉèÖÃÌõ¼şÉè¶¨²ÎÊıÉèÖÃÖµ
+                #region æ£€æŸ¥ç³»ç»Ÿçš„å‚æ•°è®¾ç½®ç±»ï¼Œè‹¥å½“å‰è¿˜åœ¨åˆå§‹åŒ–é˜¶æ®µï¼Œåˆ™æŒ‰é»˜è®¤è®¾ç½®æ¡ä»¶è®¾å®šå‚æ•°è®¾ç½®å€¼
 
                 var currentSettings = context.Setting.FirstOrDefault();
                 if (currentSettings == null)
                 {
-                    #region ´´½¨Ä¬ÈÏµÄÏµÍ³ÉèÖÃ²ÎÊı
+                    #region åˆ›å»ºé»˜è®¤çš„ç³»ç»Ÿè®¾ç½®å‚æ•°
 
 
 
@@ -325,33 +275,33 @@ namespace MVCForum.Services.Migrations
 
                 #endregion
 
-                #region ½¨Á¢ÏµÍ³µÄÈ«¾ÖÈ¨ÏŞ¶¨ÒåºÍ¾Ö²¿È¨ÏŞ¶¨Òå
-                // ¼ì²éÊÇ·ñÓĞ¡°Edit Posts¡±µÄÈ¨ÏŞ×÷ÎªÒÀ¾İ
+                #region å»ºç«‹ç³»ç»Ÿçš„å…¨å±€æƒé™å®šä¹‰å’Œå±€éƒ¨æƒé™å®šä¹‰
+                // æ£€æŸ¥æ˜¯å¦æœ‰â€œEdit Postsâ€çš„æƒé™ä½œä¸ºä¾æ®
                 if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionEditPosts) == null)
                 {
-                    #region ´´½¨¾Ö²¿È¨ÏŞ
+                    #region åˆ›å»ºå±€éƒ¨æƒé™
 
-                    //´´½¨¡°Edit Posts¡±È¨ÏŞ
+                    //åˆ›å»ºâ€œEdit Postsâ€æƒé™
                     var permission = new Permission { Name = SiteConstants.Instance.PermissionEditPosts };
                     context.Permission.Add(permission);
 
                     // NOTE: Because this is null - We assumed it's a new install so carry on checking and adding the other permissions
 
-                    // ´´½¨¡°Read Only¡±È¨ÏŞ
+                    // åˆ›å»ºâ€œRead Onlyâ€æƒé™
                     if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionReadOnly) == null)
                     {
                         var p = new Permission { Name = SiteConstants.Instance.PermissionReadOnly };
                         context.Permission.Add(p);
                     }
 
-                    // ´´½¨¡°Delete Posts¡±È¨ÏŞ
+                    // åˆ›å»ºâ€œDelete Postsâ€æƒé™
                     if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionDeletePosts) == null)
                     {
                         var p = new Permission { Name = SiteConstants.Instance.PermissionDeletePosts };
                         context.Permission.Add(p);
                     }
 
-                    // ´´½¨¡°Sticky Topics¡±È¨ÏŞ
+                    // åˆ›å»ºâ€œSticky Topicsâ€æƒé™
                     if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionCreateStickyTopics) ==
                         null)
                     {
@@ -359,42 +309,42 @@ namespace MVCForum.Services.Migrations
                         context.Permission.Add(p);
                     }
 
-                    // ´´½¨¡°Lock Topics¡±È¨ÏŞ
+                    // åˆ›å»ºâ€œLock Topicsâ€æƒé™
                     if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionLockTopics) == null)
                     {
                         var p = new Permission { Name = SiteConstants.Instance.PermissionLockTopics };
                         context.Permission.Add(p);
                     }
 
-                    // ´´½¨¡°Vote In Polls¡±È¨ÏŞ
+                    // åˆ›å»ºâ€œVote In Pollsâ€æƒé™
                     if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionVoteInPolls) == null)
                     {
                         var p = new Permission { Name = SiteConstants.Instance.PermissionVoteInPolls };
                         context.Permission.Add(p);
                     }
 
-                    // ´´½¨¡°Create Polls¡±È¨ÏŞ
+                    // åˆ›å»ºâ€œCreate Pollsâ€æƒé™
                     if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionCreatePolls) == null)
                     {
                         var p = new Permission { Name = SiteConstants.Instance.PermissionCreatePolls };
                         context.Permission.Add(p);
                     }
 
-                    // ´´½¨¡°Create Topics¡±È¨ÏŞ
+                    // åˆ›å»ºâ€œCreate Topicsâ€æƒé™
                     if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionCreateTopics) == null)
                     {
                         var p = new Permission { Name = SiteConstants.Instance.PermissionCreateTopics };
                         context.Permission.Add(p);
                     }
 
-                    // ´´½¨¡°Attach Files¡±È¨ÏŞ
+                    // åˆ›å»ºâ€œAttach Filesâ€æƒé™
                     if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionAttachFiles) == null)
                     {
                         var p = new Permission { Name = SiteConstants.Instance.PermissionAttachFiles };
                         context.Permission.Add(p);
                     }
 
-                    // ´´½¨¡°Deny Access¡±È¨ÏŞ
+                    // åˆ›å»ºâ€œDeny Accessâ€æƒé™
                     if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionDenyAccess) == null)
                     {
                         var p = new Permission { Name = SiteConstants.Instance.PermissionDenyAccess };
@@ -402,16 +352,16 @@ namespace MVCForum.Services.Migrations
                     }
                     #endregion
 
-                    #region È«¾ÖÈ¨ÏŞ
+                    #region å…¨å±€æƒé™
 
-                    // ´´½¨¡°Deny Access¡±È«¾ÖÈ¨ÏŞ
+                    // åˆ›å»ºâ€œDeny Accessâ€å…¨å±€æƒé™
                     if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionEditMembers) == null)
                     {
                         var p = new Permission { Name = SiteConstants.Instance.PermissionEditMembers, IsGlobal = true };
                         context.Permission.Add(p);
                     }
 
-                    // ´´½¨¡°Insert Editor Images¡±È«¾ÖÈ¨ÏŞ
+                    // åˆ›å»ºâ€œInsert Editor Imagesâ€å…¨å±€æƒé™
                     if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionInsertEditorImages) == null)
                     {
                         var p = new Permission { Name = SiteConstants.Instance.PermissionInsertEditorImages, IsGlobal = true };
@@ -425,19 +375,19 @@ namespace MVCForum.Services.Migrations
 
                 #endregion
 
-                #region ÈôÄ¬ÈÏ¹ÜÀíÔ±ÕËºÅ²»´æÔÚ£¬Ôò´´½¨Ä¬ÈÏµÄÏµÍ³¹ÜÀíÔ±ÕËºÅ
+                #region è‹¥é»˜è®¤ç®¡ç†å‘˜è´¦å·ä¸å­˜åœ¨ï¼Œåˆ™åˆ›å»ºé»˜è®¤çš„ç³»ç»Ÿç®¡ç†å‘˜è´¦å·
 
                 if (context.MembershipUser.FirstOrDefault(x => x.UserName == defaultAdminUsername) == null)
                 {
-                    #region  ´´½¨¹ÜÀíÔ±ÕËºÅ²¢·ÖÅä¹ÜÀíÔ±½ÇÉ«
+                    #region  åˆ›å»ºç®¡ç†å‘˜è´¦å·å¹¶åˆ†é…ç®¡ç†å‘˜è§’è‰²
                     var admin = new MembershipUser
                     {
-                        #region »ù±¾ÊôĞÔ¸³Öµ
+                        #region åŸºæœ¬å±æ€§èµ‹å€¼
 
-                        #region »ù±¾ĞÅÏ¢
+                        #region åŸºæœ¬ä¿¡æ¯
                         UserName = defaultAdminUsername,
-                        RealName = "Ä¬ÈÏ¹ÜÀíÔ±",
-                        AliasName="admin",
+                        RealName = "é»˜è®¤ç®¡ç†å‘˜",
+                        AliasName = "admin",
                         Email = "admin@email.com",
                         Gender = 1,
                         Birthday = new DateTime(2000, 1, 1),
@@ -445,17 +395,17 @@ namespace MVCForum.Services.Migrations
                         IsMarried = true,
                         Height = 180,
                         Weight = 100,
-                        Education = "Ë¶Ê¿",
-                        Location = "ÉîÛÚÊĞ",
+                        Education = "ç¡•å£«",
+                        Location = "æ·±åœ³å¸‚",
                         SchoolProvince = "110000",
                         SchoolCity = "110100",
-                        SchoolName = "ÎÒµÄ´óÑ§",
+                        SchoolName = "æˆ‘çš„å¤§å­¦",
                         HomeTownProvince = "110000",
                         HomeTownCity = "110100",
                         HomeTownCounty = "110108",
-                        Job = "¹¤³ÌÊ¦",
+                        Job = "å·¥ç¨‹å¸ˆ",
                         IncomeRange = 0,
-                        Interest = "·¢´ô",
+                        Interest = "å‘å‘†",
                         MobilePhone = "13686886937",
                         #endregion
 
@@ -469,7 +419,7 @@ namespace MVCForum.Services.Migrations
                         DisablePosting = false,
                         DisablePrivateMessages = false,
                         DisableFileUploads = false,
-                        Comment = "ÏµÍ³¹ÜÀíÔ±Ä¬ÈÏÕËºÅ",
+                        Comment = "ç³»ç»Ÿç®¡ç†å‘˜é»˜è®¤è´¦å·",
                         Signature = "",
                         Website = "",
                         Twitter = "",
@@ -492,11 +442,11 @@ namespace MVCForum.Services.Migrations
 
                     #endregion
 
-                    #region Éú³É¡°´´½¨¹ÜÀíÔ±¡±»°Ìâ²¢·¢²¼ÄÚÈİ
+                    #region ç”Ÿæˆâ€œåˆ›å»ºç®¡ç†å‘˜â€è¯é¢˜å¹¶å‘å¸ƒå†…å®¹
 
                     const string ReadmeTopicName = "Read Me";
 
-                    #region ´´½¨ReadmeµÄ»°Ìâ
+                    #region åˆ›å»ºReadmeçš„è¯é¢˜
                     //var category = context.Category.FirstOrDefault();
                     var SampleCategory = context.Category.Where(x => x.Name == "Example Category").SingleOrDefault();
                     var topic = new Topic
@@ -515,7 +465,7 @@ namespace MVCForum.Services.Migrations
 
                     #endregion
 
-                    #region ´´½¨ReadmeµÄ¹«Ê¾Ìû×Ó
+                    #region åˆ›å»ºReadmeçš„å…¬ç¤ºå¸–å­
 
                     const string readMeText = @"<h2>Administration</h2>
 <p>We have auto created an admin user for you to manage the site</p>
@@ -552,7 +502,7 @@ namespace MVCForum.Services.Migrations
             }
             else
             {
-                #region ÏµÍ³ÒÑÉÏÏß£¬ºóĞøÓĞÆäËûµÄÍØÕ¹Êı¾İĞèÒª¼ÓÈëÊ±£¬ÇëÔÚ´Ë´¦±àÂë
+                #region ç³»ç»Ÿå·²ä¸Šçº¿ï¼Œåç»­æœ‰å…¶ä»–çš„æ‹“å±•æ•°æ®éœ€è¦åŠ å…¥æ—¶ï¼Œè¯·åœ¨æ­¤å¤„ç¼–ç 
 
                 #endregion
             }
@@ -561,7 +511,7 @@ namespace MVCForum.Services.Migrations
             decimal t = MyStopWatch.ElapsedMilliseconds;
 
             logger.Debug(string.Format("timecost:{0} seconds, flag:{1}.", t / 1000, IsInitProcess.ToString()));
-           
+
         }
     }
 }

@@ -39,82 +39,52 @@ namespace MVCForum.Services
         }
 
 
-        #region 系统目前自带的三个系统级Category
-
-        public Category SystemDailyRecordCategory
+      
+        /// <summary>
+        /// 按Category类别枚举查找Category实例
+        /// </summary>
+        /// <param name="mEnumCategoryType"></param>
+        /// <returns></returns>
+        public Category GetCategoryByEnumCategoryType(EnumCategoryType mEnumCategoryType)
         {
-            get
+            string key = "";
+            switch (mEnumCategoryType)
             {
-                const string key = "get-SystemDailyRecordCategory";
-                Category mSystemCategory = null;
-                if (HttpContext.Current != null)
-                {
-                    if (!HttpContext.Current.Items.Contains(key))
-                    {
-                        mSystemCategory = _context.Category
-                             .Where(x => x.IsSystemCategory == true && x.Name == "Sys_DailyRecord")
-                                .AsNoTracking().FirstOrDefault();
-                        if (mSystemCategory != null)
-                        {
-                            HttpContext.Current.Items.Add(key, mSystemCategory);
-                        }
-                    }
-                    return (Category)HttpContext.Current.Items[key];
-                }
-                return mSystemCategory;
+                case EnumCategoryType.AiLvZiXun:
+                    key = "Sys_ZuiXinZiXun";
+                    break;
+                case EnumCategoryType.AiLvFuWu:
+                    key = "Sys_ZuiXinFuWu";
+                    break;
+                case EnumCategoryType.AiLvJiLu:
+                    key = "Sys_AiLvJilu";
+                    break;
+                case EnumCategoryType.MeiRiXinqing:
+                    key = "Sys_DailyRecord";
+                    break;
+                case EnumCategoryType.SampleCategory:
+                    key = "Example Category";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(mEnumCategoryType), mEnumCategoryType, null);
             }
+
+            Category mSystemCategory = null;
+            if (HttpContext.Current != null && !HttpContext.Current.Items.Contains(key))
+            {
+                mSystemCategory = _context.Category.Where(x => x.IsSystemCategory == true && x.Name == key).AsNoTracking().FirstOrDefault();
+                if (mSystemCategory != null)
+                {
+                    HttpContext.Current.Items.Add(key, mSystemCategory);
+                }
+                return (Category)HttpContext.Current.Items[key];
+            }
+            return mSystemCategory;
         }
 
-        public Category SystemLatestNewsCategory
-        {
-            get
-            {
-                const string key = "get-SystemLatestNewsCategory";
-                Category mSystemCategory = null;
-                if (HttpContext.Current != null)
-                {
-                    if (!HttpContext.Current.Items.Contains(key))
-                    {
-                        mSystemCategory = _context.Category
-                             .Where(x => x.IsSystemCategory == true && x.Name == "Sys_LatestNews")
-                                .AsNoTracking().FirstOrDefault();
-                        if (mSystemCategory != null)
-                        {
-                            HttpContext.Current.Items.Add(key, mSystemCategory);
-                        }
-                    }
-                    return (Category)HttpContext.Current.Items[key];
-                }
-                return mSystemCategory;
-            }
-        }
+  
 
-        public Category SystemProvideServiceCategory
-        {
-            get
-            {
-                const string key = "get-SystemProvideServiceCategory";
-                Category mSystemCategory = null;
-                if (HttpContext.Current != null)
-                {
-                    if (!HttpContext.Current.Items.Contains(key))
-                    {
-                        mSystemCategory = _context.Category
-                             .Where(x => x.IsSystemCategory == true && x.Name == "Sys_ProvideService")
-                                .AsNoTracking().FirstOrDefault();
-                        if (mSystemCategory != null)
-                        {
-                            HttpContext.Current.Items.Add(key, mSystemCategory);
-                        }
-                    }
-                    return (Category)HttpContext.Current.Items[key];
-                }
-                return mSystemCategory;
-            }
-        }
-
-        #endregion
-
+      
 
         /// <summary>
         /// Return all User Level Category
@@ -130,12 +100,7 @@ namespace MVCForum.Services
                 {
                     // These are now in order
                     var orderedCategories = new List<Category>();
-                    var allCats = _context.Category
-                            .Include(x => x.ParentCategory)
-                            .Where(x => x.IsSystemCategory == false)
-                            .AsNoTracking()
-                            .OrderBy(x => x.SortOrder)
-                            .ToList();
+                    var allCats = _context.Category.Include(x => x.ParentCategory).Where(x => x.IsSystemCategory == false).AsNoTracking().OrderBy(x => x.SortOrder).ToList();
                     foreach (var parentCategory in allCats.Where(x => x.ParentCategory == null).OrderBy(x => x.SortOrder))
                     {
                         // Add the main category
@@ -150,11 +115,7 @@ namespace MVCForum.Services
                 }
                 return (List<Category>)HttpContext.Current.Items[key];
             }
-            return _context.Category
-                            .Include(x => x.ParentCategory)
-                            .AsNoTracking()
-                            .OrderBy(x => x.SortOrder)
-                            .ToList();
+            return _context.Category.Include(x => x.ParentCategory).AsNoTracking().OrderBy(x => x.SortOrder).ToList();
         }
 
         /// <summary>
@@ -167,8 +128,7 @@ namespace MVCForum.Services
         public List<Category> GetSubCategories(Category category, List<Category> allCategories, int level = 2)
         {
             var catsToReturn = new List<Category>();
-            var cats = allCategories.Where(x => x.ParentCategory != null && x.ParentCategory.Id == category.Id && x.IsSystemCategory == false)
-                                    .OrderBy(x => x.SortOrder);
+            var cats = allCategories.Where(x => x.ParentCategory != null && x.ParentCategory.Id == category.Id && x.IsSystemCategory == false).OrderBy(x => x.SortOrder);
             foreach (var cat in cats)
             {
                 cat.Level = level;
@@ -178,10 +138,6 @@ namespace MVCForum.Services
 
             return catsToReturn;
         }
-
-
-
-
 
 
         public List<SelectListItem> GetBaseSelectListCategories(List<Category> allowedCategories)
@@ -194,6 +150,7 @@ namespace MVCForum.Services
             }
             return cats;
         }
+
         private static string LevelDashes(int level)
         {
             if (level > 1)
@@ -209,8 +166,6 @@ namespace MVCForum.Services
         }
 
 
-
-
         /// <summary>
         /// Return all sub categories from a parent category id
         /// </summary>
@@ -218,10 +173,7 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IEnumerable<Category> GetAllSubCategories(Guid parentId)
         {
-            return _context.Category
-                    .Where(x => x.ParentCategory.Id == parentId)
-                    .OrderBy(x => x.SortOrder)
-                    .ToList();
+            return _context.Category.Where(x => x.ParentCategory.Id == parentId).OrderBy(x => x.SortOrder).ToList();
         }
 
         /// <summary>
@@ -230,13 +182,7 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IEnumerable<Category> GetAllUserLevelMainCategories()
         {
-            var categories = _context.Category
-                                .Include(x => x.ParentCategory)
-                                .Include(x => x.Topics.Select(l => l.LastPost))
-                                .Include(x => x.Topics.Select(l => l.Posts))
-                                .Where(cat => cat.ParentCategory == null && cat.IsSystemCategory == false)
-                                .OrderBy(x => x.SortOrder)
-                                .ToList();
+            var categories = _context.Category.Include(x => x.ParentCategory).Include(x => x.Topics.Select(l => l.LastPost)).Include(x => x.Topics.Select(l => l.Posts)).Where(cat => cat.ParentCategory == null && cat.IsSystemCategory == false).OrderBy(x => x.SortOrder).ToList();
 
             return categories;
         }
@@ -281,10 +227,6 @@ namespace MVCForum.Services
             }
             return filteredCats;
         }
-
-
-
-
 
 
         /// <summary>
@@ -366,17 +308,11 @@ namespace MVCForum.Services
 
             if (fullGraph)
             {
-                categories =
-                    _context.Category.AsNoTracking()
-                        .Include(x => x.Topics.Select(l => l.LastPost.User))
-                        .Include(x => x.ParentCategory)
-                        .Where(x => CategoryIds.Contains(x.Id))
-                        .ToList();
+                categories = _context.Category.AsNoTracking().Include(x => x.Topics.Select(l => l.LastPost.User)).Include(x => x.ParentCategory).Where(x => CategoryIds.Contains(x.Id)).ToList();
             }
             else
             {
-                categories = _context.Category
-                    .AsNoTracking().Where(x => CategoryIds.Contains(x.Id)).ToList();
+                categories = _context.Category.AsNoTracking().Where(x => CategoryIds.Contains(x.Id)).ToList();
             }
 
             // make sure categories are returned in order of ids (not in Database order)
@@ -396,9 +332,7 @@ namespace MVCForum.Services
                        select new CategoryWithSubCategories
                        {
                            Category = category,
-                           SubCategories = (from cats in _context.Category
-                                            where cats.ParentCategory.Id == category.Id && cats.IsSystemCategory == false
-                                            select cats)
+                           SubCategories = (from cats in _context.Category where cats.ParentCategory.Id == category.Id && cats.IsSystemCategory == false select cats)
                        }).FirstOrDefault();
 
             return cat;
@@ -471,7 +405,6 @@ namespace MVCForum.Services
                     inUseBy.AddRange(category.Topics);
                     throw new InUseUnableToDeleteException(inUseBy);
                 }
-
             }
             else
             {
@@ -482,16 +415,12 @@ namespace MVCForum.Services
         public Category GetBySlug(string slug)
         {
             //StringUtils.GetSafeHtml(slug)
-            return _context.Category
-                .Where(x => x.IsSystemCategory == false)
-                .FirstOrDefault(x => x.Slug == slug);
+            return _context.Category.Where(x => x.IsSystemCategory == false).FirstOrDefault(x => x.Slug == slug);
         }
 
         public IList<Category> GetBySlugLike(string slug)
         {
-            return _context.Category
-                    .Where(x => x.IsSystemCategory == false && x.Slug.Contains(slug))
-                    .ToList();
+            return _context.Category.Where(x => x.IsSystemCategory == false && x.Slug.Contains(slug)).ToList();
         }
 
         /// <summary>
@@ -502,10 +431,7 @@ namespace MVCForum.Services
         public IList<Category> GetAllDeepSubCategories(Category category)
         {
             var catGuid = category.Id.ToString().ToLower();
-            return _context.Category
-                    .Where(x => x.Path != null && x.Path.ToLower().Contains(catGuid) && x.IsSystemCategory == false)
-                    .OrderBy(x => x.SortOrder)
-                    .ToList();
+            return _context.Category.Where(x => x.Path != null && x.Path.ToLower().Contains(catGuid) && x.IsSystemCategory == false).OrderBy(x => x.SortOrder).ToList();
         }
     }
 }

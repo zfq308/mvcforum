@@ -30,6 +30,7 @@ namespace MVCForum.Domain.Interfaces.Services
         IList<Category> Get(IList<Guid> ids, bool fullGraph = false);
         CategoryWithSubCategories GetBySlugWithSubCategories(string slug);
         Category Get(string slug);
+        Category GetCategoryByEnumCategoryType(EnumCategoryType mEnumCategoryType);
         List<Category> GetCategoryParents(Category category, List<Category> allowedCategories);
         void Delete(Category category);
         Category Add(Category category);
@@ -38,6 +39,7 @@ namespace MVCForum.Domain.Interfaces.Services
         List<Category> GetSubCategories(Category category, List<Category> allCategories, int level = 2);
         List<SelectListItem> GetBaseSelectListCategories(List<Category> allowedCategories);
         Category GetBySlug(string slug);
+
         IList<Category> GetBySlugLike(string slug);
         IList<Category> GetAllDeepSubCategories(Category category);
     }

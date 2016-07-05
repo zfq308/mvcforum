@@ -48,6 +48,7 @@ namespace MVCForum.Domain.Interfaces.Services
         /// <returns>True if topic has been marked as solved</returns>
         bool SolveTopic(Topic topic, Post post, MembershipUser marker, MembershipUser solutionWriter);
         IList<Topic> GetAllTopicsByCategory(Guid categoryId);
+        IList<Topic> GetAllTopicsByCategory(EnumCategoryType mCategoryType);
         PagedList<Topic> GetPagedTopicsAll(int pageIndex, int pageSize, int amountToTake, List<Category> allowedCategories);
         IList<Topic> GetTopicBySlugLike(string slug);
     }
