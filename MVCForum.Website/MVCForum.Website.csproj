@@ -1109,6 +1109,8 @@
     <Content Include="Views\AiLvHuoDong\_CreateEdit_ZuiXinHuoDong.cshtml" />
     <Content Include="Views\AiLvHuoDong\CreateAiLvHuoDong.cshtml" />
     <Content Include="Views\AiLvHuoDong\EditAiLvHuoDong.cshtml" />
+    <Content Include="Views\Topic\CreateTopicButtonForZuiXinZiXun.cshtml" />
+    <Content Include="Views\Topic\CreateZuiXinZiXun.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />

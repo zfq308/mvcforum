@@ -14,6 +14,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using MVCForum.Website.ViewModels.Mapping;
 
 namespace MVCForum.Website.Controllers
 {
@@ -191,85 +192,78 @@ namespace MVCForum.Website.Controllers
         /// <returns></returns>
         public ActionResult ZuiXinZiXun()
         {
-            var ZiXunList = new AiLvZiXunTopicsViewModel();
-            var topics= _topicService.GetAllTopicsByCategory(EnumCategoryType.AiLvZiXun);
+            var ziXunList = new AiLvZiXunTopicsViewModel {Topics = new List<TopicViewModel>()};
+            var topics = _topicService.GetAllTopicsByCategory(EnumCategoryType.AiLvZiXun);
             if (topics != null && topics.Count > 0)
             {
-                ZiXunList.Topics = new List<TopicViewModel>();
                 foreach (var topic in topics)
                 {
+                    //TODO: Ben        ViewModelMapping.CreateTopicViewModel(topic,)
                     var newitem = new TopicViewModel
                     {
-                        //TODO: Ben 需要检查TopicViewModel的赋值是否完备
+                        //TODO: Ben 需要检查TopicViewModel的赋值是否完备,看_Topic.cshtml
                         Topic = topic,
                         DisablePosting = true,
                         IsSubscribed = false
                     };
-                    ZiXunList.Topics.Add(newitem);
+                    ziXunList.Topics.Add(newitem);
                 }
             }
-            return View(ZiXunList);
+            return View(ziXunList);
+        }
+
+        #endregion
+
+        #region MyRegion
+
+        /// <summary>
+        /// 最新记录
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ZuiXinJilu()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// 每日之星
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult MeiRiZhiXing()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// 最新会员
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ZuiXinHuiYuan()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// 最新服务
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ZuiXinFuWu()
+        {
+            return View();
+        }
+
+
+
+
+        /// <summary>
+        /// 爱驴账户
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult AiLvZhangHu()
+        {
+            return View();
+        }
+
+        #endregion
     }
-
-    #endregion
-
-    #region MyRegion
-
-    /// <summary>
-    /// 最新记录
-    /// </summary>
-    /// <returns></returns>
-    public ActionResult ZuiXinJilu()
-    {
-        return View();
-    }
-
-    /// <summary>
-    /// 每日之星
-    /// </summary>
-    /// <returns></returns>
-    public ActionResult MeiRiZhiXing()
-    {
-        return View();
-    }
-
-    /// <summary>
-    /// 最新会员
-    /// </summary>
-    /// <returns></returns>
-    public ActionResult ZuiXinHuiYuan()
-    {
-        return View();
-    }
-
-    /// <summary>
-    /// 最新服务
-    /// </summary>
-    /// <returns></returns>
-    public ActionResult ZuiXinFuWu()
-    {
-        return View();
-    }
-
-    /// <summary>
-    /// 最新资讯
-    /// </summary>
-    /// <returns></returns>
-    public ActionResult ZuiXinZixun()
-    {
-        return View();
-    }
-
-
-    /// <summary>
-    /// 爱驴账户
-    /// </summary>
-    /// <returns></returns>
-    public ActionResult AiLvZhangHu()
-    {
-        return View();
-    }
-
-    #endregion
-}
 }

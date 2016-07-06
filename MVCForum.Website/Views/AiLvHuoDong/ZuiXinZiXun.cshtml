@@ -8,14 +8,12 @@
 
     var totalCount = Convert.ToInt32(Model.TotalCount);
     ViewBag.Canonical = Html.Raw(AppHelpers.CanonicalPagingTag(totalCount, Html.Settings().TopicsPerPage, Html));
-
-
 }
 
 <div class="zuixinzixun">
 
     <div class="mainheading clearfix">
-        <h1>最新资讯</h1>
+        <h1>@ViewBag.Title</h1>
     </div>
 
     @foreach (var topic in Model.Topics)

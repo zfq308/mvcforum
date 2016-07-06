@@ -1,0 +1,9 @@
+﻿@model MVCForum.Website.ViewModels.CreateTopicButtonViewModel
+@if (Model.LoggedOnUser != null && Model.LoggedOnUser.DisablePosting != true )
+{
+    <div class="createtopicbutton">
+        <a href="@Url.Action("CreateZuiXinZiXun", "Topic")" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
+           新建资讯条目
+        </a>
+    </div>
+}
