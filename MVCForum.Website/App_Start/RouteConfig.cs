@@ -47,30 +47,40 @@ namespace MVCForum.Website
                 new { controller = "Topic", action = "TopicsByTag", tag = UrlParameter.Optional } // Parameter defaults
             );
 
-            routes.MapRoute(
-                "topicXmlSitemap", // Route name
-                "topicxmlsitemap", // URL with parameters
-                new { controller = "Home", action = "GoogleSitemap" } // Parameter defaults
-            );
 
-            routes.MapRoute(
-                "categoryXmlSitemap", // Route name
-                "categoryxmlsitemap", // URL with parameters
-                new { controller = "Home", action = "GoogleCategorySitemap" } // Parameter defaults
-            );
 
-            routes.MapRoute(
-                "memberXmlSitemap", // Route name
-                "memberxmlsitemap", // URL with parameters
-                new { controller = "Home", action = "GoogleMemberSitemap" } // Parameter defaults
-            );
+            //routes.MapRoute(
+            //    "topicXmlSitemap", // Route name
+            //    "topicxmlsitemap", // URL with parameters
+            //    new { controller = "Home", action = "GoogleSitemap" } // Parameter defaults
+            //);
+
+            //routes.MapRoute(
+            //    "categoryXmlSitemap", // Route name
+            //    "categoryxmlsitemap", // URL with parameters
+            //    new { controller = "Home", action = "GoogleCategorySitemap" } // Parameter defaults
+            //);
+
+            //routes.MapRoute(
+            //    "memberXmlSitemap", // Route name
+            //    "memberxmlsitemap", // URL with parameters
+            //    new { controller = "Home", action = "GoogleMemberSitemap" } // Parameter defaults
+            //);
+
+
+
+
 
             routes.MapRoute(
                 "Default", // Route name
                 "{controller}/{action}/{id}", // URL with parameters
                 new { controller = "Home", action = "Index", id = UrlParameter.Optional } // Parameter defaults
             );
+
+
             //.RouteHandler = new SlugRouteHandler()
+
+
         }
     }
 }

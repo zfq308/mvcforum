@@ -22,14 +22,17 @@ namespace MVCForum.Website.Controllers
     {
         private readonly IAiLvHuoDongService _aiLvHuoDongService;
         private readonly ITopicService _topicService;
+        private readonly ICategoryService _categoryservice;
         private readonly MVCForumContext _context;
 
-        public AiLvHuoDongController(IMVCForumContext context, ITopicService TopicService, IAiLvHuoDongService aiLvHuoDongService, ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService, IRoleService roleService,
-            ISettingsService settingsService)
+        public AiLvHuoDongController(IMVCForumContext context, ICategoryService Categoryservice, ITopicService TopicService, IAiLvHuoDongService aiLvHuoDongService,
+            ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService,
+            IRoleService roleService, ISettingsService settingsService)
              : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _aiLvHuoDongService = aiLvHuoDongService;
             _topicService = TopicService;
+            _categoryservice = Categoryservice;
             _context = context as MVCForumContext;
         }
 
@@ -192,22 +195,15 @@ namespace MVCForum.Website.Controllers
         /// <returns></returns>
         public ActionResult ZuiXinZiXun()
         {
-            var ziXunList = new AiLvZiXunTopicsViewModel {Topics = new List<TopicViewModel>()};
+            var ziXunList = new AiLvZiXunTopicsViewModel { Topics = new List<TopicViewModel>() };
             var topics = _topicService.GetAllTopicsByCategory(EnumCategoryType.AiLvZiXun);
             if (topics != null && topics.Count > 0)
             {
-                foreach (var topic in topics)
-                {
-                    //TODO: Ben        ViewModelMapping.CreateTopicViewModel(topic,)
-                    var newitem = new TopicViewModel
-                    {
-                        //TODO: Ben 需要检查TopicViewModel的赋值是否完备,看_Topic.cshtml
-                        Topic = topic,
-                        DisablePosting = true,
-                        IsSubscribed = false
-                    };
-                    ziXunList.Topics.Add(newitem);
-                }
+                var settings = SettingsService.GetSettings();
+                var allowedCategories = new List<Category>();
+                allowedCategories.Add(_categoryservice.GetCategoryByEnumCategoryType(EnumCategoryType.AiLvZiXun));
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, settings);
+                ziXunList.Topics.AddRange(topicViewModels);
             }
             return View(ziXunList);
         }

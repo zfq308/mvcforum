@@ -190,28 +190,33 @@ namespace MVCForum.Services.Migrations
                 }
                 #endregion
 
-                #region 创建一个Sample 类型定义和系统自带的三类系统级类型
+                #region 创建系统的Category实例
+
+                Category Category_SampleCategory = null;
+                Category Category_MeiRiXinqing = null;
+                Category Category_AiLvZiXun = null;
+                Category Category_AiLvFuWu = null;
+                Category Category_AiLvJiLu = null;
+
+                #region 添加Category实例
 
                 if (!context.Category.Any())
                 {
-                    //创建默认Sample类型
-                    context.Category.Add(Category.GenerateCategory(EnumCategoryType.SampleCategory));
+                    Category_SampleCategory = Category.GenerateCategory(EnumCategoryType.SampleCategory); //创建默认Sample类型
+                    Category_MeiRiXinqing = Category.GenerateCategory(EnumCategoryType.MeiRiXinqing); //创建每日心情日记本（系统）类型
+                    Category_AiLvZiXun = Category.GenerateCategory(EnumCategoryType.AiLvZiXun); // 创建最新资讯（系统）类型
+                    Category_AiLvFuWu = Category.GenerateCategory(EnumCategoryType.AiLvFuWu); // 创建最新服务（系统）类型
+                    Category_AiLvJiLu = Category.GenerateCategory(EnumCategoryType.AiLvJiLu);// 创建爱驴记录（系统）类型
 
-                    //创建每日心情日记本（系统）类型
-                    context.Category.Add(Category.GenerateCategory(EnumCategoryType.MeiRiXinqing));
-
-                    // 创建最新资讯（系统）类型
-                    context.Category.Add(Category.GenerateCategory(EnumCategoryType.AiLvZiXun ));
-
-                    // 创建最新服务（系统）类型
-                    context.Category.Add(Category.GenerateCategory(EnumCategoryType.AiLvFuWu ));
-
-                    // 创建最新服务（系统）类型
-                    context.Category.Add(Category.GenerateCategory(EnumCategoryType.AiLvJiLu));
-
+                    context.Category.Add(Category_SampleCategory);
+                    context.Category.Add(Category_MeiRiXinqing);
+                    context.Category.Add(Category_AiLvZiXun);
+                    context.Category.Add(Category_AiLvFuWu);
+                    context.Category.Add(Category_AiLvJiLu);
 
                     context.SaveChanges();
                 }
+                #endregion
 
                 #endregion
 
@@ -276,104 +281,154 @@ namespace MVCForum.Services.Migrations
                 #endregion
 
                 #region 建立系统的全局权限定义和局部权限定义
-                // 检查是否有“Edit Posts”的权限作为依据
+
+                Permission Permission_EditPosts = null;
+                Permission Permission_ReadOnly = null;
+                Permission Permission_DeletePosts = null;
+                Permission Permission_CreateStickyTopics = null;
+                Permission Permission_LockTopics = null;
+                Permission Permission_VoteInPolls = null;
+                Permission Permission_CreatePolls = null;
+                Permission Permission_CreateTopics = null;
+                Permission Permission_AttachFiles = null;
+                Permission Permission_DenyAccess = null;
+
+
+                Permission Permission_Global_EditMembers = null;
+                Permission Permission_Global_InsertEditorImages = null;
+
+                #region 创建局部权限
+
+                //创建“Edit Posts”权限
                 if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionEditPosts) == null)
                 {
-                    #region 创建局部权限
+                    Permission_EditPosts = new Permission { Name = SiteConstants.Instance.PermissionEditPosts };
+                    context.Permission.Add(Permission_EditPosts);
+                }
 
-                    //创建“Edit Posts”权限
-                    var permission = new Permission { Name = SiteConstants.Instance.PermissionEditPosts };
-                    context.Permission.Add(permission);
+                // 创建“Read Only”权限
+                if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionReadOnly) == null)
+                {
+                    Permission_ReadOnly = new Permission { Name = SiteConstants.Instance.PermissionReadOnly };
+                    context.Permission.Add(Permission_ReadOnly);
+                }
 
-                    // NOTE: Because this is null - We assumed it's a new install so carry on checking and adding the other permissions
+                // 创建“Delete Posts”权限
+                if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionDeletePosts) == null)
+                {
+                    Permission_DeletePosts = new Permission { Name = SiteConstants.Instance.PermissionDeletePosts };
+                    context.Permission.Add(Permission_DeletePosts);
+                }
 
-                    // 创建“Read Only”权限
-                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionReadOnly) == null)
-                    {
-                        var p = new Permission { Name = SiteConstants.Instance.PermissionReadOnly };
-                        context.Permission.Add(p);
-                    }
+                // 创建“Sticky Topics”权限
+                if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionCreateStickyTopics) == null)
+                {
+                    Permission_CreateStickyTopics = new Permission { Name = SiteConstants.Instance.PermissionCreateStickyTopics };
+                    context.Permission.Add(Permission_CreateStickyTopics);
+                }
 
-                    // 创建“Delete Posts”权限
-                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionDeletePosts) == null)
-                    {
-                        var p = new Permission { Name = SiteConstants.Instance.PermissionDeletePosts };
-                        context.Permission.Add(p);
-                    }
+                // 创建“Lock Topics”权限
+                if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionLockTopics) == null)
+                {
+                    Permission_LockTopics = new Permission { Name = SiteConstants.Instance.PermissionLockTopics };
+                    context.Permission.Add(Permission_LockTopics);
+                }
 
-                    // 创建“Sticky Topics”权限
-                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionCreateStickyTopics) ==
-                        null)
-                    {
-                        var p = new Permission { Name = SiteConstants.Instance.PermissionCreateStickyTopics };
-                        context.Permission.Add(p);
-                    }
+                // 创建“Vote In Polls”权限
+                if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionVoteInPolls) == null)
+                {
+                    Permission_VoteInPolls = new Permission { Name = SiteConstants.Instance.PermissionVoteInPolls };
+                    context.Permission.Add(Permission_VoteInPolls);
+                }
 
-                    // 创建“Lock Topics”权限
-                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionLockTopics) == null)
-                    {
-                        var p = new Permission { Name = SiteConstants.Instance.PermissionLockTopics };
-                        context.Permission.Add(p);
-                    }
+                // 创建“Create Polls”权限
+                if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionCreatePolls) == null)
+                {
+                    Permission_CreatePolls = new Permission { Name = SiteConstants.Instance.PermissionCreatePolls };
+                    context.Permission.Add(Permission_CreatePolls);
+                }
 
-                    // 创建“Vote In Polls”权限
-                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionVoteInPolls) == null)
-                    {
-                        var p = new Permission { Name = SiteConstants.Instance.PermissionVoteInPolls };
-                        context.Permission.Add(p);
-                    }
+                // 创建“Create Topics”权限
+                if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionCreateTopics) == null)
+                {
+                    Permission_CreateTopics = new Permission { Name = SiteConstants.Instance.PermissionCreateTopics };
+                    context.Permission.Add(Permission_CreateTopics);
+                }
 
-                    // 创建“Create Polls”权限
-                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionCreatePolls) == null)
-                    {
-                        var p = new Permission { Name = SiteConstants.Instance.PermissionCreatePolls };
-                        context.Permission.Add(p);
-                    }
+                // 创建“Attach Files”权限
+                if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionAttachFiles) == null)
+                {
+                    Permission_AttachFiles = new Permission { Name = SiteConstants.Instance.PermissionAttachFiles };
+                    context.Permission.Add(Permission_AttachFiles);
+                }
 
-                    // 创建“Create Topics”权限
-                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionCreateTopics) == null)
-                    {
-                        var p = new Permission { Name = SiteConstants.Instance.PermissionCreateTopics };
-                        context.Permission.Add(p);
-                    }
+                // 创建“Deny Access”权限
+                if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionDenyAccess) == null)
+                {
+                    Permission_DenyAccess = new Permission { Name = SiteConstants.Instance.PermissionDenyAccess };
+                    context.Permission.Add(Permission_DenyAccess);
+                }
+                #endregion
 
-                    // 创建“Attach Files”权限
-                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionAttachFiles) == null)
-                    {
-                        var p = new Permission { Name = SiteConstants.Instance.PermissionAttachFiles };
-                        context.Permission.Add(p);
-                    }
+                #region 全局权限
 
-                    // 创建“Deny Access”权限
-                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionDenyAccess) == null)
-                    {
-                        var p = new Permission { Name = SiteConstants.Instance.PermissionDenyAccess };
-                        context.Permission.Add(p);
-                    }
-                    #endregion
+                // 创建“Deny Access”全局权限
+                if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionEditMembers) == null)
+                {
+                    Permission_Global_EditMembers = new Permission { Name = SiteConstants.Instance.PermissionEditMembers, IsGlobal = true };
+                    context.Permission.Add(Permission_Global_EditMembers);
+                }
 
-                    #region 全局权限
-
-                    // 创建“Deny Access”全局权限
-                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionEditMembers) == null)
-                    {
-                        var p = new Permission { Name = SiteConstants.Instance.PermissionEditMembers, IsGlobal = true };
-                        context.Permission.Add(p);
-                    }
-
-                    // 创建“Insert Editor Images”全局权限
-                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionInsertEditorImages) == null)
-                    {
-                        var p = new Permission { Name = SiteConstants.Instance.PermissionInsertEditorImages, IsGlobal = true };
-                        context.Permission.Add(p);
-                    }
-
-                    #endregion
-
-                    context.SaveChanges();
+                // 创建“Insert Editor Images”全局权限
+                if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionInsertEditorImages) == null)
+                {
+                    Permission_Global_InsertEditorImages = new Permission { Name = SiteConstants.Instance.PermissionInsertEditorImages, IsGlobal = true };
+                    context.Permission.Add(Permission_Global_InsertEditorImages);
                 }
 
                 #endregion
+
+                context.SaveChanges();
+
+
+                #endregion
+
+
+
+                #region 建立Category，Permission，Role映射关联关系
+                
+                CategoryPermissionForRoleService cprs = new CategoryPermissionForRoleService(context);
+                //TODO: 重要！！！权限系统，需要为不同的角色，Category分配权限
+                cprs.Add(new CategoryPermissionForRole()
+                {
+                    Category = Category_AiLvZiXun,
+                    MembershipRole = adminRole,
+                    Permission = Permission_CreateTopics,
+                    IsTicked = true,
+                });
+
+                cprs.Add(new CategoryPermissionForRole()
+                {
+                    Category = Category_AiLvZiXun,
+                    MembershipRole = adminRole,
+                    Permission = Permission_AttachFiles,
+                    IsTicked = true,
+                });
+
+                cprs.Add(new CategoryPermissionForRole()
+                {
+                    Category = Category_AiLvZiXun,
+                    MembershipRole = adminRole,
+                    Permission = Permission_Global_InsertEditorImages,
+                    IsTicked = true,
+                });
+
+                context.SaveChanges();
+
+                #endregion
+
+
+
 
                 #region 若默认管理员账号不存在，则创建默认的系统管理员账号
 
@@ -499,6 +554,8 @@ namespace MVCForum.Services.Migrations
 
                 }
                 #endregion
+
+
             }
             else
             {

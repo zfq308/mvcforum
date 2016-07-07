@@ -18,6 +18,9 @@ namespace MVCForum.Services
 {
     public partial class CategoryService : ICategoryService
     {
+
+        #region 建构式
+
         private readonly IRoleService _roleService;
         private readonly ICategoryNotificationService _categoryNotificationService;
         private readonly ICategoryPermissionForRoleService _categoryPermissionForRoleService;
@@ -38,56 +41,86 @@ namespace MVCForum.Services
             _context = context as MVCForumContext;
         }
 
+        #endregion
 
-      
-        /// <summary>
-        /// 按Category类别枚举查找Category实例
-        /// </summary>
-        /// <param name="mEnumCategoryType"></param>
-        /// <returns></returns>
-        public Category GetCategoryByEnumCategoryType(EnumCategoryType mEnumCategoryType)
+        #region 转Category集合到SelectListItem实例的集合
+        public List<SelectListItem> GetBaseSelectListCategories(List<Category> allowedCategories)
         {
-            string key = "";
-            switch (mEnumCategoryType)
+            var cats = new List<SelectListItem>();
+            //var cats = new List<SelectListItem> { new SelectListItem { Text = "", Value = "" } };
+            foreach (var cat in allowedCategories)
             {
-                case EnumCategoryType.AiLvZiXun:
-                    key = "Sys_ZuiXinZiXun";
-                    break;
-                case EnumCategoryType.AiLvFuWu:
-                    key = "Sys_ZuiXinFuWu";
-                    break;
-                case EnumCategoryType.AiLvJiLu:
-                    key = "Sys_AiLvJilu";
-                    break;
-                case EnumCategoryType.MeiRiXinqing:
-                    key = "Sys_DailyRecord";
-                    break;
-                case EnumCategoryType.SampleCategory:
-                    key = "Example Category";
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(mEnumCategoryType), mEnumCategoryType, null);
+                var catName = string.Concat(LevelDashes(cat.Level), cat.Level > 1 ? " " : "", cat.Name);
+                cats.Add(new SelectListItem { Text = catName, Value = cat.Id.ToString() });
             }
-
-            Category mSystemCategory = null;
-            if (HttpContext.Current != null && !HttpContext.Current.Items.Contains(key))
-            {
-                mSystemCategory = _context.Category.Where(x => x.IsSystemCategory == true && x.Name == key).AsNoTracking().FirstOrDefault();
-                if (mSystemCategory != null)
-                {
-                    HttpContext.Current.Items.Add(key, mSystemCategory);
-                }
-                return (Category)HttpContext.Current.Items[key];
-            }
-            return mSystemCategory;
+            return cats;
         }
 
-  
+        private static string LevelDashes(int level)
+        {
+            if (level > 1)
+            {
+                var sb = new StringBuilder();
+                for (var i = 0; i < level - 1; i++)
+                {
+                    sb.Append("-");
+                }
+                return sb.ToString();
+            }
+            return string.Empty;
+        }
 
-      
+        #endregion
+
+        #region 返回特定用户角色下允许操作的Category集合
 
         /// <summary>
-        /// Return all User Level Category
+        /// 返回特定用户角色下允许操作的Category集合
+        /// </summary>
+        /// <param name="role"></param>
+        /// <returns></returns>
+        public List<Category> GetAllowedCategories(MembershipRole role)
+        {
+            return GetAllowedCategories(role, SiteConstants.Instance.PermissionDenyAccess);
+        }
+
+        public List<Category> GetAllowedCategories(MembershipRole role, string actionType)
+        {
+            if (HttpContext.Current != null)
+            {
+                // Store per request
+                var key = string.Concat("allowed-categories", role.Id, actionType);
+                if (!HttpContext.Current.Items.Contains(key))
+                {
+                    HttpContext.Current.Items.Add(key, GetAllowedCategoriesCode(role, actionType));
+                }
+                return (List<Category>)HttpContext.Current.Items[key];
+            }
+            return GetAllowedCategoriesCode(role, actionType);
+        }
+
+        private List<Category> GetAllowedCategoriesCode(MembershipRole role, string actionType)
+        {
+            var filteredCats = new List<Category>();
+            var allCats = GetAllUserLevelCategory();
+            foreach (var category in allCats)
+            {
+                var permissionSet = _roleService.GetPermissions(category, role);
+                if (!permissionSet[actionType].IsTicked)
+                {
+                    // Only add it category is NOT locked
+                    filteredCats.Add(category);
+                }
+            }
+            return filteredCats;
+        }
+
+        #endregion
+
+        #region 返回所有用户级的Category集合
+
+        /// <summary>
+        /// 返回所有用户级的Category集合
         /// </summary>
         /// <returns></returns>
         public List<Category> GetAllUserLevelCategory()
@@ -139,148 +172,129 @@ namespace MVCForum.Services
             return catsToReturn;
         }
 
+        #endregion
 
-        public List<SelectListItem> GetBaseSelectListCategories(List<Category> allowedCategories)
-        {
-            var cats = new List<SelectListItem> { new SelectListItem { Text = "", Value = "" } };
-            foreach (var cat in allowedCategories)
-            {
-                var catName = string.Concat(LevelDashes(cat.Level), cat.Level > 1 ? " " : "", cat.Name);
-                cats.Add(new SelectListItem { Text = catName, Value = cat.Id.ToString() });
-            }
-            return cats;
-        }
-
-        private static string LevelDashes(int level)
-        {
-            if (level > 1)
-            {
-                var sb = new StringBuilder();
-                for (var i = 0; i < level - 1; i++)
-                {
-                    sb.Append("-");
-                }
-                return sb.ToString();
-            }
-            return string.Empty;
-        }
-
+        #region 通过相关条件取得Category实例
 
         /// <summary>
-        /// Return all sub categories from a parent category id
+        /// 按Category表中的Id值查询并返回Category实例
         /// </summary>
-        /// <param name="parentId"></param>
+        /// <param name="id">Category数据表中的ID字段值</param>
         /// <returns></returns>
-        public IEnumerable<Category> GetAllSubCategories(Guid parentId)
+        public Category Get(Guid id)
         {
-            return _context.Category.Where(x => x.ParentCategory.Id == parentId).OrderBy(x => x.SortOrder).ToList();
+            return _context.Category.FirstOrDefault(x => x.Id == id);
         }
 
-        /// <summary>
-        /// Get all User level main categories (Categories with no parent category and isSystemCategory is false)
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<Category> GetAllUserLevelMainCategories()
+        public IList<Category> Get(IList<Guid> CategoryIds, bool fullGraph = false)
         {
-            var categories = _context.Category.Include(x => x.ParentCategory).Include(x => x.Topics.Select(l => l.LastPost)).Include(x => x.Topics.Select(l => l.Posts)).Where(cat => cat.ParentCategory == null && cat.IsSystemCategory == false).OrderBy(x => x.SortOrder).ToList();
-
-            return categories;
-        }
-
-        /// <summary>
-        /// Return allowed categories based on the users role
-        /// </summary>
-        /// <param name="role"></param>
-        /// <returns></returns>
-        public List<Category> GetAllowedCategories(MembershipRole role)
-        {
-            return GetAllowedCategories(role, SiteConstants.Instance.PermissionDenyAccess);
-        }
-
-        public List<Category> GetAllowedCategories(MembershipRole role, string actionType)
-        {
-            if (HttpContext.Current != null)
+            IList<Category> categories;
+            if (fullGraph)
             {
-                // Store per request
-                var key = string.Concat("allowed-categories", role.Id, actionType);
-                if (!HttpContext.Current.Items.Contains(key))
-                {
-                    HttpContext.Current.Items.Add(key, GetAllowedCategoriesCode(role, actionType));
-                }
-                return (List<Category>)HttpContext.Current.Items[key];
+                categories = _context.Category.AsNoTracking()
+                    .Include(x => x.Topics.Select(l => l.LastPost.User))
+                    .Include(x => x.ParentCategory)
+                    .Where(x => CategoryIds.Contains(x.Id)).ToList();
             }
-            return GetAllowedCategoriesCode(role, actionType);
-        }
-
-        private List<Category> GetAllowedCategoriesCode(MembershipRole role, string actionType)
-        {
-            var filteredCats = new List<Category>();
-            var allCats = GetAllUserLevelCategory();
-            foreach (var category in allCats)
+            else
             {
-                var permissionSet = _roleService.GetPermissions(category, role);
-                if (!permissionSet[actionType].IsTicked)
-                {
-                    // Only add it category is NOT locked
-                    filteredCats.Add(category);
-                }
+                categories = _context.Category.AsNoTracking().Where(x => CategoryIds.Contains(x.Id)).ToList();
             }
-            return filteredCats;
-        }
 
+            // make sure categories are returned in order of ids (not in Database order)
+            return CategoryIds.Select(id => categories.Single(c => c.Id == id)).ToList();
+        }
 
         /// <summary>
-        /// 新加一个新的用户级Category
+        /// 按Category表中的slug值查询并返回Category实例
+        /// </summary>
+        /// <param name="slug"></param>
+        /// <returns></returns>
+        public Category Get(string slug)
+        {
+            return GetBySlug(StringUtils.GetSafeHtml(slug));
+        }
+
+        public Category GetBySlug(string slug)
+        {
+            return _context.Category.Where(x => x.IsSystemCategory == false).FirstOrDefault(x => x.Slug == slug);
+        }
+
+        public IList<Category> GetBySlugLike(string slug)
+        {
+            return _context.Category.Where(x => x.IsSystemCategory == false && x.Slug.Contains(slug)).ToList();
+        }
+
+        #endregion
+
+        #region 增删Category实例
+
+        /// <summary>
+        /// 新加一个新的用户级Category，[Ben已审阅,20160707]
         /// </summary>
         /// <param name="category"></param>
         public Category Add(Category category)
         {
-            // 对category实例进行属性过滤
-            category = SanitizeCategory(category);
-
-            category.IsSystemCategory = false;
+            category = SanitizeCategory(category); // 对category实例进行属性过滤
+            category.IsSystemCategory = false; //设定其Category的类型为用户级
             category.ShowTheCategoryCondition = 0;
-
-
-            // Set the create date
             category.DateCreated = DateTime.Now;
-
             // url slug generator
             category.Slug = ServiceHelpers.GenerateSlug(category.Name, GetBySlugLike(ServiceHelpers.CreateUrl(category.Name)), null);
 
-            // Add the category
             return _context.Category.Add(category);
         }
 
         /// <summary>
-        /// Keep slug in line with name
+        /// 删除一个用户级Category实例。若对应的Category下还有Topic则不能删除，并报InUseUnableToDeleteException异常，[Ben已审阅,20160707]
         /// </summary>
-        /// <param name="category"></param>
-        public void UpdateSlugFromName(Category category)
+        /// <param name="category">被删除的Category实例</param>
+        public void Delete(Category category)
         {
-            // Sanitize
-            category = SanitizeCategory(category);
-
-            var updateSlug = true;
-
-            // Check if slug has changed as this could be an update
-            if (!string.IsNullOrEmpty(category.Slug))
+            if (category != null && category.IsSystemCategory == false)
             {
-                var categoryBySlug = GetBySlugWithSubCategories(category.Slug);
-                if (categoryBySlug.Category.Id == category.Id)
+                // Check if anyone else if using this role
+                var okToDelete = !category.Topics.Any();
+
+                if (okToDelete)
                 {
-                    updateSlug = false;
+                    #region 先删除Category关联的依存数据
+
+                    var rolesToDelete = _categoryPermissionForRoleService.GetByCategory(category.Id);
+                    foreach (var categoryPermissionForRole in rolesToDelete)
+                    {
+                        _categoryPermissionForRoleService.Delete(categoryPermissionForRole);
+                    }
+
+                    var categoryNotificationsToDelete = new List<CategoryNotification>();
+                    categoryNotificationsToDelete.AddRange(category.CategoryNotifications);
+                    foreach (var categoryNotification in categoryNotificationsToDelete)
+                    {
+                        _categoryNotificationService.Delete(categoryNotification);
+                    }
+
+                    #endregion
+
+                    // 删除Category实例
+                    _context.Category.Remove(category);
+                }
+                else  // Category下关联了Topic, 不能被删除
+                {
+                    var inUseBy = new List<Entity>();
+                    inUseBy.AddRange(category.Topics);
+                    throw new InUseUnableToDeleteException(inUseBy);
                 }
             }
-
-            if (updateSlug)
+            else
             {
-                category.Slug = ServiceHelpers.GenerateSlug(category.Name, GetBySlugLike(category.Slug), category.Slug);
+                throw new Exception("你不能删除系统级的Category类别对象.");
             }
         }
 
+        #endregion
+
         /// <summary>
-        /// 对category实例进行属性过滤
+        /// 对category实例进行属性过滤，防止注入攻击 [Ben已审阅,20160707]
         /// </summary>
         /// <param name="category">要过滤的category实例</param>
         /// <returns></returns>
@@ -293,31 +307,53 @@ namespace MVCForum.Services
         }
 
         /// <summary>
-        /// Return category by id
+        /// 按Category类别枚举查找Category实例，[Ben已审阅,20160707]
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="mEnumCategoryType"></param>
         /// <returns></returns>
-        public Category Get(Guid id)
+        public Category GetCategoryByEnumCategoryType(EnumCategoryType mEnumCategoryType)
         {
-            return _context.Category.FirstOrDefault(x => x.Id == id);
+            string key = "";
+            switch (mEnumCategoryType)
+            {
+                case EnumCategoryType.AiLvZiXun:
+                    key = Category.CategoryName_Zuixinzixun;
+                    break;
+                case EnumCategoryType.AiLvFuWu:
+                    key = Category.CategoryName_ZuiXinFuWu;
+                    break;
+                case EnumCategoryType.AiLvJiLu:
+                    key = Category.CategoryName_AiLvJilu;
+                    break;
+                case EnumCategoryType.MeiRiXinqing:
+                    key = Category.CategoryName_DailyRecord;
+                    break;
+                case EnumCategoryType.SampleCategory:
+                    key = Category.CategoryName_ExampleCategory;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(mEnumCategoryType), mEnumCategoryType, null);
+            }
+
+            if (HttpContext.Current != null && !HttpContext.Current.Items.Contains(key))
+            {
+                Category mSystemCategory = _context.Category.Where(x => x.IsSystemCategory == true && x.Name == key).AsNoTracking().FirstOrDefault();
+                if (mSystemCategory != null)
+                {
+                    HttpContext.Current.Items.Add(key, mSystemCategory);
+                }
+            }
+            return (Category)HttpContext.Current.Items[key];
         }
 
-        public IList<Category> Get(IList<Guid> CategoryIds, bool fullGraph = false)
-        {
-            IList<Category> categories;
 
-            if (fullGraph)
-            {
-                categories = _context.Category.AsNoTracking().Include(x => x.Topics.Select(l => l.LastPost.User)).Include(x => x.ParentCategory).Where(x => CategoryIds.Contains(x.Id)).ToList();
-            }
-            else
-            {
-                categories = _context.Category.AsNoTracking().Where(x => CategoryIds.Contains(x.Id)).ToList();
-            }
 
-            // make sure categories are returned in order of ids (not in Database order)
-            return CategoryIds.Select(id => categories.Single(c => c.Id == id)).ToList();
-        }
+
+
+
+
+
+        #region 其他方法，暂未Review
 
         /// <summary>
         /// Return model with Sub categories
@@ -339,13 +375,50 @@ namespace MVCForum.Services
         }
 
         /// <summary>
-        /// Return category by Url slug
+        /// Keep slug in line with name
         /// </summary>
-        /// <param name="slug"></param>
-        /// <returns></returns>
-        public Category Get(string slug)
+        /// <param name="category"></param>
+        public void UpdateSlugFromName(Category category)
         {
-            return GetBySlug(StringUtils.GetSafeHtml(slug));
+            category = SanitizeCategory(category);
+
+            var updateSlug = true;
+
+            // Check if slug has changed as this could be an update
+            if (!string.IsNullOrEmpty(category.Slug))
+            {
+                var categoryBySlug = GetBySlugWithSubCategories(category.Slug);
+                if (categoryBySlug.Category.Id == category.Id)
+                {
+                    updateSlug = false;
+                }
+            }
+
+            if (updateSlug)
+            {
+                category.Slug = ServiceHelpers.GenerateSlug(category.Name, GetBySlugLike(category.Slug), category.Slug);
+            }
+        }
+        
+        /// <summary>
+        /// Return all sub categories from a parent category id
+        /// </summary>
+        /// <param name="parentId"></param>
+        /// <returns></returns>
+        public IEnumerable<Category> GetAllSubCategories(Guid parentId)
+        {
+            return _context.Category.Where(x => x.ParentCategory.Id == parentId).OrderBy(x => x.SortOrder).ToList();
+        }
+
+        /// <summary>
+        /// Get all User level main categories (Categories with no parent category and isSystemCategory is false)
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Category> GetAllUserLevelMainCategories()
+        {
+            var categories = _context.Category.Include(x => x.ParentCategory).Include(x => x.Topics.Select(l => l.LastPost)).Include(x => x.Topics.Select(l => l.Posts)).Where(cat => cat.ParentCategory == null && cat.IsSystemCategory == false).OrderBy(x => x.SortOrder).ToList();
+
+            return categories;
         }
 
         public List<Category> GetCategoryParents(Category category, List<Category> allowedCategories)
@@ -370,60 +443,6 @@ namespace MVCForum.Services
         }
 
         /// <summary>
-        /// Delete a category
-        /// </summary>
-        /// <param name="category"></param>
-        public void Delete(Category category)
-        {
-            if (category != null && category.IsSystemCategory == false)
-            {
-                // Check if anyone else if using this role
-                var okToDelete = !category.Topics.Any();
-
-                if (okToDelete)
-                {
-                    // Get any categorypermissionforoles and delete these first
-                    var rolesToDelete = _categoryPermissionForRoleService.GetByCategory(category.Id);
-
-                    foreach (var categoryPermissionForRole in rolesToDelete)
-                    {
-                        _categoryPermissionForRoleService.Delete(categoryPermissionForRole);
-                    }
-
-                    var categoryNotificationsToDelete = new List<CategoryNotification>();
-                    categoryNotificationsToDelete.AddRange(category.CategoryNotifications);
-                    foreach (var categoryNotification in categoryNotificationsToDelete)
-                    {
-                        _categoryNotificationService.Delete(categoryNotification);
-                    }
-
-                    _context.Category.Remove(category);
-                }
-                else
-                {
-                    var inUseBy = new List<Entity>();
-                    inUseBy.AddRange(category.Topics);
-                    throw new InUseUnableToDeleteException(inUseBy);
-                }
-            }
-            else
-            {
-                throw new Exception("You can't delete the system Category.");
-            }
-        }
-
-        public Category GetBySlug(string slug)
-        {
-            //StringUtils.GetSafeHtml(slug)
-            return _context.Category.Where(x => x.IsSystemCategory == false).FirstOrDefault(x => x.Slug == slug);
-        }
-
-        public IList<Category> GetBySlugLike(string slug)
-        {
-            return _context.Category.Where(x => x.IsSystemCategory == false && x.Slug.Contains(slug)).ToList();
-        }
-
-        /// <summary>
         /// Gets all categories right the way down
         /// </summary>
         /// <param name="category"></param>
@@ -433,6 +452,8 @@ namespace MVCForum.Services
             var catGuid = category.Id.ToString().ToLower();
             return _context.Category.Where(x => x.Path != null && x.Path.ToLower().Contains(catGuid) && x.IsSystemCategory == false).OrderBy(x => x.SortOrder).ToList();
         }
+
+        #endregion
     }
 }
 

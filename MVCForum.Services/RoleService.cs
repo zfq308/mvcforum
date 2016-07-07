@@ -15,13 +15,16 @@ namespace MVCForum.Services
 {
     public partial class RoleService : IRoleService
     {
+        #region 建构式
+
         private readonly ICategoryPermissionForRoleService _categoryPermissionForRoleService;
         private readonly IGlobalPermissionForRoleService _globalPermissionForRoleService;
         private readonly IPermissionService _permissionService;
         private readonly MVCForumContext _context;
         private PermissionSet _permissions;
 
-        public RoleService(IMVCForumContext context, ICategoryPermissionForRoleService categoryPermissionForRoleService, IPermissionService permissionService, IGlobalPermissionForRoleService globalPermissionForRoleService)
+        public RoleService(IMVCForumContext context, ICategoryPermissionForRoleService categoryPermissionForRoleService, IPermissionService permissionService,
+            IGlobalPermissionForRoleService globalPermissionForRoleService)
         {
             _categoryPermissionForRoleService = categoryPermissionForRoleService;
             _permissionService = permissionService;
@@ -29,15 +32,17 @@ namespace MVCForum.Services
             _context = context as MVCForumContext;
         }
 
+        #endregion
+
+        #region 查询用户角色
+
         /// <summary>
-        /// Get all roles in the system
+        /// 列出系统中的全部Roles,并按Role的名字倒序排列返回
         /// </summary>
         /// <returns></returns>
         public IList<MembershipRole> AllRoles()
         {
-            return _context.MembershipRole
-                .OrderByDescending(x => x.RoleName)
-                .ToList();
+            return _context.MembershipRole.OrderByDescending(x => x.RoleName).ToList();
         }
 
         /// <summary>
@@ -70,17 +75,26 @@ namespace MVCForum.Services
         }
 
         /// <summary>
-        /// Get all users for a specified role
+        /// 返回特定角色所关联到的用户集合（哪些用户有这个角色）
         /// </summary>
         /// <param name="roleName"></param>
         /// <returns></returns>
         public IList<MembershipUser> GetUsersForRole(string roleName)
         {
-            return GetRole(roleName).Users;
-
+            var role = GetRole(roleName);
+            if (role != null)
+            {
+                return role.Users;
+            }
+            return null;
         }
+
+        #endregion
+
+        #region 增删用户角色
+
         /// <summary>
-        /// Create a new role
+        /// 新增用户角色
         /// </summary>
         /// <param name="role"></param>
         public MembershipRole CreateRole(MembershipRole role)
@@ -91,7 +105,7 @@ namespace MVCForum.Services
         }
 
         /// <summary>
-        /// Delete a role
+        /// 删除用户角色。当角色关联的用户不为0时，抛出异常
         /// </summary>
         /// <param name="role"></param>
         public void Delete(MembershipRole role)
@@ -103,7 +117,6 @@ namespace MVCForum.Services
             {
                 // Get any categorypermissionforoles and delete these first
                 var rolesToDelete = _categoryPermissionForRoleService.GetByRole(role.Id);
-
                 foreach (var categoryPermissionForRole in rolesToDelete)
                 {
                     _categoryPermissionForRoleService.Delete(categoryPermissionForRole);
@@ -119,8 +132,53 @@ namespace MVCForum.Services
             }
         }
 
+        #endregion
+
+
+
 
         #region Methods
+
+        /// <summary>
+        /// Returns permission set based on category and role
+        /// </summary>
+        /// <param name="category">Category could be null when requesting global permissions</param>
+        /// <param name="role"></param>
+        /// <returns></returns>
+        public PermissionSet GetPermissions(Category category, MembershipRole role)
+        {
+            // Pass the role in to see select which permissions to apply
+            // Going to cache this per request, just to help with performance
+
+            // We pass in an empty guid if the category is null
+            var categoryId = Guid.Empty;
+            if (category != null)
+            {
+                categoryId = category.Id;
+            }
+
+            var objectContextKey = string.Concat(HttpContext.Current.GetHashCode().ToString("x"), "-", categoryId, "-", role.Id);
+            if (!HttpContext.Current.Items.Contains(objectContextKey))
+            {
+                switch (role.RoleName)
+                {
+                    case AppConstants.AdminRoleName:
+                        _permissions = GetAdminPermissions(category, role);
+                        break;
+                    case AppConstants.GuestRoleName:
+                        _permissions = GetGuestPermissions(category, role);
+                        break;
+                    default:
+                        _permissions = GetOtherPermissions(category, role);
+                        break;
+                }
+
+                HttpContext.Current.Items.Add(objectContextKey, _permissions);
+            }
+
+            return HttpContext.Current.Items[objectContextKey] as PermissionSet;
+
+        }
 
         /// <summary>
         /// Admin: so no need to check db, admin is all powerful
@@ -135,31 +193,38 @@ namespace MVCForum.Services
 
             // Category could be null if only requesting global permissions
             // Just return a new list
+
+            CategoryPermissionForRoleService cprs = new CategoryPermissionForRoleService(_context);
             var categoryPermissions = new List<CategoryPermissionForRole>();
             if (category != null)
             {
-                foreach (var permission in permissionList.Where(x => !x.IsGlobal))
-                {
-                    categoryPermissions.Add(new CategoryPermissionForRole
-                    {
-                        Category = category,
-                        IsTicked = (permission.Name != SiteConstants.Instance.PermissionDenyAccess && permission.Name != SiteConstants.Instance.PermissionReadOnly),
-                        MembershipRole = role,
-                        Permission = permission
-                    });
-                }
+                #region Admin 全功能权限,暂时取消
+                //foreach (var permission in permissionList.Where(x => !x.IsGlobal))
+                //{
+                //    categoryPermissions.Add(new CategoryPermissionForRole
+                //    {
+                //        Category = category,
+                //        IsTicked = (permission.Name != SiteConstants.Instance.PermissionDenyAccess && permission.Name != SiteConstants.Instance.PermissionReadOnly),
+                //        MembershipRole = role,
+                //        Permission = permission
+                //    });
+                //}
+                #endregion
 
+                #region 现在采用的是Admin 精简功能模式
+                categoryPermissions = cprs.GetByCategoryAndRole(role, category);
+                #endregion
             }
 
             // Sort the global permissions out - As it's a admin we set everything to true!
             var globalPermissions = permissionList
                                         .Where(x => x.IsGlobal)
                                         .Select(permission => new GlobalPermissionForRole
-                                                        {
-                                                            IsTicked = true,
-                                                            MembershipRole = role,
-                                                            Permission = permission
-                                                        });
+                                        {
+                                            IsTicked = true,
+                                            MembershipRole = role,
+                                            Permission = permission
+                                        });
 
             // Create the permission set
             return new PermissionSet(categoryPermissions, globalPermissions);
@@ -270,46 +335,6 @@ namespace MVCForum.Services
             return new PermissionSet(categoryPermissions, globalPermissions);
         }
 
-        /// <summary>
-        /// Returns permission set based on category and role
-        /// </summary>
-        /// <param name="category">Category could be null when requesting global permissions</param>
-        /// <param name="role"></param>
-        /// <returns></returns>
-        public PermissionSet GetPermissions(Category category, MembershipRole role)
-        {
-            // Pass the role in to see select which permissions to apply
-            // Going to cache this per request, just to help with performance
-
-            // We pass in an empty guid if the category is null
-            var categoryId = Guid.Empty;
-            if (category != null)
-            {
-                categoryId = category.Id;
-            }
-
-            var objectContextKey = string.Concat(HttpContext.Current.GetHashCode().ToString("x"), "-", categoryId, "-", role.Id);
-            if (!HttpContext.Current.Items.Contains(objectContextKey))
-            {
-                switch (role.RoleName)
-                {
-                    case AppConstants.AdminRoleName:
-                        _permissions = GetAdminPermissions(category, role);
-                        break;
-                    case AppConstants.GuestRoleName:
-                        _permissions = GetGuestPermissions(category, role);
-                        break;
-                    default:
-                        _permissions = GetOtherPermissions(category, role);
-                        break;
-                }
-
-                HttpContext.Current.Items.Add(objectContextKey, _permissions);
-            }
-
-            return HttpContext.Current.Items[objectContextKey] as PermissionSet;
-
-        }
 
         #endregion
 

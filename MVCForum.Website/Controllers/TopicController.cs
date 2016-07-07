@@ -71,35 +71,8 @@ namespace MVCForum.Website.Controllers
 
         #endregion
 
-        public PartialViewResult CreateTopicButton()
-        {
-            var viewModel = new CreateTopicButtonViewModel
-            {
-                LoggedOnUser = LoggedOnReadOnlyUser
-            };
 
-            if (LoggedOnReadOnlyUser != null)
-            {
-                // Add all categories to a permission set
-                var allCategories = _categoryService.GetAllUserLevelCategory();
-                using (UnitOfWorkManager.NewUnitOfWork())
-                {
-                    foreach (var category in allCategories)
-                    {
-                        // Now check to see if they have access to any categories
-                        // if so, check they are allowed to create topics - If no to either set to false
-                        viewModel.UserCanPostTopics = false;
-                        var permissionSet = RoleService.GetPermissions(category, UsersRole);
-                        if (permissionSet[SiteConstants.Instance.PermissionCreateTopics].IsTicked)
-                        {
-                            viewModel.UserCanPostTopics = true;
-                            break;
-                        }
-                    }
-                }
-            }
-            return PartialView(viewModel);
-        }
+        #region 最新资讯部分
 
         public PartialViewResult CreateTopicButtonForZuiXinZiXun()
         {
@@ -223,7 +196,7 @@ namespace MVCForum.Website.Controllers
                             Name = _bannedWordService.SanitiseBannedWords(topicViewModel.Name, bannedWords),
                             Category = category,
                             User = loggedOnUser,
-                            TopicType=category.Name
+                            TopicType = category.Name
                         };
 
                         // Check Permissions for topic topions
@@ -471,11 +444,6 @@ namespace MVCForum.Website.Controllers
             return View(topicViewModel);
         }
 
-
-
-
-        #region Create Topic
-
         private CreateEditTopicViewModel PrePareCreateEditTopicViewModel(List<Category> allowedCategories)
         {
             var userIsAdmin = UserIsAdmin;
@@ -502,6 +470,42 @@ namespace MVCForum.Website.Controllers
                 PollCloseAfterDays = 0
             };
         }
+
+        #endregion
+
+
+        public PartialViewResult CreateTopicButton()
+        {
+            var viewModel = new CreateTopicButtonViewModel
+            {
+                LoggedOnUser = LoggedOnReadOnlyUser
+            };
+
+            if (LoggedOnReadOnlyUser != null)
+            {
+                // Add all categories to a permission set
+                var allCategories = _categoryService.GetAllUserLevelCategory();
+                using (UnitOfWorkManager.NewUnitOfWork())
+                {
+                    foreach (var category in allCategories)
+                    {
+                        // Now check to see if they have access to any categories
+                        // if so, check they are allowed to create topics - If no to either set to false
+                        viewModel.UserCanPostTopics = false;
+                        var permissionSet = RoleService.GetPermissions(category, UsersRole);
+                        if (permissionSet[SiteConstants.Instance.PermissionCreateTopics].IsTicked)
+                        {
+                            viewModel.UserCanPostTopics = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            return PartialView(viewModel);
+        }
+        #region Create Topic
+
+
 
         private List<Category> AllowedCreateCategories()
         {

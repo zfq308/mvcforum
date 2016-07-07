@@ -435,13 +435,15 @@ namespace MVCForum.Website.ViewModels.Mapping
 
         #region Category
 
-        public static Dictionary<Category, PermissionSet> GetPermissionsForCategories(IEnumerable<Category> categories, IRoleService roleService, MembershipRole usersRole)
+        public static Dictionary<Category, PermissionSet> GetPermissionsForCategories(IEnumerable<Category> categories,
+                                                                                      IRoleService roleService, MembershipRole usersRole)
         {
             // Permissions
             // loop through the categories and get the permissions
             var permissions = new Dictionary<Category, PermissionSet>();
             foreach (var category in categories)
             {
+                //TODO: 需要设定现在系统中的每一个Category的permissionSet
                 var permissionSet = roleService.GetPermissions(category, usersRole);
                 permissions.Add(category, permissionSet);
             }

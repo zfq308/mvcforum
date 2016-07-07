@@ -9,8 +9,14 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Services
 {
+    /// <summary>
+    /// 权限Service类
+    /// </summary>
     public partial class PermissionService : IPermissionService
     {
+
+        #region 建构式
+       
         private readonly MVCForumContext _context;
         private readonly ICategoryPermissionForRoleService _categoryPermissionForRoleService;
 
@@ -20,8 +26,10 @@ namespace MVCForum.Services
             _context = context as MVCForumContext;
         }
 
+        #endregion
+        
         /// <summary>
-        /// Get all permissions
+        /// 取得全部的权限条目集合
         /// </summary>
         /// <returns></returns>
         public IEnumerable<Permission> GetAll()
@@ -33,7 +41,17 @@ namespace MVCForum.Services
         }
 
         /// <summary>
-        /// Add a new permission
+        /// 取得特定Id的权限条目实例
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public Permission Get(Guid id)
+        {
+            return _context.Permission.FirstOrDefault(x => x.Id == id);
+        }
+
+        /// <summary>
+        /// 新增 权限 条目
         /// </summary>
         /// <param name="permission"></param>
         public Permission Add(Permission permission)
@@ -41,6 +59,16 @@ namespace MVCForum.Services
             permission.Name = StringUtils.SafePlainText(permission.Name);
             return _context.Permission.Add(permission);
         }
+
+
+
+
+
+
+
+
+
+
 
         /// <summary>
         ///  Delete permission and associated category permission for roles
@@ -57,14 +85,6 @@ namespace MVCForum.Services
             _context.Permission.Remove(permission);
         }
 
-        /// <summary>
-        /// Get a permision by id
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public Permission Get(Guid id)
-        {
-            return _context.Permission.FirstOrDefault(x => x.Id == id);
-        }
+
     }
 }

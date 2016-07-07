@@ -17,13 +17,20 @@ namespace MVCForum.Domain.DomainModel
             Id = GuidComb.GenerateComb();
         }
 
+        public const string CategoryName_Zuixinzixun = "Sys_ZuiXinZiXun";
+        public const string CategoryName_ZuiXinFuWu = "Sys_ZuiXinFuWu";
+        public const string CategoryName_AiLvJilu = "Sys_AiLvJilu";
+        public const string CategoryName_DailyRecord = "Sys_DailyRecord";
+        public const string CategoryName_ExampleCategory = "Example Category";
+
+
         public static Category GenerateCategory(EnumCategoryType mCategoryType)
         {
             Category newCategory = new Category();
             switch (mCategoryType)
             {
                 case EnumCategoryType.AiLvZiXun:
-                    newCategory.Name = "Sys_ZuiXinZiXun";
+                    newCategory.Name = CategoryName_Zuixinzixun;
                     newCategory.ModeratePosts = false;
                     newCategory.ModerateTopics = false;
                     newCategory.Slug = StringUtils.CreateUrl(newCategory.Name, "-");
@@ -32,7 +39,7 @@ namespace MVCForum.Domain.DomainModel
                     newCategory.ShowTheCategoryCondition = 0;
                     break;
                 case EnumCategoryType.AiLvFuWu:
-                    newCategory.Name = "Sys_ZuiXinFuWu";
+                    newCategory.Name = CategoryName_ZuiXinFuWu;
                     newCategory.ModeratePosts = false;
                     newCategory.ModerateTopics = false;
                     newCategory.Slug = StringUtils.CreateUrl(newCategory.Name, "-");
@@ -41,7 +48,7 @@ namespace MVCForum.Domain.DomainModel
                     newCategory.ShowTheCategoryCondition = 0;
                     break;
                 case EnumCategoryType.AiLvJiLu:
-                    newCategory.Name = "Sys_AiLvJilu";
+                    newCategory.Name = CategoryName_AiLvJilu;
                     newCategory.ModeratePosts = false;
                     newCategory.ModerateTopics = false;
                     newCategory.Slug = StringUtils.CreateUrl(newCategory.Name, "-");
@@ -50,7 +57,7 @@ namespace MVCForum.Domain.DomainModel
                     newCategory.ShowTheCategoryCondition = 0;
                     break;
                 case EnumCategoryType.MeiRiXinqing:
-                    newCategory.Name = "Sys_DailyRecord";
+                    newCategory.Name = CategoryName_DailyRecord;
                     newCategory.ModeratePosts = false;
                     newCategory.ModerateTopics = false;
                     newCategory.Slug = StringUtils.CreateUrl(newCategory.Name, "-");
@@ -59,7 +66,7 @@ namespace MVCForum.Domain.DomainModel
                     newCategory.ShowTheCategoryCondition = 0;
                     break;
                 case EnumCategoryType.SampleCategory:
-                    newCategory.Name = "Example Category";
+                    newCategory.Name = CategoryName_ExampleCategory;
                     newCategory.ModeratePosts = false;
                     newCategory.ModerateTopics = false;
                     newCategory.Slug = StringUtils.CreateUrl(newCategory.Name, "-");

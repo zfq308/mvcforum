@@ -14,46 +14,44 @@ namespace MVCForum.Website.Controllers
 {
     public partial class CategoryController : BaseController
     {
+        #region 建构式
+
         private readonly ICategoryService _categoryService;
-        private readonly ICategoryNotificationService _categoryNotificationService;
         private readonly ITopicService _topicService;
         private readonly IPollAnswerService _pollAnswerService;
-        private readonly ITopicNotificationService _topicNotificationService;
+        //private readonly ITopicNotificationService _topicNotificationService;
         private readonly IVoteService _voteService;
-        private readonly IRoleService _roleService;
+        //private readonly IRoleService _roleService;
+        private readonly ICategoryNotificationService _categoryNotificationService;
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="loggingService"> </param>
-        /// <param name="unitOfWorkManager"> </param>
-        /// <param name="membershipService"></param>
-        /// <param name="localizationService"></param>
-        /// <param name="roleService"></param>
-        /// <param name="categoryService"></param>
-        /// <param name="settingsService"> </param>
-        /// <param name="topicService"> </param>
-        /// <param name="categoryNotificationService"> </param>
-        /// <param name="pollAnswerService"></param>
-        /// <param name="topicNotificationService"></param>
-        /// <param name="voteService"></param>
-        public CategoryController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
-            IMembershipService membershipService,
-            ILocalizationService localizationService,
-            IRoleService roleService,
+        public CategoryController(
+            ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService,
+            ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
+
             ICategoryService categoryService,
-            ISettingsService settingsService, ITopicService topicService, ICategoryNotificationService categoryNotificationService, IPollAnswerService pollAnswerService, ITopicNotificationService topicNotificationService, IVoteService voteService, IRoleService roleService1)
+            ITopicService topicService,
+            ICategoryNotificationService categoryNotificationService,
+            IPollAnswerService pollAnswerService,
+            //ITopicNotificationService topicNotificationService,
+            IVoteService voteService
+            )
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _categoryService = categoryService;
             _topicService = topicService;
             _categoryNotificationService = categoryNotificationService;
             _pollAnswerService = pollAnswerService;
-            _topicNotificationService = topicNotificationService;
+            //_topicNotificationService = topicNotificationService;
             _voteService = voteService;
-            _roleService = roleService1;
+            //_roleService = roleService;
         }
 
+        #endregion
+
+        /// <summary>
+        /// 返回CategoryController的默认视图
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
             return View();
@@ -64,10 +62,11 @@ namespace MVCForum.Website.Controllers
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-
                 var catViewModel = new CategoryListViewModel
                 {
-                    AllPermissionSets = ViewModelMapping.GetPermissionsForCategories(_categoryService.GetAllUserLevelMainCategories(), _roleService, UsersRole)
+                    AllPermissionSets = ViewModelMapping.GetPermissionsForCategories(_categoryService.GetAllUserLevelMainCategories(),
+                                                                                     this.RoleService,  //_roleService
+                                                                                     UsersRole)
                 };
                 return PartialView(catViewModel);
             }
@@ -80,11 +79,16 @@ namespace MVCForum.Website.Controllers
             {
                 var catViewModel = new CategoryListViewModel
                 {
-                    AllPermissionSets = ViewModelMapping.GetPermissionsForCategories(_categoryService.GetAllUserLevelCategory(), _roleService, UsersRole)
+                    AllPermissionSets = ViewModelMapping.GetPermissionsForCategories(_categoryService.GetAllUserLevelCategory(),
+                                                                                     this.RoleService,  //_roleService
+                                                                                     UsersRole)
                 };
                 return PartialView(catViewModel);
             }
         }
+
+
+
 
         [Authorize]
         [ChildActionOnly]
@@ -126,12 +130,16 @@ namespace MVCForum.Website.Controllers
             {
                 var viewModel = new BreadcrumbViewModel
                 {
-                    Categories = _categoryService.GetCategoryParents(category,allowedCategories),
+                    Categories = _categoryService.GetCategoryParents(category, allowedCategories),
                     Category = category
                 };
                 return PartialView("GetCategoryBreadcrumb", viewModel);
             }
         }
+
+
+
+        #region RouteConfig.cs文件中有定义路由，暂未Review
 
         public ActionResult Show(string slug, int? p)
         {
@@ -160,24 +168,24 @@ namespace MVCForum.Website.Controllers
 
                     // Create the main view model for the category
                     var viewModel = new CategoryViewModel
-                        {
-                            Permissions = permissions,
-                            Topics = topicViewModels,
-                            Category = category.Category,
-                            PageIndex = pageIndex,
-                            TotalCount = topics.TotalCount,
-                            TotalPages = topics.TotalPages,
-                            User = LoggedOnReadOnlyUser,
-                            IsSubscribed = UserIsAuthenticated && (_categoryNotificationService.GetByUserAndCategory(LoggedOnReadOnlyUser, category.Category).Any())
-                        };
+                    {
+                        Permissions = permissions,
+                        Topics = topicViewModels,
+                        Category = category.Category,
+                        PageIndex = pageIndex,
+                        TotalCount = topics.TotalCount,
+                        TotalPages = topics.TotalPages,
+                        User = LoggedOnReadOnlyUser,
+                        IsSubscribed = UserIsAuthenticated && (_categoryNotificationService.GetByUserAndCategory(LoggedOnReadOnlyUser, category.Category).Any())
+                    };
 
                     // If there are subcategories then add then with their permissions
                     if (category.SubCategories.Any())
                     {
                         var subCatViewModel = new CategoryListViewModel
-                            {
-                                AllPermissionSets = new Dictionary<Category, PermissionSet>()
-                            };
+                        {
+                            AllPermissionSets = new Dictionary<Category, PermissionSet>()
+                        };
                         foreach (var subCategory in category.SubCategories)
                         {
                             var permissionSet = RoleService.GetPermissions(subCategory, UsersRole);
@@ -219,12 +227,12 @@ namespace MVCForum.Website.Controllers
                                                                  x.Posts.FirstOrDefault(s => s.IsTopicStarter);
                                                              return firstOrDefault != null
                                                                         ? new RssItem
-                                                                              {
-                                                                                  Description = firstOrDefault.PostContent,
-                                                                                  Link = x.NiceUrl,
-                                                                                  Title = x.Name,
-                                                                                  PublishedDate = x.CreateDate
-                                                                              }
+                                                                        {
+                                                                            Description = firstOrDefault.PostContent,
+                                                                            Link = x.NiceUrl,
+                                                                            Title = x.Name,
+                                                                            PublishedDate = x.CreateDate
+                                                                        }
                                                                         : null;
                                                          }
                                            ));
@@ -236,5 +244,8 @@ namespace MVCForum.Website.Controllers
                 return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NothingToDisplay"));
             }
         }
+
+        #endregion
+
     }
 }

@@ -11,6 +11,8 @@ namespace MVCForum.Services
 {
     public partial class CategoryPermissionForRoleService : ICategoryPermissionForRoleService
     {
+        #region 建构式
+
         private readonly MVCForumContext _context;
 
         /// <summary>
@@ -22,6 +24,8 @@ namespace MVCForum.Services
             _context = context as MVCForumContext;
         }
 
+        #endregion
+        
         /// <summary>
         /// Add new category permission for role
         /// </summary>
@@ -75,6 +79,13 @@ namespace MVCForum.Services
         }
 
 
+
+
+
+
+
+
+
         /// <summary>
         /// Returns a row with the permission and CPFR
         /// </summary>
@@ -92,6 +103,24 @@ namespace MVCForum.Services
                                         .ToList();
             return catRowList.ToDictionary(catRow => catRow.Permission);
         }
+
+
+
+
+        public List<CategoryPermissionForRole> GetByCategoryAndRole(MembershipRole role, Category cat)
+        {
+            return _context.CategoryPermissionForRole
+                           .Include(x => x.MembershipRole)
+                           .Include(x => x.Category)
+                           .AsNoTracking()
+                           .Where(x => 
+                                       x.Category.Id == cat.Id &&
+                                       x.MembershipRole.Id == role.Id)
+                                       .ToList();
+        }
+
+
+
 
         /// <summary>
         /// Get all category permissions by category
