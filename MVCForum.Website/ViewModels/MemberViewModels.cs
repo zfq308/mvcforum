@@ -65,7 +65,7 @@ namespace MVCForum.Website.ViewModels
 
         [Required]
         [Display(Name = "已阅读并同意")]
-        [MustBeTrue(ErrorMessage = "你同意吗？")]
+        [MustBeTrue(ErrorMessage = "TermsAndConditions.Label.AgreeError")]
         public bool ReadPolicyFirst { get; set; }
 
         [ForumMvcResourceDisplayName("Members.Label.UserIsApproved")]
@@ -119,7 +119,7 @@ namespace MVCForum.Website.ViewModels
 
         [Required]
         [Display(Name = "婚否")]
-        public bool IsMarried { get; set; }
+        public Enum_MarriedStatus IsMarried { get; set; }
 
         [Display(Name = "身高cm")]
         [Range(0, 250)]
@@ -132,8 +132,6 @@ namespace MVCForum.Website.ViewModels
         [Required]
         [Display(Name = "学历")]
         public string Education { get; set; }
-
-
 
         [Required]
         [Display(Name = "学校所在省份")]

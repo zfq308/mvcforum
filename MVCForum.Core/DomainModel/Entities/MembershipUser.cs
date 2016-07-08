@@ -46,13 +46,18 @@ namespace MVCForum.Domain.DomainModel
         /// <summary>
         /// 阴历，中国历
         /// </summary>
-        LunarCalendar=1,
+        LunarCalendar = 1,
         /// <summary>
         /// 公历，
         /// </summary>
-        PublicCalendar=2,
+        PublicCalendar = 2,
     }
 
+    public enum Enum_MarriedStatus
+    {
+        Married = 1,
+        Single = 0,
+    }
 
     /// <summary>
     /// 用户实体类
@@ -76,13 +81,35 @@ namespace MVCForum.Domain.DomainModel
             Gender = Enum_Gender.boy;
             Birthday = new DateTime(2000, 1, 1);
             IsLunarCalendar = Enum_Calendar.PublicCalendar;
-            IsMarried = false;
+            IsMarried = Enum_MarriedStatus.Single;
             IncomeRange = 0;
             DisablePosting = false;
             DisablePrivateMessages = false;
             DisableFileUploads = false;
             LastLoginDate = (DateTime)SqlDateTime.MinValue;
             UserType = Enum_UserType.A;
+
+            UserName = "";
+            RealName = "";
+            Email = "";
+            Height = 0;
+            Weight = 0;
+            Education = "";
+            HomeTown = "";
+            SchoolProvince = "110000";
+            SchoolCity = "110100";
+            SchoolName = "";
+            LocationProvince = "110000";
+            LocationCity = "110100";
+            LocationCounty = "110108";
+            Job = "";
+            Interest = "";
+            MobilePhone = "";
+            Password = "";
+            Slug = "";
+            Comment = "";
+            Avatar = "";
+            Signature = "";
         }
 
         #region 用户基本信息属性
@@ -123,7 +150,7 @@ namespace MVCForum.Domain.DomainModel
         /// <summary>
         /// 婚否
         /// </summary>
-        public bool IsMarried { get; set; }
+        public Enum_MarriedStatus IsMarried { get; set; }
         /// <summary>
         /// 身高CM
         /// </summary>

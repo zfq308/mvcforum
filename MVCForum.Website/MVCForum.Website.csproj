@@ -669,6 +669,7 @@
     <Content Include="Content\Images\ajaxloader-large.gif" />
     <Content Include="Content\Images\ajaxloader.gif" />
     <Content Include="Content\Images\arrow-spinner-blue.gif" />
+    <Content Include="Content\Images\Default.jpg" />
     <Content Include="Content\Images\emoticons\angel-emoticon.png" />
     <Content Include="Content\Images\emoticons\angry-emoticon.png" />
     <Content Include="Content\Images\emoticons\astonished-smiley-emoticon-for-facebook.png" />

@@ -5,23 +5,19 @@
     var count = 60; //间隔函数，1秒执行    
     var curCount;//当前剩余秒数    
     var code = ""; //验证码    
-    var codeLength = 6;//验证码长度   
+    var codeLength = 4;//验证码长度   
 
     $("#getcode").click(function () {
 
         //获取输入的账户名
         var UserName = $("#UserName").val();
         curCount = count;
-
+        code = "";
         // 产生随记验证码    
         for (var i = 0; i < codeLength; i++) {
             code += parseInt(Math.random() * 9).toString();
         }
 
-        // 设置按钮显示效果，倒计时   
-        $("#getcode").attr("disabled", "true");
-        $("#getcode").val("请在" + curCount + "秒内输入验证码");
-        InterValObj = window.setInterval(SetRemainTime, 1000); // 启动计时器，1秒执行一次    
 
         // 向后台发送处理数据    
         $.ajax({
@@ -35,9 +31,13 @@
             success: function (data) {
                 //前台给出提示语
                 if (data == "true") {
+                    // 设置按钮显示效果，倒计时   
+                    $("#getcode").attr("disabled", "true");
+                    $("#getcode").val("请在" + curCount + "秒内输入验证码");
+                    InterValObj = window.setInterval(SetRemainTime, 1000); // 启动计时器，1秒执行一次    
+
                     $("#telephonenameTip").html("<font color='#339933'>√ 短信验证码已发到您的手机,请查收(30分钟内有效)。</font>");
-                } else if (data == "false")
-                {
+                } else if (data == "false") {
                     $("#telephonenameTip").html("<font color='red'>× 当前输入的账号不存在请检查后再操作。</font>");
                     curCount = 0;
                     return false;

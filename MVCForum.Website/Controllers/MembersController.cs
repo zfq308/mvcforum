@@ -5,6 +5,7 @@ using MVCForum.Domain.DomainModel.General;
 using MVCForum.Domain.Events;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
+using MVCForum.Services;
 using MVCForum.Utilities;
 using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
@@ -75,6 +76,7 @@ namespace MVCForum.Website.Controllers
             _categoryService = categoryService;
             _topicService = topicService;
             _verifyCodeService = verifyCodeService;
+
         }
 
         #endregion
@@ -83,7 +85,7 @@ namespace MVCForum.Website.Controllers
         [Authorize(Roles = AppConstants.AdminRoleName)]
         public ActionResult SrubAndBanUser(Guid id)
         {
-            var user = MembershipService.GetUser(id);
+            var user = base.MembershipService.GetUser(id);
 
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
@@ -433,27 +435,20 @@ namespace MVCForum.Website.Controllers
             {
                 var settings = SettingsService.GetSettings();
                 var manuallyAuthoriseMembers = settings.ManuallyAuthoriseNewMembers;
-
                 var memberEmailAuthorisationNeeded = settings.NewMemberEmailConfirmation == true;
-
-
                 var homeRedirect = false;
 
-                var userToSave = new MembershipUser
-                {
-                    UserName = _bannedWordService.SanitiseBannedWords(userModel.UserName),
-                    AliasName = userModel.AliasName.Trim(),
-                    RealName = userModel.RealName.Trim(),
-                    MobilePhone = userModel.MobilePhone.Trim(),
-                    Password = userModel.Password.Trim(),
-
-                    CreateDate = DateTime.Now,
-                    LastLoginDate = DateTime.Now,
-                    LastUpdateTime = DateTime.Now,
-                    UserType = Enum_UserType.A,
-
-                    Comment = userModel.Comment,
-                };
+                var userToSave = new MembershipUser();
+                userToSave.UserName = _bannedWordService.SanitiseBannedWords(userModel.UserName);
+                userToSave.AliasName = userModel.AliasName.Trim();
+                userToSave.RealName = userModel.RealName.Trim();
+                userToSave.MobilePhone = userModel.MobilePhone.Trim();
+                userToSave.Password = userModel.Password.Trim();
+                userToSave.CreateDate = DateTime.Now;
+                userToSave.LastLoginDate = DateTime.Now;
+                userToSave.LastUpdateTime = DateTime.Now;
+                userToSave.UserType = Enum_UserType.A;
+                userToSave.Comment = userModel.Comment;
 
                 var createStatus = MembershipService.CreateUser(userToSave);
                 if (createStatus != MembershipCreateStatus.Success)
@@ -462,6 +457,9 @@ namespace MVCForum.Website.Controllers
                 }
                 else
                 {
+                    new VerifyCodeService().CompleteVerifyCode(new VerifyCode(userModel.MobilePhone.Trim(),
+                         VerifyCodeStatus.Waiting, userModel.VerifyCode));
+
                     // See if this is a social login and we have their profile pic
                     #region 处理SocialProfileImageUrl
                     if (!string.IsNullOrEmpty(userModel.SocialProfileImageUrl))
@@ -675,6 +673,22 @@ namespace MVCForum.Website.Controllers
 
             #endregion
 
+            #region 绑定婚姻状况信息
+
+            var Items_Married = new List<SelectListItem>();
+            Items_Married.Add(new SelectListItem { Text = "已婚", Value = "1" });
+            Items_Married.Add(new SelectListItem { Text = "未婚", Value = "0" });
+
+            foreach (SelectListItem item in Items_Married)
+            {
+                if (item.Value == user.IsMarried.ToString())
+                {
+                    item.Selected = true;
+                }
+            }
+            ViewData["Married"] = Items_Married;
+
+            #endregion
 
             #region 绑定历法信息
 
@@ -692,9 +706,6 @@ namespace MVCForum.Website.Controllers
             ViewData["LunarCalendar"] = Items_Calendar;
 
             #endregion
-
-
-
 
             #region 绑定学历信息
 
@@ -770,7 +781,7 @@ namespace MVCForum.Website.Controllers
             ViewData["SchoolCityList"] = Items_SchoolCity;
             #endregion
 
-            #region 绑定家乡所属省信息
+            #region 绑定居住地所属省信息
 
             var Items_HomeTownProvince = new List<SelectListItem>();
             List<TProvince> HomeTownProvincelst = TProvince.LoadAllProvinceList();
@@ -789,7 +800,7 @@ namespace MVCForum.Website.Controllers
 
             #endregion
 
-            #region 绑定家乡所属市信息
+            #region 绑定居住地所属市信息
 
             var Items_HomeTownCity = new List<SelectListItem>();
             List<TCity> HomeTownCitylst = TCity.LoadCityListByProvince(Convert.ToInt32(user.LocationProvince));
@@ -809,7 +820,7 @@ namespace MVCForum.Website.Controllers
 
             #endregion
 
-            #region 绑定家乡所属县信息
+            #region 绑定居住地所属县信息
 
 
             var Items_HomeTownCounty = new List<SelectListItem>();
@@ -1065,6 +1076,7 @@ namespace MVCForum.Website.Controllers
             }
             else
             {
+                var errors = ModelState.Values.SelectMany(v => v.Errors);
                 return Edit(userModel.Id);
             }
         }
@@ -1076,6 +1088,7 @@ namespace MVCForum.Website.Controllers
                 Id = user.Id,
                 UserName = user.UserName,
                 RealName = user.RealName,
+                AliasName = user.AliasName,
                 Gender = user.Gender,
                 Birthday = user.Birthday,
                 IsLunarCalendar = user.IsLunarCalendar,
@@ -1094,7 +1107,9 @@ namespace MVCForum.Website.Controllers
                 IncomeRange = user.IncomeRange,
                 Interest = user.Interest,
                 MobilePhone = user.MobilePhone,
-                Signature = user.Signature
+                Signature = user.Signature,
+                Avatar = user.Avatar,
+
 
             };
             return viewModel;
@@ -1199,7 +1214,14 @@ namespace MVCForum.Website.Controllers
                                         UnitOfWork = unitOfWork
                                     });
 
-                                    return RedirectToAction("Index", "Home", new { area = string.Empty });
+                                    if (user.IsApproved)
+                                    {
+                                        return RedirectToAction("Index", "Home", new { area = string.Empty });
+                                    }
+                                    else
+                                    {
+                                        return RedirectToAction("Edit", "Members", new { area = string.Empty, Id = user.Id });
+                                    }
                                 }
 
                                 #region 处理用户是否通过审核

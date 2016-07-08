@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Linq;
 using System.Collections.Generic;
 using MVCForum.Utilities;
@@ -6,12 +6,12 @@ using MVCForum.Utilities;
 namespace MVCForum.Domain.DomainModel
 {
     /// <summary>
-    /// ÑéÖ¤Âë¶¨ÒåÀà
+    /// éªŒè¯ç å®šä¹‰ç±»
     /// </summary>
     public partial class VerifyCode : Entity
     {
         /// <summary>
-        /// ½¨¹¹Ê½
+        /// å»ºæ„å¼
         /// </summary>
         public VerifyCode()
         {
@@ -21,18 +21,18 @@ namespace MVCForum.Domain.DomainModel
         }
 
         /// <summary>
-        /// ½¨¹¹Ê½
+        /// å»ºæ„å¼
         /// </summary>
-        /// <param name="mobileNumber">ÊÖ»úºÅÂë</param>
-        /// <param name="verifyCodeStatus">ÑéÖ¤×´Ì¬</param>
-        /// <param name="verifyNumber">ÑéÖ¤ÂëÄÚÈİ</param>
+        /// <param name="mobileNumber">æ‰‹æœºå·ç </param>
+        /// <param name="verifyCodeStatus">éªŒè¯çŠ¶æ€</param>
+        /// <param name="verifyNumber">éªŒè¯ç å†…å®¹</param>
         public VerifyCode(string mobileNumber, VerifyCodeStatus verifyCodeStatus, string verifyNumber)
         {
             Id = GuidComb.GenerateComb();
             DateCreated = DateTime.Now;
             LastUpdate = DateTime.Now;
             MobileNumber = mobileNumber;
-            Status = (int)verifyCodeStatus;
+            Status = verifyCodeStatus;
             VerifyNumber = verifyNumber;
             FailNumber = 0;
         }
@@ -42,50 +42,50 @@ namespace MVCForum.Domain.DomainModel
         /// </summary>
         public Guid Id { get; set; }
         /// <summary>
-        /// ÑéÖ¤ÂëÉú³ÉÊ±¼ä
+        /// éªŒè¯ç ç”Ÿæˆæ—¶é—´
         /// </summary>
         public DateTime DateCreated { get; set; }
         /// <summary>
-        /// ËùÊôÊÖ»úºÅÂë
+        /// æ‰€å±æ‰‹æœºå·ç 
         /// </summary>
         public string MobileNumber { get; set; }
         /// <summary>
-        /// ÑéÖ¤ÂëÄÚÈİ
+        /// éªŒè¯ç å†…å®¹
         /// </summary>
         public string VerifyNumber { get; set; }
         /// <summary>
-        /// ÑéÖ¤×´Ì¬
+        /// éªŒè¯çŠ¶æ€
         /// </summary>
-        public int Status { get; set; }
+        public VerifyCodeStatus Status { get; set; }
         /// <summary>
-        /// ÑéÖ¤Ê§°Ü´ÎÊı£¨´ıÀ©Õ¹£©
+        /// éªŒè¯å¤±è´¥æ¬¡æ•°ï¼ˆå¾…æ‰©å±•ï¼‰
         /// </summary>
         public int FailNumber { get; set; }
         /// <summary>
-        /// ¼ÇÂ¼¸üĞÂÊ±¼ä
+        /// è®°å½•æ›´æ–°æ—¶é—´
         /// </summary>
         public DateTime LastUpdate { get; set; }
         /// <summary>
-        /// ·¢ËÍ·µ»ØÊı¾İ
+        /// å‘é€è¿”å›æ•°æ®
         /// </summary>
         public string ReturnMessage { get; set; }
     }
 
     /// <summary>
-    /// ÑéÖ¤Âë×´Ì¬Ã¶¾Ù
+    /// éªŒè¯ç çŠ¶æ€æšä¸¾
     /// </summary>
     public enum VerifyCodeStatus
     {
         /// <summary>
-        /// µÈ´ıÑéÖ¤
+        /// ç­‰å¾…éªŒè¯
         /// </summary>
         Waiting = 0,
         /// <summary>
-        /// ÑéÖ¤³É¹¦
+        /// éªŒè¯æˆåŠŸ
         /// </summary>
         VerifySuccess = 1,
         /// <summary>
-        /// ÑéÖ¤Ê±¼ä´°¿ÚÒÑ¹ı£¬Î´ÑéÖ¤
+        /// éªŒè¯æ—¶é—´çª—å£å·²è¿‡ï¼ŒæœªéªŒè¯
         /// </summary>
         Invalid = 2,
     }

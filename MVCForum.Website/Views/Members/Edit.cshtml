@@ -26,32 +26,32 @@
         <script type="text/javascript">
             $(document).ready(function () {
                 GetByJquery();
-                $("#HomeTownProvince").change(function () { GetHometownCity(); });
-                $("#HomeTownCity").change(function () { GetHometownCountry(); });
+                $("#LocationProvince").change(function () { GetLocationCity(); });
+                $("#LocationCity").change(function () { GetLocationCountry(); });
 
                 $("#SchoolProvince").change(function () { GetEducationCity(); });
             });
 
             function GetByJquery() {
-                var htprovince = $("#HomeTownProvince").val();
-                $("#HomeTownProvince").empty();
+                var htprovince = $("#LocationProvince").val();
+                $("#LocationProvince").empty();
                 $.getJSON("/Members/GetHometownProvince/", function (data) {
                     $.each(data, function (i, item) {
                         if (item["ProvinceId"] == htprovince) {
                             $("<option selected ></option>")
                                      .val(item["ProvinceId"])
                                      .text(item["ProvinceName"])
-                                     .appendTo($("#HomeTownProvince"));
+                                     .appendTo($("#LocationProvince"));
                         }
                         else {
                             $("<option></option>")
                                      .val(item["ProvinceId"])
                                      .text(item["ProvinceName"])
-                                     .appendTo($("#HomeTownProvince"));
+                                     .appendTo($("#LocationProvince"));
                         }
 
                     });
-                    GetHometownCity();
+                    GetLocationCity();
                 });
 
                 var htprovince2 = $("#SchoolProvince").val();
@@ -99,12 +99,12 @@
                 });
             }
 
-            function GetHometownCity() {
-                var htcity = $("#HomeTownCity").val();
+            function GetLocationCity() {
+                var htcity = $("#LocationCity").val();
 
-                $("#HomeTownCity").empty();
-                var url = "/Members/GetHometownCity/" + $("#HomeTownProvince").val() + "/";
-                var a = $(".HomeTownProvince");
+                $("#LocationCity").empty();
+                var url = "/Members/GetHometownCity/" + $("#LocationProvince").val() + "/";
+                var a = $(".LocationProvince");
 
                 $.getJSON(url, function (data) {
 
@@ -113,25 +113,25 @@
                             $("<option selected ></option>")
                                       .val(item["CityId"])
                                       .text(item["CityName"])
-                                      .appendTo($("#HomeTownCity"));
+                                      .appendTo($("#LocationCity"));
                         }
                         else {
                             $("<option></option>")
                                       .val(item["CityId"])
                                       .text(item["CityName"])
-                                      .appendTo($("#HomeTownCity"));
+                                      .appendTo($("#LocationCity"));
                         }
 
                     });
-                    GetHometownCountry();
+                    GetLocationCountry();
                 });
             }
 
-            function GetHometownCountry() {
-                var County = $("#HomeTownCounty").val();
+            function GetLocationCountry() {
+                var County = $("#LocationCounty").val();
 
-                $("#HomeTownCounty").empty();
-                var url = "/Members/GetHometownCountry/" + $("#HomeTownProvince").val() + "," + $("#HomeTownCity").val() + "/";
+                $("#LocationCounty").empty();
+                var url = "/Members/GetHometownCountry/" + $("#LocationProvince").val() + "," + $("#LocationCity").val() + "/";
                 $.getJSON(url, function (data) {
                     $.each(data, function (i, item) {
 
@@ -139,13 +139,13 @@
                             $("<option selected ></option>")
                                       .val(item["CountryId"])
                                       .text(item["CountryName"])
-                                      .appendTo($("#HomeTownCounty"));
+                                      .appendTo($("#LocationCounty"));
                         }
                         else {
                             $("<option></option>")
                                       .val(item["CountryId"])
                                       .text(item["CountryName"])
-                                      .appendTo($("#HomeTownCounty"));
+                                      .appendTo($("#LocationCounty"));
                         }
 
                     });
@@ -168,104 +168,90 @@
 
                 <div class="form-group">
                     @Html.LabelFor(x => x.UserName)
-                    @Html.TextBoxFor(x => x.UserName, new { @class = "form-control" })
+                    @Html.TextBoxFor(x => x.UserName, new { @class = "form-control", @readonly = "true" })
                     @Html.ValidationMessageFor(x => x.UserName)
                 </div>
-
                 <div class="form-group">
                     @Html.LabelFor(x => x.RealName)
                     @Html.TextBoxFor(x => x.RealName, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.RealName)
                 </div>
-
+                <div class="form-group">
+                    @Html.LabelFor(x => x.AliasName)
+                    @Html.TextBoxFor(x => x.AliasName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.AliasName)
+                </div>
                 <div class="form-group">
                     @Html.LabelFor(x => x.Gender)
                     @Html.DropDownListFor(x => x.Gender, ViewData["GenderList"] as List<SelectListItem>, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.Gender)
                 </div>
-
                 <div class="form-group">
                     @Html.LabelFor(x => x.Birthday)
                     @Html.TextBoxFor(x => x.Birthday, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.Birthday)
                 </div>
-
-                <div class="checkbox">
-                    @using (Html.BeginLabelFor(m => m.IsLunarCalendar, new { @class = "checkbox" }))
-                    {
-                        @Html.DropDownListFor(m => m.IsLunarCalendar, ViewData["LunarCalendar"] as List<SelectListItem>, new { @class = "form-control" })
-                    }
-                    @Html.ValidationMessageFor(m => m.IsLunarCalendar)
+                <div class="form-group">
+                    @Html.LabelFor(x => x.IsLunarCalendar)
+                    @Html.DropDownListFor(m => m.IsLunarCalendar, ViewData["LunarCalendar"] as List<SelectListItem>, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.IsLunarCalendar)
                 </div>
-
-                <div class="checkbox">
-                    @using (Html.BeginLabelFor(m => m.IsMarried, new { @class = "checkbox" }))
-                    {
-                        @Html.CheckBoxFor(m => m.IsMarried)
-                    }
-                    @Html.ValidationMessageFor(m => m.IsMarried)
+                <div class="form-group">
+                    @Html.LabelFor(x => x.IsMarried)
+                    @Html.DropDownListFor(m => m.IsMarried, ViewData["Married"] as List<SelectListItem>, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.IsMarried)
                 </div>
-
                 <div class="form-group">
                     @Html.LabelFor(x => x.Height)
                     @Html.TextBoxFor(x => x.Height, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.Height)
                 </div>
-
                 <div class="form-group">
                     @Html.LabelFor(x => x.Weight)
                     @Html.TextBoxFor(x => x.Weight, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.Weight)
                 </div>
-
                 <div class="form-group">
                     @Html.LabelFor(x => x.Education)
                     @Html.DropDownListFor(x => x.Education, ViewData["EducationList"] as List<SelectListItem>, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.Education)
                 </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(x => x.HomeTown)
-                    @Html.TextBoxFor(x => x.HomeTown, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(x => x.HomeTown)
-                </div>
-
                 <div class="form-group">
                     @Html.LabelFor(x => x.SchoolProvince)
                     @Html.DropDownListFor(x => x.SchoolProvince, ViewData["SchoolProvinceList"] as List<SelectListItem>, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.SchoolProvince)
                 </div>
-
                 <div class="form-group">
                     @Html.LabelFor(x => x.SchoolCity)
                     @Html.DropDownListFor(x => x.SchoolCity, ViewData["SchoolCityList"] as List<SelectListItem>, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.SchoolCity)
                 </div>
-
                 <div class="form-group">
                     @Html.LabelFor(x => x.SchoolName)
                     @Html.TextBoxFor(x => x.SchoolName, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.SchoolName)
                 </div>
-
                 <div class="form-group">
                     @Html.LabelFor(x => x.LocationProvince)
                     @Html.DropDownListFor(x => x.LocationProvince, ViewData["HomeTownProvinceList"] as List<SelectListItem>, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.LocationProvince)
                 </div>
-
                 <div class="form-group">
                     @Html.LabelFor(x => x.LocationCity)
                     @Html.DropDownListFor(x => x.LocationCity, ViewData["HomeTownCityList"] as List<SelectListItem>, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.LocationCity)
                 </div>
-
                 <div class="form-group">
                     @Html.LabelFor(x => x.LocationCounty)
                     @Html.DropDownListFor(x => x.LocationCounty, ViewData["HomeTownCountyList"] as List<SelectListItem>, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.LocationCounty)
                 </div>
 
+                <div class="form-group">
+                    @Html.LabelFor(x => x.HomeTown)<span><Font color='red'>(格式范例：广东省深圳市)</Font></span>
+                    @Html.TextBoxFor(x => x.HomeTown, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.HomeTown)
+                </div>
                 <div class="form-group">
                     @Html.LabelFor(x => x.Job)
                     @Html.TextBoxFor(x => x.Job, new { @class = "form-control" })
@@ -286,20 +272,20 @@
 
                 <div class="form-group">
                     @Html.LabelFor(x => x.MobilePhone)
-                    @Html.TextBoxFor(x => x.MobilePhone, new { @class = "form-control" })
+                    @Html.TextBoxFor(x => x.MobilePhone, new { @class = "form-control", @readonly = "true" })
                     @Html.ValidationMessageFor(x => x.MobilePhone)
                 </div>
 
                 <div class="row membereditavatar">
                     <div class="col-md-2">
-                        @*<img src="@AppHelpers.MemberImage(Model.Avatar, Model.Email, Model.Id, SiteConstants.Instance.GravatarProfileSize)" alt="@Model.UserName">*@
+                        <img src="@AppHelpers.MemberImage(Model.Avatar, "mail@163.com", Model.Id, SiteConstants.Instance.GravatarProfileSize)" alt="@Model.UserName">
                     </div>
                     <div class="col-md-10">
                         @Html.LabelFor(x => x.Files)
                         <div class="input-group">
                             <span class="input-group-btn">
                                 <span class="btn btn-default btn-file">
-                                   选择头像： <input type="file" name="files" id="files" value="">
+                                    选择头像： <input type="file" name="files" id="files" value="">
                                 </span>
                             </span>
                             <input type="text" class="form-control" readonly="">

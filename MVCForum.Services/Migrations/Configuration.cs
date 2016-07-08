@@ -442,7 +442,7 @@ namespace MVCForum.Services.Migrations
                         Gender =Enum_Gender.boy,
                         Birthday = new DateTime(2000, 1, 1),
                         IsLunarCalendar = Enum_Calendar.PublicCalendar,
-                        IsMarried = true,
+                        IsMarried = Enum_MarriedStatus.Married ,
                         Height = 180,
                         Weight = 100,
                         Education = "硕士",

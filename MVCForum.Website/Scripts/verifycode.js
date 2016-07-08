@@ -44,9 +44,12 @@
 
         var MobilePhone = $("#MobilePhone").val();    //获取输入的手机号码
         curCount = count;
-
+        code = "";
         // 产生验证码    
-        for (var i = 0; i < codeLength; i++) {code += parseInt(Math.random() * 9).toString();}
+        for (var i = 0; i < codeLength; i++)
+        {
+            code += parseInt(Math.random() * 9).toString();
+        }
 
         // 向后台发送处理数据    
         $.ajax({

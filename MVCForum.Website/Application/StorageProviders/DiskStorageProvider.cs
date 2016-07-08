@@ -12,7 +12,8 @@ namespace MVCForum.Website.Application.StorageProviders
         public string BuildFileUrl(params object[] subPath)
         {
             var joinString = string.Join("", subPath);
-            return VirtualPathUtility.ToAbsolute(string.Concat(SiteConstants.Instance.UploadFolderPath, joinString));
+            var path= VirtualPathUtility.ToAbsolute(string.Concat(SiteConstants.Instance.UploadFolderPath, joinString));
+            return path;
         }
 
         public string GetUploadFolderPath(bool createIfNotExist, params object[] subFolders)

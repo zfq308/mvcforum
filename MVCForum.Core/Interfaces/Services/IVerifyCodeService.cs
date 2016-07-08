@@ -16,7 +16,7 @@ namespace MVCForum.Domain.Interfaces.Services
         void DeleteInvalidVerifyCode();
         void SendVerifyCode(VerifyCode verifyCode);
         VerifyCode Get(Guid id);
-        int GetCountByMobileNumber(string MobileNumber);
+        int GetCountByMobileNumber(string mobileNumber);
         void CheckInvalidVerifyCode();
 
     }

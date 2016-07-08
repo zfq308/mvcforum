@@ -27,6 +27,10 @@ namespace MVCForum.Services
         {
             _context = context;
         }
+        public VerifyCodeService()
+        {
+            _context = new MVCForumContext();
+        }
 
 
         public void CheckInvalidVerifyCode()
@@ -41,7 +45,7 @@ namespace MVCForum.Services
                 {
                     if (m.Status == (int)VerifyCodeStatus.Waiting)
                     {
-                        m.Status = (int)VerifyCodeStatus.Invalid;
+                        m.Status = VerifyCodeStatus.Invalid;
                         m.LastUpdate = DateTime.Now;
                     }
                 });
@@ -52,9 +56,9 @@ namespace MVCForum.Services
         public void CompleteVerifyCode(Guid id)
         {
             var obj = Get(id);
-            if (obj != null && obj.Status != (int)VerifyCodeStatus.VerifySuccess)
+            if (obj != null && obj.Status != VerifyCodeStatus.VerifySuccess)
             {
-                obj.Status = (int)VerifyCodeStatus.VerifySuccess;
+                obj.Status = VerifyCodeStatus.VerifySuccess;
                 obj.LastUpdate = DateTime.Now;
                 _context.SaveChanges();
             }
@@ -64,11 +68,19 @@ namespace MVCForum.Services
         {
             if (verifyCode != null)
             {
-                CompleteVerifyCode(verifyCode.Id);
+                var code = Get(verifyCode.MobileNumber, verifyCode.VerifyNumber, verifyCode.Status);
+                if (code != null)
+                {
+                    CompleteVerifyCode(code.Id);
+                }
+                else
+                {
+                    logger.Error("注册码回写时找不到原纪录。");
+                }
             }
             else
             {
-                throw new ArgumentNullException("verifyCode");
+                throw new ArgumentNullException(nameof(verifyCode));
             }
         }
 
@@ -91,7 +103,7 @@ namespace MVCForum.Services
         public void DeleteInvalidVerifyCode()
         {
             var list = _context.VerifyCode
-               .Where(x => x.Status == (int)VerifyCodeStatus.Invalid)
+               .Where(x => x.Status == VerifyCodeStatus.Invalid)
                .ToList();
 
             if (list != null && list.Count > 0)
@@ -105,15 +117,20 @@ namespace MVCForum.Services
             return _context.VerifyCode.FirstOrDefault(x => x.Id == id);
         }
 
+        private VerifyCode Get(string mobileNumber, string verifyCode, VerifyCodeStatus status)
+        {
+            return _context.VerifyCode.FirstOrDefault(x => x.MobileNumber == mobileNumber && x.VerifyNumber == verifyCode && x.Status == status);
+        }
+
         /// <summary>
         /// 检查特定手机号在库中还有的未验证通过的记录数
         /// </summary>
-        /// <param name="MobileNumber">特定的手机号码</param>
+        /// <param name="mobileNumber">特定的手机号码</param>
         /// <returns></returns>
-        public int GetCountByMobileNumber(string MobileNumber)
+        public int GetCountByMobileNumber(string mobileNumber)
         {
             return _context.VerifyCode
-                .Where(x => x.MobileNumber.Trim() == MobileNumber.Trim() && x.Status != (int)VerifyCodeStatus.VerifySuccess)
+                .Where(x => x.MobileNumber.Trim() == mobileNumber.Trim() && x.Status != VerifyCodeStatus.VerifySuccess)
                 .ToList().Count;
         }
 

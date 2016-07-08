@@ -105,7 +105,7 @@ Members.AlreadyRegistered,你已经注册了吗?
 Members.BanUser,Ban User
 Members.CantUnlock,用户不存在！不能完成锁定动作.
 Members.ChangePassword.Error,当前密码不正确或新密码无效
-Members.ChangePassword.Link,Click here if you want to {0}
+Members.ChangePassword.Link,您可以点击此处来{0}
 Members.ChangePassword.Success,密码已被修改
 Members.ChangePassword.Text,新密码的最短长度要求{0}位.
 Members.ChangePassword.Title,修改密码

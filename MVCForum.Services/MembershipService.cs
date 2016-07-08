@@ -508,11 +508,11 @@ namespace MVCForum.Services
                 return false;
             }
 
-            if (!user.IsApproved)
-            {
-                LastLoginStatus = LoginAttemptStatus.UserNotApproved;
-                //return false;
-            }
+            //if (!user.IsApproved)
+            //{
+            //    LastLoginStatus = LoginAttemptStatus.UserNotApproved;
+            //    return false;
+            //}
 
             var allowedPasswordAttempts = maxInvalidPasswordAttempts;
             if (user.FailedPasswordAttemptCount >= allowedPasswordAttempts)
