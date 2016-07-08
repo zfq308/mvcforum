@@ -2,7 +2,7 @@
 @model MVCForum.Website.ViewModels.TopicViewModel
 @{
     var postToolTip = "";
-    if(Model != null && Model.StarterPost != null)
+    if (Model != null && Model.StarterPost != null)
     {
         postToolTip = string.Concat(StringUtils.ReturnAmountWordsFromString(StringUtils.StripHtmlFromString(Model.StarterPost.Post.PostContent), 50), "....");
     }
@@ -14,9 +14,10 @@
     <div class="topicrow topicsticky-@(Model.Topic.IsSticky.ToString().ToLower()) topiclocked-@(Model.Topic.IsLocked.ToString().ToLower()) topicsolved-@(Model.Topic.Solved.ToString().ToLower())">
 
         <div class="rowcreater hidden-xs">
-            <a href="@Model.Topic.User.NiceUrl">
-                <img src="@Model.Topic.User.MemberImage(SiteConstants.Instance.GravatarTopicSize)" alt="@Model.Topic.User.UserName">
-            </a>
+            @*<a href="@Model.Topic.User.NiceUrl">
+                    <img src="@Model.Topic.User.MemberImage(SiteConstants.Instance.GravatarTopicSize)" alt="@Model.Topic.User.UserName">
+                </a>
+            *@
             @if (Model.MemberIsOnline)
             {
                 <span class="label label-success">
@@ -26,7 +27,10 @@
         </div>
 
         <div class="rowdetails">
-            <p class="category categorysolved@(Model.Topic.Solved.ToString().ToLower())" style="border-color: @(string.IsNullOrEmpty(Model.Topic.Category.Colour) ? "#ced1d1" : Model.Topic.Category.Colour)">@Html.LanguageString("Topic.Category"): <a href="@Model.Topic.Category.NiceUrl">@Model.Topic.Category.Name</a></p>
+            @*<p class="category categorysolved@(Model.Topic.Solved.ToString().ToLower())"
+               style="border-color: @(string.IsNullOrEmpty(Model.Topic.Category.Colour) ? "#ced1d1" : Model.Topic.Category.Colour)">
+                @Html.LanguageString("Topic.Category"): <a href="@Model.Topic.Category.NiceUrl">@Model.Topic.Category.Name</a>
+            </p>*@
             <h3>
                 <a title="@postToolTip" href="@Html.Raw(Model.Topic.NiceUrl)">
                     @if (Model.Topic.IsSticky)

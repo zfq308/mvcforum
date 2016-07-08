@@ -24,6 +24,36 @@ namespace MVCForum.Domain.DomainModel
         UserRejected
     }
 
+
+    public enum Enum_UserType
+    {
+        A = 0,
+        B = 1,
+        C = 2,
+        D = 3,
+        E = 4,
+    }
+
+
+    public enum Enum_Gender
+    {
+        boy = 1,
+        girl = 0,
+    }
+
+    public enum Enum_Calendar
+    {
+        /// <summary>
+        /// 阴历，中国历
+        /// </summary>
+        LunarCalendar=1,
+        /// <summary>
+        /// 公历，
+        /// </summary>
+        PublicCalendar=2,
+    }
+
+
     /// <summary>
     /// 用户实体类
     /// </summary>
@@ -32,11 +62,7 @@ namespace MVCForum.Domain.DomainModel
         public MembershipUser()
         {
             Id = GuidComb.GenerateComb();
-            PasswordQuestion = "";
-            PasswordAnswer = "";
             LastPasswordChangedDate = (DateTime)SqlDateTime.MinValue;
-            FailedPasswordAnswerAttempt = 0;
-            PasswordResetToken = "";
             PasswordResetTokenCreatedAt = (DateTime)SqlDateTime.MinValue;
             IsLockedOut = false;
             IsBanned = false;
@@ -45,6 +71,18 @@ namespace MVCForum.Domain.DomainModel
             LoginIdExpires = null;
             HasAgreedToTermsAndConditions = true;
             DisableEmailNotifications = false;
+            IsApproved = false; // 设定每个用户注册都需要审核，系统不允许自动审核
+            IsLockedOut = false;
+            Gender = Enum_Gender.boy;
+            Birthday = new DateTime(2000, 1, 1);
+            IsLunarCalendar = Enum_Calendar.PublicCalendar;
+            IsMarried = false;
+            IncomeRange = 0;
+            DisablePosting = false;
+            DisablePrivateMessages = false;
+            DisableFileUploads = false;
+            LastLoginDate = (DateTime)SqlDateTime.MinValue;
+            UserType = Enum_UserType.A;
         }
 
         #region 用户基本信息属性
@@ -66,11 +104,10 @@ namespace MVCForum.Domain.DomainModel
         /// 用户呢称
         /// </summary>
         public string AliasName { get; set; }
-
         /// <summary>
         /// 性别
         /// </summary>
-        public int Gender { get; set; }
+        public Enum_Gender Gender { get; set; }
         /// <summary>
         /// 用户生日
         /// </summary>
@@ -82,17 +119,17 @@ namespace MVCForum.Domain.DomainModel
         /// <summary>
         /// 生日所属历法, false 为公历， true 为农历
         /// </summary>
-        public bool IsLunarCalendar { get; set; }
+        public Enum_Calendar IsLunarCalendar { get; set; }
         /// <summary>
         /// 婚否
         /// </summary>
         public bool IsMarried { get; set; }
         /// <summary>
-        /// 身高
+        /// 身高CM
         /// </summary>
         public int Height { get; set; }
         /// <summary>
-        /// 体重
+        /// 体重Kg
         /// </summary>
         public int Weight { get; set; }
         /// <summary>
@@ -100,9 +137,9 @@ namespace MVCForum.Domain.DomainModel
         /// </summary>
         public string Education { get; set; }
         /// <summary>
-        /// 用户现居住地
+        /// 家乡
         /// </summary>
-        public string Location { get; set; }
+        public string HomeTown { get; set; }
         /// <summary>
         /// 学校，省
         /// </summary>
@@ -115,19 +152,18 @@ namespace MVCForum.Domain.DomainModel
         /// 学校名称
         /// </summary>
         public string SchoolName { get; set; }
-
         /// <summary>
-        /// 家乡，省
+        /// 居住地，省
         /// </summary>
-        public string HomeTownProvince { get; set; }
+        public string LocationProvince { get; set; }
         /// <summary>
-        /// 家乡，市
+        /// 居住地，市
         /// </summary>
-        public string HomeTownCity { get; set; }
+        public string LocationCity { get; set; }
         /// <summary>
-        /// 家乡，县区
+        /// 居住地，县区
         /// </summary>
-        public string HomeTownCounty { get; set; }
+        public string LocationCounty { get; set; }
         /// <summary>
         /// 职业
         /// </summary>
@@ -144,6 +180,19 @@ namespace MVCForum.Domain.DomainModel
         /// 手机号码
         /// </summary>
         public string MobilePhone { get; set; }
+        /// <summary>
+        /// 用户类别，用于未来机构用户拓展
+        /// </summary>
+        public Enum_UserType UserType { get; set; }
+        /// <summary>
+        /// 备注
+        /// </summary>
+        public string Comment { get; set; }
+        /// <summary>
+        /// 头像地址
+        /// </summary>
+        public string Avatar { get; set; }
+
         #endregion
 
         #region 密码管理相关属性
@@ -183,12 +232,17 @@ namespace MVCForum.Domain.DomainModel
 
         #region 用户状态相关属性
 
+
+        /// <summary>
+        /// 审核意见
+        /// </summary>
+        public string AuditComments { set; get; }
         /// <summary>
         /// 是否通过账户审核
         /// </summary>
         public bool IsApproved { get; set; }
         /// <summary>
-        /// 是否锁定此账户
+        /// 是否锁定此账户（隐藏用户）
         /// </summary>
         public bool IsLockedOut { get; set; }
         /// <summary>
@@ -212,7 +266,7 @@ namespace MVCForum.Domain.DomainModel
         /// </summary>
         public DateTime LastLockoutDate { get; set; }
         /// <summary>
-        /// 
+        /// 最新活跃时间（用来判断用户在线状态）
         /// </summary>
         public DateTime? LastActivityDate { get; set; }
         /// <summary>
@@ -231,7 +285,9 @@ namespace MVCForum.Domain.DomainModel
         #endregion
 
         #region 用户功能定义属性
-
+        /// <summary>
+        /// 禁用邮件通知功能
+        /// </summary>
         public bool? DisableEmailNotifications { get; set; }
         /// <summary>
         /// 是否禁用用户的回帖功能
@@ -277,15 +333,6 @@ namespace MVCForum.Domain.DomainModel
 
         #region 其他基本属性
 
-       
-        /// <summary>
-        /// 用户类别，用于未来机构用户拓展
-        /// </summary>
-        public int UserType { get; set; }
-        /// <summary>
-        /// 备注
-        /// </summary>
-        public string Comment { get; set; }
         /// <summary>
         /// 搜索聚合字段
         /// </summary>
@@ -294,7 +341,7 @@ namespace MVCForum.Domain.DomainModel
         /// 用户签名
         /// </summary>
         public string Signature { get; set; }
-      
+
         public string NiceUrl => UrlTypes.GenerateUrl(UrlType.Member, Slug);
 
         #endregion
@@ -316,10 +363,7 @@ namespace MVCForum.Domain.DomainModel
         /// 用户Facebook
         /// </summary>
         public string Facebook { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Avatar { get; set; }
+
         /// <summary>
         /// 
         /// </summary>

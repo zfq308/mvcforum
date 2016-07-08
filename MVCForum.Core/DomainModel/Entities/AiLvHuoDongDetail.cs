@@ -67,7 +67,7 @@ namespace MVCForum.Domain.DomainModel
         /// <summary>
         /// 报名用户的性别（为快速查询做的冗余）
         /// </summary>
-        public int UserGender { get; set; }
+        public Enum_Gender UserGender { get; set; }
 
         /// <summary>
         /// 报名用户的电话（为快速查询做的冗余）

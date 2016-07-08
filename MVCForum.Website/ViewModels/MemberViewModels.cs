@@ -17,29 +17,29 @@ namespace MVCForum.Website.ViewModels
 
     public class MemberAddViewModel
     {
-        [Required(ErrorMessage ="请输入您要注册的账号。")]
+        [Required(ErrorMessage = "请输入您要注册的账号。")]
         [ForumMvcResourceDisplayName("Members.Label.Username")]
         [StringLength(150, MinimumLength = 4)]
         public string UserName { get; set; }
 
         [Required(ErrorMessage = "行不更名坐不改姓，你是谁？")]
-        [ForumMvcResourceDisplayName("Members.Label.RealName")]
+        [Display(Name = "真实姓名")]
         [StringLength(24, MinimumLength = 2, ErrorMessage = "姓名的长度最少为2位")]
         public string RealName { get; set; }
 
         [Required(ErrorMessage = "亲，你的昵称是什么？")]
         [Display(Name = "昵称")]
-        [StringLength(24, MinimumLength = 2,ErrorMessage ="昵称的长度最少为2位")]
+        [StringLength(24, MinimumLength = 2, ErrorMessage = "昵称的长度最少为2位")]
         public string AliasName { get; set; }
 
         [Required(ErrorMessage = "不填电话，你让我怎么联系你？！")]
         [ForumMvcResourceDisplayName("Members.Label.MobilePhone")]
-        [StringLength(11, MinimumLength = 11,ErrorMessage ="你开玩笑吧，手机号码是11位哦！")]
+        [StringLength(11, MinimumLength = 11, ErrorMessage = "你开玩笑吧，手机号码是11位哦！")]
         public string MobilePhone { get; set; }
 
         [Required(ErrorMessage = "快看手机，立即查看验证码。")]
         [ForumMvcResourceDisplayName("Members.Label.VerifyCode")]
-        [StringLength(6, MinimumLength = 6)]
+        [StringLength(4, MinimumLength = 4)]
         public string VerifyCode { get; set; }
 
         //[Required]
@@ -47,8 +47,8 @@ namespace MVCForum.Website.ViewModels
         //[ForumMvcResourceDisplayName("Members.Label.EmailAddress")]
         //public string Email { get; set; }
 
-        [Required(ErrorMessage ="别忘记输入密码了。")]
-        [StringLength(100, MinimumLength = 6)]
+        [Required(ErrorMessage = "别忘记输入密码了。")]
+        [StringLength(20, MinimumLength = 6)]
         [DataType(DataType.Password)]
         [ForumMvcResourceDisplayName("Members.Label.Password")]
         public string Password { get; set; }
@@ -64,8 +64,8 @@ namespace MVCForum.Website.ViewModels
         public int MinPasswordLength { get; set; }
 
         [Required]
-        [Display(Name ="已阅读并同意")]
-        [MustBeTrue(ErrorMessage = "TermsAndConditions.Label.AgreeError")]
+        [Display(Name = "已阅读并同意")]
+        [MustBeTrue(ErrorMessage = "你同意吗？")]
         public bool ReadPolicyFirst { get; set; }
 
         [ForumMvcResourceDisplayName("Members.Label.UserIsApproved")]
@@ -91,12 +91,12 @@ namespace MVCForum.Website.ViewModels
         public Guid Id { get; set; }
 
         [Required]
-        [ForumMvcResourceDisplayName("Members.Label.Username")]
+        [Display(Name = "账号")]
         [StringLength(150, MinimumLength = 4)]
         public string UserName { get; set; }
 
         [Required]
-        [ForumMvcResourceDisplayName("Members.Label.RealName")]
+        [Display(Name = "真实姓名")]
         [StringLength(16, MinimumLength = 4)]
         public string RealName { get; set; }
 
@@ -106,86 +106,94 @@ namespace MVCForum.Website.ViewModels
         public string AliasName { get; set; }
 
         [Required]
-        [ForumMvcResourceDisplayName("Members.Label.Gender")]
-        public int Gender { get; set; }
+        [Display(Name = "性别")]
+        public Enum_Gender Gender { get; set; }
 
         [Required]
-        [ForumMvcResourceDisplayName("Members.Label.Birthday")]
+        [Display(Name = "出生日期")]
         public DateTime Birthday { get; set; }
 
         [Required]
-        [ForumMvcResourceDisplayName("Members.Label.IsLunarCalendar")]
-        public bool IsLunarCalendar { get; set; }
+        [Display(Name = "生日历法")]
+        public Enum_Calendar IsLunarCalendar { get; set; }
 
         [Required]
-        [ForumMvcResourceDisplayName("Members.Label.IsMarried")]
+        [Display(Name = "婚否")]
         public bool IsMarried { get; set; }
 
-        [ForumMvcResourceDisplayName("Members.Label.Height")]
+        [Display(Name = "身高cm")]
         [Range(0, 250)]
         public int Height { get; set; }
 
-        [ForumMvcResourceDisplayName("Members.Label.Weight")]
-        [Range(0, 250)]
+        [Display(Name = "体重kg")]
+        [Range(0, 150)]
         public int Weight { get; set; }
 
         [Required]
-        [ForumMvcResourceDisplayName("Members.Label.Education")]
+        [Display(Name = "学历")]
         public string Education { get; set; }
 
-        [Required]
-        [ForumMvcResourceDisplayName("Members.Label.Location")]
-        [StringLength(100, MinimumLength = 2)]
-        public string Location { get; set; }
+
 
         [Required]
-        [ForumMvcResourceDisplayName("Members.Label.SchoolProvince")]
+        [Display(Name = "学校所在省份")]
         public string SchoolProvince { get; set; }
 
         [Required]
-        [ForumMvcResourceDisplayName("Members.Label.SchoolCity")]
+        [Display(Name = "学校所在城市")]
         public string SchoolCity { get; set; }
 
         [Required]
-        [ForumMvcResourceDisplayName("Members.Label.SchoolName")]
+        [Display(Name = "学校名称")]
         [StringLength(20, MinimumLength = 2)]
         public string SchoolName { get; set; }
 
         [Required]
-        [ForumMvcResourceDisplayName("Members.Label.HomeTownProvince")]
-        public string HomeTownProvince { get; set; }
+        [Display(Name = "居住地所在省份")]
+        public string LocationProvince { get; set; }
 
         [Required]
-        [ForumMvcResourceDisplayName("Members.Label.HomeTownCity")]
-        public string HomeTownCity { get; set; }
+        [Display(Name = "居住地所在城市")]
+        public string LocationCity { get; set; }
 
         [Required]
-        [ForumMvcResourceDisplayName("Members.Label.HomeTownCounty")]
-        public string HomeTownCounty { get; set; }
+        [Display(Name = "居住地所在县区")]
+        public string LocationCounty { get; set; }
 
         [Required]
-        [ForumMvcResourceDisplayName("Members.Label.Job")]
+        [Display(Name = "家乡")]
+        [StringLength(100, MinimumLength = 2)]
+        public string HomeTown { get; set; }
+
+        [Required]
+        [Display(Name = "职业")]
         [StringLength(20, MinimumLength = 2)]
         public string Job { get; set; }
 
         [Required]
-        [ForumMvcResourceDisplayName("Members.Label.IncomeRange")]
+        [Display(Name = "月收入区段")]
         public int IncomeRange { get; set; }
 
         [Required]
-        [ForumMvcResourceDisplayName("Members.Label.Interest")]
+        [Display(Name = "兴趣爱好")]
         [StringLength(100, MinimumLength = 2)]
         public string Interest { get; set; }
 
         [Required]
-        [ForumMvcResourceDisplayName("Members.Label.MobilePhone")]
+        [Display(Name = "联系电话")]
         [StringLength(11, MinimumLength = 11)]
         public string MobilePhone { get; set; }
 
-        [ForumMvcResourceDisplayName("Members.Label.Signature")]
+        [Display(Name = "个性签名")]
         [StringLength(1000)]
         [AllowHtml]
         public string Signature { get; set; }
+
+
+        public string Avatar { get; set; }
+
+        [ForumMvcResourceDisplayName("Members.Label.UploadNewAvatar")]
+        public HttpPostedFileBase[] Files { get; set; }
 
         #region Unuse code
 
@@ -194,15 +202,10 @@ namespace MVCForum.Website.ViewModels
         //[Required]
         //public string Email { get; set; }
 
-        //[ForumMvcResourceDisplayName("Members.Label.UploadNewAvatar")]
-        //public HttpPostedFileBase[] Files { get; set; }
-
         //[ForumMvcResourceDisplayName("Members.Label.Facebook")]
         //[Url]
         //[StringLength(60)]
         //public string Facebook { get; set; }
-
-        //public string Avatar { get; set; }
 
         //public bool DisableFileUploads { get; set; }
 

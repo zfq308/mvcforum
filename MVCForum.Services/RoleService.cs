@@ -198,22 +198,21 @@ namespace MVCForum.Services
             var categoryPermissions = new List<CategoryPermissionForRole>();
             if (category != null)
             {
-                #region Admin 全功能权限,暂时取消
-                //foreach (var permission in permissionList.Where(x => !x.IsGlobal))
-                //{
-                //    categoryPermissions.Add(new CategoryPermissionForRole
-                //    {
-                //        Category = category,
-                //        IsTicked = (permission.Name != SiteConstants.Instance.PermissionDenyAccess && permission.Name != SiteConstants.Instance.PermissionReadOnly),
-                //        MembershipRole = role,
-                //        Permission = permission
-                //    });
-                //}
-                #endregion
-
-                #region 现在采用的是Admin 精简功能模式
                 categoryPermissions = cprs.GetByCategoryAndRole(role, category);
-                #endregion
+                if(categoryPermissions==null|| categoryPermissions.Count==0)
+                {
+                    // 若无对Role和category特定的权限设定，则给全部权限
+                    foreach (var permission in permissionList.Where(x => !x.IsGlobal))
+                    {
+                        categoryPermissions.Add(new CategoryPermissionForRole
+                        {
+                            Category = category,
+                            IsTicked = (permission.Name != SiteConstants.Instance.PermissionDenyAccess && permission.Name != SiteConstants.Instance.PermissionReadOnly),
+                            MembershipRole = role,
+                            Permission = permission
+                        });
+                    }
+                }
             }
 
             // Sort the global permissions out - As it's a admin we set everything to true!

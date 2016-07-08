@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Data.Entity;
@@ -17,7 +17,7 @@ namespace MVCForum.Services
     public partial class VerifyCodeService : IVerifyCodeService
     {
         const int MaxVerifyTimes = 3;
-        const int MaxVerifyCodeLifeTimeHour = 1;  // ¶ÌĞÅ1Ğ¡Ê±ºó×Ô¶¯Ê§Ğ§¹ıÆÚ
+        const int MaxVerifyCodeLifeTimeHour = 1;  // çŸ­ä¿¡1å°æ—¶åè‡ªåŠ¨å¤±æ•ˆè¿‡æœŸ
 
         log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -86,7 +86,7 @@ namespace MVCForum.Services
         }
 
         /// <summary>
-        /// É¾³ı¹ıÆÚµÄÑéÖ¤Âë
+        /// åˆ é™¤è¿‡æœŸçš„éªŒè¯ç 
         /// </summary>
         public void DeleteInvalidVerifyCode()
         {
@@ -106,9 +106,9 @@ namespace MVCForum.Services
         }
 
         /// <summary>
-        /// ¼ì²éÌØ¶¨ÊÖ»úºÅÔÚ¿âÖĞ»¹ÓĞµÄÎ´ÑéÖ¤Í¨¹ıµÄ¼ÇÂ¼Êı
+        /// æ£€æŸ¥ç‰¹å®šæ‰‹æœºå·åœ¨åº“ä¸­è¿˜æœ‰çš„æœªéªŒè¯é€šè¿‡çš„è®°å½•æ•°
         /// </summary>
-        /// <param name="MobileNumber">ÌØ¶¨µÄÊÖ»úºÅÂë</param>
+        /// <param name="MobileNumber">ç‰¹å®šçš„æ‰‹æœºå·ç </param>
         /// <returns></returns>
         public int GetCountByMobileNumber(string MobileNumber)
         {
@@ -118,9 +118,9 @@ namespace MVCForum.Services
         }
 
         /// <summary>
-        /// ¸øÊÖ»ú·¢ËÍÑéÖ¤Âë
+        /// ç»™æ‰‹æœºå‘é€éªŒè¯ç 
         /// </summary>
-        /// <param name="verifyCode">ÑéÖ¤ÂëµÄÊµÀı</param>
+        /// <param name="verifyCode">éªŒè¯ç çš„å®ä¾‹</param>
         public void SendVerifyCode(VerifyCode verifyCode)
         {
             if (verifyCode != null && !string.IsNullOrEmpty(verifyCode.MobileNumber))
@@ -153,12 +153,13 @@ namespace MVCForum.Services
                     string result = service.Send(verifyCode.VerifyNumber, verifyCode.MobileNumber);
                     verifyCode.ReturnMessage = result;
 
-                    // ½«ÑéÖ¤ÂëÊµÀıĞ´ÈëÊı¾İ¿â
+                    // å°†éªŒè¯ç å®ä¾‹å†™å…¥æ•°æ®åº“
                     _context.VerifyCode.Add(verifyCode);
+                    _context.SaveChanges();
                 }
                 else
                 {
-                    logger.Warn(string.Format("µ±Ç°ÊÖ»úºÅÂë{0}³¬¹ı×¢²áÏŞÖÆ", verifyCode.MobileNumber));
+                    logger.Warn(string.Format("å½“å‰æ‰‹æœºå·ç {0}è¶…è¿‡æ³¨å†Œé™åˆ¶", verifyCode.MobileNumber));
                     throw new ArgumentNullException("verifyCode");
                 }
             }

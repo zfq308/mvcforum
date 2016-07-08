@@ -92,15 +92,15 @@ namespace MVCForum.Services
 
                     if (BoyRate + GirlRate == 0) return false;
 
-                    if (user.Gender == 1) //Boy=1 , girl=0
+                    if (user.Gender == Enum_Gender.boy)
                     {
                         int BoyNumber = (int)((YuGuRenShu * BoyRate) / (BoyRate + GirlRate));
-                        return _context.AiLvHuoDongDetail.Where(x => x.Id == huodong.Id && x.UserGender == 1).Count() + 1 <= BoyNumber;
+                        return _context.AiLvHuoDongDetail.Where(x => x.Id == huodong.Id && x.UserGender == Enum_Gender.boy).Count() + 1 <= BoyNumber;
                     }
                     else
                     {
                         int GirlNumber = (int)((YuGuRenShu * GirlRate) / (BoyRate + GirlRate));
-                        return _context.AiLvHuoDongDetail.Where(x => x.Id == huodong.Id && x.UserGender == 0).Count() + 1 <= GirlNumber;
+                        return _context.AiLvHuoDongDetail.Where(x => x.Id == huodong.Id && x.UserGender == Enum_Gender.girl).Count() + 1 <= GirlNumber;
                     }
                 }
 

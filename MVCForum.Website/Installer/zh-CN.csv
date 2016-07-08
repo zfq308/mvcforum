@@ -152,13 +152,13 @@ Members.Label.Location,居住地
 Members.Label.MobilePhone,手机
 Members.Label.NewPassword,新的密码
 Members.Label.Password,密码
-Members.Label.RealName,真实姓名
+Members.Label.RealName,真实姓名(平台其他会员无法查看)
 Members.Label.RememberMe,记住登录
 Members.Label.VerifyCode,验证码
 Members.Label.Roles,角色
 Members.Label.Signature,个性签名
 Members.Label.Twitter,Twitter
-Members.Label.UploadNewAvatar,上传头像
+Members.Label.UploadNewAvatar,上传新的头像
 Members.Label.UserIsApproved,用户已审核
 Members.Label.Username,账号
 Members.Label.Users,Users
@@ -204,7 +204,7 @@ Members.ResetPassword.InvalidToken,This request is either invalid or has expired
 Members.ResetPassword.SuccessText,你的密码已成功修改.
 Members.ResetPassword.Text,An email has been sent with details on how to reset your password. 
 Members.ResetPassword.Title,密码重置请求已发出
-Members.SearchMembers,搜索会员
+Members.SearchMembers,找朋友
 Members.SrubAndBan,Scrub Member
 Members.SuccessfulSrub,操作完毕
 Members.UnableToGetEmailAddress,Unable to gain access to your email address - please check your permissions
@@ -270,8 +270,8 @@ Post.Delete,删除
 Post.DeleteConfirmation,你确认要删除吗?
 Post.Deleted,已删除
 Post.Edit,编辑
-Post.Favourite,Favourite
-Post.Favourited,Favourited
+Post.Favourite,收藏
+Post.Favourited,已收藏
 Post.FilesUploaded,文件上传成功
 Post.IsSolution,Is Solution
 Post.Label.IsStickyTopic,Is Sticky Topic
@@ -289,7 +289,7 @@ Post.Move.Label.Topic,Topic
 Post.Move.PostTitle,移动回复
 Post.Notification.NewPosts,A new post has been created in the {0} topic
 Post.Notification.Subject,New Post On 
-Post.Options,View Post Options
+Post.Options,更多操作
 Post.OthersLiked,and {0} others
 Post.Permalink,静态连结
 Post.PleaseWait,正在提交，请稍等...
@@ -407,8 +407,8 @@ Topic.Comments,意见
 Topic.CommentsDetails,备注
 Topic.CreateDiscussion,Create Discussion
 Topic.Deleted,Topic Deleted
-Topic.DiscussionTaggedWith,Discussions Tagged With: 
-Topic.HotTopics,Hot Topics
+Topic.DiscussionTaggedWith,标签： 
+Topic.HotTopics,最新发布
 Topic.InCategory, 在 
 Topic.IsLocked,内容被锁定
 Topic.IsPoll,Poll
@@ -430,7 +430,7 @@ Topic.ShowMorePosts,显示更多回复
 Topic.ShowMorePostsLoading,载入中...
 Topic.StartedBy,Started {0} by {1}
 Topic.Subscribe,订阅
-Topic.TagThisTopic,Tag this topic
+Topic.TagThisTopic,标签
 Topic.TitleFallBack,Discussion Topic
 Topic.UnSubscribe,取消关注
 Topic.Views,查看人数

@@ -40,7 +40,7 @@ namespace MVCForum.Website.ViewModels.Mapping
                 Comment = user.Comment,
                 Email = user.Email,
                 Facebook = user.Facebook,
-                Location = user.Location,
+                Location = user.HomeTown,
                 PasswordAnswer = user.PasswordAnswer,
                 PasswordQuestion = user.PasswordQuestion,
                 Signature = user.Signature,

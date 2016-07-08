@@ -45,6 +45,6 @@ namespace MVCForum.Domain.Interfaces.Services
         CategoryPermissionForRole Get(Guid id);
         void Delete(CategoryPermissionForRole categoryPermissionForRole);
 
-        List<CategoryPermissionForRole> GetByCategoryAndRole(MembershipRole role, Category cat)
+        List<CategoryPermissionForRole> GetByCategoryAndRole(MembershipRole role, Category cat);
     }
 }

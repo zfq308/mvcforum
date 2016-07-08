@@ -124,18 +124,8 @@ namespace MVCForum.Services
             {
                 UserName = string.Empty,
                 Password = string.Empty,
-                Email = string.Empty,
                 RealName = string.Empty,
-                PasswordQuestion = string.Empty,
-                PasswordAnswer = string.Empty,
                 CreateDate = now,
-                FailedPasswordAnswerAttempt = 0,
-                FailedPasswordAttemptCount = 0,
-                LastLockoutDate = (DateTime)SqlDateTime.MinValue,
-                LastPasswordChangedDate = now,
-                IsApproved = false,
-                IsLockedOut = false,
-                LastLoginDate = (DateTime)SqlDateTime.MinValue,
             };
         }
 
@@ -1134,7 +1124,7 @@ namespace MVCForum.Services
                     }
                     if (values.Length >= 5)
                     {
-                        userToImport.Location = values[4];
+                        userToImport.HomeTown = values[4];
                     }
                     if (values.Length >= 6)
                     {

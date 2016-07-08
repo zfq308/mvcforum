@@ -393,8 +393,6 @@ namespace MVCForum.Services.Migrations
 
                 #endregion
 
-
-
                 #region 建立Category，Permission，Role映射关联关系
                 
                 CategoryPermissionForRoleService cprs = new CategoryPermissionForRoleService(context);
@@ -427,9 +425,6 @@ namespace MVCForum.Services.Migrations
 
                 #endregion
 
-
-
-
                 #region 若默认管理员账号不存在，则创建默认的系统管理员账号
 
                 if (context.MembershipUser.FirstOrDefault(x => x.UserName == defaultAdminUsername) == null)
@@ -441,27 +436,28 @@ namespace MVCForum.Services.Migrations
 
                         #region 基本信息
                         UserName = defaultAdminUsername,
-                        RealName = "默认管理员",
+                        RealName = "系统管理员",
                         AliasName = "admin",
                         Email = "admin@email.com",
-                        Gender = 1,
+                        Gender =Enum_Gender.boy,
                         Birthday = new DateTime(2000, 1, 1),
-                        IsLunarCalendar = false,
+                        IsLunarCalendar = Enum_Calendar.PublicCalendar,
                         IsMarried = true,
                         Height = 180,
                         Weight = 100,
                         Education = "硕士",
-                        Location = "深圳市",
+                        HomeTown = "深圳市龙华新区",
                         SchoolProvince = "110000",
                         SchoolCity = "110100",
                         SchoolName = "我的大学",
-                        HomeTownProvince = "110000",
-                        HomeTownCity = "110100",
-                        HomeTownCounty = "110108",
-                        Job = "工程师",
+                        LocationProvince = "110000",
+                        LocationCity = "110100",
+                        LocationCounty = "110108",
+                        Job = "BigBoss",
                         IncomeRange = 0,
                         Interest = "发呆",
                         MobilePhone = "13686886937",
+                        Avatar = "",
                         #endregion
 
                         Password = defaultAdminstratorPassword,
@@ -469,17 +465,13 @@ namespace MVCForum.Services.Migrations
                         CreateDate = DateTime.Now,
                         LastLoginDate = DateTime.Now,
                         LastUpdateTime = DateTime.Now,
-                        UserType = 1,
+                        UserType =  Enum_UserType.A,
                         Slug = ServiceHelpers.CreateUrl(defaultAdminUsername),
                         DisablePosting = false,
                         DisablePrivateMessages = false,
                         DisableFileUploads = false,
-                        Comment = "系统管理员默认账号",
-                        Signature = "",
-                        Website = "",
-                        Twitter = "",
-                        Facebook = "",
-                        Avatar = ""
+                        Comment = "系统管理员默认账号"
+                       
 
                         #endregion
                     };
@@ -554,7 +546,6 @@ namespace MVCForum.Services.Migrations
 
                 }
                 #endregion
-
 
             }
             else

@@ -133,7 +133,8 @@ namespace MVCForum.Services
                 {
                     // These are now in order
                     var orderedCategories = new List<Category>();
-                    var allCats = _context.Category.Include(x => x.ParentCategory).Where(x => x.IsSystemCategory == false).AsNoTracking().OrderBy(x => x.SortOrder).ToList();
+                    var allCats = _context.Category.Include(x => x.ParentCategory) //.Where(x => x.IsSystemCategory == false)
+                        .AsNoTracking().OrderBy(x => x.SortOrder).ToList();
                     foreach (var parentCategory in allCats.Where(x => x.ParentCategory == null).OrderBy(x => x.SortOrder))
                     {
                         // Add the main category
@@ -364,7 +365,7 @@ namespace MVCForum.Services
         {
             slug = StringUtils.SafePlainText(slug);
             var cat = (from category in _context.Category
-                       where category.Slug == slug && category.IsSystemCategory == false
+                       where category.Slug == slug
                        select new CategoryWithSubCategories
                        {
                            Category = category,

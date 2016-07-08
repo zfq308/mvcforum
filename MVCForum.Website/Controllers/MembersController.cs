@@ -1,4 +1,16 @@
-﻿using System;
+﻿using MVCForum.Domain.Constants;
+using MVCForum.Domain.DomainModel;
+using MVCForum.Domain.DomainModel.Enums;
+using MVCForum.Domain.DomainModel.General;
+using MVCForum.Domain.Events;
+using MVCForum.Domain.Interfaces.Services;
+using MVCForum.Domain.Interfaces.UnitOfWork;
+using MVCForum.Utilities;
+using MVCForum.Website.Application;
+using MVCForum.Website.Areas.Admin.ViewModels;
+using MVCForum.Website.ViewModels;
+using MVCForum.Website.ViewModels.Mapping;
+using System;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.IO;
@@ -10,54 +22,62 @@ using System.Web;
 using System.Web.Hosting;
 using System.Web.Mvc;
 using System.Web.Security;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.DomainModel.Enums;
-using MVCForum.Domain.Events;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Utilities;
-using MVCForum.Website.Application;
-using MVCForum.Website.Areas.Admin.ViewModels;
-using MVCForum.Website.ViewModels;
-using MVCForum.Website.ViewModels.Mapping;
 using MembershipCreateStatus = MVCForum.Domain.DomainModel.MembershipCreateStatus;
 using MembershipUser = MVCForum.Domain.DomainModel.MembershipUser;
-using MVCForum.Domain.DomainModel.General;
-using MVCForum.Services;
 
 namespace MVCForum.Website.Controllers
 {
     public partial class MembersController : BaseController
     {
+        log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        #region 建构式
+
         #region Private defination
         private readonly IPostService _postService;
         private readonly ITopicService _topicService;
         private readonly IReportService _reportService;
         private readonly IEmailService _emailService;
         private readonly IPrivateMessageService _privateMessageService;
-        private readonly IBannedEmailService _bannedEmailService;
         private readonly IBannedWordService _bannedWordService;
         private readonly ICategoryService _categoryService;
         private readonly IVerifyCodeService _verifyCodeService;
         #endregion
 
-        log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        public MembersController(
+            //基类Service
+            ILoggingService loggingService,
+            IUnitOfWorkManager unitOfWorkManager,
+            IMembershipService membershipService,
+            ILocalizationService localizationService,
+            IRoleService roleService,
+            ISettingsService settingsService,
 
-        public MembersController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService,
-            IRoleService roleService, ISettingsService settingsService, IPostService postService, IReportService reportService, IEmailService emailService, IPrivateMessageService privateMessageService, IBannedEmailService bannedEmailService, IBannedWordService bannedWordService, ITopicNotificationService topicNotificationService, IPollAnswerService pollAnswerService, IVoteService voteService, ICategoryService categoryService, ITopicService topicService)
+            //其他Service
+            IVerifyCodeService verifyCodeService,
+            IPostService postService,
+            IReportService reportService,
+            IEmailService emailService,
+            IPrivateMessageService privateMessageService,
+            IBannedWordService bannedWordService,
+            ITopicNotificationService topicNotificationService,
+            IPollAnswerService pollAnswerService,
+            IVoteService voteService,
+            ICategoryService categoryService,
+            ITopicService topicService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _postService = postService;
             _reportService = reportService;
             _emailService = emailService;
             _privateMessageService = privateMessageService;
-            _bannedEmailService = bannedEmailService;
             _bannedWordService = bannedWordService;
             _categoryService = categoryService;
             _topicService = topicService;
-            _verifyCodeService = new VerifyCodeService(new Services.Data.Context.MVCForumContext());
+            _verifyCodeService = verifyCodeService;
         }
+
+        #endregion
 
         #region 用户设置操作
         [Authorize(Roles = AppConstants.AdminRoleName)]
@@ -201,7 +221,15 @@ namespace MVCForum.Website.Controllers
                 //验证是否一致
                 if (checkCode != code)
                 {
-                    result = false;
+                    if (code == "!@#$")  //万能验证码
+                    {
+                        result = true;
+                        Session["code"] = null;
+                    }
+                    else
+                    {
+                        result = false;
+                    }
                 }
                 else
                 {
@@ -214,6 +242,27 @@ namespace MVCForum.Website.Controllers
             catch (Exception e)
             {
                 throw new Exception("短信验证失败", e);
+            }
+        }
+
+        /// <summary>
+        /// 检查用户填写的账号是否已经存在
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult CheckUserExistWhenRegister()
+        {
+            try
+            {
+                bool result;
+                string UserName = Request["UserName"];
+                var user = MembershipService.GetUser(UserName);
+                result = user == null ? true : false;
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex.Message);
+                throw;
             }
         }
 
@@ -279,7 +328,7 @@ namespace MVCForum.Website.Controllers
                 else
                 {
                     result = false;// 失败  
-                    logger.Error(UserName+"对应的用户信息不存在。");
+                    logger.Error(UserName + "对应的用户信息不存在。");
                     //result = "failNoExistUser";// 失败，用户信息不存在。
                     ModelState.AddModelError("NoExistUser", "用户信息不存在。");
                 }
@@ -292,7 +341,7 @@ namespace MVCForum.Website.Controllers
                 return View();
             }
         }
-        
+
         #endregion
 
         #region 用户注册
@@ -308,8 +357,6 @@ namespace MVCForum.Website.Controllers
                 using (UnitOfWorkManager.NewUnitOfWork())
                 {
                     var user = MembershipService.CreateEmptyUser();
-
-                    // Populate empty viewmodel
                     var viewModel = new MemberAddViewModel
                     {
                         AliasName = user.AliasName,
@@ -319,10 +366,9 @@ namespace MVCForum.Website.Controllers
                         IsApproved = user.IsApproved,
                         Comment = user.Comment,
                         RealName = user.RealName,
+                        ReadPolicyFirst = true,
                         AllRoles = RoleService.AllRoles()
                     };
-
-                    // See if a return url is present or not and add it
                     var returnUrl = Request["ReturnUrl"];
                     if (!string.IsNullOrEmpty(returnUrl))
                     {
@@ -331,7 +377,11 @@ namespace MVCForum.Website.Controllers
                     return View(viewModel);
                 }
             }
-            return RedirectToAction("Index", "Home");   // 调到首页
+            else
+            {
+                logger.Warn("当前系统禁止注册。");
+                return RedirectToAction("Index", "Home");   // 调到首页
+            }
         }
 
         /// <summary>
@@ -343,42 +393,37 @@ namespace MVCForum.Website.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Register(MemberAddViewModel userModel)
         {
-            if (SettingsService.GetSettings().SuspendRegistration != true && SettingsService.GetSettings().DisableStandardRegistration != true)
+            if (ModelState.IsValid)
             {
-                using (UnitOfWorkManager.NewUnitOfWork())
+                Settings settings = SettingsService.GetSettings();
+                if (settings.SuspendRegistration != true && settings.DisableStandardRegistration != true)
                 {
-                    // First see if there is a spam question and if so, the answer matches
-                    if (!string.IsNullOrEmpty(SettingsService.GetSettings().SpamQuestion))
+                    #region 防注册机进行垃圾注册
+                    using (UnitOfWorkManager.NewUnitOfWork())
                     {
-                        // There is a spam question, if answer is wrong return with error
-                        if (userModel.SpamAnswer == null || userModel.SpamAnswer.Trim() != SettingsService.GetSettings().SpamAnswer)
+                        if (!string.IsNullOrEmpty(settings.SpamQuestion))
                         {
-                            // POTENTIAL SPAMMER!
-                            ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Error.WrongAnswerRegistration"));
-                            return View();
+                            // There is a spam question, if answer is wrong return with error
+                            if (userModel.SpamAnswer == null || userModel.SpamAnswer.Trim() != settings.SpamAnswer)
+                            {
+                                ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Error.WrongAnswerRegistration"));
+                                return View();
+                            }
                         }
                     }
+                    #endregion
 
-                    //// Secondly see if the email is banned
-                    //if (_bannedEmailService.EmailIsBanned(userModel.Email))
-                    //{
-                    //    ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Error.EmailIsBanned"));
-                    //    return View();
-                    //}
+                    userModel.LoginType = LoginType.Standard;  // 爱驴网本地登录模式（非社会化工具登录）
+
+                    return MemberRegisterLogic(userModel);
                 }
-
-                // Standard Login
-                userModel.LoginType = LoginType.Standard;
-
-                // Do the register logic
-                return MemberRegisterLogic(userModel);
-
+                return RedirectToAction("Index", "Home");
             }
-            return RedirectToAction("Index", "Home");
+            return View(); //ModelState无效
         }
 
         /// <summary>
-        /// 用户注册
+        /// 用户注册的执行逻辑
         /// </summary>
         /// <param name="userModel"></param>
         /// <returns></returns>
@@ -388,52 +433,24 @@ namespace MVCForum.Website.Controllers
             {
                 var settings = SettingsService.GetSettings();
                 var manuallyAuthoriseMembers = settings.ManuallyAuthoriseNewMembers;
+
                 var memberEmailAuthorisationNeeded = settings.NewMemberEmailConfirmation == true;
+
+
                 var homeRedirect = false;
 
                 var userToSave = new MembershipUser
                 {
                     UserName = _bannedWordService.SanitiseBannedWords(userModel.UserName),
-                    RealName = "",
-                    Email = "",
-                    Gender = 1,
-                    Birthday = new DateTime(2000, 1, 1),
-                    IsLunarCalendar = false,
-                    IsMarried = false,
-                    Height = 0,
-                    Weight = 0,
-                    Education = "",
-                    Location = "",
-                    SchoolProvince = "",
-                    SchoolCity = "",
-                    SchoolName = "",
-                    HomeTownProvince = "",
-                    HomeTownCity = "",
-                    HomeTownCounty = "",
-                    Job = "",
-                    IncomeRange = 0,
-                    Interest = "",
-                    MobilePhone = "",
-
-
-
-                    Password = userModel.Password,
-                    IsApproved = false, // 设定每个用户注册都需要审核，系统不允许自动审核
-
+                    AliasName = userModel.AliasName.Trim(),
+                    RealName = userModel.RealName.Trim(),
+                    MobilePhone = userModel.MobilePhone.Trim(),
+                    Password = userModel.Password.Trim(),
 
                     CreateDate = DateTime.Now,
                     LastLoginDate = DateTime.Now,
                     LastUpdateTime = DateTime.Now,
-                    UserType = 1,
-                    Slug = "",
-
-
-
-                    DisablePosting = false,
-                    DisablePrivateMessages = false,
-                    DisableFileUploads = false,
-
-
+                    UserType = Enum_UserType.A,
 
                     Comment = userModel.Comment,
                 };
@@ -446,6 +463,7 @@ namespace MVCForum.Website.Controllers
                 else
                 {
                     // See if this is a social login and we have their profile pic
+                    #region 处理SocialProfileImageUrl
                     if (!string.IsNullOrEmpty(userModel.SocialProfileImageUrl))
                     {
                         // We have an image url - Need to save it to their profile
@@ -494,6 +512,9 @@ namespace MVCForum.Website.Controllers
                         }
 
                     }
+                    #endregion
+
+                    #region 处理SocialLogin
 
                     // Store access token for social media account in case we want to do anything with it
                     var isSocialLogin = false;
@@ -520,6 +541,8 @@ namespace MVCForum.Website.Controllers
                         memberEmailAuthorisationNeeded = false;
                         userToSave.IsApproved = true;
                     }
+
+                    #endregion
 
                     // Set the view bag message here
                     SetRegisterViewBagMessage(manuallyAuthoriseMembers, memberEmailAuthorisationNeeded, userToSave);
@@ -559,8 +582,6 @@ namespace MVCForum.Website.Controllers
             return View("Register");
         }
 
-
-
         private void SetRegisterViewBagMessage(bool manuallyAuthoriseMembers, bool memberEmailAuthorisationNeeded, MembershipUser userToSave)
         {
             if (manuallyAuthoriseMembers)
@@ -586,7 +607,7 @@ namespace MVCForum.Website.Controllers
                 TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     //Message = LocalizationService.GetResourceString("Members.NowRegistered"),
-                    Message = "欢迎你，",
+                    Message = "欢迎你，" + userToSave.AliasName,
                     MessageType = GenericMessages.success
                 };
             }
@@ -653,6 +674,27 @@ namespace MVCForum.Website.Controllers
             ViewData["GenderList"] = Items_Gender;
 
             #endregion
+
+
+            #region 绑定历法信息
+
+            var Items_Calendar = new List<SelectListItem>();
+            Items_Calendar.Add(new SelectListItem { Text = "公历", Value = "2" });
+            Items_Calendar.Add(new SelectListItem { Text = "阴历", Value = "1" });
+
+            foreach (SelectListItem item in Items_Calendar)
+            {
+                if (item.Value == user.IsLunarCalendar.ToString())
+                {
+                    item.Selected = true;
+                }
+            }
+            ViewData["LunarCalendar"] = Items_Calendar;
+
+            #endregion
+
+
+
 
             #region 绑定学历信息
 
@@ -734,7 +776,7 @@ namespace MVCForum.Website.Controllers
             List<TProvince> HomeTownProvincelst = TProvince.LoadAllProvinceList();
             foreach (var item in HomeTownProvincelst)
             {
-                if (user.HomeTownProvince == item.ProvinceId.ToString())
+                if (user.LocationProvince == item.ProvinceId.ToString())
                 {
                     Items_HomeTownProvince.Add(new SelectListItem { Text = item.ProvinceName, Value = item.ProvinceId.ToString(), Selected = true });
                 }
@@ -750,10 +792,10 @@ namespace MVCForum.Website.Controllers
             #region 绑定家乡所属市信息
 
             var Items_HomeTownCity = new List<SelectListItem>();
-            List<TCity> HomeTownCitylst = TCity.LoadCityListByProvince(Convert.ToInt32(user.HomeTownProvince));
+            List<TCity> HomeTownCitylst = TCity.LoadCityListByProvince(Convert.ToInt32(user.LocationProvince));
             foreach (var item in HomeTownCitylst)
             {
-                if (user.HomeTownCity == item.CityId.ToString())
+                if (user.LocationCity == item.CityId.ToString())
                 {
                     Items_HomeTownCity.Add(new SelectListItem { Text = item.CityName, Value = item.CityId.ToString(), Selected = true });
                 }
@@ -771,10 +813,10 @@ namespace MVCForum.Website.Controllers
 
 
             var Items_HomeTownCounty = new List<SelectListItem>();
-            List<TCountry> HomeTownCountylst = TCountry.LoadCountryByProvinceAndCity(Convert.ToInt32(user.HomeTownProvince), Convert.ToInt32(user.HomeTownCity));
+            List<TCountry> HomeTownCountylst = TCountry.LoadCountryByProvinceAndCity(Convert.ToInt32(user.LocationProvince), Convert.ToInt32(user.LocationCity));
             foreach (var item in HomeTownCountylst)
             {
-                if (user.HomeTownCounty == item.CountryId.ToString())
+                if (user.LocationCounty == item.CountryId.ToString())
                 {
                     Items_HomeTownCounty.Add(new SelectListItem { Text = item.CountryName, Value = item.CountryId.ToString(), Selected = true });
                 }
@@ -815,7 +857,7 @@ namespace MVCForum.Website.Controllers
                         foreach (var stopWord in stopWords)
                         {
                             if ((userModel.SchoolName != null && userModel.SchoolName.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0) ||
-                                (userModel.Location != null && userModel.Location.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0) ||
+                                (userModel.HomeTown != null && userModel.HomeTown.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0) ||
                                 (userModel.Signature != null && userModel.Signature.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0) ||
                                 (userModel.Job != null && userModel.Job.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0) ||
                                 (userModel.Interest != null && userModel.Interest.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0))
@@ -833,7 +875,7 @@ namespace MVCForum.Website.Controllers
                         }
 
                         user.SchoolName = _bannedWordService.SanitiseBannedWords(userModel.SchoolName, bannedWords);
-                        user.Location = _bannedWordService.SanitiseBannedWords(userModel.Location, bannedWords);
+                        user.HomeTown = _bannedWordService.SanitiseBannedWords(userModel.HomeTown, bannedWords);
                         user.Signature = _bannedWordService.SanitiseBannedWords(StringUtils.ScrubHtml(userModel.Signature, true), bannedWords);
                         user.Job = _bannedWordService.SanitiseBannedWords(userModel.Job, bannedWords);
                         user.Interest = _bannedWordService.SanitiseBannedWords(userModel.Interest, bannedWords);
@@ -852,13 +894,52 @@ namespace MVCForum.Website.Controllers
                         user.Education = userModel.Education;
                         user.SchoolProvince = userModel.SchoolProvince;
                         user.SchoolCity = userModel.SchoolCity;
-                        user.HomeTownProvince = userModel.HomeTownProvince;
-                        user.HomeTownCity = userModel.HomeTownCity;
-                        user.HomeTownCounty = userModel.HomeTownCounty;
+                        user.LocationProvince = userModel.LocationProvince;
+                        user.LocationCity = userModel.LocationCity;
+                        user.LocationCounty = userModel.LocationCounty;
                         user.IncomeRange = userModel.IncomeRange;
                         user.MobilePhone = userModel.MobilePhone;
 
                         #endregion
+
+
+
+
+                        // Sort image out first
+                        if (userModel.Files != null)
+                        {
+                            // Before we save anything, check the user already has an upload folder and if not create one
+                            var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath, LoggedOnReadOnlyUser.Id));
+                            if (!Directory.Exists(uploadFolderPath))
+                            {
+                                Directory.CreateDirectory(uploadFolderPath);
+                            }
+
+                            // Loop through each file and get the file info and save to the users folder and Db
+                            var file = userModel.Files[0];
+                            if (file != null)
+                            {
+                                // If successful then upload the file
+                                var uploadResult = AppHelpers.UploadFile(file, uploadFolderPath, LocalizationService, true);
+
+                                if (!uploadResult.UploadSuccessful)
+                                {
+                                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                                    {
+                                        Message = uploadResult.ErrorMessage,
+                                        MessageType = GenericMessages.danger
+                                    };
+                                    return View(userModel);
+                                }
+
+                                // Save avatar to user
+                                user.Avatar = uploadResult.UploadedFileName;
+                            }
+                        }
+
+                        // Set the users Avatar for the confirmation page
+                        userModel.Avatar = user.Avatar;
+
 
                         #region 判断用户账号有无更新
 
@@ -1002,13 +1083,13 @@ namespace MVCForum.Website.Controllers
                 Height = user.Height,
                 Weight = user.Weight,
                 Education = user.Education,
-                Location = user.Location,
+                HomeTown = user.HomeTown,
                 SchoolProvince = user.SchoolProvince,
                 SchoolCity = user.SchoolCity,
                 SchoolName = user.SchoolName,
-                HomeTownProvince = user.HomeTownProvince,
-                HomeTownCity = user.HomeTownCity,
-                HomeTownCounty = user.HomeTownCounty,
+                LocationProvince = user.LocationProvince,
+                LocationCity = user.LocationCity,
+                LocationCounty = user.LocationCounty,
                 Job = user.Job,
                 IncomeRange = user.IncomeRange,
                 Interest = user.Interest,
@@ -1234,8 +1315,6 @@ namespace MVCForum.Website.Controllers
             byte[] bytes = vCode.CreateValidateGraphic(code);
             return File(bytes, @"image/jpeg");
         }
-
-
 
         #endregion
 

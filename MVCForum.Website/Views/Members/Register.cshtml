@@ -25,10 +25,11 @@
                             @Html.LabelFor(x => Model.UserName)
                             @Html.TextBoxFor(x => Model.UserName, new { @class = "form-control" })
                             @Html.ValidationMessageFor(x => x.UserName)
+                            <span id="AccountTip"></span>
                         </div>
 
                         <div class="form-group">
-                            @Html.LabelFor(x => x.RealName)
+                            @Html.LabelFor(x => x.RealName)<span><Font color='red'>(您的姓名不会对其他会员公开)</Font></span>
                             @Html.TextBoxFor(x => x.RealName, new { @class = "form-control" })
                             @Html.ValidationMessageFor(x => x.RealName)
                         </div>
