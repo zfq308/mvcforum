@@ -85,6 +85,7 @@ namespace MVCForum.Website.ViewModels.Mapping
             existingSettings.Id = settingsViewModel.Id;
             existingSettings.ForumName = settingsViewModel.ForumName;
             existingSettings.ForumUrl = settingsViewModel.ForumUrl;
+            existingSettings.ForumKeepAliveURL = settingsViewModel.ForumKeepAliveURL;
             existingSettings.IsClosed = settingsViewModel.IsClosed;
             existingSettings.EnableRSSFeeds = settingsViewModel.EnableRSSFeeds;
             existingSettings.DisplayEditedBy = settingsViewModel.DisplayEditedBy;
@@ -142,6 +143,7 @@ namespace MVCForum.Website.ViewModels.Mapping
                 Id = currentSettings.Id,
                 ForumName = currentSettings.ForumName,
                 ForumUrl = currentSettings.ForumUrl,
+                ForumKeepAliveURL=currentSettings.ForumKeepAliveURL,
                 IsClosed = currentSettings.IsClosed,
                 EnableRSSFeeds = currentSettings.EnableRSSFeeds,
                 DisplayEditedBy = currentSettings.DisplayEditedBy,

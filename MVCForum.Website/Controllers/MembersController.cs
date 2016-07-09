@@ -455,10 +455,11 @@ namespace MVCForum.Website.Controllers
                 {
                     ModelState.AddModelError(string.Empty, MembershipService.ErrorCodeToString(createStatus));
                 }
-                else
+                else //用户注册成功
                 {
-                    new VerifyCodeService().CompleteVerifyCode(new VerifyCode(userModel.MobilePhone.Trim(),
-                         VerifyCodeStatus.Waiting, userModel.VerifyCode));
+                    //将等待验证（Waiting）的验证码的状态改为验证完成
+                    VerifyCode mVerifyCode = new VerifyCode(userModel.MobilePhone.Trim(), VerifyCodeStatus.Waiting, userModel.VerifyCode);
+                    new VerifyCodeService().CompleteVerifyCode(mVerifyCode);
 
                     // See if this is a social login and we have their profile pic
                     #region 处理SocialProfileImageUrl
@@ -552,8 +553,8 @@ namespace MVCForum.Website.Controllers
 
                     try
                     {
-                        // Only send the email if the admin is not manually authorising emails or it's pointless
-                        SendEmailConfirmationEmail(userToSave);
+                        //// Only send the email if the admin is not manually authorising emails or it's pointless
+                        //SendEmailConfirmationEmail(userToSave);
 
                         unitOfWork.Commit();
 

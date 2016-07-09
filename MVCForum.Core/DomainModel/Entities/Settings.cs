@@ -23,6 +23,10 @@ namespace MVCForum.Domain.DomainModel
         /// </summary>
         public string ForumUrl { get; set; }
         /// <summary>
+        /// 系统进行KeepAlive所定期访问的页面。（本系统使用爱驴简介页面的URL）
+        /// </summary>
+        public string ForumKeepAliveURL { get; set; }
+        /// <summary>
         /// 页面标题
         /// </summary>
         public string PageTitle { get; set; }

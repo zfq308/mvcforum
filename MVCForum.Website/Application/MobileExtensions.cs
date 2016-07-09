@@ -11,6 +11,11 @@ namespace MVCForum.Website.Application
             return (c.Request.UserAgent != null && c.Request.UserAgent.IndexOf(agentToFind, StringComparison.OrdinalIgnoreCase) >= 0);
         }
 
+        /// <summary>
+        /// 根据用户提交的Request请求中的HTTP_USER_AGENT变量判断该请求是否来自移动设备
+        /// </summary>
+        /// <param name="c"></param>
+        /// <returns></returns>
         public static bool IsMobileDevice(this HttpContextBase c)
         {
             // Taken from http://detectmobilebrowsers.com/

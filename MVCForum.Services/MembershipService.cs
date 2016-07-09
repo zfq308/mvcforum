@@ -155,6 +155,31 @@ namespace MVCForum.Services
             //membershipUser.Avatar = StringUtils.SafePlainText(membershipUser.Avatar);
             return membershipUser;
         }
+        
+        private MembershipUser setIsApprovedStatus(MembershipUser newUser)
+        {
+            if (newUser != null)
+            {
+                //var settings = _settingsService.GetSettings(false);
+                //var manuallyAuthoriseMembers = settings.ManuallyAuthoriseNewMembers;
+                //var memberEmailAuthorisationNeeded = settings.NewMemberEmailConfirmation == true;
+                //if (manuallyAuthoriseMembers || memberEmailAuthorisationNeeded)
+                //{
+                //    newUser.IsApproved = false;
+                //}
+                //else
+                //{
+                //    newUser.IsApproved = true;
+                //}
+
+                newUser.IsApproved = false;
+                return newUser;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// 创建用户实例
@@ -163,52 +188,35 @@ namespace MVCForum.Services
         /// <returns></returns>
         public MembershipCreateStatus CreateUser(MembershipUser newUser)
         {
-            newUser = SanitizeUser(newUser);
-            var settings = _settingsService.GetSettings(false);
-
-
             var status = MembershipCreateStatus.Success;
+
+            newUser = SanitizeUser(newUser);
 
             var e = new RegisterUserEventArgs { User = newUser };
             EventManager.Instance.FireBeforeRegisterUser(this, e);
-
             if (e.Cancel)
             {
                 status = e.CreateStatus;
             }
             else
             {
-                #region 校验基本的属性
-
-                if (string.IsNullOrEmpty(newUser.UserName))
-                {
-                    status = MembershipCreateStatus.InvalidUserName;
-                }
-
-                // get by username
-                if (GetUser(newUser.UserName, true) != null)
-                {
-                    status = MembershipCreateStatus.DuplicateUserName;
-                }
-
-                //// Add get by email address
-                //if (GetUserByEmail(newUser.Email, true) != null)
-                //{
-                //    status = MembershipCreateStatus.DuplicateEmail;
-                //}
-
-                if (string.IsNullOrEmpty(newUser.Password))
-                {
-                    status = MembershipCreateStatus.InvalidPassword;
-                }
-
-                #endregion
+                if (string.IsNullOrEmpty(newUser.UserName)) { status = MembershipCreateStatus.InvalidUserName; }
+                if (GetUser(newUser.UserName, true) != null) { status = MembershipCreateStatus.DuplicateUserName; }
+                //if (GetUserByEmail(newUser.Email, true) != null) { status = MembershipCreateStatus.DuplicateEmail; }
+                if (string.IsNullOrEmpty(newUser.Password)) { status = MembershipCreateStatus.InvalidPassword; }
 
                 if (status == MembershipCreateStatus.Success)
                 {
+                    newUser.Roles = new List<MembershipRole> { _settingsService.GetSettings(false).NewMemberStartingRole };
+
+                    #region 设定审核标志位
+
+                    newUser = setIsApprovedStatus(newUser);
+
+                    #endregion
+
                     #region 生成用户的密码的HASH值和SALT值
 
-                    // Hash the password
                     var salt = StringUtils.CreateSalt(AppConstants.SaltSize);
                     var hash = StringUtils.GenerateSaltedHash(newUser.Password, salt);
                     newUser.Password = hash;
@@ -216,29 +224,13 @@ namespace MVCForum.Services
 
                     #endregion
 
-                    newUser.Roles = new List<MembershipRole> { settings.NewMemberStartingRole };
+                    #region 其他属性赋值
 
-                    // Set dates
                     newUser.CreateDate = newUser.LastPasswordChangedDate = DateTime.Now;
                     newUser.LastLockoutDate = (DateTime)SqlDateTime.MinValue;
                     newUser.LastLoginDate = (DateTime)SqlDateTime.MinValue;
                     newUser.IsLockedOut = false;
                     newUser.Slug = ServiceHelpers.GenerateSlug(newUser.UserName, GetUserBySlugLike(ServiceHelpers.CreateUrl(newUser.UserName)), null);
-
-                    #region 设定审核标志位
-
-                    //var manuallyAuthoriseMembers = settings.ManuallyAuthoriseNewMembers;
-                    //var memberEmailAuthorisationNeeded = settings.NewMemberEmailConfirmation == true;
-                    //if (manuallyAuthoriseMembers || memberEmailAuthorisationNeeded)
-                    //{
-                    //    newUser.IsApproved = false;
-                    //}
-                    //else
-                    //{
-                    //    newUser.IsApproved = true;
-                    //}
-
-                    newUser.IsApproved = false;
 
                     #endregion
 
@@ -263,6 +255,7 @@ namespace MVCForum.Services
                         //}
                         #endregion
 
+                        //生成用户注册活动记录
                         _activityService.MemberJoined(newUser);
                         EventManager.Instance.FireAfterRegisterUser(this, new RegisterUserEventArgs { User = newUser });
                     }

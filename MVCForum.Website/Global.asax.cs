@@ -32,18 +32,13 @@ namespace MVCForum.Website
 
         protected void Application_Start()
         {
+            //配置并定义Log4net
             log4net.Config.XmlConfigurator.Configure(new FileInfo(Server.MapPath("~/Web.config")));
-
             log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
             AreaRegistration.RegisterAllAreas();
-            logger.Info("Run AreaRegistration.RegisterAllAreas, done.");
-
             GlobalConfiguration.Configure(WebApiConfig.Register);
-            logger.Info("Run GlobalConfiguration.Configure, done.");
-
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
-            logger.Info("Run FilterConfig.RegisterGlobalFilters, done.");
 
             // https://msdn.microsoft.com/zh-cn/library/system.web.helpers.antiforgeryconfig.suppressidentityheuristicchecks.aspx?cs-save-lang=1&cs-lang=fsharp
             // 获取或设置一个值，该值可指示防伪系统是否应跳过检查指示系统滥用的条件。如果防伪系统不应检查可能的滥用，则为 true；否则为 false。
@@ -51,7 +46,6 @@ namespace MVCForum.Website
 
             // Start unity
             var unityContainer = UnityHelper.Start();
-            logger.Info("Start unityContainer, Done.");
             // Routes
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
@@ -59,17 +53,13 @@ namespace MVCForum.Website
             // Store the value for use in the app
             Application["Version"] = AppHelpers.GetCurrentVersionNo();
 
-            // If the same carry on as normal
             LoggingService.Initialise(ConfigUtils.GetAppSettingInt32("LogFileMaxSizeBytes", 10000));
-            LoggingService.Error("Application_Start");
-
-            logger.Info("LoggingService recording completed.");
+            //LoggingService.Error("Application_Start");
 
             #region TODO: Benjamin, 可考虑取消这一段“反射badges系列组件”的代码
 
             // Get assemblies for badges, events etc...
             var loadedAssemblies = ReflectionService.GetAssemblies();
-            logger.Info("Loaded Assemblies completed.");
             // Do the badge processing
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
@@ -83,8 +73,6 @@ namespace MVCForum.Website
                     LoggingService.Error($"Error processing badge classes: {ex.Message}");
                 }
             }
-            logger.Debug("BadgeService.SyncBadges completed.");
-
             #endregion
 
             // Set the view engine

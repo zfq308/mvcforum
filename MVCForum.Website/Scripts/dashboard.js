@@ -4,7 +4,7 @@
     LowestPointUsers();
     LowestPointPosts();
     HighestViewedTopics();
-    LatestNews();
+    //LatestNews();
     TodaysTopics();
 });
 
@@ -43,12 +43,12 @@ function HighestViewedTopics() {
     });
 }
 
-function LatestNews() {
-    $.post(app_base + "Admin/Dashboard/MvcForumLatestNews",
-    function (data) {
-        $(".mvcforumlatestnews").html(data);
-    });
-}
+//function LatestNews() {
+//    $.post(app_base + "Admin/Dashboard/MvcForumLatestNews",
+//    function (data) {
+//        $(".mvcforumlatestnews").html(data);
+//    });
+//}
 function CallHome() {
     $.post(app_base + "Admin/Admin/Aptitude", function (data) {
     });

@@ -25,9 +25,18 @@ namespace MVCForum.Website.Controllers
         private readonly ICategoryService _categoryservice;
         private readonly MVCForumContext _context;
 
-        public AiLvHuoDongController(IMVCForumContext context, ICategoryService Categoryservice, ITopicService TopicService, IAiLvHuoDongService aiLvHuoDongService,
-            ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService,
-            IRoleService roleService, ISettingsService settingsService)
+        public AiLvHuoDongController(
+            IMVCForumContext context,
+            ICategoryService Categoryservice,
+            ITopicService TopicService,
+            IAiLvHuoDongService aiLvHuoDongService,
+           
+            ILoggingService loggingService,
+            IUnitOfWorkManager unitOfWorkManager,
+            IMembershipService membershipService,
+            ILocalizationService localizationService,
+            IRoleService roleService,
+            ISettingsService settingsService)
              : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _aiLvHuoDongService = aiLvHuoDongService;

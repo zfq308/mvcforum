@@ -127,25 +127,25 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             return null;
         }
 
-        [HttpPost]
-        public PartialViewResult MvcForumLatestNews()
-        {
-            if (Request.IsAjaxRequest())
-            {
-                var reader = new RssReader();
-                List<RssItem> feed = reader.GetRssFeed("http://www.mvcforum.com/rss");
-                LatestNewsViewModel viewModel = null;
-                if (feed != null)
-                {
-                    viewModel = new LatestNewsViewModel { RssFeed = feed.Take(AmountToShow).ToList() };
-                }
-                else
-                {
-                    viewModel = new LatestNewsViewModel();
-                }
-                return PartialView(viewModel);
-            }
-            return null;
-        }
+        //[HttpPost]
+        //public PartialViewResult MvcForumLatestNews()
+        //{
+        //    if (Request.IsAjaxRequest())
+        //    {
+        //        var reader = new RssReader();
+        //        List<RssItem> feed = reader.GetRssFeed("http://www.ailvlove.com/rss");
+        //        LatestNewsViewModel viewModel = null;
+        //        if (feed != null)
+        //        {
+        //            viewModel = new LatestNewsViewModel { RssFeed = feed.Take(AmountToShow).ToList() };
+        //        }
+        //        else
+        //        {
+        //            viewModel = new LatestNewsViewModel();
+        //        }
+        //        return PartialView(viewModel);
+        //    }
+        //    return null;
+        //}
     }
 }

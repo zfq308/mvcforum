@@ -43,6 +43,11 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [Description("Show the RSS feed icons for the Topics and Categories")]        
         public bool EnableRSSFeeds { get; set; }
 
+
+        [DisplayName("ForumKeepAliveURL")]
+        [StringLength(200)]
+        public string ForumKeepAliveURL { get; set; }
+
         [DisplayName("Show Edited By Details On Posts")]
         public bool DisplayEditedBy { get; set; }
 

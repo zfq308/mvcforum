@@ -5,6 +5,7 @@ using Quartz;
 
 namespace MVCForum.Website.Application.ScheduledJobs
 {
+    [Obsolete("此Quartz执行类在爱驴网项目中无效，可以删除。")]
     [DisallowConcurrentExecution]
     public class EmailJob : IJob
     {
@@ -35,9 +36,9 @@ namespace MVCForum.Website.Application.ScheduledJobs
                 {
                     unitOfWork.Rollback();
                     _loggingService.Error(ex);
-                }               
+                }
             }
-            
+
         }
     }
 }

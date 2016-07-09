@@ -85,11 +85,9 @@ namespace MVCForum.Services
                         {
                             ArchiveLog();
                         }
-
                         using (var tw = TextWriter.Synchronized(File.AppendText(_logFileName)))
                         {
                             var callStack = new StackFrame(2, true); // Go back one stack frame to get module info
-
                             tw.WriteLine("{0} | {1} | {2} | {3} | {4} | {5}", DateTime.Now.ToString(DateTimeFormat), callStack.GetMethod().Module.Name, callStack.GetMethod().Name, callStack.GetMethod().DeclaringType, callStack.GetFileLineNumber(), message);
                         }
                     }

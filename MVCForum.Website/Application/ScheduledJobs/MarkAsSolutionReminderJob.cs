@@ -38,7 +38,9 @@ namespace MVCForum.Website.Application.ScheduledJobs
                     var timeFrame = settings.MarkAsSolutionReminderTimeFrame ?? 0;
                     if (timeFrame > 0 && settings.EnableMarkAsSolution)
                     {
+                        #region MyRegion
 
+                        
 
                         var remindersToSend = _topicService.GetMarkAsSolutionReminderList(timeFrame);
                         if (remindersToSend.Any())
@@ -86,6 +88,7 @@ namespace MVCForum.Website.Application.ScheduledJobs
                             _loggingService.Error($"{amount} Mark as solution reminder emails sent");
 
                         }
+                        #endregion
                     }
                 }
                 catch (Exception ex)

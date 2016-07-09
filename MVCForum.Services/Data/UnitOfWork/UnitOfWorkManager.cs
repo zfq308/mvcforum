@@ -13,15 +13,14 @@ namespace MVCForum.Services.Data.UnitOfWork
         private readonly MVCForumContext _context;
         static log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
+        /// <summary>
+        /// UnitOfWorkManager
+        /// </summary>
+        /// <param name="context"></param>
+        /// <remarks>http://www.entityframeworktutorial.net/code-first/automated-migration-in-code-first.aspx</remarks>
         public UnitOfWorkManager(IMVCForumContext context)
         {
-            logger.Debug("Database.SetInitializer start.");
-
-            //http://www.entityframeworktutorial.net/code-first/automated-migration-in-code-first.aspx
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<MVCForumContext, Configuration>(SiteConstants.Instance.MvcForumContext));
-
-            logger.Debug("Database.SetInitializer completed.");
-
             _context = context as MVCForumContext;
         }
 

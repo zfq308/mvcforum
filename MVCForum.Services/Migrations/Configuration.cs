@@ -32,16 +32,14 @@ namespace MVCForum.Services.Migrations
             const string defaultAdminUsername = "admin";  //系统默认管理员账号名称
             const string defaultAdminstratorPassword = "password"; //系统默认管理员账号密码
 
+            Stopwatch MyStopWatch = new Stopwatch(); //性能计时器
+
             log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
             logger.Debug("Start Configuration.Seed.");
 
-            Stopwatch MyStopWatch = new Stopwatch();
-            MyStopWatch.Start();
+            MyStopWatch.Start(); //启动计时器
 
-
-            logger.Debug("Start to get Language.");
             var language = context.Language.FirstOrDefault(x => x.LanguageCulture == langCulture);
-            logger.Debug("Stop to get Language.");
             bool IsInitProcess = (language == null);  // 以默认语言是否被安装作为是否初始化的依据
 
             if (IsInitProcess)
@@ -226,50 +224,56 @@ namespace MVCForum.Services.Migrations
                 if (currentSettings == null)
                 {
                     #region 创建默认的系统设置参数
-
-
-
-                    //TODO: please change the ForumURL
                     var settings = new Settings
                     {
-                        ForumName = "MVCForum",
+                        //TODO: 【重要】每次上线测试前需要修改这个参数
+                        ForumName = "爱驴网，爱驴户外",
                         ForumUrl = "http://localhost:9666/",
+                        ForumKeepAliveURL = "http://localhost:9666/home/jianjie",
+
+
                         IsClosed = false,
-                        EnableRSSFeeds = true,
+                        EnableRSSFeeds = false,
                         DisplayEditedBy = true,
                         EnablePostFileAttachments = false,
-                        EnableMarkAsSolution = true,
+                        EnableMarkAsSolution = false,
                         EnableSpamReporting = true,
                         EnableMemberReporting = true,
-                        EnableEmailSubscriptions = true,
-                        ManuallyAuthoriseNewMembers = false,
-                        EmailAdminOnNewMemberSignUp = true,
-                        TopicsPerPage = 20,
-                        PostsPerPage = 20,
+                        EnableEmailSubscriptions = false,
+                        ManuallyAuthoriseNewMembers = true,
+                        EmailAdminOnNewMemberSignUp = false,
+                        TopicsPerPage = 10,
+                        PostsPerPage = 10,
                         EnablePrivateMessages = true,
                         MaxPrivateMessagesPerMember = 50,
                         PrivateMessageFloodControl = 1,
                         EnableSignatures = false,
-                        EnablePoints = true,
+
+                        EnablePoints = false,
                         PointsAllowedToVoteAmount = 1,
                         PointsAllowedForExtendedProfile = 1,
                         PointsAddedPerPost = 1,
                         PointsAddedForSolution = 4,
                         PointsDeductedNagativeVote = 2,
                         PointsAddedPostiveVote = 2,
-                        AdminEmailAddress = "my@email.com",
+
+                        AdminEmailAddress = "zfq3082002@163.com",
                         NotificationReplyEmail = "noreply@myemail.com",
                         SMTPEnableSSL = false,
+
                         Theme = "Metro",
                         NewMemberStartingRole = standardRole,
+                        DisableStandardRegistration = false,
                         DefaultLanguage = language,
-                        ActivitiesPerPage = 20,
+                        ActivitiesPerPage = 10,
+
                         EnableAkisment = false,
                         EnableSocialLogins = false,
-                        EnablePolls = true,
+                        EnablePolls = false,
+
                         MarkAsSolutionReminderTimeFrame = 7,
-                        EnableEmoticons = true,
-                        DisableStandardRegistration = false
+                        EnableEmoticons = true
+
                     };
 
                     context.Setting.Add(settings);
@@ -394,7 +398,7 @@ namespace MVCForum.Services.Migrations
                 #endregion
 
                 #region 建立Category，Permission，Role映射关联关系
-                
+
                 CategoryPermissionForRoleService cprs = new CategoryPermissionForRoleService(context);
                 //TODO: 重要！！！权限系统，需要为不同的角色，Category分配权限
                 cprs.Add(new CategoryPermissionForRole()
@@ -439,10 +443,10 @@ namespace MVCForum.Services.Migrations
                         RealName = "系统管理员",
                         AliasName = "admin",
                         Email = "admin@email.com",
-                        Gender =Enum_Gender.boy,
+                        Gender = Enum_Gender.boy,
                         Birthday = new DateTime(2000, 1, 1),
                         IsLunarCalendar = Enum_Calendar.PublicCalendar,
-                        IsMarried = Enum_MarriedStatus.Married ,
+                        IsMarried = Enum_MarriedStatus.Married,
                         Height = 180,
                         Weight = 100,
                         Education = "硕士",
@@ -461,17 +465,17 @@ namespace MVCForum.Services.Migrations
                         #endregion
 
                         Password = defaultAdminstratorPassword,
-                        IsApproved = true,
+                        IsApproved = true,  //管理员默认为审核通过状态
                         CreateDate = DateTime.Now,
                         LastLoginDate = DateTime.Now,
                         LastUpdateTime = DateTime.Now,
-                        UserType =  Enum_UserType.A,
+                        UserType = Enum_UserType.A,
                         Slug = ServiceHelpers.CreateUrl(defaultAdminUsername),
                         DisablePosting = false,
                         DisablePrivateMessages = false,
                         DisableFileUploads = false,
                         Comment = "系统管理员默认账号"
-                       
+
 
                         #endregion
                     };
@@ -558,7 +562,7 @@ namespace MVCForum.Services.Migrations
             MyStopWatch.Stop();
             decimal t = MyStopWatch.ElapsedMilliseconds;
 
-            logger.Debug(string.Format("timecost:{0} seconds, flag:{1}.", t / 1000, IsInitProcess.ToString()));
+            logger.Debug(string.Format("Configuration.Seed() execution completed.Timecost:{0} seconds, flag:{1}.", t / 1000, IsInitProcess.ToString()));
 
         }
     }

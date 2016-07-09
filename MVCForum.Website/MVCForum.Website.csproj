@@ -253,6 +253,7 @@
     <Compile Include="Application\CustomActionResults\RssResult.cs" />
     <Compile Include="Application\CustomActionResults\CsvFileResult.cs" />
     <Compile Include="Application\ExtensionMethods\Extensions.cs" />
+    <Compile Include="Application\ScheduledJobs\CleanVerifyCodeJob.cs" />
     <Compile Include="Application\ScheduledJobs\MarkAsSolutionReminderJob.cs" />
     <Compile Include="Application\StorageProviders\DiskStorageProvider.cs" />
     <Compile Include="Application\StorageProviders\StorageProvider.cs" />
@@ -1112,6 +1113,7 @@
     <Content Include="Views\AiLvHuoDong\EditAiLvHuoDong.cshtml" />
     <Content Include="Views\Topic\CreateTopicButtonForZuiXinZiXun.cshtml" />
     <Content Include="Views\Topic\CreateZuiXinZiXun.cshtml" />
+    <Content Include="Views\rss\index.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />

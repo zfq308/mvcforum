@@ -324,6 +324,8 @@ namespace MVCForum.Website.ViewModels
         public int TotalPoints { get; set; }
     }
 
+    #region 密码操作相关ViewModel
+
     public class ForgotPasswordViewModel
     {
         [ForumMvcResourceDisplayName("Members.Label.Username")]
@@ -377,6 +379,6 @@ namespace MVCForum.Website.ViewModels
 
     }
 
-
+    #endregion
 
 }
