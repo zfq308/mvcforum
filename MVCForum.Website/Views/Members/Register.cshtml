@@ -40,7 +40,6 @@
                             @Html.ValidationMessageFor(x => x.AliasName)
                         </div>
 
-
                         <div class="form-group">
                             @Html.LabelFor(x => Model.Password)
                             @Html.PasswordFor(x => Model.Password, new { @class = "form-control" })
@@ -69,7 +68,6 @@
                             @Html.ValidationMessageFor(x => x.VerifyCode)
                             <span id="codenameTip"></span>
                         </div>
-
 
                         <div class="form-group">
                             @Html.CheckBoxFor(m => m.ReadPolicyFirst)
@@ -102,4 +100,25 @@
 else
 {
     <p>@Html.LanguageString("Members.AlreadyRegistered")</p>
+
+    if (User.IsInRole(AppConstants.AdminRoleName))
+    {
+        using (Html.BeginForm("GenerateTestAccount", "Members", FormMethod.Post, new { @class = "form-register" }))
+        {
+            <div class="submit-holder">
+                <button type="submit" class="btn-mvc-green btn-mvc-large" name="Btn_Generate50TestAccount">
+                    生成50个普通测试账号
+                </button>
+            </div>
+        }
+
+        using (Html.BeginForm("GenerateTestAccount2", "Members", FormMethod.Post, new { @class = "form-register" }))
+        {
+            <div class="submit-holder">
+                <button type="submit" class="btn-mvc-green btn-mvc-large" name="Btn_Generate5SupplierAccount">
+                    生成5个供应商测试账号
+                </button>
+            </div>
+        }
+    }
 }

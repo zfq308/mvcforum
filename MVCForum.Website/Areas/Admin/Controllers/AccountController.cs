@@ -16,6 +16,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 {
     public partial class AccountController : BaseAdminController
     {
+        #region 建构式
         public readonly IActivityService _activityService;
         private readonly IRoleService _roleService;
         private readonly IPostService _postService;
@@ -62,6 +63,8 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             _pollAnswerService = pollAnswerService;
             _uploadedFileService = uploadedFileService;
         }
+        
+        #endregion
 
         #region Users
 
@@ -318,6 +321,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         }
 
         #endregion
+
         [HttpPost]
         [Authorize(Roles = AppConstants.AdminRoleName)]
         public void UpdateUserRoles(AjaxRoleUpdateViewModel ajaxRoleUpdateViewModel)
@@ -562,6 +566,5 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         }
 
         #endregion
-
     }
 }

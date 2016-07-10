@@ -16,11 +16,14 @@ using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Services.Data.Context;
 using MVCForum.Utilities;
+using System.Diagnostics;
 
 namespace MVCForum.Services
 {
     public partial class MembershipService : IMembershipService
     {
+        log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         #region 变量定义
 
         /// <summary>
@@ -155,7 +158,7 @@ namespace MVCForum.Services
             //membershipUser.Avatar = StringUtils.SafePlainText(membershipUser.Avatar);
             return membershipUser;
         }
-        
+
         private MembershipUser setIsApprovedStatus(MembershipUser newUser)
         {
             if (newUser != null)
@@ -267,6 +270,128 @@ namespace MVCForum.Services
             }
 
             return status;
+        }
+
+        /// <summary>
+        /// 生成50个待审核通过的测试账号
+        /// </summary>
+        public void Create50TestAccount()
+        {
+            for (int i = 100; i < 150; i++)
+            {
+                var user = new MembershipUser
+                {
+                    #region 基本信息
+                    UserName = "Test" + i.ToString().Substring(1),
+                    RealName = "测试账号_" + i.ToString().Substring(1),
+                    AliasName = "测试账号_" + i.ToString().Substring(1),
+                    Email = "Test@email.com",
+                    Gender = (i % 2 == 0) ? Enum_Gender.boy : Enum_Gender.girl,
+                    Birthday = new DateTime(2000, 1, 1),
+                    IsLunarCalendar = Enum_Calendar.PublicCalendar,
+                    IsMarried = (i % 2 == 0) ? Enum_MarriedStatus.Married : Enum_MarriedStatus.Single,
+                    Height = i + 50,
+                    Weight = 50,
+                    Education = "硕士",
+                    HomeTown = "深圳市龙华新区",
+                    SchoolProvince = "110000",
+                    SchoolCity = "110100",
+                    SchoolName = "我的大学",
+                    LocationProvince = "110000",
+                    LocationCity = "110100",
+                    LocationCounty = "110108",
+                    Job = "BigBoss",
+                    IncomeRange = (i % 2 == 0) ? Enum_IncomeRange.R_5WMore : Enum_IncomeRange.R_Lowthan1W,
+                    Interest = "发呆",
+                    MobilePhone = "13686886937",
+                    Avatar = "",
+                    #endregion
+
+                    Password = "password",
+                    IsApproved = false,  //默认为待审核状态
+                    CreateDate = DateTime.Now,
+                    LastLoginDate = DateTime.Now,
+                    LastUpdateTime = DateTime.Now,
+                    UserType = Enum_UserType.A,
+                    Slug = ServiceHelpers.CreateUrl("Test" + i.ToString().Substring(1)),
+                    DisablePosting = false,
+                    DisablePrivateMessages = false,
+                    DisableFileUploads = false,
+                    Comment = "Test" + i.ToString().Substring(1)
+
+                };
+                // Hash the password
+                var salt = StringUtils.CreateSalt(AppConstants.SaltSize);
+                var hash = StringUtils.GenerateSaltedHash(user.Password, salt);
+                user.Password = hash;
+                user.PasswordSalt = salt;
+
+                var standardRole = _context.MembershipRole.FirstOrDefault(x => x.RoleName == SiteConstants.Instance.StandardMembers);
+                user.Roles = new List<MembershipRole> { standardRole };
+
+                _context.MembershipUser.Add(user);
+            }
+        }
+        /// <summary>
+        /// 生成5个供应商测试账号
+        /// </summary>
+        public void Create5SupplierAccount()
+        {
+            for (int i = 100; i < 105; i++)
+            {
+                var user = new MembershipUser
+                {
+                    #region 基本信息
+                    UserName = "Supplier" + i.ToString().Substring(1),
+                    RealName = "供应商账号_" + i.ToString().Substring(1),
+                    AliasName = "供应商账号_" + i.ToString().Substring(1),
+                    Email = "Test@email.com",
+                    Gender = (i % 2 == 0) ? Enum_Gender.boy : Enum_Gender.girl,
+                    Birthday = new DateTime(2000, 1, 1),
+                    IsLunarCalendar = Enum_Calendar.PublicCalendar,
+                    IsMarried = (i % 2 == 0) ? Enum_MarriedStatus.Married : Enum_MarriedStatus.Single,
+                    Height = i + 50,
+                    Weight = 50,
+                    Education = "硕士",
+                    HomeTown = "深圳市龙华新区",
+                    SchoolProvince = "110000",
+                    SchoolCity = "110100",
+                    SchoolName = "我的大学",
+                    LocationProvince = "110000",
+                    LocationCity = "110100",
+                    LocationCounty = "110108",
+                    Job = "BigBoss",
+                    IncomeRange = (i % 2 == 0) ? Enum_IncomeRange.R_5WMore : Enum_IncomeRange.R_Lowthan1W,
+                    Interest = "发呆",
+                    MobilePhone = "13686886937",
+                    Avatar = "",
+                    #endregion
+
+                    Password = "password",
+                    IsApproved = true,  //默认为已审核状态
+                    CreateDate = DateTime.Now,
+                    LastLoginDate = DateTime.Now,
+                    LastUpdateTime = DateTime.Now,
+                    UserType = Enum_UserType.A,
+                    Slug = ServiceHelpers.CreateUrl("Supplier" + i.ToString().Substring(1)),
+                    DisablePosting = false,
+                    DisablePrivateMessages = false,
+                    DisableFileUploads = false,
+                    Comment = "Supplier" + i.ToString().Substring(1)
+
+                };
+                // Hash the password
+                var salt = StringUtils.CreateSalt(AppConstants.SaltSize);
+                var hash = StringUtils.GenerateSaltedHash(user.Password, salt);
+                user.Password = hash;
+                user.PasswordSalt = salt;
+
+                var SupplierRole = _context.MembershipRole.FirstOrDefault(x => x.RoleName == AppConstants.SupplierRoleName);
+                // Put the admin in the admin role
+                user.Roles = new List<MembershipRole> { SupplierRole };
+
+                _context.MembershipUser.Add(user);
+            }
         }
 
         #endregion
@@ -413,236 +538,310 @@ namespace MVCForum.Services
 
         #endregion
 
+        #region Membership账号的导入和导出
 
-
-
-        //  =================以下代码还需要Review=================
-
-
-
-        /// <summary>
-        /// 取得最新注册的amountToTake个用户实例的集合
-        /// </summary>
-        /// <param name="amountToTake"></param>
-        /// <param name="isApproved">仅筛选已经审核过的用户实例</param>
-        /// <returns></returns>
-        public IList<MembershipUser> GetLatestUsers(int amountToTake, bool isApproved = false)
+        public string ToCsv(List<MembershipUser> userlist)
         {
-            if (isApproved)
+            var csv = new StringBuilder();
+            csv.AppendLine("账号,昵称,真实姓名,联系方式,性别,年龄,婚否,身高,体重,现居地,最后登录时间,审核标志位,会员状态,会员类别");
+            foreach (var user in userlist)
             {
-                return _context.MembershipUser.Include(x => x.Roles).AsNoTracking()
-                            .Where(x => x.IsApproved == true)
-                            .OrderByDescending(x => x.CreateDate)
-                            .Take(amountToTake)
-                            .ToList();
+                csv.AppendFormat("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13}",
+                    user.UserName,
+                    user.AliasName,
+                    user.RealName,
+                    user.MobilePhone,
+                    user.Gender == Enum_Gender.boy ? "男" : "女",
+                    user.Age,
+                    user.IsMarried == Enum_MarriedStatus.Married ? "已婚" : "单身",
+                    user.Height,
+                    user.Weight,
+                    string.Concat(user.LocationProvince, user.LocationCity, user.LocationCounty),
+                    user.LastLoginDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                    user.IsApproved ? "已审核" : "待审核",
+                    user.IsLockedOut ? "用户已隐藏" : "正常状态",
+                    user.UserType.ToString()
+                    );
+                csv.AppendLine();
             }
-            else
-            {
-                return _context.MembershipUser.Include(x => x.Roles).AsNoTracking()
-                         .OrderByDescending(x => x.CreateDate)
-                         .Take(amountToTake)
-                         .ToList();
-            }
+            return csv.ToString();
         }
 
         /// <summary>
-        /// 当前用户的个数
+        /// 导出所有会员信息到CSV档输出string中
         /// </summary>
-        /// <param name="isApproved">仅筛选已经审核过的用户实例</param>
         /// <returns></returns>
-        public int MemberCount(bool isApproved = false)
+        public string ToCsv()
         {
-            if (isApproved)
-            {
-                return _context.MembershipUser.AsNoTracking().Where(x => x.IsApproved == true).Count();
-            }
-            else
-            {
-                return _context.MembershipUser.AsNoTracking().Count();
-            }
+            var userlist = GetAll().ToList();
+            return ToCsv(userlist);
         }
 
         /// <summary>
-        /// 返回最后的登录状态
+        /// 从特定的CSV文件中导入会员数据
         /// </summary>
-        public LoginAttemptStatus LastLoginStatus { get; private set; } = LoginAttemptStatus.LoginSuccessful;
-
-        /// <summary>
-        /// 通过账号密码校验用户实例，并返回校验状态
-        /// </summary>
-        /// <param name="userName">账号</param>
-        /// <param name="password">密码</param>
-        /// <param name="maxInvalidPasswordAttempts">最大无效密码尝试的次数</param>
         /// <returns></returns>
-        public bool ValidateUser(string userName, string password, int maxInvalidPasswordAttempts)
+        [Obsolete("因爱驴网项目无此需求，故此方法代码还没有实现。")]
+        public CsvReport FromCsv(List<string> allLines)
         {
-            userName = StringUtils.SafePlainText(userName);
-            password = StringUtils.SafePlainText(password);
+            var usersProcessed = new List<string>();
+            var commaSeparator = new[] { ',' };
+            var report = new CsvReport();
 
-            LastLoginStatus = LoginAttemptStatus.LoginSuccessful;
-
-            var user = GetUser(userName);
-
-            if (user == null)
-            {
-                LastLoginStatus = LoginAttemptStatus.UserNotFound;
-                return false;
-            }
-
-            if (user.IsBanned)
-            {
-                LastLoginStatus = LoginAttemptStatus.Banned;
-                return false;
-            }
-
-            if (user.IsLockedOut)
-            {
-                LastLoginStatus = LoginAttemptStatus.UserLockedOut;
-                return false;
-            }
-
-            //if (!user.IsApproved)
+            //if (allLines == null || allLines.Count == 0)
             //{
-            //    LastLoginStatus = LoginAttemptStatus.UserNotApproved;
-            //    return false;
+            //    report.Errors.Add(new CsvErrorWarning
+            //    {
+            //        ErrorWarningType = CsvErrorWarningType.BadDataFormat,
+            //        Message = "No users found."
+            //    });
+            //    return report;
+            //}
+            //var settings = _settingsService.GetSettings(true);
+            //var lineCounter = 0;
+            //foreach (var line in allLines)
+            //{
+            //    try
+            //    {
+            //        lineCounter++;
+
+            //        // Each line is made up of n items in a predefined order
+
+            //        var values = line.Split(commaSeparator);
+
+            //        if (values.Length < 2)
+            //        {
+            //            report.Errors.Add(new CsvErrorWarning
+            //            {
+            //                ErrorWarningType = CsvErrorWarningType.MissingKeyOrValue,
+            //                Message = $"Line {lineCounter}: insufficient values supplied."
+            //            });
+
+            //            continue;
+            //        }
+
+            //        var userName = values[0];
+
+            //        if (userName.IsNullEmpty())
+            //        {
+            //            report.Errors.Add(new CsvErrorWarning
+            //            {
+            //                ErrorWarningType = CsvErrorWarningType.MissingKeyOrValue,
+            //                Message = $"Line {lineCounter}: no username supplied."
+            //            });
+
+            //            continue;
+            //        }
+
+            //        var email = values[1];
+            //        if (email.IsNullEmpty())
+            //        {
+            //            report.Errors.Add(new CsvErrorWarning
+            //            {
+            //                ErrorWarningType = CsvErrorWarningType.MissingKeyOrValue,
+            //                Message = $"Line {lineCounter}: no email supplied."
+            //            });
+
+            //            continue;
+            //        }
+
+            //        // get the user
+            //        var userToImport = GetUser(userName);
+
+            //        if (userToImport != null)
+            //        {
+            //            report.Errors.Add(new CsvErrorWarning
+            //            {
+            //                ErrorWarningType = CsvErrorWarningType.AlreadyExists,
+            //                Message = $"Line {lineCounter}: user already exists in forum."
+            //            });
+
+            //            continue;
+            //        }
+
+            //        if (usersProcessed.Contains(userName))
+            //        {
+            //            report.Errors.Add(new CsvErrorWarning
+            //            {
+            //                ErrorWarningType = CsvErrorWarningType.AlreadyExists,
+            //                Message = $"Line {lineCounter}: user already exists in import file."
+            //            });
+
+            //            continue;
+            //        }
+
+            //        usersProcessed.Add(userName);
+
+            //        userToImport = CreateEmptyUser();
+            //        userToImport.UserName = userName;
+            //        userToImport.Slug = ServiceHelpers.GenerateSlug(userToImport.UserName, GetUserBySlugLike(ServiceHelpers.CreateUrl(userToImport.UserName)), userToImport.Slug);
+            //        userToImport.Email = email;
+            //        userToImport.IsApproved = true;
+            //        userToImport.PasswordSalt = StringUtils.CreateSalt(AppConstants.SaltSize);
+
+            //        string createDateStr = null;
+            //        if (values.Length >= 3)
+            //        {
+            //            createDateStr = values[2];
+            //        }
+            //        userToImport.CreateDate = createDateStr.IsNullEmpty() ? DateTime.Now : DateTime.Parse(createDateStr);
+
+            //        if (values.Length >= 4)
+            //        {
+            //            //TODO: Benjamin Check again and fix the issue.
+            //            // userToImport.Age = Int32.Parse(values[3]);
+            //        }
+            //        if (values.Length >= 5)
+            //        {
+            //            userToImport.HomeTown = values[4];
+            //        }
+            //        if (values.Length >= 6)
+            //        {
+            //            userToImport.Website = values[5];
+            //        }
+            //        if (values.Length >= 7)
+            //        {
+            //            userToImport.Facebook = values[6];
+            //        }
+            //        if (values.Length >= 8)
+            //        {
+            //            userToImport.Signature = values[7];
+            //        }
+            //        userToImport.Roles = new List<MembershipRole> { settings.NewMemberStartingRole };
+            //        Add(userToImport);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        report.Errors.Add(new CsvErrorWarning { ErrorWarningType = CsvErrorWarningType.GeneralError, Message = ex.Message });
+            //    }
             //}
 
-            var allowedPasswordAttempts = maxInvalidPasswordAttempts;
-            if (user.FailedPasswordAttemptCount >= allowedPasswordAttempts)
+            return report;
+        }
+
+        #endregion
+
+        #region 密码管理
+
+        /// <summary>
+        /// Change the user's password
+        /// </summary>
+        /// <param name="user"> </param>
+        /// <param name="oldPassword"></param>
+        /// <param name="newPassword"></param>
+        /// <returns></returns>
+        public bool ChangePassword(MembershipUser user, string oldPassword, string newPassword)
+        {
+            oldPassword = StringUtils.SafePlainText(oldPassword);
+            newPassword = StringUtils.SafePlainText(newPassword);
+
+            //n3oCacheHelper.Clear(user.UserName);
+            var existingUser = GetUser(user.Id);
+            var salt = existingUser.PasswordSalt;
+            var oldHash = StringUtils.GenerateSaltedHash(oldPassword, salt);
+
+            if (oldHash != existingUser.Password)
             {
-                LastLoginStatus = LoginAttemptStatus.PasswordAttemptsExceeded;
+                // Old password is wrong - do not allow update
                 return false;
             }
 
-            var salt = user.PasswordSalt;
-            var hash = StringUtils.GenerateSaltedHash(password, salt);
-            var passwordMatches = hash == user.Password;
+            // Cleared to go ahead with new password
+            salt = StringUtils.CreateSalt(AppConstants.SaltSize);
+            var newHash = StringUtils.GenerateSaltedHash(newPassword, salt);
 
-            user.FailedPasswordAttemptCount = passwordMatches ? 0 : user.FailedPasswordAttemptCount + 1;
+            existingUser.Password = newHash;
+            existingUser.PasswordSalt = salt;
+            existingUser.LastPasswordChangedDate = DateTime.Now;
 
-            if (user.FailedPasswordAttemptCount >= allowedPasswordAttempts)
+            return true;
+        }
+
+        /// <summary>
+        /// Reset a users password
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="newPassword"> </param>
+        /// <returns></returns>
+        public bool ResetPassword(MembershipUser user, string newPassword)
+        {
+            var existingUser = GetUser(user.Id);
+
+            var salt = StringUtils.CreateSalt(AppConstants.SaltSize);
+            var newHash = StringUtils.GenerateSaltedHash(newPassword, salt);
+
+            existingUser.Password = newHash;
+            existingUser.PasswordSalt = salt;
+            existingUser.LastPasswordChangedDate = DateTime.Now;
+
+            return true;
+        }
+        /// <summary>
+        /// Update the user record with a newly generated password reset security token and timestamp
+        /// </summary>
+        public bool UpdatePasswordResetToken(MembershipUser user)
+        {
+            var existingUser = GetUser(user.Id);
+            if (existingUser == null)
             {
-                user.IsLockedOut = true;
-                user.LastLockoutDate = DateTime.Now;
-            }
-
-            if (!passwordMatches)
-            {
-                LastLoginStatus = LoginAttemptStatus.PasswordIncorrect;
                 return false;
             }
-
-            return LastLoginStatus == LoginAttemptStatus.LoginSuccessful;
+            existingUser.PasswordResetToken = CreatePasswordResetToken();
+            existingUser.PasswordResetTokenCreatedAt = DateTime.Now;
+            return true;
         }
 
         /// <summary>
-        /// 取得特定用户所拥有的角色清单
+        /// Remove the password reset security token and timestamp from the user record
         /// </summary>
-        /// <param name="username">用户账号</param>
-        /// <returns></returns>
-        public string[] GetRolesForUser(string username)
+        public bool ClearPasswordResetToken(MembershipUser user)
         {
-            username = StringUtils.SafePlainText(username);
-            var roles = new List<string>();
-            var user = GetUser(username, true);
-
-            if (user != null)
+            var existingUser = GetUser(user.Id);
+            if (existingUser == null)
             {
-                roles.AddRange(user.Roles.Select(role => role.RoleName));
+                return false;
             }
-
-            return roles.ToArray();
-        }
-
-
-
-
-
-
-
-
-
-
-        public PagedList<MembershipUser> SearchMembers(string search, int pageIndex, int pageSize)
-        {
-            search = StringUtils.SafePlainText(search);
-            var query = _context.MembershipUser
-                                .Where(x => x.UserName.ToUpper().Contains(search.ToUpper()) || x.Email.ToUpper().Contains(search.ToUpper()));
-
-            var results = query
-                .OrderBy(x => x.UserName)
-                .Skip((pageIndex - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
-
-            return new PagedList<MembershipUser>(results, pageIndex, pageSize, query.Count());
-        }
-
-        public IList<MembershipUser> SearchMembers(string username, int amount)
-        {
-            username = StringUtils.SafePlainText(username);
-            return _context.MembershipUser
-                .Where(x => x.UserName.ToUpper().Contains(username.ToUpper()))
-                .OrderBy(x => x.UserName)
-                .Take(amount)
-                .ToList();
+            existingUser.PasswordResetToken = null;
+            existingUser.PasswordResetTokenCreatedAt = null;
+            return true;
         }
 
         /// <summary>
-        /// 12分钟内的活动用户
+        /// To be valid:
+        /// - The user record must contain a password reset token
+        /// - The given token must match the token in the user record
+        /// - The token timestamp must be less than 24 hours ago
         /// </summary>
-        /// <returns></returns>
-        public IList<MembershipUser> GetActiveMembers()
+        public bool IsPasswordResetTokenValid(MembershipUser user, string token)
         {
-            // Get members that last activity date is valid
-
-            var date = DateTime.Now.AddMinutes(-AppConstants.TimeSpanInMinutesToShowMembers);
-            return _context.MembershipUser
-                .Where(x => x.LastActivityDate > date)
-                .AsNoTracking()
-                .ToList();
-        }
-
-        public string ErrorCodeToString(MembershipCreateStatus createStatus)
-        {
-            // See http://go.microsoft.com/fwlink/?LinkID=177550 for a full list of status codes.
-            // Benjamin: 具体的状态描述请参见：  https://msdn.microsoft.com/zh-cn/library/system.web.security.membershipcreatestatus.aspx
-            switch (createStatus)
+            var existingUser = GetUser(user.Id);
+            if (string.IsNullOrEmpty(existingUser?.PasswordResetToken))
             {
-                case MembershipCreateStatus.DuplicateUserName:  //用户名已存在于应用程序的数据库中。
-                    return _localizationService.GetResourceString("Members.Errors.DuplicateUserName");
-
-                case MembershipCreateStatus.DuplicateEmail:  //电子邮件地址已存在于应用程序的数据库中。
-                    return _localizationService.GetResourceString("Members.Errors.DuplicateEmail");
-
-                case MembershipCreateStatus.InvalidPassword:   //密码的格式设置不正确。
-                    return _localizationService.GetResourceString("Members.Errors.InvalidPassword");
-
-                case MembershipCreateStatus.InvalidEmail:
-                    return _localizationService.GetResourceString("Members.Errors.InvalidEmail");
-
-                case MembershipCreateStatus.InvalidAnswer:
-                    return _localizationService.GetResourceString("Members.Errors.InvalidAnswer");
-
-                case MembershipCreateStatus.InvalidQuestion:
-                    return _localizationService.GetResourceString("Members.Errors.InvalidQuestion");
-
-                case MembershipCreateStatus.InvalidUserName:
-                    return _localizationService.GetResourceString("Members.Errors.InvalidUserName");
-
-                case MembershipCreateStatus.ProviderError:
-                    return _localizationService.GetResourceString("Members.Errors.ProviderError");
-
-                case MembershipCreateStatus.UserRejected:
-                    return _localizationService.GetResourceString("Members.Errors.UserRejected");
-
-                default:
-                    return _localizationService.GetResourceString("Members.Errors.Unknown");
+                return false;
             }
+            // A security token must have an expiry date
+            if (existingUser.PasswordResetTokenCreatedAt == null)
+            {
+                return false;
+            }
+            // The security token is only valid for 48 hours
+            if ((DateTime.Now - existingUser.PasswordResetTokenCreatedAt.Value).TotalHours >= MaxHoursToResetPassword)
+            {
+                return false;
+            }
+            return existingUser.PasswordResetToken == token;
         }
 
+        /// <summary>
+        /// Generate a password reset token, a guid is sufficient
+        /// </summary>
+        private static string CreatePasswordResetToken()
+        {
+            return Guid.NewGuid().ToString().ToLower().Replace("-", "");
+        }
+        #endregion
 
-
+        #region 用户管理
         /// <summary>
         /// Delete a member
         /// </summary>
@@ -679,7 +878,6 @@ namespace MVCForum.Services
         {
             {
                 var user = GetUser(username);
-
                 if (user == null)
                 {
                     throw new ApplicationException(_localizationService.GetResourceString("Members.CantUnlock"));
@@ -700,6 +898,23 @@ namespace MVCForum.Services
             }
         }
 
+        /// <summary>
+        /// 更新用户的角色信息
+        /// </summary>
+        /// <param name="id">用户Id</param>
+        /// <param name="role">要赋予的角色实例</param>
+        public void UpdateUserRole(Guid id, MembershipRole role)
+        {
+            var user = GetUser(id);
+            if (user != null && role != null)
+            {
+                user.Roles = new List<MembershipRole> { role };
+            }
+            else
+            {
+                throw new Exception("找不到对应的会员信息。");
+            }
+        }
 
         /// <summary>
         /// 删除用户下的所有Post和Topic集合
@@ -963,6 +1178,339 @@ namespace MVCForum.Services
         }
 
 
+        #endregion
+
+        #region 用户搜索
+        private List<MembershipUser> SearchbyCondition(MembershipUserSearchModel searchusermodel)
+        {
+            #region 过滤搜索条件
+            var total = _context.MembershipUser.ToList();
+            if (!String.IsNullOrEmpty(searchusermodel.UserName))
+            {
+                total = total.Where(p => p.UserName.ToLower() == searchusermodel.UserName.ToLower()).ToList();
+            }
+            if (!String.IsNullOrEmpty(searchusermodel.RealName))
+            {
+                total = total.Where(p => p.RealName.ToLower() == searchusermodel.RealName.ToLower()).ToList();
+            }
+            if (!String.IsNullOrEmpty(searchusermodel.AliasName))
+            {
+                total = total.Where(p => p.AliasName.ToLower() == searchusermodel.AliasName.ToLower()).ToList();
+            }
+            total = total.Where(p => p.Gender == searchusermodel.Gender).ToList();
+            #region Search Age
+            switch (searchusermodel.AgeRange)
+            {
+                case Enum_AgeRange.R_LowerThan20Year:
+                    total = total.Where(p => p.Age < 20).ToList();
+                    break;
+                case Enum_AgeRange.R_20YearsTo25Year:
+                    total = total.Where(p => p.Age >= 20 && p.Age < 25).ToList();
+                    break;
+                case Enum_AgeRange.R_25YearsTo30Year:
+                    total = total.Where(p => p.Age >= 25 && p.Age < 30).ToList();
+                    break;
+                case Enum_AgeRange.R_30YearsTo35Year:
+                    total = total.Where(p => p.Age >= 30 && p.Age < 35).ToList();
+                    break;
+                case Enum_AgeRange.R_35YearsTo40Year:
+                    total = total.Where(p => p.Age >= 35 && p.Age < 40).ToList();
+                    break;
+                case Enum_AgeRange.R_40YearsTo50Year:
+                    total = total.Where(p => p.Age >= 40 && p.Age < 50).ToList();
+                    break;
+                case Enum_AgeRange.R_GreatThan50Year:
+                    total = total.Where(p => p.Age >= 50).ToList();
+                    break;
+            }
+            #endregion
+            total = total.Where(p => p.IsMarried == searchusermodel.IsMarried).ToList();
+            if (searchusermodel.Height > 0)
+            {
+                total = total.Where(p => p.Height >= searchusermodel.Height).ToList();
+            }
+            if (!String.IsNullOrEmpty(searchusermodel.Education))
+            {
+                total = total.Where(p => p.Education == searchusermodel.Education).ToList();
+            }
+            if (!String.IsNullOrEmpty(searchusermodel.HomeTown))
+            {
+                total = total.Where(p => p.HomeTown.Contains(searchusermodel.HomeTown)).ToList();
+            }
+            if (!String.IsNullOrEmpty(searchusermodel.SchoolName))
+            {
+                total = total.Where(p => p.SchoolName.Contains(searchusermodel.SchoolName)).ToList();
+            }
+            if (!String.IsNullOrEmpty(searchusermodel.LocationProvince) && !String.IsNullOrEmpty(searchusermodel.LocationCity) && !String.IsNullOrEmpty(searchusermodel.LocationCounty))
+            {
+                total = total.Where(p => p.LocationProvince == searchusermodel.LocationProvince &&
+                p.LocationCity == searchusermodel.LocationCity &&
+                p.LocationCounty == searchusermodel.LocationCounty
+                ).ToList();
+            }
+            if (!String.IsNullOrEmpty(searchusermodel.Job))
+            {
+                total = total.Where(p => p.Job.Contains(searchusermodel.Job)).ToList();
+            }
+            total = total.Where(p => p.IncomeRange == searchusermodel.IncomeRange).ToList();
+
+
+            if (searchusermodel.LastLoginDateInterval > 0)
+            {
+                var d = DateTime.Now - TimeSpan.FromDays(searchusermodel.LastLoginDateInterval);
+                total = total.Where(p => p.LastLoginDate <= d).ToList();
+            }
+            total = total.Where(p => p.UserType == searchusermodel.UserType).ToList();
+            total = total.Where(p => p.IsApproved == searchusermodel.IsApproved).ToList();
+            total = total.Where(p => p.IsLockedOut == searchusermodel.IsLockedOut).ToList();
+
+            #endregion
+
+            return total;
+        }
+
+        public IList<MembershipUser> SearchMembers(MembershipUserSearchModel searchusermodel, int amount)
+        {
+            return SearchbyCondition(searchusermodel).OrderByDescending(x => x.LastLoginDate)
+              .Take(amount)
+              .ToList();
+        }
+
+        public PagedList<MembershipUser> SearchMembers(MembershipUserSearchModel searchusermodel, int pageIndex, int pageSize)
+        {
+            var total = SearchbyCondition(searchusermodel);
+            var results = total
+           .OrderByDescending(x => x.LastLoginDate)
+           .Skip((pageIndex - 1) * pageSize)
+           .Take(pageSize)
+           .ToList();
+
+            return new PagedList<MembershipUser>(results, pageIndex, pageSize, total.Count());
+        }
+
+
+        [Obsolete("此方法无法通用，应该取消。")]
+        public PagedList<MembershipUser> SearchMembers(string search, int pageIndex, int pageSize)
+        {
+            search = StringUtils.SafePlainText(search);
+            var query = _context.MembershipUser
+                                .Where(x => x.UserName.ToUpper().Contains(search.ToUpper()) || x.AliasName.ToUpper().Contains(search.ToUpper()));
+
+            var results = query
+                .OrderBy(x => x.UserName)
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return new PagedList<MembershipUser>(results, pageIndex, pageSize, query.Count());
+        }
+
+        [Obsolete("此方法无法通用，应该取消。")]
+        public IList<MembershipUser> SearchMembers(string username, int amount)
+        {
+            username = StringUtils.SafePlainText(username);
+            return _context.MembershipUser
+                .Where(x => x.UserName.ToUpper().Contains(username.ToUpper()))
+                .OrderBy(x => x.UserName)
+                .Take(amount)
+                .ToList();
+        }
+
+        #endregion
+
+
+
+        //  =================以下代码还需要Review=================
+
+        /// <summary>
+        /// 取得最新注册的amountToTake个用户实例的集合
+        /// </summary>
+        /// <param name="amountToTake"></param>
+        /// <param name="isApproved">仅筛选已经审核过的用户实例</param>
+        /// <returns></returns>
+        public IList<MembershipUser> GetLatestUsers(int amountToTake, bool isApproved = false)
+        {
+            if (isApproved)
+            {
+                return _context.MembershipUser.Include(x => x.Roles).AsNoTracking()
+                            .Where(x => x.IsApproved == true)
+                            .OrderByDescending(x => x.CreateDate)
+                            .Take(amountToTake)
+                            .ToList();
+            }
+            else
+            {
+                return _context.MembershipUser.Include(x => x.Roles).AsNoTracking()
+                         .OrderByDescending(x => x.CreateDate)
+                         .Take(amountToTake)
+                         .ToList();
+            }
+        }
+
+        /// <summary>
+        /// 当前用户的个数
+        /// </summary>
+        /// <param name="isApproved">仅筛选已经审核过的用户实例</param>
+        /// <returns></returns>
+        public int MemberCount(bool isApproved = false)
+        {
+            if (isApproved)
+            {
+                return _context.MembershipUser.AsNoTracking().Where(x => x.IsApproved == true).Count();
+            }
+            else
+            {
+                return _context.MembershipUser.AsNoTracking().Count();
+            }
+        }
+
+        /// <summary>
+        /// 返回最后的登录状态
+        /// </summary>
+        public LoginAttemptStatus LastLoginStatus { get; private set; } = LoginAttemptStatus.LoginSuccessful;
+
+        /// <summary>
+        /// 通过账号密码校验用户实例，并返回校验状态
+        /// </summary>
+        /// <param name="userName">账号</param>
+        /// <param name="password">密码</param>
+        /// <param name="maxInvalidPasswordAttempts">最大无效密码尝试的次数</param>
+        /// <returns></returns>
+        public bool ValidateUser(string userName, string password, int maxInvalidPasswordAttempts)
+        {
+            userName = StringUtils.SafePlainText(userName);
+            password = StringUtils.SafePlainText(password);
+
+            LastLoginStatus = LoginAttemptStatus.LoginSuccessful;
+
+            var user = GetUser(userName);
+
+            if (user == null)
+            {
+                LastLoginStatus = LoginAttemptStatus.UserNotFound;
+                return false;
+            }
+
+            if (user.IsBanned)
+            {
+                LastLoginStatus = LoginAttemptStatus.Banned;
+                return false;
+            }
+
+            if (user.IsLockedOut)
+            {
+                LastLoginStatus = LoginAttemptStatus.UserLockedOut;
+                return false;
+            }
+
+            //if (!user.IsApproved)
+            //{
+            //    LastLoginStatus = LoginAttemptStatus.UserNotApproved;
+            //    return false;
+            //}
+
+            var allowedPasswordAttempts = maxInvalidPasswordAttempts;
+            if (user.FailedPasswordAttemptCount >= allowedPasswordAttempts)
+            {
+                LastLoginStatus = LoginAttemptStatus.PasswordAttemptsExceeded;
+                return false;
+            }
+
+            var salt = user.PasswordSalt;
+            var hash = StringUtils.GenerateSaltedHash(password, salt);
+            var passwordMatches = hash == user.Password;
+
+            user.FailedPasswordAttemptCount = passwordMatches ? 0 : user.FailedPasswordAttemptCount + 1;
+
+            if (user.FailedPasswordAttemptCount >= allowedPasswordAttempts)
+            {
+                user.IsLockedOut = true;
+                user.LastLockoutDate = DateTime.Now;
+            }
+
+            if (!passwordMatches)
+            {
+                LastLoginStatus = LoginAttemptStatus.PasswordIncorrect;
+                return false;
+            }
+
+            return LastLoginStatus == LoginAttemptStatus.LoginSuccessful;
+        }
+
+        /// <summary>
+        /// 取得特定用户所拥有的角色清单
+        /// </summary>
+        /// <param name="username">用户账号</param>
+        /// <returns></returns>
+        public string[] GetRolesForUser(string username)
+        {
+            username = StringUtils.SafePlainText(username);
+            var roles = new List<string>();
+            var user = GetUser(username, true);
+
+            if (user != null)
+            {
+                roles.AddRange(user.Roles.Select(role => role.RoleName));
+            }
+
+            return roles.ToArray();
+        }
+
+
+
+        /// <summary>
+        /// 12分钟内的活动用户
+        /// </summary>
+        /// <returns></returns>
+        public IList<MembershipUser> GetActiveMembers()
+        {
+            // Get members that last activity date is valid
+
+            var date = DateTime.Now.AddMinutes(-AppConstants.TimeSpanInMinutesToShowMembers);
+            return _context.MembershipUser
+                .Where(x => x.LastActivityDate > date)
+                .AsNoTracking()
+                .ToList();
+        }
+
+        public string ErrorCodeToString(MembershipCreateStatus createStatus)
+        {
+            // See http://go.microsoft.com/fwlink/?LinkID=177550 for a full list of status codes.
+            // Benjamin: 具体的状态描述请参见：  https://msdn.microsoft.com/zh-cn/library/system.web.security.membershipcreatestatus.aspx
+            switch (createStatus)
+            {
+                case MembershipCreateStatus.DuplicateUserName:  //用户名已存在于应用程序的数据库中。
+                    return _localizationService.GetResourceString("Members.Errors.DuplicateUserName");
+
+                case MembershipCreateStatus.DuplicateEmail:  //电子邮件地址已存在于应用程序的数据库中。
+                    return _localizationService.GetResourceString("Members.Errors.DuplicateEmail");
+
+                case MembershipCreateStatus.InvalidPassword:   //密码的格式设置不正确。
+                    return _localizationService.GetResourceString("Members.Errors.InvalidPassword");
+
+                case MembershipCreateStatus.InvalidEmail:
+                    return _localizationService.GetResourceString("Members.Errors.InvalidEmail");
+
+                case MembershipCreateStatus.InvalidAnswer:
+                    return _localizationService.GetResourceString("Members.Errors.InvalidAnswer");
+
+                case MembershipCreateStatus.InvalidQuestion:
+                    return _localizationService.GetResourceString("Members.Errors.InvalidQuestion");
+
+                case MembershipCreateStatus.InvalidUserName:
+                    return _localizationService.GetResourceString("Members.Errors.InvalidUserName");
+
+                case MembershipCreateStatus.ProviderError:
+                    return _localizationService.GetResourceString("Members.Errors.ProviderError");
+
+                case MembershipCreateStatus.UserRejected:
+                    return _localizationService.GetResourceString("Members.Errors.UserRejected");
+
+                default:
+                    return _localizationService.GetResourceString("Members.Errors.Unknown");
+            }
+        }
+
         /// <summary>
         /// Save user (does NOT update password data)
         /// </summary>
@@ -979,291 +1527,7 @@ namespace MVCForum.Services
             }
         }
 
-        #region Membership账号的导入和导出
 
-        /// <summary>
-        /// Convert all users into CSV format (e.g. for export)
-        /// </summary>
-        /// <returns></returns>
-        public string ToCsv()
-        {
-            var csv = new StringBuilder();
-            var userlist = GetAll();
-            foreach (var user in userlist)
-            {
-                //csv.AppendFormat("{0},{1},{2},{3},{4},{5},{6},{7}", user.UserName, user.Email, user.CreateDate, user.Age,
-                //    user.Location, user.Website, user.Facebook, user.Signature);
-
-                csv.AppendFormat("{0},{1},{2}", user.UserName, user.Email, user.CreateDate);
-
-                csv.AppendLine();
-            }
-
-            return csv.ToString();
-        }
-
-        /// <summary>
-        /// Extract users from CSV format and import them
-        /// </summary>
-        /// <returns></returns>
-        public CsvReport FromCsv(List<string> allLines)
-        {
-            var usersProcessed = new List<string>();
-            var commaSeparator = new[] { ',' };
-            var report = new CsvReport();
-
-            if (allLines == null || allLines.Count == 0)
-            {
-                report.Errors.Add(new CsvErrorWarning
-                {
-                    ErrorWarningType = CsvErrorWarningType.BadDataFormat,
-                    Message = "No users found."
-                });
-                return report;
-            }
-            var settings = _settingsService.GetSettings(true);
-            var lineCounter = 0;
-            foreach (var line in allLines)
-            {
-                try
-                {
-                    lineCounter++;
-
-                    // Each line is made up of n items in a predefined order
-
-                    var values = line.Split(commaSeparator);
-
-                    if (values.Length < 2)
-                    {
-                        report.Errors.Add(new CsvErrorWarning
-                        {
-                            ErrorWarningType = CsvErrorWarningType.MissingKeyOrValue,
-                            Message = $"Line {lineCounter}: insufficient values supplied."
-                        });
-
-                        continue;
-                    }
-
-                    var userName = values[0];
-
-                    if (userName.IsNullEmpty())
-                    {
-                        report.Errors.Add(new CsvErrorWarning
-                        {
-                            ErrorWarningType = CsvErrorWarningType.MissingKeyOrValue,
-                            Message = $"Line {lineCounter}: no username supplied."
-                        });
-
-                        continue;
-                    }
-
-                    var email = values[1];
-                    if (email.IsNullEmpty())
-                    {
-                        report.Errors.Add(new CsvErrorWarning
-                        {
-                            ErrorWarningType = CsvErrorWarningType.MissingKeyOrValue,
-                            Message = $"Line {lineCounter}: no email supplied."
-                        });
-
-                        continue;
-                    }
-
-                    // get the user
-                    var userToImport = GetUser(userName);
-
-                    if (userToImport != null)
-                    {
-                        report.Errors.Add(new CsvErrorWarning
-                        {
-                            ErrorWarningType = CsvErrorWarningType.AlreadyExists,
-                            Message = $"Line {lineCounter}: user already exists in forum."
-                        });
-
-                        continue;
-                    }
-
-                    if (usersProcessed.Contains(userName))
-                    {
-                        report.Errors.Add(new CsvErrorWarning
-                        {
-                            ErrorWarningType = CsvErrorWarningType.AlreadyExists,
-                            Message = $"Line {lineCounter}: user already exists in import file."
-                        });
-
-                        continue;
-                    }
-
-                    usersProcessed.Add(userName);
-
-                    userToImport = CreateEmptyUser();
-                    userToImport.UserName = userName;
-                    userToImport.Slug = ServiceHelpers.GenerateSlug(userToImport.UserName, GetUserBySlugLike(ServiceHelpers.CreateUrl(userToImport.UserName)), userToImport.Slug);
-                    userToImport.Email = email;
-                    userToImport.IsApproved = true;
-                    userToImport.PasswordSalt = StringUtils.CreateSalt(AppConstants.SaltSize);
-
-                    string createDateStr = null;
-                    if (values.Length >= 3)
-                    {
-                        createDateStr = values[2];
-                    }
-                    userToImport.CreateDate = createDateStr.IsNullEmpty() ? DateTime.Now : DateTime.Parse(createDateStr);
-
-                    if (values.Length >= 4)
-                    {
-                        //TODO: Benjamin Check again and fix the issue.
-                        // userToImport.Age = Int32.Parse(values[3]);
-                    }
-                    if (values.Length >= 5)
-                    {
-                        userToImport.HomeTown = values[4];
-                    }
-                    if (values.Length >= 6)
-                    {
-                        userToImport.Website = values[5];
-                    }
-                    if (values.Length >= 7)
-                    {
-                        userToImport.Facebook = values[6];
-                    }
-                    if (values.Length >= 8)
-                    {
-                        userToImport.Signature = values[7];
-                    }
-                    userToImport.Roles = new List<MembershipRole> { settings.NewMemberStartingRole };
-                    Add(userToImport);
-                }
-                catch (Exception ex)
-                {
-                    report.Errors.Add(new CsvErrorWarning { ErrorWarningType = CsvErrorWarningType.GeneralError, Message = ex.Message });
-                }
-            }
-
-            return report;
-        }
-
-        #endregion
-
-        #region 密码管理
-
-        /// <summary>
-        /// Change the user's password
-        /// </summary>
-        /// <param name="user"> </param>
-        /// <param name="oldPassword"></param>
-        /// <param name="newPassword"></param>
-        /// <returns></returns>
-        public bool ChangePassword(MembershipUser user, string oldPassword, string newPassword)
-        {
-            oldPassword = StringUtils.SafePlainText(oldPassword);
-            newPassword = StringUtils.SafePlainText(newPassword);
-
-            //n3oCacheHelper.Clear(user.UserName);
-            var existingUser = GetUser(user.Id);
-            var salt = existingUser.PasswordSalt;
-            var oldHash = StringUtils.GenerateSaltedHash(oldPassword, salt);
-
-            if (oldHash != existingUser.Password)
-            {
-                // Old password is wrong - do not allow update
-                return false;
-            }
-
-            // Cleared to go ahead with new password
-            salt = StringUtils.CreateSalt(AppConstants.SaltSize);
-            var newHash = StringUtils.GenerateSaltedHash(newPassword, salt);
-
-            existingUser.Password = newHash;
-            existingUser.PasswordSalt = salt;
-            existingUser.LastPasswordChangedDate = DateTime.Now;
-
-            return true;
-        }
-
-        /// <summary>
-        /// Reset a users password
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="newPassword"> </param>
-        /// <returns></returns>
-        public bool ResetPassword(MembershipUser user, string newPassword)
-        {
-            var existingUser = GetUser(user.Id);
-
-            var salt = StringUtils.CreateSalt(AppConstants.SaltSize);
-            var newHash = StringUtils.GenerateSaltedHash(newPassword, salt);
-
-            existingUser.Password = newHash;
-            existingUser.PasswordSalt = salt;
-            existingUser.LastPasswordChangedDate = DateTime.Now;
-
-            return true;
-        }
-        /// <summary>
-        /// Update the user record with a newly generated password reset security token and timestamp
-        /// </summary>
-        public bool UpdatePasswordResetToken(MembershipUser user)
-        {
-            var existingUser = GetUser(user.Id);
-            if (existingUser == null)
-            {
-                return false;
-            }
-            existingUser.PasswordResetToken = CreatePasswordResetToken();
-            existingUser.PasswordResetTokenCreatedAt = DateTime.Now;
-            return true;
-        }
-
-        /// <summary>
-        /// Remove the password reset security token and timestamp from the user record
-        /// </summary>
-        public bool ClearPasswordResetToken(MembershipUser user)
-        {
-            var existingUser = GetUser(user.Id);
-            if (existingUser == null)
-            {
-                return false;
-            }
-            existingUser.PasswordResetToken = null;
-            existingUser.PasswordResetTokenCreatedAt = null;
-            return true;
-        }
-
-        /// <summary>
-        /// To be valid:
-        /// - The user record must contain a password reset token
-        /// - The given token must match the token in the user record
-        /// - The token timestamp must be less than 24 hours ago
-        /// </summary>
-        public bool IsPasswordResetTokenValid(MembershipUser user, string token)
-        {
-            var existingUser = GetUser(user.Id);
-            if (string.IsNullOrEmpty(existingUser?.PasswordResetToken))
-            {
-                return false;
-            }
-            // A security token must have an expiry date
-            if (existingUser.PasswordResetTokenCreatedAt == null)
-            {
-                return false;
-            }
-            // The security token is only valid for 48 hours
-            if ((DateTime.Now - existingUser.PasswordResetTokenCreatedAt.Value).TotalHours >= MaxHoursToResetPassword)
-            {
-                return false;
-            }
-            return existingUser.PasswordResetToken == token;
-        }
-
-        /// <summary>
-        /// Generate a password reset token, a guid is sufficient
-        /// </summary>
-        private static string CreatePasswordResetToken()
-        {
-            return Guid.NewGuid().ToString().ToLower().Replace("-", "");
-        }
-        #endregion
 
         #region ==================在爱驴网项目中禁用的方法==========================
 

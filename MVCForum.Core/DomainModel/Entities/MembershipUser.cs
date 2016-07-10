@@ -7,6 +7,8 @@ using System.Data.SqlTypes;
 
 namespace MVCForum.Domain.DomainModel
 {
+    #region 相关枚举定义
+
     /// <summary>
     /// 创建用户的状态信息枚举
     /// </summary>
@@ -24,23 +26,51 @@ namespace MVCForum.Domain.DomainModel
         UserRejected
     }
 
-
+    /// <summary>
+    /// 会员类型
+    /// </summary>
     public enum Enum_UserType
     {
+        /// <summary>
+        /// A类
+        /// </summary>
         A = 0,
+        /// <summary>
+        /// B类
+        /// </summary>
         B = 1,
+        /// <summary>
+        /// C类
+        /// </summary>
         C = 2,
+        /// <summary>
+        /// D类
+        /// </summary>
         D = 3,
+        /// <summary>
+        /// E类
+        /// </summary>
         E = 4,
     }
 
-
+    /// <summary>
+    /// 性别枚举
+    /// </summary>
     public enum Enum_Gender
     {
+        /// <summary>
+        /// 男
+        /// </summary>
         boy = 1,
+        /// <summary>
+        /// 女
+        /// </summary>
         girl = 0,
     }
 
+    /// <summary>
+    /// 历法枚举
+    /// </summary>
     public enum Enum_Calendar
     {
         /// <summary>
@@ -53,11 +83,44 @@ namespace MVCForum.Domain.DomainModel
         PublicCalendar = 2,
     }
 
+    /// <summary>
+    /// 婚姻状态
+    /// </summary>
     public enum Enum_MarriedStatus
     {
+        /// <summary>
+        /// 已婚
+        /// </summary>
         Married = 1,
+        /// <summary>
+        /// 未婚
+        /// </summary>
         Single = 0,
     }
+
+    /// <summary>
+    /// 年龄段枚举
+    /// </summary>
+    public enum Enum_AgeRange
+    {
+        R_LowerThan20Year = 0,
+        R_20YearsTo25Year = 1,
+        R_25YearsTo30Year = 2,
+        R_30YearsTo35Year = 3,
+        R_35YearsTo40Year = 4,
+        R_40YearsTo50Year = 5,
+        R_GreatThan50Year = 6,
+    }
+
+
+    public enum Enum_IncomeRange
+    {
+        R_Lowthan1W=1,
+        R_1WTo5W=2,
+        R_5WMore=3,
+        R_NOClass=4
+    }
+    #endregion
 
     /// <summary>
     /// 用户实体类
@@ -198,7 +261,7 @@ namespace MVCForum.Domain.DomainModel
         /// <summary>
         /// 月收入区间，（从枚举中取得）
         /// </summary>
-        public int IncomeRange { get; set; }
+        public Enum_IncomeRange IncomeRange { get; set; }
         /// <summary>
         /// 个人兴趣
         /// </summary>
@@ -208,7 +271,7 @@ namespace MVCForum.Domain.DomainModel
         /// </summary>
         public string MobilePhone { get; set; }
         /// <summary>
-        /// 用户类别，用于未来机构用户拓展
+        /// 用户类别
         /// </summary>
         public Enum_UserType UserType { get; set; }
         /// <summary>
@@ -458,9 +521,41 @@ namespace MVCForum.Domain.DomainModel
         }
 
         #endregion
+    }
 
+    /// <summary>
+    /// 会员搜索模型类
+    /// </summary>
+    public partial class MembershipUserSearchModel
+    {
+        public string UserName { get; set; }
+        public string AliasName { get; set; }
+        public string RealName { get; set; }
+        public Enum_Gender Gender { get; set; }
+        public Enum_AgeRange AgeRange { get; set; }
+        public Enum_MarriedStatus IsMarried { get; set; }
+        public int Height { get; set; }
+        public string Education { get; set; }
+        public string SchoolName { get; set; }
+
+        public string HomeTown { get; set; }
+
+        public string LocationProvince { get; set; }
+        public string LocationCity { get; set; }
+        public string LocationCounty { get; set; }
+        public string Job { get; set; }
+
+        public Enum_IncomeRange IncomeRange { get; set; }
+
+        /// <summary>
+        /// 离最后登录间隔天数
+        /// </summary>
+        public int LastLoginDateInterval { get; set; }
+
+        public Enum_UserType UserType { get; set; }
+        public bool IsApproved { get; set; }
+        public bool IsLockedOut { get; set; }
 
 
     }
-
 }

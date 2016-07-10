@@ -170,7 +170,7 @@ namespace MVCForum.Website.ViewModels
 
         [Required]
         [Display(Name = "月收入区段")]
-        public int IncomeRange { get; set; }
+        public Enum_IncomeRange IncomeRange { get; set; }
 
         [Required]
         [Display(Name = "兴趣爱好")]

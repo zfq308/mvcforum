@@ -198,7 +198,8 @@ namespace MVCForum.Services
             var categoryPermissions = new List<CategoryPermissionForRole>();
             if (category != null)
             {
-                categoryPermissions = cprs.GetByCategoryAndRole(role, category);
+                ////TODO: 暂时现将此处屏蔽，待重新检查后再使用
+                //categoryPermissions = cprs.GetByCategoryAndRole(role, category);
                 if(categoryPermissions==null|| categoryPermissions.Count==0)
                 {
                     // 若无对Role和category特定的权限设定，则给全部权限

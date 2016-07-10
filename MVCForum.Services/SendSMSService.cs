@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -15,7 +15,7 @@ using System.Security.Cryptography;
 namespace MVCForum.Services
 {
     /// <summary>
-    /// ÔÆÖ®Ñ¶Æ½Ì¨½ÓÈëÅäÖÃÏî
+    /// äº‘ä¹‹è®¯å¹³å°æ¥å…¥é…ç½®é¡¹
     /// </summary>
     public class UCPaasConfig
     {
@@ -28,22 +28,22 @@ namespace MVCForum.Services
         /// </summary>
         public string Token { get; set; }
         /// <summary>
-        /// ¶ÔÓ¦µÄÓ¦ÓÃid£¬·Ç²âÊÔÓ¦ÓÃĞèÉÏÏßÊ¹ÓÃ,
+        /// å¯¹åº”çš„åº”ç”¨idï¼Œéæµ‹è¯•åº”ç”¨éœ€ä¸Šçº¿ä½¿ç”¨,
         /// </summary>
         public string AppId { get; set; }
         /// <summary>
-        /// ¶ÌĞÅÄ£°åid£¬ĞèÍ¨¹ıÉóºË
+        /// çŸ­ä¿¡æ¨¡æ¿idï¼Œéœ€é€šè¿‡å®¡æ ¸
         /// </summary>
         public string TemplatedId { set; get; }
 
         private UCPaasConfig() { }
         /// <summary>
-        /// ÔÆÖ®Ñ¶Æ½Ì¨½ÓÈëÅäÖÃÏî½¨¹¹Ê½
+        /// äº‘ä¹‹è®¯å¹³å°æ¥å…¥é…ç½®é¡¹å»ºæ„å¼
         /// </summary>
         /// <param name="account">Account sid</param>
         /// <param name="token">Auth Token</param>
-        /// <param name="appId">¶ÔÓ¦µÄÓ¦ÓÃid</param>
-        /// <param name="templatedId">¶ÌĞÅÄ£°åid</param>
+        /// <param name="appId">å¯¹åº”çš„åº”ç”¨id</param>
+        /// <param name="templatedId">çŸ­ä¿¡æ¨¡æ¿id</param>
         public UCPaasConfig(string account, string token, string appId, string templatedId)
         {
             Account = account;
@@ -54,15 +54,14 @@ namespace MVCForum.Services
     }
 
     /// <summary>
-    /// ÔÆÖ®Ñ¶¶ÌĞÅ·¢ËÍÀà
+    /// äº‘ä¹‹è®¯çŸ­ä¿¡å‘é€ç±»
     /// </summary>
     public partial class SendSMSService_UCPaas : ISendSMSService
     {
-
         private UCPaasConfig Config { get; set; }
 
         /// <summary>
-        /// ²âÊÔÓÃ½¨¹¹Ê½
+        /// æµ‹è¯•ç”¨å»ºæ„å¼
         /// </summary>
         public SendSMSService_UCPaas()
         {
@@ -73,19 +72,19 @@ namespace MVCForum.Services
         }
 
         /// <summary>
-        /// ÉÏÏßÓÃ½¨¹¹Ê½
+        /// ä¸Šçº¿ç”¨å»ºæ„å¼
         /// </summary>
-        /// <param name="ucPaasConfig">ÔÆÖ®Ñ¶½ÓÈëÅäÖÃÊµÀı</param>
+        /// <param name="ucPaasConfig">äº‘ä¹‹è®¯æ¥å…¥é…ç½®å®ä¾‹</param>
         public SendSMSService_UCPaas(UCPaasConfig ucPaasConfig)
         {
             Config = ucPaasConfig;
         }
 
         /// <summary>
-        /// Í¨¹ıÔÆÖ®Ñ¶Æ½Ì¨£¨www.ucpaas.com£©·¢ËÍSMS¶ÌĞÅ
+        /// é€šè¿‡äº‘ä¹‹è®¯å¹³å°ï¼ˆwww.ucpaas.comï¼‰å‘é€SMSçŸ­ä¿¡
         /// </summary>
-        /// <param name="Content">¶ÌĞÅÄÚÈİ</param>
-        /// <param name="MobileNumber">ÊÖ»úºÅÂë£¬Èº·¢¶ººÅÇø·Ö</param>
+        /// <param name="Content">çŸ­ä¿¡å†…å®¹</param>
+        /// <param name="MobileNumber">æ‰‹æœºå·ç ï¼Œç¾¤å‘é€—å·åŒºåˆ†</param>
         /// <returns>
         /// The Errorcode, please view the URL link:http://docs.ucpaas.com/doku.php?id=rest_error
         /// <example>
@@ -95,7 +94,7 @@ namespace MVCForum.Services
         public string Send(string Content, string MobileNumber)
         {
             //The template content: This is demo, verifycode is {1}.
-            string param = string.Format("{0}", Content);        //¶ÌĞÅ²ÎÊı
+            string param = string.Format("{0}", Content);        //çŸ­ä¿¡å‚æ•°
             UCSRestRequest api = new UCSRestRequest();
             api.init("api.ucpaas.com", "443");
             api.setAccount(Config.Account, Config.Token);
@@ -104,8 +103,8 @@ namespace MVCForum.Services
             api.enabeLog(true);
 
             #region Unuse Code
-            string clientNum = "78446052175972";                    //Client ²âÊÔÕËºÅ
-            string clientpwd = "198c1667";                          //Client ²âÊÔÃÜÂë
+            string clientNum = "78446052175972";                    //Client æµ‹è¯•è´¦å·
+            string clientpwd = "198c1667";                          //Client æµ‹è¯•å¯†ç 
             string friendName = "";
             string clientType = "0";
             string charge = "0";
@@ -117,37 +116,37 @@ namespace MVCForum.Services
             string toSerNum = "4000000000";
             string maxallowtime = "60";
 
-            //²éÑ¯Ö÷ÕËºÅ
+            //æŸ¥è¯¢ä¸»è´¦å·
             //string MainAccountInfo = api.QueryAccountInfo();
 
-            //ÉêÇëclientÕËºÅ
+            //ç”³è¯·clientè´¦å·
             //api.CreateClient(friendName, clientType, charge, phone);
 
-            //²éÑ¯ÕËºÅĞÅÏ¢(ÕËºÅ)
+            //æŸ¥è¯¢è´¦å·ä¿¡æ¯(è´¦å·)
             //var s = api.QueryClientNumber(clientNum);
 
-            //²éÑ¯ÕËºÅĞÅÏ¢(µç»°ºÅÂë)
+            //æŸ¥è¯¢è´¦å·ä¿¡æ¯(ç”µè¯å·ç )
             //api.QueryClientMobile(phone);
 
-            //²éÑ¯ÕËºÅÁĞ±í
+            //æŸ¥è¯¢è´¦å·åˆ—è¡¨
             //api.GetClient(start, limit);
 
-            //É¾³ıÒ»¸öÕËºÅ
+            //åˆ é™¤ä¸€ä¸ªè´¦å·
             //api.DropClient(clientNum);
 
-            //²éÑ¯Ó¦ÓÃ»°µ¥
+            //æŸ¥è¯¢åº”ç”¨è¯å•
             //api.GetBillList(date);
 
-            //²éÑ¯ÕËºÅ»°µ¥
+            //æŸ¥è¯¢è´¦å·è¯å•
             //api.GetClientBillList(clientNum, date);
 
-            //ÕËºÅ³äÖµ
+            //è´¦å·å……å€¼
             //api.ChargeClient(clientNum, clientType, charge);
 
-            //»Ø²¦
+            //å›æ‹¨
             //api.CallBack(clientNum, MobileNumber, fromSerNum, toSerNum, maxallowtime);
 
-            //ÓïÒôÑéÖ¤Âë
+            //è¯­éŸ³éªŒè¯ç 
             //api.VoiceCode(toPhone, "1234");
             #endregion
 
@@ -156,7 +155,7 @@ namespace MVCForum.Services
         }
     }
 
-    #region UCPaas ÔÆÖ®Ñ¶Æ½Ì¨×é¼ş
+    #region UCPaas äº‘ä¹‹è®¯å¹³å°ç»„ä»¶
 
     enum EBodyType : uint
     {
@@ -176,15 +175,15 @@ namespace MVCForum.Services
         private EBodyType m_bodyType = EBodyType.EType_JSON;
 
         /// <summary>
-        /// ·şÎñÆ÷api°æ±¾
+        /// æœåŠ¡å™¨apiç‰ˆæœ¬
         /// </summary>
         const string softVer = "2014-06-30";
 
         /// <summary>
-        /// ³õÊ¼»¯º¯Êı
+        /// åˆå§‹åŒ–å‡½æ•°
         /// </summary>
-        /// <param name="serverIP">·şÎñÆ÷µØÖ·</param>
-        /// <param name="serverPort">·şÎñÆ÷¶Ë¿Ú</param>
+        /// <param name="serverIP">æœåŠ¡å™¨åœ°å€</param>
+        /// <param name="serverPort">æœåŠ¡å™¨ç«¯å£</param>
         /// <returns></returns>
         public bool init(string restAddress, string restPort)
         {
@@ -198,10 +197,10 @@ namespace MVCForum.Services
         }
 
         /// <summary>
-        /// ÉèÖÃÖ÷ÕÊºÅĞÅÏ¢
+        /// è®¾ç½®ä¸»å¸å·ä¿¡æ¯
         /// </summary>
-        /// <param name="accountSid">Ö÷ÕÊºÅ</param>
-        /// <param name="accountToken">Ö÷ÕÊºÅÁîÅÆ</param>
+        /// <param name="accountSid">ä¸»å¸å·</param>
+        /// <param name="accountToken">ä¸»å¸å·ä»¤ç‰Œ</param>
         public void setAccount(string accountSid, string accountToken)
         {
             this.m_mainAccount = accountSid;
@@ -209,46 +208,46 @@ namespace MVCForum.Services
         }
 
         /// <summary>
-        /// ÉèÖÃÓ¦ÓÃID
+        /// è®¾ç½®åº”ç”¨ID
         /// </summary>
-        /// <param name="appId">Ó¦ÓÃID</param>
+        /// <param name="appId">åº”ç”¨ID</param>
         public void setAppId(string appId)
         {
             this.m_appId = appId;
         }
 
         /// <summary>
-        /// ÈÕÖ¾¿ª¹Ø
+        /// æ—¥å¿—å¼€å…³
         /// </summary>
-        /// <param name="enable">ÈÕÖ¾¿ª¹Ø</param>
+        /// <param name="enable">æ—¥å¿—å¼€å…³</param>
         public void enabeLog(bool enable)
         {
             this.m_isWriteLog = enable;
         }
 
         /// <summary>
-        /// »ñÈ¡ÈÕÖ¾Â·¾¶
+        /// è·å–æ—¥å¿—è·¯å¾„
         /// </summary>
-        /// <returns>ÈÕÖ¾Â·¾¶</returns>
+        /// <returns>æ—¥å¿—è·¯å¾„</returns>
         public string GetLogPath()
         {
             string dllpath = System.Reflection.Assembly.GetExecutingAssembly().CodeBase;
-            dllpath = dllpath.Substring(8, dllpath.Length - 8);    // 8ÊÇ file:// µÄ³¤¶È
-            return System.IO.Path.GetDirectoryName(dllpath) + "\\log.txt";
+            dllpath = dllpath.Substring(8, dllpath.Length - 8);    // 8æ˜¯ file:// çš„é•¿åº¦
+            return System.IO.Path.GetDirectoryName(dllpath) + "\\SMSlog.txt";
         }
 
         /// <summary>
-        /// Ö÷ÕÊºÅĞÅÏ¢²éÑ¯
+        /// ä¸»å¸å·ä¿¡æ¯æŸ¥è¯¢
         /// </summary>
         /// <exception cref="Exception"></exception>
-        /// <returns>°üÌåÄÚÈİ</returns>
+        /// <returns>åŒ…ä½“å†…å®¹</returns>
         public string QueryAccountInfo()
         {
             try
             {
                 string date = DateTime.Now.ToString("yyyyMMddHHmmss");
 
-                // ¹¹½¨URLÄÚÈİ
+                // æ„å»ºURLå†…å®¹
                 string sigstr = MD5Encrypt(m_mainAccount + m_mainToken + date);
                 string uriStr;
                 string xml = (m_bodyType == EBodyType.EType_XML ? ".xml" : "");
@@ -257,11 +256,11 @@ namespace MVCForum.Services
 
                 WriteLog("QueryAccountInfo url = " + uriStr);
 
-                // ´´½¨ÍøÂçÇëÇó  
+                // åˆ›å»ºç½‘ç»œè¯·æ±‚  
                 HttpWebRequest request = WebRequest.Create(address) as HttpWebRequest;
                 setCertificateValidationCallBack();
 
-                // ¹¹½¨Head
+                // æ„å»ºHead
                 request.Method = "GET";
                 Encoding myEncoding = Encoding.GetEncoding("utf-8");
                 byte[] myByte = myEncoding.GetBytes(m_mainAccount + ":" + date);
@@ -291,7 +290,7 @@ namespace MVCForum.Services
                     }
                 }
                 return null;
-                // »ñÈ¡ÇëÇó
+                // è·å–è¯·æ±‚
             }
             catch (Exception e)
             {
@@ -301,12 +300,12 @@ namespace MVCForum.Services
         }
 
         /// <summary>
-        /// ÉêÇëclientÕÊºÅ
+        /// ç”³è¯·clientå¸å·
         /// </summary>
-        /// <param name="friendlyName">clientÕÊºÅÃû³Æ¡£</param>
-        /// <exception cref="ArgumentNullException">²ÎÊı²»ÄÜÎª¿Õ</exception>
+        /// <param name="friendlyName">clientå¸å·åç§°ã€‚</param>
+        /// <exception cref="ArgumentNullException">å‚æ•°ä¸èƒ½ä¸ºç©º</exception>
         /// <exception cref="Exception"></exception>
-        /// <returns>°üÌåÄÚÈİ</returns>
+        /// <returns>åŒ…ä½“å†…å®¹</returns>
         public string CreateClient(string friendlyName, string clientType, string charge, string mobile)
         {
 
@@ -317,7 +316,7 @@ namespace MVCForum.Services
             {
                 string date = DateTime.Now.ToString("yyyyMMddHHmmss");
 
-                // ¹¹½¨URLÄÚÈİ
+                // æ„å»ºURLå†…å®¹
                 string sigstr = MD5Encrypt(m_mainAccount + m_mainToken + date);
                 string uriStr;
                 string xml = (m_bodyType == EBodyType.EType_XML ? ".xml" : "");
@@ -327,11 +326,11 @@ namespace MVCForum.Services
 
                 WriteLog("CreateClient url = " + uriStr);
 
-                // ´´½¨ÍøÂçÇëÇó  
+                // åˆ›å»ºç½‘ç»œè¯·æ±‚  
                 HttpWebRequest request = WebRequest.Create(address) as HttpWebRequest;
                 setCertificateValidationCallBack();
 
-                // ¹¹½¨Head
+                // æ„å»ºHead
                 request.Method = "POST";
 
                 Encoding myEncoding = Encoding.GetEncoding("utf-8");
@@ -340,7 +339,7 @@ namespace MVCForum.Services
                 request.Headers.Add("Authorization", authStr);
 
 
-                // ¹¹½¨Body
+                // æ„å»ºBody
                 StringBuilder data = new StringBuilder();
 
                 if (m_bodyType == EBodyType.EType_XML)
@@ -375,13 +374,13 @@ namespace MVCForum.Services
 
                 WriteLog("CreateClient requestBody = " + data.ToString());
 
-                // ¿ªÊ¼ÇëÇó
+                // å¼€å§‹è¯·æ±‚
                 using (Stream postStream = request.GetRequestStream())
                 {
                     postStream.Write(byteData, 0, byteData.Length);
                 }
 
-                // »ñÈ¡ÇëÇó
+                // è·å–è¯·æ±‚
                 using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
                 {
                     // Get the response stream  
@@ -404,12 +403,12 @@ namespace MVCForum.Services
         }
 
         /// <summary>
-        /// ÊÍ·ÅclientÕÊºÅ
+        /// é‡Šæ”¾clientå¸å·
         /// </summary>
-        /// <param name="clientNum">clientÕÊºÅ</param>
-        /// <exception cref="ArgumentNullException">²ÎÊı²»ÄÜÎª¿Õ</exception>
+        /// <param name="clientNum">clientå¸å·</param>
+        /// <exception cref="ArgumentNullException">å‚æ•°ä¸èƒ½ä¸ºç©º</exception>
         /// <exception cref="Exception"></exception>
-        /// <returns>°üÌåÄÚÈİ</returns>
+        /// <returns>åŒ…ä½“å†…å®¹</returns>
         public string DropClient(string clientNum)
         {
 
@@ -420,7 +419,7 @@ namespace MVCForum.Services
             {
                 string date = DateTime.Now.ToString("yyyyMMddHHmmss");
 
-                // ¹¹½¨URLÄÚÈİ
+                // æ„å»ºURLå†…å®¹
                 string sigstr = MD5Encrypt(m_mainAccount + m_mainToken + date);
                 string uriStr;
                 string xml = (m_bodyType == EBodyType.EType_XML ? ".xml" : "");
@@ -430,11 +429,11 @@ namespace MVCForum.Services
 
                 WriteLog("DropClient url = " + uriStr);
 
-                // ´´½¨ÍøÂçÇëÇó  
+                // åˆ›å»ºç½‘ç»œè¯·æ±‚  
                 HttpWebRequest request = WebRequest.Create(address) as HttpWebRequest;
                 setCertificateValidationCallBack();
 
-                // ¹¹½¨Head
+                // æ„å»ºHead
                 request.Method = "POST";
 
                 Encoding myEncoding = Encoding.GetEncoding("utf-8");
@@ -443,7 +442,7 @@ namespace MVCForum.Services
                 request.Headers.Add("Authorization", authStr);
 
 
-                // ¹¹½¨Body
+                // æ„å»ºBody
                 StringBuilder data = new StringBuilder();
 
                 if (m_bodyType == EBodyType.EType_XML)
@@ -472,13 +471,13 @@ namespace MVCForum.Services
 
                 WriteLog("DropClient requestBody = " + data.ToString());
 
-                // ¿ªÊ¼ÇëÇó
+                // å¼€å§‹è¯·æ±‚
                 using (Stream postStream = request.GetRequestStream())
                 {
                     postStream.Write(byteData, 0, byteData.Length);
                 }
 
-                // »ñÈ¡ÇëÇó
+                // è·å–è¯·æ±‚
                 using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
                 {
                     // Get the response stream  
@@ -501,11 +500,11 @@ namespace MVCForum.Services
         }
 
         /// <summary>
-        /// »ñÈ¡Ó¦ÓÃÏÂclientÕÊºÅ
+        /// è·å–åº”ç”¨ä¸‹clientå¸å·
         /// </summary>
-        /// <param name="startNo">¿ªÊ¼µÄĞòºÅ£¬Ä¬ÈÏ´Ó0¿ªÊ¼</param>
-        /// <param name="offset">Ò»´Î²éÑ¯µÄ×î´óÌõÊı£¬×îĞ¡ÊÇ1Ìõ£¬×î´óÊÇ100Ìõ</param>
-        /// <exception cref="ArgumentOutOfRangeException">²ÎÊı³¬³ö·¶Î§</exception>
+        /// <param name="startNo">å¼€å§‹çš„åºå·ï¼Œé»˜è®¤ä»0å¼€å§‹</param>
+        /// <param name="offset">ä¸€æ¬¡æŸ¥è¯¢çš„æœ€å¤§æ¡æ•°ï¼Œæœ€å°æ˜¯1æ¡ï¼Œæœ€å¤§æ˜¯100æ¡</param>
+        /// <exception cref="ArgumentOutOfRangeException">å‚æ•°è¶…å‡ºèŒƒå›´</exception>
         /// <exception cref="Exception"></exception>
         /// <returns></returns>
         public string GetClient(uint startNo, uint offset)
@@ -513,13 +512,13 @@ namespace MVCForum.Services
 
             if (offset < 1 || offset > 100)
             {
-                throw new ArgumentOutOfRangeException("offset³¬³ö·¶Î§");
+                throw new ArgumentOutOfRangeException("offsetè¶…å‡ºèŒƒå›´");
             }
             try
             {
                 string date = DateTime.Now.ToString("yyyyMMddHHmmss");
 
-                // ¹¹½¨URLÄÚÈİ
+                // æ„å»ºURLå†…å®¹
                 string sigstr = MD5Encrypt(m_mainAccount + m_mainToken + date);
                 string uriStr;
                 string xml = (m_bodyType == EBodyType.EType_XML ? ".xml" : "");
@@ -529,11 +528,11 @@ namespace MVCForum.Services
 
                 WriteLog("GetClient url = " + uriStr);
 
-                // ´´½¨ÍøÂçÇëÇó  
+                // åˆ›å»ºç½‘ç»œè¯·æ±‚  
                 HttpWebRequest request = WebRequest.Create(address) as HttpWebRequest;
                 setCertificateValidationCallBack();
 
-                // ¹¹½¨Head
+                // æ„å»ºHead
                 request.Method = "POST";
 
                 Encoding myEncoding = Encoding.GetEncoding("utf-8");
@@ -542,7 +541,7 @@ namespace MVCForum.Services
                 request.Headers.Add("Authorization", authStr);
 
 
-                // ¹¹½¨Body
+                // æ„å»ºBody
                 StringBuilder data = new StringBuilder();
 
                 if (m_bodyType == EBodyType.EType_XML)
@@ -573,13 +572,13 @@ namespace MVCForum.Services
 
                 WriteLog("GetClient requestBody = " + data.ToString());
 
-                // ¿ªÊ¼ÇëÇó
+                // å¼€å§‹è¯·æ±‚
                 using (Stream postStream = request.GetRequestStream())
                 {
                     postStream.Write(byteData, 0, byteData.Length);
                 }
 
-                // »ñÈ¡ÇëÇó
+                // è·å–è¯·æ±‚
                 using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
                 {
                     // Get the response stream  
@@ -602,12 +601,12 @@ namespace MVCForum.Services
         }
 
         /// <summary>
-        /// ²éÑ¯clientÕÊºÅĞÅÏ¢
+        /// æŸ¥è¯¢clientå¸å·ä¿¡æ¯
         /// </summary>
-        /// <param name="clientNum">clientÕÊºÅ</param>
-        /// <exception cref="ArgumentNullException">²ÎÊı²»ÄÜÎª¿Õ</exception>
+        /// <param name="clientNum">clientå¸å·</param>
+        /// <exception cref="ArgumentNullException">å‚æ•°ä¸èƒ½ä¸ºç©º</exception>
         /// <exception cref="Exception"></exception>
-        /// <returns>°üÌåÄÚÈİ</returns>
+        /// <returns>åŒ…ä½“å†…å®¹</returns>
         public string QueryClientNumber(string clientNum)
         {
             if (clientNum == null)
@@ -617,7 +616,7 @@ namespace MVCForum.Services
             {
                 string date = DateTime.Now.ToString("yyyyMMddHHmmss");
 
-                // ¹¹½¨URLÄÚÈİ
+                // æ„å»ºURLå†…å®¹
                 string sigstr = MD5Encrypt(m_mainAccount + m_mainToken + date);
                 string uriStr;
                 string xml = (m_bodyType == EBodyType.EType_XML ? ".xml" : "");
@@ -627,11 +626,11 @@ namespace MVCForum.Services
 
                 WriteLog("QueryClientNumber url = " + uriStr);
 
-                // ´´½¨ÍøÂçÇëÇó  
+                // åˆ›å»ºç½‘ç»œè¯·æ±‚  
                 HttpWebRequest request = WebRequest.Create(address) as HttpWebRequest;
                 setCertificateValidationCallBack();
 
-                // ¹¹½¨Head
+                // æ„å»ºHead
                 request.Method = "GET";
 
                 Encoding myEncoding = Encoding.GetEncoding("utf-8");
@@ -640,7 +639,7 @@ namespace MVCForum.Services
                 request.Headers.Add("Authorization", authStr);
 
 
-                // ¹¹½¨Body
+                // æ„å»ºBody
                 StringBuilder data = new StringBuilder();
 
                 if (m_bodyType == EBodyType.EType_XML)
@@ -675,12 +674,12 @@ namespace MVCForum.Services
         }
 
         /// <summary>
-        /// ²éÑ¯clientĞÅÏ¢(¸ù¾İÊÖ»úºÅ)
+        /// æŸ¥è¯¢clientä¿¡æ¯(æ ¹æ®æ‰‹æœºå·)
         /// </summary>
-        /// <param name="clientMobile">clientÕÊºÅ¶ÔÓ¦µÄÊÖ»úºÅ</param>
-        /// <exception cref="ArgumentNullException">²ÎÊı²»ÄÜÎª¿Õ</exception>
+        /// <param name="clientMobile">clientå¸å·å¯¹åº”çš„æ‰‹æœºå·</param>
+        /// <exception cref="ArgumentNullException">å‚æ•°ä¸èƒ½ä¸ºç©º</exception>
         /// <exception cref="Exception"></exception>
-        /// <returns>°üÌåÄÚÈİ</returns>
+        /// <returns>åŒ…ä½“å†…å®¹</returns>
         public string QueryClientMobile(string clientMobile)
         {
             if (clientMobile == null)
@@ -690,7 +689,7 @@ namespace MVCForum.Services
             {
                 string date = DateTime.Now.ToString("yyyyMMddHHmmss");
 
-                // ¹¹½¨URLÄÚÈİ
+                // æ„å»ºURLå†…å®¹
                 string sigstr = MD5Encrypt(m_mainAccount + m_mainToken + date);
                 string uriStr;
                 string xml = (m_bodyType == EBodyType.EType_XML ? ".xml" : "");
@@ -700,11 +699,11 @@ namespace MVCForum.Services
 
                 WriteLog("QueryClient url = " + uriStr);
 
-                // ´´½¨ÍøÂçÇëÇó  
+                // åˆ›å»ºç½‘ç»œè¯·æ±‚  
                 HttpWebRequest request = WebRequest.Create(address) as HttpWebRequest;
                 setCertificateValidationCallBack();
 
-                // ¹¹½¨Head
+                // æ„å»ºHead
                 request.Method = "GET";
 
                 Encoding myEncoding = Encoding.GetEncoding("utf-8");
@@ -745,10 +744,10 @@ namespace MVCForum.Services
         }
 
         /// <summary>
-        /// Ó¦ÓÃ»°µ¥ÏÂÔØ
+        /// åº”ç”¨è¯å•ä¸‹è½½
         /// </summary>
-        /// <param name="range">day ´ú±íÇ°Ò»ÌìµÄÊı¾İ£¨´Ó00:00 ¨C 23:59£©;week´ú±íÇ°Ò»ÖÜµÄÊı¾İ(ÖÜÒ» µ½ÖÜÈÕ)£»month±íÊ¾ÉÏÒ»¸öÔÂµÄÊı¾İ£¨ÉÏ¸öÔÂ±íÊ¾µ±Ç°ÔÂ¼õ1£¬Èç¹û½ñÌìÊÇ4ÔÂ10ºÅ£¬Ôò²éÑ¯½á¹ûÊÇ3ÔÂ·İµÄÊı¾İ£©</param>
-        /// <exception cref="ArgumentNullException">²ÎÊı²»ÄÜÎª¿Õ</exception>
+        /// <param name="range">day ä»£è¡¨å‰ä¸€å¤©çš„æ•°æ®ï¼ˆä»00:00 â€“ 23:59ï¼‰;weekä»£è¡¨å‰ä¸€å‘¨çš„æ•°æ®(å‘¨ä¸€ åˆ°å‘¨æ—¥)ï¼›monthè¡¨ç¤ºä¸Šä¸€ä¸ªæœˆçš„æ•°æ®ï¼ˆä¸Šä¸ªæœˆè¡¨ç¤ºå½“å‰æœˆå‡1ï¼Œå¦‚æœä»Šå¤©æ˜¯4æœˆ10å·ï¼Œåˆ™æŸ¥è¯¢ç»“æœæ˜¯3æœˆä»½çš„æ•°æ®ï¼‰</param>
+        /// <exception cref="ArgumentNullException">å‚æ•°ä¸èƒ½ä¸ºç©º</exception>
         /// <exception cref="Exception"></exception>
         /// <returns></returns>
         public string GetBillList(string range)
@@ -762,7 +761,7 @@ namespace MVCForum.Services
             {
                 string date = DateTime.Now.ToString("yyyyMMddHHmmss");
 
-                // ¹¹½¨URLÄÚÈİ
+                // æ„å»ºURLå†…å®¹
                 string sigstr = MD5Encrypt(m_mainAccount + m_mainToken + date);
                 string uriStr;
                 string xml = (m_bodyType == EBodyType.EType_XML ? ".xml" : "");
@@ -772,11 +771,11 @@ namespace MVCForum.Services
 
                 WriteLog("GetBillList url = " + uriStr);
 
-                // ´´½¨ÍøÂçÇëÇó  
+                // åˆ›å»ºç½‘ç»œè¯·æ±‚  
                 HttpWebRequest request = WebRequest.Create(address) as HttpWebRequest;
                 setCertificateValidationCallBack();
 
-                // ¹¹½¨Head
+                // æ„å»ºHead
                 request.Method = "POST";
 
                 Encoding myEncoding = Encoding.GetEncoding("utf-8");
@@ -785,7 +784,7 @@ namespace MVCForum.Services
                 request.Headers.Add("Authorization", authStr);
 
 
-                // ¹¹½¨Body
+                // æ„å»ºBody
                 StringBuilder data = new StringBuilder();
 
                 if (m_bodyType == EBodyType.EType_XML)
@@ -814,13 +813,13 @@ namespace MVCForum.Services
 
                 WriteLog("CreateSubAccount requestBody = " + data.ToString());
 
-                // ¿ªÊ¼ÇëÇó
+                // å¼€å§‹è¯·æ±‚
                 using (Stream postStream = request.GetRequestStream())
                 {
                     postStream.Write(byteData, 0, byteData.Length);
                 }
 
-                // »ñÈ¡ÇëÇó
+                // è·å–è¯·æ±‚
                 using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
                 {
                     // Get the response stream  
@@ -843,11 +842,11 @@ namespace MVCForum.Services
         }
 
         /// <summary>
-        /// »°µ¥ÏÂÔØ
+        /// è¯å•ä¸‹è½½
         /// </summary>
         /// <param name="clientNum"
-        /// <param name="range">day ´ú±íÇ°Ò»ÌìµÄÊı¾İ£¨´Ó00:00 ¨C 23:59£©;week´ú±íÇ°Ò»ÖÜµÄÊı¾İ(ÖÜÒ» µ½ÖÜÈÕ)£»month±íÊ¾ÉÏÒ»¸öÔÂµÄÊı¾İ£¨ÉÏ¸öÔÂ±íÊ¾µ±Ç°ÔÂ¼õ1£¬Èç¹û½ñÌìÊÇ4ÔÂ10ºÅ£¬Ôò²éÑ¯½á¹ûÊÇ3ÔÂ·İµÄÊı¾İ£©</param>
-        /// <exception cref="ArgumentNullException">²ÎÊı²»ÄÜÎª¿Õ</exception>
+        /// <param name="range">day ä»£è¡¨å‰ä¸€å¤©çš„æ•°æ®ï¼ˆä»00:00 â€“ 23:59ï¼‰;weekä»£è¡¨å‰ä¸€å‘¨çš„æ•°æ®(å‘¨ä¸€ åˆ°å‘¨æ—¥)ï¼›monthè¡¨ç¤ºä¸Šä¸€ä¸ªæœˆçš„æ•°æ®ï¼ˆä¸Šä¸ªæœˆè¡¨ç¤ºå½“å‰æœˆå‡1ï¼Œå¦‚æœä»Šå¤©æ˜¯4æœˆ10å·ï¼Œåˆ™æŸ¥è¯¢ç»“æœæ˜¯3æœˆä»½çš„æ•°æ®ï¼‰</param>
+        /// <exception cref="ArgumentNullException">å‚æ•°ä¸èƒ½ä¸ºç©º</exception>
         /// <exception cref="Exception"></exception>
         /// <returns></returns>
         public string GetClientBillList(string clientNum, string range)
@@ -864,7 +863,7 @@ namespace MVCForum.Services
             {
                 string date = DateTime.Now.ToString("yyyyMMddHHmmss");
 
-                // ¹¹½¨URLÄÚÈİ
+                // æ„å»ºURLå†…å®¹
                 string sigstr = MD5Encrypt(m_mainAccount + m_mainToken + date);
                 string uriStr;
                 string xml = (m_bodyType == EBodyType.EType_XML ? ".xml" : "");
@@ -874,11 +873,11 @@ namespace MVCForum.Services
 
                 WriteLog("CreateClient url = " + uriStr);
 
-                // ´´½¨ÍøÂçÇëÇó  
+                // åˆ›å»ºç½‘ç»œè¯·æ±‚  
                 HttpWebRequest request = WebRequest.Create(address) as HttpWebRequest;
                 setCertificateValidationCallBack();
 
-                // ¹¹½¨Head
+                // æ„å»ºHead
                 request.Method = "POST";
 
                 Encoding myEncoding = Encoding.GetEncoding("utf-8");
@@ -887,7 +886,7 @@ namespace MVCForum.Services
                 request.Headers.Add("Authorization", authStr);
 
 
-                // ¹¹½¨Body
+                // æ„å»ºBody
                 StringBuilder data = new StringBuilder();
 
                 if (m_bodyType == EBodyType.EType_XML)
@@ -918,13 +917,13 @@ namespace MVCForum.Services
 
                 WriteLog("CreateSubAccount requestBody = " + data.ToString());
 
-                // ¿ªÊ¼ÇëÇó
+                // å¼€å§‹è¯·æ±‚
                 using (Stream postStream = request.GetRequestStream())
                 {
                     postStream.Write(byteData, 0, byteData.Length);
                 }
 
-                // »ñÈ¡ÇëÇó
+                // è·å–è¯·æ±‚
                 using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
                 {
                     // Get the response stream  
@@ -948,14 +947,14 @@ namespace MVCForum.Services
 
 
         /// <summary>
-        /// Client³äÖµ
+        /// Clientå……å€¼
         /// </summary>
-        /// <param name="clientMobile">clientÕÊºÅ</param>
-        /// <param name="chargeType">0 ³äÖµ£»1 »ØÊÕ</param>
-        /// <param name="charge">³äÖµ»ò»ØÊÕµÄ½ğ¶î</param>
-        /// <exception cref="ArgumentNullException">²ÎÊı²»ÄÜÎª¿Õ</exception>
+        /// <param name="clientMobile">clientå¸å·</param>
+        /// <param name="chargeType">0 å……å€¼ï¼›1 å›æ”¶</param>
+        /// <param name="charge">å……å€¼æˆ–å›æ”¶çš„é‡‘é¢</param>
+        /// <exception cref="ArgumentNullException">å‚æ•°ä¸èƒ½ä¸ºç©º</exception>
         /// <exception cref="Exception"></exception>
-        /// <returns>°üÌåÄÚÈİ</returns>
+        /// <returns>åŒ…ä½“å†…å®¹</returns>
         public string ChargeClient(string clientNum, string chargeType, string charge)
         {
 
@@ -969,7 +968,7 @@ namespace MVCForum.Services
             {
                 string date = DateTime.Now.ToString("yyyyMMddHHmmss");
 
-                // ¹¹½¨URLÄÚÈİ
+                // æ„å»ºURLå†…å®¹
                 string sigstr = MD5Encrypt(m_mainAccount + m_mainToken + date);
                 string uriStr;
                 string xml = (m_bodyType == EBodyType.EType_XML ? ".xml" : "");
@@ -979,11 +978,11 @@ namespace MVCForum.Services
 
                 WriteLog("ChargeClient url = " + uriStr);
 
-                // ´´½¨ÍøÂçÇëÇó  
+                // åˆ›å»ºç½‘ç»œè¯·æ±‚  
                 HttpWebRequest request = WebRequest.Create(address) as HttpWebRequest;
                 setCertificateValidationCallBack();
 
-                // ¹¹½¨Head
+                // æ„å»ºHead
                 request.Method = "POST";
 
                 Encoding myEncoding = Encoding.GetEncoding("utf-8");
@@ -992,7 +991,7 @@ namespace MVCForum.Services
                 request.Headers.Add("Authorization", authStr);
 
 
-                // ¹¹½¨Body
+                // æ„å»ºBody
                 StringBuilder data = new StringBuilder();
 
                 if (m_bodyType == EBodyType.EType_XML)
@@ -1025,13 +1024,13 @@ namespace MVCForum.Services
 
                 WriteLog("ChargeClient requestBody = " + data.ToString());
 
-                // ¿ªÊ¼ÇëÇó
+                // å¼€å§‹è¯·æ±‚
                 using (Stream postStream = request.GetRequestStream())
                 {
                     postStream.Write(byteData, 0, byteData.Length);
                 }
 
-                // »ñÈ¡ÇëÇó
+                // è·å–è¯·æ±‚
                 using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
                 {
                     // Get the response stream  
@@ -1054,14 +1053,14 @@ namespace MVCForum.Services
         }
 
         /// <summary>
-        /// ·¢ËÍ¶ÌĞÅ
+        /// å‘é€çŸ­ä¿¡
         /// </summary>
-        /// <param name="to">¶ÌĞÅ½ÓÊÕ¶ËÊÖ»úºÅÂë</param>
-        /// <param name="templateId">¶ÌĞÅÄ£°åID</param>
-        /// <param name="param">ÄÚÈİÊı¾İ£¬ÓÃÓÚÌæ»»Ä£°åÖĞ{Êı×Ö}</param>
-        /// <exception cref="ArgumentNullException">²ÎÊı²»ÄÜÎª¿Õ</exception>
+        /// <param name="to">çŸ­ä¿¡æ¥æ”¶ç«¯æ‰‹æœºå·ç </param>
+        /// <param name="templateId">çŸ­ä¿¡æ¨¡æ¿ID</param>
+        /// <param name="param">å†…å®¹æ•°æ®ï¼Œç”¨äºæ›¿æ¢æ¨¡æ¿ä¸­{æ•°å­—}</param>
+        /// <exception cref="ArgumentNullException">å‚æ•°ä¸èƒ½ä¸ºç©º</exception>
         /// <exception cref="Exception"></exception>
-        /// <returns>°üÌåÄÚÈİ</returns>
+        /// <returns>åŒ…ä½“å†…å®¹</returns>
         public string SendSMS(string to, string templateId, string param)
         {
 
@@ -1079,7 +1078,7 @@ namespace MVCForum.Services
             {
                 string date = DateTime.Now.ToString("yyyyMMddHHmmss");
 
-                // ¹¹½¨URLÄÚÈİ
+                // æ„å»ºURLå†…å®¹
                 string sigstr = MD5Encrypt(m_mainAccount + m_mainToken + date);
                 string uriStr;
                 string xml = (m_bodyType == EBodyType.EType_XML ? ".xml" : "");
@@ -1089,11 +1088,11 @@ namespace MVCForum.Services
 
                 WriteLog("SendSMS url = " + uriStr);
 
-                // ´´½¨ÍøÂçÇëÇó  
+                // åˆ›å»ºç½‘ç»œè¯·æ±‚  
                 HttpWebRequest request = WebRequest.Create(address) as HttpWebRequest;
                 setCertificateValidationCallBack();
 
-                // ¹¹½¨Head
+                // æ„å»ºHead
                 request.Method = "POST";
 
                 Encoding myEncoding = Encoding.GetEncoding("utf-8");
@@ -1102,7 +1101,7 @@ namespace MVCForum.Services
                 request.Headers.Add("Authorization", authStr);
 
 
-                // ¹¹½¨Body
+                // æ„å»ºBody
                 StringBuilder data = new StringBuilder();
 
                 if (m_bodyType == EBodyType.EType_XML)
@@ -1135,13 +1134,13 @@ namespace MVCForum.Services
 
                 WriteLog("CreateSubAccount requestBody = " + data.ToString());
 
-                // ¿ªÊ¼ÇëÇó
+                // å¼€å§‹è¯·æ±‚
                 using (Stream postStream = request.GetRequestStream())
                 {
                     postStream.Write(byteData, 0, byteData.Length);
                 }
 
-                // »ñÈ¡ÇëÇó
+                // è·å–è¯·æ±‚
                 using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
                 {
                     // Get the response stream  
@@ -1166,16 +1165,16 @@ namespace MVCForum.Services
         }
 
         /// <summary>
-        /// Ë«Ïò»Øºô
+        /// åŒå‘å›å‘¼
         /// </summary>
-        /// <param name="fromClient">Ö÷½Ğµç»°</param>
-        /// <param name="toPhone">±»½Ğµç»°</param>
-        /// <param name="fromSerNum">Ö÷½Ğ²àÏÔÊ¾µÄºÅÂë£¬Ö»ÄÜÏÔÊ¾400ºÅÂë»ò¹Ì»°¡£</param>
-        /// <param name="toSerNum">±»½Ğ²àÏÔÊ¾µÄºÅÂë¡£¿ÉÏÔÊ¾ÊÖ»úºÅÂë¡¢400ºÅÂë»ò¹Ì»°¡£</param>
-        /// <param name="maxallowtime">±»½Ğ²àÏÔÊ¾µÄºÅÂë¡£¿ÉÏÔÊ¾ÊÖ»úºÅÂë¡¢400ºÅÂë»ò¹Ì»°¡£</param>
-        /// <exception cref="ArgumentNullException">²ÎÊı²»ÄÜÎª¿Õ</exception>
+        /// <param name="fromClient">ä¸»å«ç”µè¯</param>
+        /// <param name="toPhone">è¢«å«ç”µè¯</param>
+        /// <param name="fromSerNum">ä¸»å«ä¾§æ˜¾ç¤ºçš„å·ç ï¼Œåªèƒ½æ˜¾ç¤º400å·ç æˆ–å›ºè¯ã€‚</param>
+        /// <param name="toSerNum">è¢«å«ä¾§æ˜¾ç¤ºçš„å·ç ã€‚å¯æ˜¾ç¤ºæ‰‹æœºå·ç ã€400å·ç æˆ–å›ºè¯ã€‚</param>
+        /// <param name="maxallowtime">è¢«å«ä¾§æ˜¾ç¤ºçš„å·ç ã€‚å¯æ˜¾ç¤ºæ‰‹æœºå·ç ã€400å·ç æˆ–å›ºè¯ã€‚</param>
+        /// <exception cref="ArgumentNullException">å‚æ•°ä¸èƒ½ä¸ºç©º</exception>
         /// <exception cref="Exception"></exception>
-        /// <returns>°üÌåÄÚÈİ</returns>
+        /// <returns>åŒ…ä½“å†…å®¹</returns>
         public string CallBack(string fromClient, string toPhone, string fromSerNum, string toSerNum, string maxallowtime)
         {
 
@@ -1193,7 +1192,7 @@ namespace MVCForum.Services
             {
                 string date = DateTime.Now.ToString("yyyyMMddHHmmss");
 
-                // ¹¹½¨URLÄÚÈİ
+                // æ„å»ºURLå†…å®¹
                 string sigstr = MD5Encrypt(m_mainAccount + m_mainToken + date);
                 string uriStr;
                 string xml = (m_bodyType == EBodyType.EType_XML ? ".xml" : "");
@@ -1203,11 +1202,11 @@ namespace MVCForum.Services
 
                 WriteLog("CallBack url = " + uriStr);
 
-                // ´´½¨ÍøÂçÇëÇó  
+                // åˆ›å»ºç½‘ç»œè¯·æ±‚  
                 HttpWebRequest request = WebRequest.Create(address) as HttpWebRequest;
                 setCertificateValidationCallBack();
 
-                // ¹¹½¨Head
+                // æ„å»ºHead
                 request.Method = "POST";
 
                 Encoding myEncoding = Encoding.GetEncoding("utf-8");
@@ -1216,7 +1215,7 @@ namespace MVCForum.Services
                 request.Headers.Add("Authorization", authStr);
 
 
-                // ¹¹½¨Body
+                // æ„å»ºBody
                 StringBuilder data = new StringBuilder();
 
                 if (m_bodyType == EBodyType.EType_XML)
@@ -1253,13 +1252,13 @@ namespace MVCForum.Services
 
                 WriteLog("CreateSubAccount requestBody = " + data.ToString());
 
-                // ¿ªÊ¼ÇëÇó
+                // å¼€å§‹è¯·æ±‚
                 using (Stream postStream = request.GetRequestStream())
                 {
                     postStream.Write(byteData, 0, byteData.Length);
                 }
 
-                // »ñÈ¡ÇëÇó
+                // è·å–è¯·æ±‚
                 using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
                 {
                     // Get the response stream  
@@ -1282,11 +1281,11 @@ namespace MVCForum.Services
         }
 
         /// <summary>
-        /// ÓïÒôÑéÖ¤Âë
+        /// è¯­éŸ³éªŒè¯ç 
         /// </summary>
-        /// <param name="to">½ÓÊÕºÅÂë</param>
-        /// <param name="verifyCode">ÑéÖ¤ÂëÄÚÈİ£¬ÎªÊı×Ö0~9£¬³¤¶È4-8Î»</param>
-        /// <exception cref="ArgumentNullException">²ÎÊı²»ÄÜÎª¿Õ</exception>
+        /// <param name="to">æ¥æ”¶å·ç </param>
+        /// <param name="verifyCode">éªŒè¯ç å†…å®¹ï¼Œä¸ºæ•°å­—0~9ï¼Œé•¿åº¦4-8ä½</param>
+        /// <exception cref="ArgumentNullException">å‚æ•°ä¸èƒ½ä¸ºç©º</exception>
         /// <exception cref="Exception"></exception>
         /// <returns></returns>
         public string VoiceCode(string toPhone, string verifyCode)
@@ -1306,7 +1305,7 @@ namespace MVCForum.Services
             {
                 string date = DateTime.Now.ToString("yyyyMMddHHmmss");
 
-                // ¹¹½¨URLÄÚÈİ
+                // æ„å»ºURLå†…å®¹
                 string sigstr = MD5Encrypt(m_mainAccount + m_mainToken + date);
                 string uriStr;
                 string xml = (m_bodyType == EBodyType.EType_XML ? ".xml" : "");
@@ -1316,11 +1315,11 @@ namespace MVCForum.Services
 
                 WriteLog("VoiceCode url = " + uriStr);
 
-                // ´´½¨ÍøÂçÇëÇó  
+                // åˆ›å»ºç½‘ç»œè¯·æ±‚  
                 HttpWebRequest request = WebRequest.Create(address) as HttpWebRequest;
                 setCertificateValidationCallBack();
 
-                // ¹¹½¨Head
+                // æ„å»ºHead
                 request.Method = "POST";
 
                 Encoding myEncoding = Encoding.GetEncoding("utf-8");
@@ -1329,7 +1328,7 @@ namespace MVCForum.Services
                 request.Headers.Add("Authorization", authStr);
 
 
-                // ¹¹½¨Body
+                // æ„å»ºBody
                 StringBuilder data = new StringBuilder();
 
                 if (m_bodyType == EBodyType.EType_XML)
@@ -1360,13 +1359,13 @@ namespace MVCForum.Services
 
                 WriteLog("CreateSubAccount requestBody = " + data.ToString());
 
-                // ¿ªÊ¼ÇëÇó
+                // å¼€å§‹è¯·æ±‚
                 using (Stream postStream = request.GetRequestStream())
                 {
                     postStream.Write(byteData, 0, byteData.Length);
                 }
 
-                // »ñÈ¡ÇëÇó
+                // è·å–è¯·æ±‚
                 using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
                 {
                     // Get the response stream  
@@ -1388,7 +1387,7 @@ namespace MVCForum.Services
             }
         }
 
-        #region MD5 ºÍ https½»»¥º¯Êı¶¨Òå
+        #region MD5 å’Œ httpsäº¤äº’å‡½æ•°å®šä¹‰
         private void WriteLog(string log)
         {
             if (m_isWriteLog)
@@ -1403,10 +1402,10 @@ namespace MVCForum.Services
         }
 
         /// <summary>
-        /// MD5¼ÓÃÜ
+        /// MD5åŠ å¯†
         /// </summary>
-        /// <param name="source">Ô­ÄÚÈİ</param>
-        /// <returns>¼ÓÃÜºóÄÚÈİ</returns>
+        /// <param name="source">åŸå†…å®¹</param>
+        /// <returns>åŠ å¯†åå†…å®¹</returns>
         public static string MD5Encrypt(string source)
         {
             // Create a new instance of the MD5CryptoServiceProvider object.
@@ -1429,7 +1428,7 @@ namespace MVCForum.Services
         }
 
         /// <summary>
-        /// ÉèÖÃ·şÎñÆ÷Ö¤ÊéÑéÖ¤»Øµ÷
+        /// è®¾ç½®æœåŠ¡å™¨è¯ä¹¦éªŒè¯å›è°ƒ
         /// </summary>
         public void setCertificateValidationCallBack()
         {
@@ -1437,7 +1436,7 @@ namespace MVCForum.Services
         }
 
         /// <summary>
-        ///  Ö¤ÊéÑéÖ¤»Øµ÷º¯Êı  
+        ///  è¯ä¹¦éªŒè¯å›è°ƒå‡½æ•°  
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="cer"></param>

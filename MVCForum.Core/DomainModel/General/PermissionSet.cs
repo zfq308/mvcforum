@@ -15,7 +15,15 @@ namespace MVCForum.Domain.DomainModel
             // Add the global permissions
             foreach (var globalPermissionForRole in globalPermissions)
             {
-                Add(globalPermissionForRole.Permission.Name, MapGlobalPermission(globalPermissionForRole));
+                try
+                {
+                    Add(globalPermissionForRole.Permission.Name, MapGlobalPermission(globalPermissionForRole));
+                }
+                catch (System.Exception )
+                {
+
+                }
+              
             }
         }
 

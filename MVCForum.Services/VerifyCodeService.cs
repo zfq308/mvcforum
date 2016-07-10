@@ -35,8 +35,9 @@ namespace MVCForum.Services
 
         public void CheckInvalidVerifyCode()
         {
+            DateTime d = DateTime.Now - TimeSpan.FromHours(1);
             var list = _context.VerifyCode
-                .Where(x => x.Status == (int)VerifyCodeStatus.Waiting && DateTime.Now.Subtract(x.DateCreated).TotalHours > MaxVerifyCodeLifeTimeHour)
+                .Where(x => x.Status == (int)VerifyCodeStatus.Waiting && x.DateCreated < d)
                 .ToList();
 
             if (list != null && list.Count > 0)

@@ -71,7 +71,12 @@ namespace MVCForum.Domain.Interfaces.Services
         IList<MembershipUser> GetLowestPointUsers(int amountToTake);
         int MemberCount(bool isApproved = false);
         string ToCsv();
+        string ToCsv(List<MembershipUser> userlist);
         CsvReport FromCsv(List<string> allLines);
+
+        void Create50TestAccount();
+        void Create5SupplierAccount();
+
         /// <summary>
         /// Completed scrubs a users account clean
         /// Clears everything - Posts, polls, votes, favourites, profile etc...
@@ -79,7 +84,7 @@ namespace MVCForum.Domain.Interfaces.Services
         /// <param name="user"></param>
         /// <param name="unitOfWork"></param>
         void ScrubUsers(MembershipUser user, IUnitOfWork unitOfWork);
-
+        void UpdateUserRole(Guid id, MembershipRole role);
         bool UpdatePasswordResetToken(MembershipUser user);
         bool ClearPasswordResetToken(MembershipUser user);
         bool IsPasswordResetTokenValid(MembershipUser user, string token);

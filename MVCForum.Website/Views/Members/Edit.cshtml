@@ -293,8 +293,6 @@
                         @Html.ValidationMessageFor(x => x.Files)
                     </div>
                 </div>
-
-
                 @if (settings.EnableSignatures)
                 {
                     <div class="form-group">
@@ -306,10 +304,12 @@
                 <div class="form-group">
                     请注意：为保证交友的严肃性，爱驴网会对您填写的资料进行审核，只有审核通过后才能使用相关功能。工作人员会在8小时内处理完毕。若需紧急处理可以拨打客服电话，谢谢！
                 </div>
-                <div class="submit-holder">
-                    <button type="submit" class="btn-mvc-green btn-mvc-large">@Html.LanguageString("Buttons.Save")</button>
-                </div>
-
+                @if (User.IsInRole(AppConstants.AdminRoleName) || User.Identity.Name == Model.UserName)
+                {
+                    <div class="submit-holder">
+                        <button type="submit" class="btn-mvc-green btn-mvc-large">@Html.LanguageString("Buttons.Save")</button>
+                    </div>
+                }
             </fieldset>
         }
 

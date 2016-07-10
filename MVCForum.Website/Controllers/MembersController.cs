@@ -8,11 +8,13 @@ using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Services;
 using MVCForum.Utilities;
 using MVCForum.Website.Application;
+using MVCForum.Website.Application.ActionFilterAttributes;
 using MVCForum.Website.Areas.Admin.ViewModels;
 using MVCForum.Website.ViewModels;
 using MVCForum.Website.ViewModels.Mapping;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
@@ -629,6 +631,83 @@ namespace MVCForum.Website.Controllers
 
         #endregion
 
+        #region 生成测试账号
+        [HttpPost]
+        [BasicMultiButton("Btn_Generate5SupplierAccount")]
+        public ActionResult GenerateTestAccount()
+        {
+            Stopwatch MyStopWatch = new Stopwatch(); //性能计时器
+            MyStopWatch.Start(); //启动计时器
+
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            {
+                try
+                {
+                    MembershipService.Create5SupplierAccount();
+                    unitOfWork.Commit();
+                }
+                catch (Exception ex)
+                {
+                    unitOfWork.Rollback();
+                    LoggingService.Error(ex);
+                    FormsAuthentication.SignOut();
+                    ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
+                }
+            }
+
+            ShowMessage(new GenericMessageViewModel
+            {
+                //Message = LocalizationService.GetResourceString("Member.ProfileUpdated"),
+                Message = "生成5个供应商测试账号执行完毕",
+                MessageType = GenericMessages.success
+            });
+
+            MyStopWatch.Stop();
+            decimal t = MyStopWatch.ElapsedMilliseconds;
+            logger.Debug(string.Format("生成5个供应商测试账号执行完毕.Timecost:{0} seconds.", t / 1000));
+
+            return RedirectToAction("Register", "Members");
+            //return Content("生成5个供应商测试账号执行完毕");
+        }
+
+        [HttpPost]
+        [BasicMultiButton("Btn_Generate50TestAccount")]
+        public  ActionResult GenerateTestAccount2()
+        {
+            Stopwatch MyStopWatch = new Stopwatch(); //性能计时器
+            MyStopWatch.Start(); //启动计时器
+
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            {
+                try
+                {
+                    MembershipService.Create50TestAccount();
+                    unitOfWork.Commit();
+                }
+                catch (Exception ex)
+                {
+                    unitOfWork.Rollback();
+                    LoggingService.Error(ex);
+                    FormsAuthentication.SignOut();
+                    ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
+                }
+            }
+            ShowMessage(new GenericMessageViewModel
+            {
+                //Message = LocalizationService.GetResourceString("Member.ProfileUpdated"),
+                Message = "生成50个测试账号执行完毕",
+                MessageType = GenericMessages.success
+            });
+
+            MyStopWatch.Stop();
+            decimal t = MyStopWatch.ElapsedMilliseconds;
+            logger.Debug(string.Format("生成50个测试账号执行完毕.Timecost:{0} seconds.", t / 1000));
+            return RedirectToAction("Register", "Members");
+            //return Content("生成50个测试账号执行完毕");
+        }
+
+        #endregion
+
         #region 用户编辑
 
         [Authorize]
@@ -914,10 +993,8 @@ namespace MVCForum.Website.Controllers
 
                         #endregion
 
+                        #region 上传头像
 
-
-
-                        // Sort image out first
                         if (userModel.Files != null)
                         {
                             // Before we save anything, check the user already has an upload folder and if not create one
@@ -952,6 +1029,7 @@ namespace MVCForum.Website.Controllers
                         // Set the users Avatar for the confirmation page
                         userModel.Avatar = user.Avatar;
 
+                        #endregion
 
                         #region 判断用户账号有无更新
 
@@ -1987,15 +2065,35 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        public ActionResult ServiceProtocal()
+
+        /// <summary>
+        /// 根据用户的Id,查找并更新用户的角色
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="role"></param>
+        /// <returns></returns>
+        [Authorize(Roles = AppConstants.AdminRoleName)]
+        public ActionResult UpdateUserRole(Guid id, MembershipRole role)
         {
-            return View();
+            //TODO: 此方法待测试
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            {
+                try
+                {
+                    MembershipService.UpdateUserRole(id, role);
+                    unitOfWork.Commit();
+                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel { Message = "", MessageType = GenericMessages.success };
+                }
+                catch (Exception ex)
+                {
+                    unitOfWork.Rollback();
+                    LoggingService.Error(ex);
+                    ModelState.AddModelError("", "更新用户的角色信息失败。");
+                }
+                return View();
+            }
         }
 
-        public ActionResult PrivacyPolicy()
-        {
-            return View();
-        }
 
     }
 }

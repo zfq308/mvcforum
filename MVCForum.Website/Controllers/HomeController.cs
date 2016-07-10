@@ -16,6 +16,8 @@ namespace MVCForum.Website.Controllers
 {
     public partial class HomeController : BaseController
     {
+        #region 建构式
+
         private readonly ITopicService _topicService;
         private readonly ICategoryService _categoryService;
         private readonly IActivityService _activityService;
@@ -42,6 +44,8 @@ namespace MVCForum.Website.Controllers
             _adSettingService = adSettingService;
         }
 
+        #endregion
+
         public ActionResult Index()
         {
             var returnView = new AiLvHomeViewModel();
@@ -66,6 +70,29 @@ namespace MVCForum.Website.Controllers
 
             //return View();
         }
+
+        public ActionResult ServiceProtocal()
+        {
+            return View();
+        }
+
+        public ActionResult PrivacyPolicy()
+        {
+            return View();
+        }
+
+
+        public ActionResult AiLvJianJie()
+        {
+            return View();
+        }
+
+
+        public ActionResult LianXiKeFu()
+        {
+            return View();
+        }
+
 
         #region 暂不使用的代码
 
@@ -331,7 +358,6 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-
         public ActionResult Leaderboard()
         {
             return View();
@@ -343,12 +369,7 @@ namespace MVCForum.Website.Controllers
             return View();
         }
 
-
-        public ActionResult Test()
-        {
-            return View();
-        }
-
+  
         public ActionResult PostedIn()
         {
             return View();

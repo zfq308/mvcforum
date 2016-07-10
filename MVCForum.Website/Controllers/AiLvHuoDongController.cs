@@ -157,7 +157,7 @@ namespace MVCForum.Website.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [MultiButton("btn_AuditSuccess")]
+        [BasicMultiButton("btn_AuditSuccess")]
         public ActionResult AuditAiLvHuodong_Success(Guid Id)
         {
             var item = _aiLvHuoDongService.Get(Id);
@@ -176,7 +176,7 @@ namespace MVCForum.Website.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [MultiButton("btn_AuditFail")]
+        [BasicMultiButton("btn_AuditFail")]
         public ActionResult AuditAiLvHuodong_Fail(Guid Id)
         {
             var item = _aiLvHuoDongService.Get(Id);
