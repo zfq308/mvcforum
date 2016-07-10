@@ -16,6 +16,8 @@ using MVCForum.Website.Application.ScheduledJobs;
 using MVCForum.Website.Application.ViewEngine;
 using System.Web.Helpers;
 using System.IO;
+using StackExchange.Profiling;
+using StackExchange.Profiling.EntityFramework6;
 
 namespace MVCForum.Website
 {
@@ -39,6 +41,9 @@ namespace MVCForum.Website
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
+
+            //此行代码要加在所有EF操作之前
+            MiniProfilerEF6.Initialize();
 
             // https://msdn.microsoft.com/zh-cn/library/system.web.helpers.antiforgeryconfig.suppressidentityheuristicchecks.aspx?cs-save-lang=1&cs-lang=fsharp
             // 获取或设置一个值，该值可指示防伪系统是否应跳过检查指示系统滥用的条件。如果防伪系统不应检查可能的滥用，则为 true；否则为 false。
@@ -84,6 +89,8 @@ namespace MVCForum.Website
 
             // Finally Run scheduled tasks
             ScheduledRunner.Run(unityContainer);
+
+          
         }
 
         protected void Application_AcquireRequestState(object sender, EventArgs e)
@@ -113,6 +120,18 @@ namespace MVCForum.Website
             {
                 LoggingService.Error(lastError);
             }
+        }
+
+        protected void Application_BeginRequest()
+        {
+            if (Request.IsLocal)
+            {
+                MiniProfiler.Start();
+            }
+        }
+        protected void Application_EndRequest()
+        {
+            MiniProfiler.Stop();
         }
     }
 }

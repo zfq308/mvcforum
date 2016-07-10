@@ -6,6 +6,62 @@
 
 
 
+ ========================MiniProfiler的使用方法=========================================================
+ 1. 从Nuget中依次加入： MiniProfiler， MiniProfiler.EF6，MiniProfiler.Mvc4
+ 2. 在shared/_Layout.cshtml文件中：
+ （1）在最顶上加入：
+ @using StackExchange.Profiling
+ （2）在</body>标签前加入：
+   @MiniProfiler.RenderIncludes()   
+</body>
+
+3.在Global.asax.cs 文件中
+（1）.加入
+using StackExchange.Profiling;
+using StackExchange.Profiling.EntityFramework6;
+(2).在 protected void Application_Start()方法的EF操作指令前，加入：
+ protected void Application_Start()
+{
+    AreaRegistration.RegisterAllAreas();
+    GlobalConfiguration.Configure(WebApiConfig.Register);
+    FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
+
+    //此行代码要加在所有EF操作之前
+    MiniProfilerEF6.Initialize();
+...
+}
+(3) 加入两个新的事件处理方法
+protected void Application_BeginRequest()
+{
+    if (Request.IsLocal)
+    {
+        MiniProfiler.Start();
+    }
+}
+protected void Application_EndRequest()
+{
+    MiniProfiler.Stop();
+}
+
+4. 在web.config文件的<system.webServer>节点下的   <handlers>节点加入：
+   <add name="MiniProfiler" path="mini-profiler-resources/*" verb="*" type="System.Web.Routing.UrlRoutingModule" resourceType="Unspecified" preCondition="integratedMode" />
+ 如下所示：
+<system.webServer>
+......
+    <handlers>
+      <remove name="ExtensionlessUrlHandler-Integrated-4.0" />
+      <remove name="OPTIONSVerbHandler" />
+      <remove name="TRACEVerbHandler" />
+      <add name="ExtensionlessUrlHandler-Integrated-4.0" path="*." verb="*" type="System.Web.Handlers.TransferRequestHandler" preCondition="integratedMode,runtimeVersionv4.0" />
+      <add name="MiniProfiler" path="mini-profiler-resources/*" verb="*" type="System.Web.Routing.UrlRoutingModule" resourceType="Unspecified" preCondition="integratedMode" />
+    </handlers>
+......
+</system.webServer>
+
+5.其他地方无需人为操作，系统会自动处理。
+========================================================================================================
+
+
 
 ===================================增加一张新的数据表操作步骤===============================================
 1. 在MVCForum.Domain/DomainModel/Entities目录下加入新的实体类的定义，其格式为
