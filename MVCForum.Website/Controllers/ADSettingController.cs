@@ -33,13 +33,13 @@ namespace MVCForum.Website.Controllers
         [Authorize]
         public ActionResult Create()
         {
-            return View(new CreateEditADViewModel());
+            return View(new ADSetting_CreateEdit_ViewModel());
         }
 
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(CreateEditADViewModel adViewModel)
+        public ActionResult Create(ADSetting_CreateEdit_ViewModel adViewModel)
         {
             if (ModelState.IsValid)
             {
@@ -110,7 +110,7 @@ namespace MVCForum.Website.Controllers
 
         public ActionResult ADSettingList()
         {
-            var roles = new ADSettingListViewModel
+            var roles = new ADSetting_List_ViewModel
             {
                 ADSettings = _adSettingService.GetAll()
             };
@@ -122,7 +122,7 @@ namespace MVCForum.Website.Controllers
         public ActionResult EditAD(Guid Id)
         {
             var ad = _adSettingService.Get(Id);
-            var adEdit = new CreateEditADViewModel
+            var adEdit = new ADSetting_CreateEdit_ViewModel
             {
                 ADType = ad.ADType,
                 Id = ad.Id,
@@ -154,7 +154,7 @@ namespace MVCForum.Website.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin,Supplier")]
-        public ActionResult EditAD(CreateEditADViewModel ad)
+        public ActionResult EditAD(ADSetting_CreateEdit_ViewModel ad)
         {
             var existingAD = _adSettingService.Get(ad.Id);
             existingAD.ADType = ad.ADType;

@@ -11,12 +11,12 @@ using MVCForum.Domain.Constants;
 
 namespace MVCForum.Website.ViewModels
 {
-    public class ADSettingListViewModel
+    public class ADSetting_List_ViewModel
     {
         public IList<ADSetting> ADSettings { get; set; }
     }
 
-    public class CreateEditADViewModel
+    public class ADSetting_CreateEdit_ViewModel
     {
         //[UIHint(AppConstants.EditorType), AllowHtml]
         //[StringLength(6000)]
