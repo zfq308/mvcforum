@@ -54,7 +54,7 @@ namespace MVCForum.Website.Controllers
             returnView.AiLv_ZuiXinHuoDongTop5 = new List<AiLvHuoDong>();
             var m1 = new AiLvHuoDong();
             m1.MingCheng = "AAAA";
-            m1.LeiBie = 1;
+            m1.LeiBie = Enum_HuoDongLeiBie.FreeRegister;
             returnView.AiLv_ZuiXinHuoDongTop5.Add(m1);
 
 
@@ -369,7 +369,7 @@ namespace MVCForum.Website.Controllers
             return View();
         }
 
-  
+
         public ActionResult PostedIn()
         {
             return View();

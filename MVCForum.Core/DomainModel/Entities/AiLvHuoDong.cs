@@ -7,7 +7,7 @@ using System.Data.SqlTypes;
 
 namespace MVCForum.Domain.DomainModel
 {
-
+    #region 枚举定义
 
     /// <summary>
     /// 活动类别枚举
@@ -52,17 +52,37 @@ namespace MVCForum.Domain.DomainModel
         /// <summary>
         /// 报名中
         /// </summary>
-        Registing=1,
+        Registing = 1,
         /// <summary>
         /// 截止报名
         /// </summary>
-        StopRegister=2,
+        StopRegister = 2,
         /// <summary>
         /// 活动已结束
         /// </summary>
-        Finished=3,
+        Finished = 3,
     }
 
+    /// <summary>
+    /// 审核标志位枚举
+    /// </summary>
+    public enum Enum_ShenHeBiaoZhi
+    {
+        /// <summary>
+        /// 等待审核
+        /// </summary>
+        WaitingAudit = 0,
+        /// <summary>
+        /// 审核成功
+        /// </summary>
+        AuditSuccess = 1,
+        /// <summary>
+        /// 审核不通过，驳回
+        /// </summary>
+        AuditReject = 2,
+    }
+
+    #endregion
 
     /// <summary>
     /// 爱驴活动定义类
@@ -73,6 +93,10 @@ namespace MVCForum.Domain.DomainModel
         {
             Id = GuidComb.GenerateComb();
         }
+
+        #region 属性
+
+     
 
         /// <summary>
         /// 爱驴活动流水号
@@ -87,12 +111,12 @@ namespace MVCForum.Domain.DomainModel
         /// <summary>
         /// 活动类别
         /// </summary>
-        public int LeiBie { get; set; }
+        public Enum_HuoDongLeiBie LeiBie { get; set; }
 
         /// <summary>
         /// 活动要求
         /// </summary>
-        public int YaoQiu { get; set; }
+        public Enum_HuoDongYaoQiu YaoQiu { get; set; }
 
         /// <summary>
         /// 活动开始时间
@@ -152,7 +176,7 @@ namespace MVCForum.Domain.DomainModel
         /// <summary>
         /// 活动状态
         /// </summary>
-        public int ZhuangTai { set; get; }
+        public Enum_HuoDongZhuangTai ZhuangTai { set; get; }
 
         /// <summary>
         /// 若生成记录用户是供应商，则记下供应商的Id
@@ -160,19 +184,29 @@ namespace MVCForum.Domain.DomainModel
         public string GongYingShangUserId { get; set; }
 
         /// <summary>
-        /// 活动发布审核标志位，若活动为管理员创建，其值为1，若活动为供应商创建，其值初始时为0，审核通过后为1，驳回审核后，其值为2.
+        /// 活动发布审核标志位，若活动为管理员创建，其值为Enum_ShenHeBiaoZhi.AuditSuccess，
+        /// 若活动为供应商创建，其值初始时为WaitingAudit，审核通过后为Enum_ShenHeBiaoZhi.AuditSuccess，
+        /// 驳回审核后，其值为Enum_ShenHeBiaoZhi.AuditReject
         /// </summary>
-        public int ShenHeBiaoZhi { get; set; }
+        public Enum_ShenHeBiaoZhi ShenHeBiaoZhi { get; set; }
+
+        /// <summary>
+        /// 审核意见
+        /// </summary>
+        public string AuditComments { get; set; }
 
         /// <summary>
         /// 记录生成时间
         /// </summary>
         public DateTime CreatedTime { get; set; }
 
+        /// <summary>
+        /// 活动报名明细
+        /// </summary>
+        public virtual IList<ActivityRegister> ActivityRegisters { get; set; }
 
-        public virtual IList<AiLvHuoDongDetail> AiLvHuoDongDetails { get; set; }
-
+        #endregion
     }
 
-   
+
 }

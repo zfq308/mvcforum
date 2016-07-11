@@ -8,7 +8,7 @@ using System.IO;
 namespace MVCForum.Utilities
 {
     /// <summary>
-    /// 生成验证码的类
+    /// 生成图形验证码的类
     /// </summary>
     public class ValidateCode
     {

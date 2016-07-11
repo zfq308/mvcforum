@@ -59,7 +59,7 @@ namespace MVCForum.Services.Data.Context
         public DbSet<VerifyCode> VerifyCode { get; set; }
         public DbSet<MembershipTodayStar> MembershipTodayStar { get; set; }
         public DbSet<AiLvHuoDong> AiLvHuoDong { get; set; }
-        public DbSet<AiLvHuoDongDetail> AiLvHuoDongDetail { get; set; }
+        public DbSet<ActivityRegister> ActivityRegister { get; set; }
         public DbSet<ADSetting> ADSetting { get; set; }
 
 

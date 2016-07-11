@@ -42,5 +42,27 @@ namespace MVCForum.Services.Data.Mapping
         }
     }
 
+    public class ActivityRegisterMapping : EntityTypeConfiguration<ActivityRegister>
+    {
+        public ActivityRegisterMapping()
+        {
+            HasKey(x => x.DetailsId);
+            Property(x => x.DetailsId).IsRequired();
+            Property(x => x.Id).IsRequired()
+                                    .HasColumnAnnotation("Index",
+                                    new IndexAnnotation(new IndexAttribute("IX_ActivityRegister_HuoDongId", 1) { IsUnique = false }));
+            Property(x => x.UserId).IsRequired();
+            Property(x => x.UserGender).IsRequired();
+            Property(x => x.UserMarriedStatus).IsRequired();
+            Property(x => x.UserTelphone).IsRequired().HasMaxLength(11);
+            Property(x => x.JoinPeopleNumber).IsRequired();
+            Property(x => x.CreateTime).IsRequired();
+            Property(x => x.FeeSource).IsRequired().HasMaxLength(20);
+            Property(x => x.FeeId).IsRequired().HasMaxLength(20);
+            Property(x => x.FeeNumber).IsRequired();
+            Property(x => x.FeeStatus).IsRequired();
+            Property(x => x.PayCompletedTime).IsRequired();
 
+        }
+    }
 }

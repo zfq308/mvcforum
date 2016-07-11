@@ -36,13 +36,13 @@ namespace MVCForum.Website.ViewModels
         /// 活动类别
         /// </summary>
         [Display(Name = "活动类别")]
-        public int LeiBie { get; set; }
+        public Enum_HuoDongLeiBie LeiBie { get; set; }
 
         /// <summary>
         /// 活动要求
         /// </summary>
         [Display(Name = "活动要求")]
-        public int YaoQiu { get; set; }
+        public Enum_HuoDongYaoQiu YaoQiu { get; set; }
 
         /// <summary>
         /// 活动开始时间
@@ -125,7 +125,7 @@ namespace MVCForum.Website.ViewModels
         /// 活动状态
         /// </summary>
         [Display(Name = "活动状态")]
-        public int ZhuangTai { set; get; }
+        public Enum_HuoDongZhuangTai ZhuangTai { set; get; }
 
         ///// <summary>
         ///// 若生成记录用户是供应商，则记下供应商的Id
@@ -136,7 +136,7 @@ namespace MVCForum.Website.ViewModels
         /// 活动发布审核标志位，若活动为管理员创建，其值为1，若活动为供应商创建，其值初始时为0，审核通过后为1，驳回审核后，其值为2.
         /// </summary>
         [Display(Name = "审核标志")]
-        public int ShenHeBiaoZhi { get; set; }
+        public Enum_ShenHeBiaoZhi ShenHeBiaoZhi { get; set; }
 
         ///// <summary>
         ///// 记录生成时间

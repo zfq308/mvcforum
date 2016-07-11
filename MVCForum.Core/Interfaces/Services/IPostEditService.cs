@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using MVCForum.Domain.DomainModel.Entities;
+using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Services
 {

@@ -6,6 +6,7 @@ using MVCForum.Domain.DomainModel.Entities;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Services.Data.Context;
+using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Services
 {

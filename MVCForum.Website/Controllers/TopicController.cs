@@ -196,7 +196,7 @@ namespace MVCForum.Website.Controllers
                             Name = _bannedWordService.SanitiseBannedWords(topicViewModel.Name, bannedWords),
                             Category = category,
                             User = loggedOnUser,
-                            TopicType = category.Name
+                            TopicType =  Enum_TopicType.Announcement
                         };
 
                         // Check Permissions for topic topions

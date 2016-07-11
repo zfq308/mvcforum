@@ -4,6 +4,44 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Domain.DomainModel
 {
+    public partial class Permission : Entity
+    {
+        public Permission()
+        {
+            Id = GuidComb.GenerateComb();
+        }
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public bool IsGlobal { get; set; }
+        public virtual IList<CategoryPermissionForRole> CategoryPermissionForRoles { get; set; }
+        public virtual IList<GlobalPermissionForRole> GlobalPermissionForRoles { get; set; }
+    }
+
+    public partial class CategoryPermissionForRole : Entity
+    {
+        public CategoryPermissionForRole()
+        {
+            Id = GuidComb.GenerateComb();
+        }
+        public Guid Id { get; set; }
+        public virtual Permission Permission { get; set; }
+        public virtual MembershipRole MembershipRole { get; set; }
+        public virtual Category Category { get; set; }
+        public bool IsTicked { get; set; }
+    }
+
+    public partial class GlobalPermissionForRole : Entity
+    {
+        public GlobalPermissionForRole()
+        {
+            Id = GuidComb.GenerateComb();
+        }
+        public Guid Id { get; set; }
+        public virtual Permission Permission { get; set; }
+        public virtual MembershipRole MembershipRole { get; set; }
+        public bool IsTicked { get; set; }
+    }
+
     /// <summary>
     /// 用户角色实体定义类
     /// </summary>
@@ -14,7 +52,9 @@ namespace MVCForum.Domain.DomainModel
             Id = GuidComb.GenerateComb();
         }
 
-        ///用户角色实体定义流水Id
+        /// <summary>
+        /// 用户角色实体定义流水Id
+        /// </summary>
         public Guid Id { get; set; }
 
         /// <summary>
@@ -66,4 +106,13 @@ namespace MVCForum.Domain.DomainModel
         }
 
     }
+
+    public class PermissionForRole
+    {
+        public Permission Permission { get; set; }
+        public MembershipRole MembershipRole { get; set; }
+        public Category Category { get; set; }
+        public bool IsTicked { get; set; }
+    }
+
 }

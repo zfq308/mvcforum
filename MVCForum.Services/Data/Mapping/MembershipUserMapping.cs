@@ -162,5 +162,50 @@ namespace MVCForum.Services.Data.Mapping
         }
     }
 
+    /// <summary>
+    /// 用户今日之星特权实体映射类
+    /// </summary>
+    public class MembershipTodayStarMapping : EntityTypeConfiguration<MembershipTodayStar>
+    {
+        public MembershipTodayStarMapping()
+        {
+            HasKey(x => x.Id);
+            Property(x => x.Id).IsRequired();
+            Property(x => x.UserId).IsRequired();
+            Property(x => x.CreateDate).IsRequired();
+            Property(x => x.Operator).IsRequired();
+            Property(x => x.Status).IsRequired();
+            Property(x => x.JobId).IsOptional();
+            Property(x => x.StartTime).IsRequired();
+            Property(x => x.StopTime).IsRequired();
+
+        }
+    }
+
+    /// <summary>
+    /// 用户属性变更记录映射类
+    /// </summary>
+    public class MembershipPropertyChangeMapping : EntityTypeConfiguration<MembershipPropertyChange>
+    {
+        public MembershipPropertyChangeMapping()
+        {
+            HasKey(x => x.ChangeId);
+            Property(x => x.ChangeId).IsRequired();
+            Property(x => x.CreateDate).IsRequired();
+            Property(x => x.PropertyName).IsRequired();
+            Property(x => x.PropertyTypeName).IsRequired();
+            Property(x => x.SourceValue).IsRequired();
+            Property(x => x.TargetValue).IsRequired();
+            Property(x => x.ApprovedFlag).IsRequired();
+            Property(x => x.ApprovedTime).IsRequired();
+            Property(x => x.ApprovedMan).IsRequired();
+            Property(x => x.ApproveMessage).IsRequired();
+            Property(x => x.UserId).IsRequired()
+             .HasColumnAnnotation("Index",
+                                    new IndexAnnotation(new IndexAttribute("IX_MembershipPropertyChange_UserId", 1) { IsUnique = false }));
+
+        }
+
+    }
 
 }

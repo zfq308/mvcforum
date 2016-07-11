@@ -37,6 +37,8 @@ namespace MVCForum.Domain.DomainModel
             FailNumber = 0;
         }
 
+        #region 属性
+       
         /// <summary>
         /// Id
         /// </summary>
@@ -69,6 +71,9 @@ namespace MVCForum.Domain.DomainModel
         /// 发送返回数据
         /// </summary>
         public string ReturnMessage { get; set; }
+
+        #endregion
+
     }
 
     /// <summary>

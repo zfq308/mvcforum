@@ -19,4 +19,29 @@ namespace MVCForum.Services.Data.Mapping
                 .WillCascadeOnDelete(false);
         }
     }
+
+    public class PollAnswerMapping : EntityTypeConfiguration<PollAnswer>
+    {
+        public PollAnswerMapping()
+        {
+            HasKey(x => x.Id);
+            Property(x => x.Id).IsRequired();
+            Property(x => x.Answer).IsRequired().HasMaxLength(600);
+            HasMany(x => x.PollVotes)
+                .WithRequired(t => t.PollAnswer)
+                .Map(x => x.MapKey("PollAnswer_Id"))
+                .WillCascadeOnDelete(false);
+        }
+    }
+
+    public class PollVoteMapping : EntityTypeConfiguration<PollVote>
+    {
+        public PollVoteMapping()
+        {
+            HasKey(x => x.Id);
+            Property(x => x.Id).IsRequired();
+        }
+    }
+
+
 }

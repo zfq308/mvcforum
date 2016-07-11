@@ -20,32 +20,79 @@ using MVCForum.Utilities;
 namespace MVCForum.Services
 {
 
-    public partial class AiLvHuoDongService : IAiLvHuoDongService
+    public partial class ActivityRegisterService : IActivityRegisterService
     {
+
+        #region 定义只读变量
+
         private readonly MVCForumContext _context;
         private readonly ISettingsService _settingsService;
-        private readonly IUploadedFileService _uploadedFileService;
         private readonly ILoggingService _loggingService;
         private readonly IMembershipService _membershipService;
 
-        public AiLvHuoDongService(IMVCForumContext context, ISettingsService settingsService, ILoggingService loggingService, IUploadedFileService uploadedFileService, IMembershipService membershipService)
+        #endregion
+
+        #region 建构式
+
+        public ActivityRegisterService(IMVCForumContext context, ISettingsService settingsService, ILoggingService loggingService, IMembershipService membershipService)
         {
             _settingsService = settingsService;
             _loggingService = loggingService;
-            _uploadedFileService = uploadedFileService;
             _membershipService = membershipService;
             _context = context as MVCForumContext;
 
         }
 
-        /// <summary>
-        /// 新增爱驴活动实例
-        /// </summary>
-        /// <param name="newHuoDong"></param>
-        /// <returns></returns>
-        public AiLvHuoDong Add(AiLvHuoDong newHuoDong)
+        #endregion
+
+        #region 增删爱驴活动报名实例
+
+        public ActivityRegister Add(ActivityRegister newRegister)
         {
-            return _context.AiLvHuoDong.Add(newHuoDong);
+            return _context.ActivityRegister.Add(newRegister);
+        }
+
+        public bool Delete(ActivityRegister RegisterInfo)
+        {
+            try
+            {
+                _context.ActivityRegister.Remove(RegisterInfo);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _loggingService.Error(ex);
+            }
+            return false;
+        }
+
+        #endregion
+
+        #region 检查报名状态
+
+        /// <summary>
+        /// 检查报名状态
+        /// </summary>
+        /// <param name="huodong"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public bool CheckRegisterStatus(AiLvHuoDong huodong, MembershipUser user)
+        {
+            if (!CheckHuoDongJieZhiShijian(huodong))
+            {
+                return false;
+            }
+
+            if (!CheckUserMarriedStatus(huodong, user))
+            {
+                return false;
+            }
+
+            if (!CheckUserGender(huodong, user))
+            {
+                return false;
+            }
+            return true;
         }
 
         /// <summary>
@@ -53,7 +100,7 @@ namespace MVCForum.Services
         /// </summary>
         /// <param name="huodong"></param>
         /// <returns></returns>
-        public bool CheckHuoDongJieZhiShijian(AiLvHuoDong huodong)
+        private bool CheckHuoDongJieZhiShijian(AiLvHuoDong huodong)
         {
             if (huodong != null)
             {
@@ -70,7 +117,7 @@ namespace MVCForum.Services
         /// <param name="huodong"></param>
         /// <param name="user"></param>
         /// <returns></returns>
-        public bool CheckMemberCondition(AiLvHuoDong huodong, MembershipUser user)
+        private bool CheckUserGender(AiLvHuoDong huodong, MembershipUser user)
         {
             if (huodong != null && user != null)
             {
@@ -79,7 +126,7 @@ namespace MVCForum.Services
 
                 if (YuGuRenShu <= 0) return false;
 
-                if (CheckMemberCondition(XingBieBiLi))
+                if (CheckXingBieBiLi(XingBieBiLi))
                 {
                     string[] pair = XingBieBiLi.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
                     if (pair.Length != 2) return false;
@@ -95,12 +142,12 @@ namespace MVCForum.Services
                     if (user.Gender == Enum_Gender.boy)
                     {
                         int BoyNumber = (int)((YuGuRenShu * BoyRate) / (BoyRate + GirlRate));
-                        return _context.AiLvHuoDongDetail.Where(x => x.Id == huodong.Id && x.UserGender == Enum_Gender.boy).Count() + 1 <= BoyNumber;
+                        return _context.ActivityRegister.Where(x => x.Id == huodong.Id && x.UserGender == Enum_Gender.boy).Count() + 1 <= BoyNumber;
                     }
                     else
                     {
                         int GirlNumber = (int)((YuGuRenShu * GirlRate) / (BoyRate + GirlRate));
-                        return _context.AiLvHuoDongDetail.Where(x => x.Id == huodong.Id && x.UserGender == Enum_Gender.girl).Count() + 1 <= GirlNumber;
+                        return _context.ActivityRegister.Where(x => x.Id == huodong.Id && x.UserGender == Enum_Gender.girl).Count() + 1 <= GirlNumber;
                     }
                 }
 
@@ -117,7 +164,7 @@ namespace MVCForum.Services
         /// </summary>
         /// <param name="XingBieBiLi"></param>
         /// <returns></returns>
-        private bool CheckMemberCondition(string XingBieBiLi)
+        private bool CheckXingBieBiLi(string XingBieBiLi)
         {
             string[] pair = XingBieBiLi.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
             if (pair.Length != 2)
@@ -139,6 +186,125 @@ namespace MVCForum.Services
         #endregion
 
         /// <summary>
+        /// 当活动要求为单身用户时， 检查用户的婚姻情况
+        /// </summary>
+        /// <param name="huodong"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        private bool CheckUserMarriedStatus(AiLvHuoDong huodong, MembershipUser user)
+        {
+            if (huodong != null && user != null)
+            {
+                if (huodong.YaoQiu == Enum_HuoDongYaoQiu.Single && user.IsMarried == Enum_MarriedStatus.Married)
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
+        #endregion
+
+        public ActivityRegister Get(Guid id)
+        {
+            return _context.ActivityRegister.AsNoTracking().FirstOrDefault(x => x.DetailsId == id);
+        }
+
+        public IList<ActivityRegister> GetActivityRegisterListByHongDong(AiLvHuoDong HuoDong)
+        {
+            if (HuoDong != null)
+            {
+                return GetActivityRegisterListByHongDongId(HuoDong.Id);
+            }
+            return null;
+        }
+
+        public IList<ActivityRegister> GetActivityRegisterListByHongDongId(Guid HuoDongId)
+        {
+            return _context.ActivityRegister.AsNoTracking().Where(x => x.Id == HuoDongId).ToList();
+        }
+
+        /// <summary>
+        /// 确认支付，更新状态（FeeStatus）
+        /// </summary>
+        /// <param name="RegisterInfo"></param>
+        /// <param name="order"></param>
+        public void ConfirmPay(ActivityRegister RegisterInfo, ActivityRegisterForOrder order)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int CountRegistedNumber(Guid HuoDongId)
+        {
+            return _context.ActivityRegister.AsNoTracking().Where(x => x.Id == HuoDongId).Sum(y => y.JoinPeopleNumber);
+        }
+
+        public int CountRegistedNumber(AiLvHuoDong HuoDong)
+        {
+            if (HuoDong != null)
+            {
+                return CountRegistedNumber(HuoDong.Id);
+            }
+            return 0;
+        }
+
+        public int CountPaidNumber(Guid HuoDongId)
+        {
+            return _context.ActivityRegister.AsNoTracking().Where(x => x.Id == HuoDongId &&
+            x.FeeStatus == Enum_FeeStatus.PayedFee).Sum(y => y.JoinPeopleNumber);
+
+        }
+
+        public int CountPaidNumber(AiLvHuoDong HuoDong)
+        {
+            if (HuoDong != null)
+            {
+                return CountPaidNumber(HuoDong.Id);
+            }
+            return 0;
+        }
+    }
+
+    public partial class AiLvHuoDongService : IAiLvHuoDongService
+    {
+        #region 定义只读变量
+
+        private readonly MVCForumContext _context;
+        private readonly ISettingsService _settingsService;
+        private readonly IUploadedFileService _uploadedFileService;
+        private readonly ILoggingService _loggingService;
+        private readonly IMembershipService _membershipService;
+
+        #endregion
+
+        #region 建构式
+
+        public AiLvHuoDongService(IMVCForumContext context, ISettingsService settingsService, ILoggingService loggingService, IUploadedFileService uploadedFileService, IMembershipService membershipService)
+        {
+            _settingsService = settingsService;
+            _loggingService = loggingService;
+            _uploadedFileService = uploadedFileService;
+            _membershipService = membershipService;
+            _context = context as MVCForumContext;
+
+        }
+
+        #endregion
+
+        #region 增删爱驴活动实例
+
+        /// <summary>
+        /// 新增爱驴活动实例
+        /// </summary>
+        /// <param name="newHuoDong"></param>
+        /// <returns></returns>
+        public AiLvHuoDong Add(AiLvHuoDong newHuoDong)
+        {
+            return _context.AiLvHuoDong.Add(newHuoDong);
+        }
+
+        /// <summary>
         /// 删除爱驴活动实例
         /// </summary>
         /// <param name="huodong"></param>
@@ -158,18 +324,13 @@ namespace MVCForum.Services
             return false;
         }
 
+        #endregion
+
+        #region 查询/取得爱驴活动记录
+
         public AiLvHuoDong Get(Guid id)
         {
             return _context.AiLvHuoDong.AsNoTracking().FirstOrDefault(x => x.Id == id);
-        }
-
-        public IList<AiLvHuoDong> GetAiLvHongDongListByName(string SearchCondition)
-        {
-            SearchCondition = StringUtils.SafePlainText(SearchCondition);
-            return _context.AiLvHuoDong.AsNoTracking()
-                .Where(x => x.MingCheng.ToUpper().Contains(SearchCondition.ToUpper()))
-                .OrderByDescending(x => x.MingCheng)
-                .ToList();
         }
 
         public IList<AiLvHuoDong> GetAll()
@@ -189,6 +350,32 @@ namespace MVCForum.Services
             return new PagedList<AiLvHuoDong>(results, pageIndex, pageSize, totalCount);
         }
 
+        public IList<AiLvHuoDong> GetAllAiLvHuodongByStatus(Enum_HuoDongZhuangTai status)
+        {
+            switch (status)
+            {
+                case Enum_HuoDongZhuangTai.Registing:
+                    return _context.AiLvHuoDong.Where(x => x.ZhuangTai == Enum_HuoDongZhuangTai.Registing).AsNoTracking().ToList();
+                case Enum_HuoDongZhuangTai.StopRegister:
+                    return _context.AiLvHuoDong.Where(x => x.ZhuangTai == Enum_HuoDongZhuangTai.StopRegister).AsNoTracking().ToList();
+                case Enum_HuoDongZhuangTai.Finished:
+                    return _context.AiLvHuoDong.Where(x => x.ZhuangTai == Enum_HuoDongZhuangTai.Finished).AsNoTracking().ToList();
+                default:
+                    return _context.AiLvHuoDong.AsNoTracking().ToList();
+            }
+        }
+
+        public IList<AiLvHuoDong> GetAiLvHongDongListByName(string SearchCondition)
+        {
+            SearchCondition = StringUtils.SafePlainText(SearchCondition);
+            return _context.AiLvHuoDong.AsNoTracking()
+                .Where(x => x.MingCheng.ToUpper().Contains(SearchCondition.ToUpper()))
+                .OrderByDescending(x => x.MingCheng)
+                .ToList();
+        }
+
+        #endregion
+
         /// <summary>
         /// 自动更新活动状态
         /// TODO: Benjamin 此方法的实现需要客户确认
@@ -197,28 +384,13 @@ namespace MVCForum.Services
         public bool Update_ZhuangTai()
         {
 
-            var list = _context.AiLvHuoDong.Where(x => x.ZhuangTai == (int)Enum_HuoDongZhuangTai.Registing ||
-                                                       x.ZhuangTai == (int)Enum_HuoDongZhuangTai.StopRegister).AsNoTracking().ToList();
+            var list = _context.AiLvHuoDong.Where(x => x.ZhuangTai == Enum_HuoDongZhuangTai.Registing ||
+                                                       x.ZhuangTai == Enum_HuoDongZhuangTai.StopRegister).AsNoTracking().ToList();
             foreach (AiLvHuoDong item in list)
             {
                 //Do nothing
             }
             return true;
-        }
-
-        public IList<AiLvHuoDong> GetAllAiLvHuodongByStatus(Enum_HuoDongZhuangTai status)
-        {
-            switch (status)
-            {
-                case Enum_HuoDongZhuangTai.Registing:
-                    return _context.AiLvHuoDong.Where(x => x.ZhuangTai == (int)Enum_HuoDongZhuangTai.Registing).AsNoTracking().ToList();
-                case Enum_HuoDongZhuangTai.StopRegister:
-                    return _context.AiLvHuoDong.Where(x => x.ZhuangTai == (int)Enum_HuoDongZhuangTai.StopRegister).AsNoTracking().ToList();
-                case Enum_HuoDongZhuangTai.Finished:
-                    return _context.AiLvHuoDong.Where(x => x.ZhuangTai == (int)Enum_HuoDongZhuangTai.Finished).AsNoTracking().ToList();
-                default:
-                    return _context.AiLvHuoDong.AsNoTracking().ToList();
-            }
         }
 
         public bool AuditAiLvHuodong(AiLvHuoDong ailvhuodongInstance, bool auditresult)
@@ -228,7 +400,7 @@ namespace MVCForum.Services
                 var user = _membershipService.GetUser(Guid.Parse(ailvhuodongInstance.GongYingShangUserId));
                 if (user != null && user.Roles.Any(x => x.RoleName == AppConstants.SupplierRoleName))
                 {
-                    ailvhuodongInstance.ShenHeBiaoZhi = auditresult ? 1 : 0;
+                    ailvhuodongInstance.ShenHeBiaoZhi = auditresult ? Enum_ShenHeBiaoZhi.AuditSuccess : Enum_ShenHeBiaoZhi.AuditReject;
                     return true;
                 }
                 return false;
@@ -238,6 +410,6 @@ namespace MVCForum.Services
                 return false;
             }
         }
-    }
 
+    }
 }

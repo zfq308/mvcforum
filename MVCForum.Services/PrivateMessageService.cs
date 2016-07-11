@@ -13,6 +13,8 @@ namespace MVCForum.Services
 {
     public partial class PrivateMessageService : IPrivateMessageService
     {
+        #region 建构式
+
         private readonly MVCForumContext _context;
         /// <summary>
         /// Constructor
@@ -23,14 +25,18 @@ namespace MVCForum.Services
             _context = context as MVCForumContext;
         }
 
+        #endregion
+
         public PrivateMessage SanitizeMessage(PrivateMessage privateMessage)
         {
             privateMessage.Message = StringUtils.GetSafeHtml(privateMessage.Message);
             return privateMessage;
         }
 
+        #region 私信增删操作
+
         /// <summary>
-        /// Add a private message
+        /// 创建私信数据
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
@@ -69,6 +75,17 @@ namespace MVCForum.Services
         }
 
         /// <summary>
+        /// 删除私信数据
+        /// </summary>
+        /// <param name="message"></param>
+        public void DeleteMessage(PrivateMessage message)
+        {
+            _context.PrivateMessage.Remove(message);
+        }
+
+        #endregion
+
+        /// <summary>
         /// Return a private message by Id
         /// </summary>
         /// <param name="id"></param>
@@ -81,6 +98,13 @@ namespace MVCForum.Services
                             .FirstOrDefault(x => x.Id == id);
         }
 
+        /// <summary>
+        /// 分页取得特定用户的全部私信汇总集合
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public IPagedList<PrivateMessageListItem> GetUsersPrivateMessages(int pageIndex, int pageSize, MembershipUser user)
         {
             var query = _context.PrivateMessage
@@ -109,6 +133,14 @@ namespace MVCForum.Services
             return new PagedList<PrivateMessageListItem>(results, pageIndex, pageSize, total);
         }
 
+        /// <summary>
+        /// 分页取得特定用户的全部私信集合
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="toUser"></param>
+        /// <param name="fromUser"></param>
+        /// <returns></returns>
         public IPagedList<PrivateMessage> GetUsersPrivateMessages(int pageIndex, int pageSize, MembershipUser toUser, MembershipUser fromUser)
         {
             var query = _context.PrivateMessage
@@ -216,14 +248,7 @@ namespace MVCForum.Services
                                 .ToList();
         }
 
-        /// <summary>
-        /// Delete a private message
-        /// </summary>
-        /// <param name="message"></param>
-        public void DeleteMessage(PrivateMessage message)
-        {
-            _context.PrivateMessage.Remove(message);
-        }
+ 
 
     }
 }

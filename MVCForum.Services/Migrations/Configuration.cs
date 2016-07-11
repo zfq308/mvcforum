@@ -503,7 +503,7 @@ namespace MVCForum.Services.Migrations
                     var SampleCategory = context.Category.Where(x => x.Name == "Example Category").SingleOrDefault();
                     var topic = new Topic
                     {
-                        TopicType = "BasicTopic",
+                        TopicType =  Enum_TopicType.Announcement,
                         Category = SampleCategory,
                         CreateDate = DateTime.Now,
                         User = admin,

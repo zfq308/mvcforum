@@ -26,16 +26,16 @@ namespace MVCForum.Domain.DomainModel
     /// <summary>
     /// 爱驴活动报名类
     /// </summary>
-    public partial class AiLvHuoDongDetail : Entity
+    public partial class ActivityRegister : Entity
     {
         #region 建构式
 
-        private AiLvHuoDongDetail()
+        private ActivityRegister()
         {
 
         }
 
-        public AiLvHuoDongDetail(Guid huodongId, MembershipUser user)
+        public ActivityRegister(Guid huodongId, MembershipUser user)
         {
             DetailsId = GuidComb.GenerateComb();
             Id = huodongId;
@@ -70,9 +70,19 @@ namespace MVCForum.Domain.DomainModel
         public Enum_Gender UserGender { get; set; }
 
         /// <summary>
+        /// 报名用户的婚姻状态（为快速查询做的冗余）
+        /// </summary>
+        public Enum_MarriedStatus UserMarriedStatus { get; set; }
+
+        /// <summary>
         /// 报名用户的电话（为快速查询做的冗余）
         /// </summary>
         public string UserTelphone { get; set; }
+
+        /// <summary>
+        /// 总报名人数（为以后拓展使用，例如偕同人员人数，默认为1）
+        /// </summary>
+        public int JoinPeopleNumber { get; set; }
 
         /// <summary>
         /// 报名时间（记录生成时间）
@@ -97,9 +107,45 @@ namespace MVCForum.Domain.DomainModel
         /// <summary>
         /// 缴费状态
         /// </summary>
-        public int FeeStatus { get; set; }
+        public Enum_FeeStatus FeeStatus { get; set; }
 
+        /// <summary>
+        /// 支付完成，更新缴费状态和此时间
+        /// </summary>
+        public DateTime PayCompletedTime { get; set; }
 
+        /// <summary>
+        /// 支付用户
+        /// </summary>
+        public virtual MembershipUser User { get; set; }
     }
+
+
+    public class ActivityRegisterForOrder
+    {
+        /// <summary>
+        /// 公众号名称，由商户传入
+        /// </summary>
+        public string appId { get; set; }
+        /// <summary>
+        /// 时间戳，自1970年以来的秒数
+        /// </summary>
+        public string timeStamp { get; set; }
+        /// <summary>
+        /// 随机串
+        /// </summary>
+        public string nonceStr { get; set; }
+
+        public string packageValue { get; set; }
+        /// <summary>
+        /// 微信签名
+        /// </summary>
+        public string paySign { get; set; }
+        /// <summary>
+        /// 微信支付后的返回消息
+        /// </summary>
+        public string msg { get; set; }
+    }
+
 
 }
