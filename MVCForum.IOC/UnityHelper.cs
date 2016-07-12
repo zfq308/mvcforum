@@ -17,7 +17,7 @@ namespace MVCForum.IOC
     {
         public static void BindInRequestScope<T1, T2>(this IUnityContainer container) where T2 : T1
         {
-            container.RegisterType<T1, T2>(new HierarchicalLifetimeManager()); 
+            container.RegisterType<T1, T2>(new HierarchicalLifetimeManager());
         }
 
     }
@@ -27,7 +27,6 @@ namespace MVCForum.IOC
     /// </summary>
     public static partial class UnityHelper
     {
-
         public static IUnityContainer Start()
         {
             var container = new UnityContainer();
@@ -41,7 +40,7 @@ namespace MVCForum.IOC
         /// </summary>
         /// <returns></returns>
         private static IUnityContainer BuildUnityContainer(UnityContainer container)
-        {           
+        {
             // register all your components with the container here
             // it is NOT necessary to register your controllers
 
@@ -59,10 +58,15 @@ namespace MVCForum.IOC
             container.BindInRequestScope<IMembershipService, MembershipService>();
             container.BindInRequestScope<IPermissionService, PermissionService>();
             container.BindInRequestScope<ISettingsService, SettingsService>();
+            container.BindInRequestScope<ILocalizationService, LocalizationService>();
+            container.BindInRequestScope<ILoggingService, LoggingService>();
+            container.BindInRequestScope<IReflectionService, ReflectionService>();
+
+            #region Basic Bussiness Modules
+
             container.BindInRequestScope<ITopicService, TopicService>();
             container.BindInRequestScope<ITopicTagService, TopicTagService>();
             container.BindInRequestScope<IPostService, PostService>();
-            container.BindInRequestScope<ILocalizationService, LocalizationService>();
             container.BindInRequestScope<IVoteService, VoteService>();
             container.BindInRequestScope<IBadgeService, BadgeService>();
             container.BindInRequestScope<IMembershipUserPointsService, MembershipUserPointsService>();
@@ -70,7 +74,6 @@ namespace MVCForum.IOC
             container.BindInRequestScope<ICategoryNotificationService, CategoryNotificationService>();
             container.BindInRequestScope<ITopicNotificationService, TopicNotificationService>();
             container.BindInRequestScope<IPrivateMessageService, PrivateMessageService>();
-            container.BindInRequestScope<ILoggingService, LoggingService>();
             container.BindInRequestScope<IEmailService, EmailService>();
             container.BindInRequestScope<IReportService, ReportService>();
             container.BindInRequestScope<IActivityService, ActivityService>();
@@ -84,16 +87,18 @@ namespace MVCForum.IOC
             container.BindInRequestScope<IGlobalPermissionForRoleService, GlobalPermissionForRoleService>();
             container.BindInRequestScope<ICacheService, CacheService>();
             container.BindInRequestScope<ITagNotificationService, TagNotificationService>();
-            container.BindInRequestScope<IReflectionService, ReflectionService>();
             container.BindInRequestScope<IBlockService, BlockService>();
             container.BindInRequestScope<IConfigService, ConfigService>();
             container.BindInRequestScope<IPostEditService, PostEditService>();
 
+            #endregion
 
             container.BindInRequestScope<IMembershipTodayStarService, MembershipTodayStarService>();
             container.BindInRequestScope<IAiLvHuoDongService, AiLvHuoDongService>();
             container.BindInRequestScope<IADSettingService, ADSettingService>();
             container.BindInRequestScope<IVerifyCodeService, VerifyCodeService>();
+            container.BindInRequestScope<IActivityRegisterService, ActivityRegisterService>();
+            container.BindInRequestScope<IMembershipUserPictureService, MembershipUserPictureService>();
 
             CustomBindings(container);
 

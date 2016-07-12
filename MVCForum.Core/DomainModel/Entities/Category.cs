@@ -166,9 +166,6 @@ namespace MVCForum.Domain.DomainModel
     /// </summary>
     public enum EnumCategoryType
     {
-        //PublicCategory = 1,
-        //PrivateCategory = 2,
-
         /// <summary>
         /// 爱驴资讯
         /// </summary>
@@ -193,5 +190,16 @@ namespace MVCForum.Domain.DomainModel
         /// 示范类型
         /// </summary>
         SampleCategory = 7,
+    }
+
+    public partial class CategoryNotification : Entity
+    {
+        public CategoryNotification()
+        {
+            Id = GuidComb.GenerateComb();
+        }
+        public Guid Id { get; set; }
+        public virtual Category Category { get; set; }
+        public virtual MembershipUser User { get; set; }
     }
 }

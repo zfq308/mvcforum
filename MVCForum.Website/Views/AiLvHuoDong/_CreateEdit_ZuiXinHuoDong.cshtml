@@ -11,19 +11,15 @@
 
             <div class="form-group">
                 @Html.LabelFor(x => x.LeiBie)
-                @Html.TextBoxFor(model => model.LeiBie, new { @class = "form-control" })
+                @Html.DropDownListFor(x => x.LeiBie, ViewData["LeiBieList"] as List<SelectListItem>, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.LeiBie)
             </div>
 
-
-
-
             <div class="form-group">
                 @Html.LabelFor(x => x.YaoQiu)
-                @Html.TextBoxFor(model => model.YaoQiu, new { @class = "form-control" })
+                @Html.DropDownListFor(x => x.YaoQiu, ViewData["YaoQiuList"] as List<SelectListItem>, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.YaoQiu)
             </div>
-
 
             <div class="form-group">
                 @Html.LabelFor(x => x.StartTime)
@@ -52,11 +48,10 @@
             </div>
 
             <div class="editor-field editorholder">
-                @Html.EditorFor(model => model.LiuCheng)
+                @Html.LabelFor(x => x.LiuCheng)
+                @Html.EditorFor(model => model.LiuCheng, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.LiuCheng)
             </div>
-
-
 
             <div class="form-group">
                 @Html.LabelFor(x => x.Feiyong)
@@ -70,8 +65,6 @@
                 @Html.TextBoxFor(model => model.ZhuYiShiXiang, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.ZhuYiShiXiang)
             </div>
-
-
 
             <div class="form-group">
                 @Html.LabelFor(x => x.YuGuRenShu)
@@ -109,10 +102,10 @@
             <div class="submit-holder">
                 <button type="submit" name="btn_Save" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
                     保存
-                </button>
+                </button><br />
                 <button type="submit" name="btn_AuditSuccess" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
                     审核同意
-                </button>
+                </button><br />
                 <button type="submit" name="btn_AuditFail" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
                     审核驳回
                 </button>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using MVCForum.Domain.DomainModel;
+using MVCForum.Domain.Interfaces.UnitOfWork;
 
 namespace MVCForum.Domain.Interfaces.Services
 {
@@ -62,4 +63,20 @@ namespace MVCForum.Domain.Interfaces.Services
         int UserPoints(MembershipUser user);
         void Delete(IEnumerable<MembershipUserPoints> points);
     }
+
+
+    public partial interface IMembershipUserPictureService
+    {
+
+        void Delete(MembershipUserPicture picture);
+        MembershipUserPicture Add(MembershipUserPicture newpic);
+        MembershipUserPicture GetMembershipUserPicture(Guid id);
+
+        void AuditMembershipUserPicture(MembershipUserPicture PictureInstance, string AuditComment, Enum_UploadPictureAuditStatus Status);
+        void AuditMembershipUserPicture(MembershipUser PictureOwner, string AuditComment, Enum_UploadPictureAuditStatus Status);
+        void AuditMembershipUserPicture(Guid PictureOwnerId, string AuditComment, Enum_UploadPictureAuditStatus Status);
+
+    }
+
+
 }

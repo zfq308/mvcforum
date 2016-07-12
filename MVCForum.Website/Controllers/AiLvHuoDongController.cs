@@ -64,8 +64,37 @@ namespace MVCForum.Website.Controllers
         [Authorize]
         public ActionResult CreateAiLvHuoDong()
         {
-            return View(new AiLvHuoDong_CreateEdit_ViewModel());
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                var loggedOnUserId = LoggedOnReadOnlyUser?.Id ?? Guid.Empty;
+                var permissions = RoleService.GetPermissions(null, UsersRole);
+                // Check is has permissions
+                if (UserIsAdmin )
+                {
+                    var user = MembershipService.GetUser(loggedOnUserId);
+                    BindControlData();
+                    return View(new AiLvHuoDong_CreateEdit_ViewModel());
+                }
+
+                return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
+            }
         }
+
+        private void BindControlData()
+        {
+            var Items_LeiBieList = new List<SelectListItem>();
+            Items_LeiBieList.Add(new SelectListItem { Text = "自由报名", Value = "1" });
+            Items_LeiBieList.Add(new SelectListItem { Text = "特殊邀请", Value = "2" });
+            ViewData["LeiBieList"] = Items_LeiBieList;
+
+            var Items_YaoQiuList = new List<SelectListItem>();
+            Items_YaoQiuList.Add(new SelectListItem { Text = "单身人士", Value = "1" });
+            Items_YaoQiuList.Add(new SelectListItem { Text = "邀请人员", Value = "2" });
+            Items_YaoQiuList.Add(new SelectListItem { Text = "无要求", Value = "3" });
+            ViewData["YaoQiuList"] = Items_YaoQiuList;
+
+        }
+
 
         [HttpPost]
         [Authorize]

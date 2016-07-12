@@ -95,7 +95,6 @@
     <Compile Include="DomainModel\Entities\ActivityRegister.cs" />
     <Compile Include="DomainModel\Entities\Badge.cs" />
     <Compile Include="DomainModel\Entities\Category.cs" />
-    <Compile Include="DomainModel\Entities\CategoryNotification.cs" />
     <Compile Include="DomainModel\Entities\BadgeTypeTimeLastChecked.cs" />
     <Compile Include="DomainModel\Activity\Activity.cs" />
     <Compile Include="DomainModel\Entities\Block.cs" />

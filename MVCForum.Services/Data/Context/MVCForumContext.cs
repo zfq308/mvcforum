@@ -61,7 +61,7 @@ namespace MVCForum.Services.Data.Context
         public DbSet<AiLvHuoDong> AiLvHuoDong { get; set; }
         public DbSet<ActivityRegister> ActivityRegister { get; set; }
         public DbSet<ADSetting> ADSetting { get; set; }
-
+        public DbSet<MembershipUserPicture> MembershipUserPicture { get; set; }
 
         public override int SaveChanges()
         {
