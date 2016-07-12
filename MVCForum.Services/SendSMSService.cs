@@ -103,18 +103,18 @@ namespace MVCForum.Services
             api.enabeLog(true);
 
             #region Unuse Code
-            string clientNum = "78446052175972";                    //Client 测试账号
-            string clientpwd = "198c1667";                          //Client 测试密码
-            string friendName = "";
-            string clientType = "0";
-            string charge = "0";
-            string phone = "";
-            string date = "day";
-            uint start = 0;
-            uint limit = 100;
-            string fromSerNum = "4000000000";
-            string toSerNum = "4000000000";
-            string maxallowtime = "60";
+            //string clientNum = "78446052175972";                    //Client 测试账号
+            //string clientpwd = "198c1667";                          //Client 测试密码
+            //string friendName = "";
+            //string clientType = "0";
+            //string charge = "0";
+            //string phone = "";
+            //string date = "day";
+            //uint start = 0;
+            //uint limit = 100;
+            //string fromSerNum = "4000000000";
+            //string toSerNum = "4000000000";
+            //string maxallowtime = "60";
 
             //查询主账号
             //string MainAccountInfo = api.QueryAccountInfo();

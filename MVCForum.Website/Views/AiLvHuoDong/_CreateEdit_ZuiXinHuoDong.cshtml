@@ -59,10 +59,9 @@
                 @Html.ValidationMessageFor(model => model.Feiyong)
             </div>
 
-
-            <div class="form-group">
+            <div class="editor-field editorholder">
                 @Html.LabelFor(x => x.ZhuYiShiXiang)
-                @Html.TextBoxFor(model => model.ZhuYiShiXiang, new { @class = "form-control" })
+                @Html.EditorFor(model => model.ZhuYiShiXiang, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.ZhuYiShiXiang)
             </div>
 
@@ -72,9 +71,8 @@
                 @Html.ValidationMessageFor(model => model.YuGuRenShu)
             </div>
 
-
             <div class="form-group">
-                @Html.LabelFor(x => x.XingBieBiLi)
+                @Html.LabelFor(x => x.XingBieBiLi)<span style="color:red">（请输入"/"或类似"1：2"之类的比例表达式）</span>
                 @Html.TextBoxFor(model => model.XingBieBiLi, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.XingBieBiLi)
             </div>

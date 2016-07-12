@@ -22,6 +22,7 @@ namespace MVCForum.Website.ViewModels
         /// <summary>
         /// 爱驴活动流水号
         /// </summary>
+        [HiddenInput]
         public Guid Id { get; set; }
 
         /// <summary>
@@ -73,6 +74,7 @@ namespace MVCForum.Website.ViewModels
         /// <summary>
         /// 活动举办流程
         /// </summary>
+        [UIHint(AppConstants.EditorType), AllowHtml]
         [Required(ErrorMessage = "你是不是忘记填写活动流程？")]
         [Display(Name = "活动举办流程")]
         [StringLength(4000)]
@@ -87,6 +89,7 @@ namespace MVCForum.Website.ViewModels
         /// <summary>
         /// 费用说明
         /// </summary>
+        [UIHint(AppConstants.EditorType), AllowHtml]
         [Required(ErrorMessage = "你是不是忘记填写活动费用说明？")]
         [Display(Name = "活动费用说明")]
         [StringLength(400)]
@@ -95,6 +98,7 @@ namespace MVCForum.Website.ViewModels
         /// <summary>
         /// 注意事项
         /// </summary>
+        [UIHint(AppConstants.EditorType), AllowHtml]
         [Required(ErrorMessage = "你是不是忘记填写活动注意事项？")]
         [Display(Name = "活动注意事项")]
         [StringLength(400)]
