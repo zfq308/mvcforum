@@ -5,16 +5,24 @@
     Layout = "~/Views/Shared/_LayoutFullWidth.cshtml";
 }
 
-<h2>&nbsp;</h2>
-<div class="row">
-    <div class="col-md-8 col-md-offset-2">
-        <div class="createtopicholder">
-            @using (Html.BeginForm("CreateAiLvHuoDong", "AiLvHuoDong", FormMethod.Post, new { enctype = "multipart/form-data" }))
+<h2>@ViewBag.Title</h2>
+<div class="panel">
+    @*<div class="panel-heading">
+       
+    </div>*@
+    <div class="panel-content">
+        <div class="row">
+
+            <div class="col-md-12 col-md-offset-1">
+                <div class="createtopicholder">
+                    @using (Html.BeginForm("CreateAiLvHuoDong", "AiLvHuoDong", FormMethod.Post, new { enctype = "multipart/form-data" }))
             {
-                @Html.ValidationSummary(true)
-                @Html.AntiForgeryToken()
-                @Html.Partial("_CreateEdit_ZuiXinHuoDong", Model)
-            }
+                        @Html.ValidationSummary(true)
+                        @Html.AntiForgeryToken()
+                        @Html.Partial("_CreateEdit_ZuiXinHuoDong", Model)
+                    }
+                </div>
+            </div>
         </div>
     </div>
 </div>

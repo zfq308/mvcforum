@@ -20,6 +20,9 @@ namespace MVCForum.Website.Controllers
 {
     public class AiLvHuoDongController : BaseController
     {
+
+        #region 建构式
+      
         private readonly IAiLvHuoDongService _aiLvHuoDongService;
         private readonly ITopicService _topicService;
         private readonly ICategoryService _categoryservice;
@@ -45,6 +48,7 @@ namespace MVCForum.Website.Controllers
             _context = context as MVCForumContext;
         }
 
+        #endregion
 
         #region 爱驴活动模块
 

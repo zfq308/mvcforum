@@ -9,36 +9,38 @@
         <h2>@ViewBag.Title</h2>
     </div>
     <div class="panel-content">
-        <p><label class="label label-danger">Important</label> You must remove all users from a role before you can delete it</p>
-
-        <table class="table table-bordered table-striped">
-            <thead>
+        <table class="adtable">
+            @foreach (var ad in Model.ADSettings)
+            {
                 <tr>
-                    <th>编辑</th>
-                    <th>图片名称</th>
-                    <th>链接</th>
-                    <th>删除</th>
+                    <td>
+                        <img src="@ad.ImageSaveURL" alt="@ad.Link" class="thumbnail" style="margin-bottom:0px" />
+                    </td>
+                    <td style="padding-left:5px; width:100%;">
+                        <table class="pad">
+                            <tr><td><label class="glyphicon glyphicon-star-empty"></label><span>图片信息</span></td></tr>
+                            <tr><td>@ad.ImageName</td></tr>
+                            <tr><td><label class="glyphicon glyphicon-star-empty"></label><span>广告链接</span></td></tr>
+                            <tr><td><a href="http://@ad.Link">@ad.Link</a></td></tr>
+                            <tr><td><label class="glyphicon glyphicon-star-empty"></label><span>图片信息</span></td></tr>
+                            <tr><td>@ad.ImageName</td></tr>
+                        </table>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (var ad in Model.ADSettings)
-                {
-                    <tr>
-                        <td>
-                            <a href="@Url.Action("EditAD", new { ad.Id })" class="btn-mvc">
-                                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-                            </a>
-                        </td>
-                        <td>@ad.ImageName</td>
-                        <td>@ad.Link</td>
-                        <td>
-                            <a href="@Url.Action("DeleteAD", new { ad.Id })" class="btn-mvc">
-                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                            </a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
+                <tr>
+                    <td style="border-bottom-width: 1px;" colspan="2"><span style="padding-right:3px;">发布时间</span>@ad.CreateTime.ToString("yyyy-MM-dd")</td>
+                </tr>
+                <tr>
+                    <td style="text-align:right;" colspan="2">
+                        <a href="@Url.Action("EditAD", new { ad.Id })" class="btn btn-link" style="padding-top:0px; padding-bottom:0px;" title="编辑广告设置">
+                            <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                        </a>
+                        <a href="@Url.Action("DeleteAD", new { ad.Id })" class="btn btn-link" style="padding-top:0px; padding-bottom:0px;" title="删除这个广告" onclick="return confirm('你确认需要删除这条广告记录吗?')">
+                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                        </a>
+                    </td>
+                </tr>
+            }
         </table>
     </div>
 </div>

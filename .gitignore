@@ -49,3 +49,8 @@ MVCForum.Website/Properties/PublishProfiles/Profile1.pubxml
 MVCForum.Website/App_Data/cache/*
 MVCForum.Website/App_Data/LogFile*
 MVCForum.Website/App_Data/MVCForum.sdf
+
+#ignore thumbnails created by windows
+Thumbs.db
+#Ignore files build by Visual Studio
+*.exe

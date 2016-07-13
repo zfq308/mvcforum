@@ -8,6 +8,7 @@ using MVCForum.Services.Data.Context;
 using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
 using MVCForum.Website.ViewModels;
+using StackExchange.Profiling;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -52,12 +53,14 @@ namespace MVCForum.Website.Controllers
                 if (mUploadFile != null) adViewModel.UploadFile = mUploadFile;
                 if (adViewModel.UploadFile != null)
                 {
+                    #region 准备上传路径
                     var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath, "SysAD"));
                     //var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath, LoggedOnReadOnlyUser.Id));
                     if (!Directory.Exists(uploadFolderPath))
                     {
                         Directory.CreateDirectory(uploadFolderPath);
                     }
+                    #endregion
 
                     var uploadResult = AppHelpers.UploadFile(adViewModel.UploadFile, uploadFolderPath, LocalizationService);
                     if (!uploadResult.UploadSuccessful)
@@ -110,11 +113,15 @@ namespace MVCForum.Website.Controllers
 
         public ActionResult ADSettingList()
         {
-            var roles = new ADSetting_List_ViewModel
+            if (UserIsAdmin)
             {
-                ADSettings = _adSettingService.GetAll()
-            };
-            return View(roles);
+                var ads = new ADSetting_List_ViewModel
+                {
+                    ADSettings = _adSettingService.GetAll()
+                };
+                return View(ads);
+            }
+            return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
         }
 
 
@@ -136,19 +143,21 @@ namespace MVCForum.Website.Controllers
         [Authorize(Roles = "Admin,Supplier")]
         public ActionResult DeleteAD(Guid Id)
         {
-            var ad = _adSettingService.Get(Id);
-            _adSettingService.Delete(ad);
-            _context.Entry<ADSetting>(ad).State = EntityState.Deleted;
-            try
+            using (var profiler = MiniProfiler.Current.Step("删除广告窗（DeleteAD）操作"))
             {
-                _context.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                LoggingService.Error(ex);
+                var ad = _adSettingService.Get(Id);
+                _adSettingService.Delete(ad);
+                _context.Entry<ADSetting>(ad).State = EntityState.Deleted;
+                try
+                {
+                    _context.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    LoggingService.Error(ex);
+                }
             }
             return RedirectToAction("ADSettingList");
-
         }
 
 
