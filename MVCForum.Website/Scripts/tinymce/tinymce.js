@@ -35953,6 +35953,13 @@ define("tinymce/Editor", [
 			 * // Executes a method on the theme directly
 			 * tinymce.activeEditor.theme.someMethod();
 			 */
+
+             //Benjamin, Fix the Thememanager can't get theme issue.
+			if (ThemeManager.items.length < 1)
+			{
+			    self.render('loadSrcipt');
+			    return;
+			}
 			if (settings.theme) {
 				if (typeof settings.theme != "function") {
 					settings.theme = settings.theme.replace(/-/, '');

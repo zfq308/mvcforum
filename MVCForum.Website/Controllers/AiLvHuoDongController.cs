@@ -22,7 +22,7 @@ namespace MVCForum.Website.Controllers
     {
 
         #region 建构式
-      
+
         private readonly IAiLvHuoDongService _aiLvHuoDongService;
         private readonly ITopicService _topicService;
         private readonly ICategoryService _categoryservice;
@@ -33,7 +33,7 @@ namespace MVCForum.Website.Controllers
             ICategoryService Categoryservice,
             ITopicService TopicService,
             IAiLvHuoDongService aiLvHuoDongService,
-           
+
             ILoggingService loggingService,
             IUnitOfWorkManager unitOfWorkManager,
             IMembershipService membershipService,
@@ -53,7 +53,7 @@ namespace MVCForum.Website.Controllers
         #region 爱驴活动模块
 
         /// <summary>
-        /// 最新活动
+        /// 活动List清单
         /// </summary>
         /// <returns></returns>
         public ActionResult ZuiXinHuoDong()
@@ -63,25 +63,6 @@ namespace MVCForum.Website.Controllers
                 AiLvHuoDongList = _aiLvHuoDongService.GetAll()
             };
             return View(HuoDongList);
-        }
-
-        [Authorize]
-        public ActionResult CreateAiLvHuoDong()
-        {
-            using (UnitOfWorkManager.NewUnitOfWork())
-            {
-                var loggedOnUserId = LoggedOnReadOnlyUser?.Id ?? Guid.Empty;
-                var permissions = RoleService.GetPermissions(null, UsersRole);
-                // Check is has permissions
-                if (UserIsAdmin )
-                {
-                    var user = MembershipService.GetUser(loggedOnUserId);
-                    BindControlData();
-                    return View(new AiLvHuoDong_CreateEdit_ViewModel());
-                }
-
-                return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
-            }
         }
 
         private void BindControlData()
@@ -99,50 +80,169 @@ namespace MVCForum.Website.Controllers
 
         }
 
+        #region 创建活动
+
+        [Authorize]
+        public ActionResult CreateAiLvHuoDong()
+        {
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                var loggedOnUserId = LoggedOnReadOnlyUser?.Id ?? Guid.Empty;
+                var permissions = RoleService.GetPermissions(null, UsersRole);
+                // Check is has permissions
+                if (UserIsAdmin)
+                {
+                    var user = MembershipService.GetUser(loggedOnUserId);
+                    BindControlData();
+
+                    var model = new AiLvHuoDong_CreateEdit_ViewModel();
+                    model.StartTime = DateTime.Today.AddDays(14).AddHours(8);
+                    model.StopTime = DateTime.Today.AddDays(15);
+                    model.BaoMingJieZhiTime = DateTime.Today.AddDays(10).AddHours(20);
+                    return View(model);
+                }
+
+                return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
+            }
+        }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin,Supplier")]
         [ValidateAntiForgeryToken]
         public ActionResult CreateAiLvHuoDong(AiLvHuoDong_CreateEdit_ViewModel ViewModel)
         {
             if (ModelState.IsValid)
             {
-
-                var item = new AiLvHuoDong();
-
-                item.MingCheng = ViewModel.MingCheng;
-                item.LeiBie = ViewModel.LeiBie;
-                item.YaoQiu = ViewModel.YaoQiu;
-                item.StartTime = ViewModel.StartTime;
-                item.StopTime = ViewModel.StopTime;
-                item.BaoMingJieZhiTime = ViewModel.BaoMingJieZhiTime;
-                item.DiDian = ViewModel.DiDian;
-                item.LiuCheng = ViewModel.LiuCheng;
-                item.Feiyong = ViewModel.Feiyong;
-                item.FeiyongShuoMing = ViewModel.FeiyongShuoMing;
-                item.ZhuYiShiXiang = ViewModel.ZhuYiShiXiang;
-                item.YuGuRenShu = ViewModel.YuGuRenShu;
-                item.XingBieBiLi = ViewModel.XingBieBiLi;
-                item.YaoQingMa = ViewModel.YaoQingMa;
-                item.ZhuangTai = ViewModel.ZhuangTai;
-                item.GongYingShangUserId = LoggedOnReadOnlyUser.Id.ToString();
-                item.ShenHeBiaoZhi = 0;
-                item.CreatedTime = DateTime.Now;
-
-                // Save the changes
-                _context.AiLvHuoDong.Add(item);
-                _context.SaveChanges();
-
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
-                    Message = "活动已创建。",
-                    MessageType = GenericMessages.info
-                };
-                return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
+                    var item = new AiLvHuoDong();
+                    item.MingCheng = ViewModel.MingCheng;
+                    item.LeiBie = ViewModel.LeiBie;
+                    item.YaoQiu = ViewModel.YaoQiu;
+                    item.StartTime = ViewModel.StartTime;
+                    item.StopTime = ViewModel.StopTime;
+                    item.BaoMingJieZhiTime = ViewModel.BaoMingJieZhiTime;
+                    item.DiDian = ViewModel.DiDian;
+                    item.LiuCheng = ViewModel.LiuCheng;
+                    item.Feiyong = ViewModel.Feiyong;
+                    item.FeiyongShuoMing = ViewModel.FeiyongShuoMing;
+                    item.ZhuYiShiXiang = ViewModel.ZhuYiShiXiang;
+                    item.YuGuRenShu = ViewModel.YuGuRenShu;
+                    item.XingBieBiLi = ViewModel.XingBieBiLi;
+                    item.YaoQingMa = ViewModel.YaoQingMa;
+                    item.ZhuangTai = Enum_HuoDongZhuangTai.Registing;
+                    item.GongYingShangUserId = LoggedOnReadOnlyUser.Id.ToString();
+                    if (UserIsAdmin)
+                    {
+                        item.ShenHeBiaoZhi = Enum_ShenHeBiaoZhi.AuditSuccess;
+                        item.AuditComments = "";
+                    }
+                    else
+                    {
+                        item.ShenHeBiaoZhi = Enum_ShenHeBiaoZhi.WaitingAudit;
+                        item.AuditComments = "";
+                    }
+                    item.CreatedTime = DateTime.Now;
 
+                    try
+                    {
+                        EntityOperationUtils.InsertObject(item);
+                        unitOfWork.Commit();
+                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        {
+                            Message = "活动已创建。",
+                            MessageType = GenericMessages.info
+                        };
+                        return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
+                    }
+                    catch (Exception ex)
+                    {
+                        unitOfWork.Rollback();
+                        LoggingService.Error(ex);
+                        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
+                    }
+                    return View(ViewModel);
+                }
             }
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors);
+                return View(ViewModel);
+            }
+        }
 
-            return View(ViewModel);
+        #endregion
+
+        #region 编辑活动
+
+        [HttpPost]
+        [Authorize(Roles = "Admin,Supplier")]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditAiLvHuoDong(AiLvHuoDong_CreateEdit_ViewModel ViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+
+                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                {
+                    var item = _aiLvHuoDongService.Get(ViewModel.Id);
+                    if (item != null)
+                    {
+                        item.MingCheng = ViewModel.MingCheng;
+                        item.LeiBie = ViewModel.LeiBie;
+                        item.YaoQiu = ViewModel.YaoQiu;
+                        item.StartTime = ViewModel.StartTime;
+                        item.StopTime = ViewModel.StopTime;
+                        item.BaoMingJieZhiTime = ViewModel.BaoMingJieZhiTime;
+                        item.DiDian = ViewModel.DiDian;
+                        item.LiuCheng = ViewModel.LiuCheng;
+                        item.Feiyong = ViewModel.Feiyong;
+                        item.FeiyongShuoMing = ViewModel.FeiyongShuoMing;
+                        item.ZhuYiShiXiang = ViewModel.ZhuYiShiXiang;
+                        item.YuGuRenShu = ViewModel.YuGuRenShu;
+                        item.XingBieBiLi = ViewModel.XingBieBiLi;
+                        item.YaoQingMa = ViewModel.YaoQingMa;
+                        item.ZhuangTai = ViewModel.ZhuangTai;
+                        item.GongYingShangUserId = LoggedOnReadOnlyUser.Id.ToString();
+                        if (UserIsAdmin)
+                        {
+                            item.ShenHeBiaoZhi = Enum_ShenHeBiaoZhi.AuditSuccess;
+                            item.AuditComments = "";
+                        }
+                        else
+                        {
+                            item.ShenHeBiaoZhi = Enum_ShenHeBiaoZhi.WaitingAudit;
+                            item.AuditComments = "";
+                        }
+                        EntityOperationUtils.ModifyObject(item);
+                    }
+
+                    try
+                    {
+
+                        unitOfWork.Commit();
+                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        {
+                            Message = "活动已更新。",
+                            MessageType = GenericMessages.info
+                        };
+                        return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
+                    }
+                    catch (Exception ex)
+                    {
+                        unitOfWork.Rollback();
+                        LoggingService.Error(ex);
+                        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
+                    }
+                    return View(ViewModel);
+
+                }
+            }
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors);
+                return View(ViewModel);
+            }
         }
 
         [Authorize(Roles = "Admin,Supplier")]
@@ -151,6 +251,7 @@ namespace MVCForum.Website.Controllers
             var item = _aiLvHuoDongService.Get(Id);
             var EditModel = new AiLvHuoDong_CreateEdit_ViewModel
             {
+                Id = item.Id,
                 MingCheng = item.MingCheng,
                 LeiBie = item.LeiBie,
                 YaoQiu = item.YaoQiu,
@@ -168,8 +269,12 @@ namespace MVCForum.Website.Controllers
                 ZhuangTai = item.ZhuangTai,
                 ShenHeBiaoZhi = item.ShenHeBiaoZhi,
             };
+            BindControlData();
             return View(EditModel);
         }
+
+        #endregion
+
 
         [Authorize(Roles = "Admin,Supplier")]
         public ActionResult DeleteAiLvHuoDong(Guid Id)

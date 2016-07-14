@@ -84,6 +84,7 @@ namespace MVCForum.Website.ViewModels
         /// 活动费用（RMB/人）
         /// </summary>
         [Display(Name = "活动报名费用")]
+        [Range(1, 100000)]
         public int Feiyong { get; set; }
 
         /// <summary>
@@ -108,6 +109,7 @@ namespace MVCForum.Website.ViewModels
         /// 预估参加人数
         /// </summary>
         [Display(Name = "预估人数")]
+        [Range(1, 5000)]
         public int YuGuRenShu { get; set; }
 
         /// <summary>

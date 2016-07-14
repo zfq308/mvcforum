@@ -1,10 +1,8 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<div class="row">
-    <div class="col-md-9">
-        @RenderBody()
-    </div>
+<div class="row" style="padding-top:2px;">
+    @RenderBody()
     <div class="col-md-3 sidelayoutsection">
         <div class="main-side-box clearfix">
             @if (User.IsInRole(AppConstants.AdminRoleName) || User.IsInRole(AppConstants.SupplierRoleName))

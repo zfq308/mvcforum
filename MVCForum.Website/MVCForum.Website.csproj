@@ -1024,7 +1024,6 @@
     <Content Include="Scripts\tinymce\themes\modern\theme.js" />
     <Content Include="Scripts\tinymce\themes\modern\theme.min.js" />
     <Content Include="Scripts\tinymce\tinymce.js" />
-    <Content Include="Scripts\tinymce\tinymce.min.js" />
     <Content Include="Scripts\verifycode.js" />
     <Content Include="Scripts\verifycodeByAccount.js" />
     <Content Include="Themes\Metro\Content\Styles\Theme.min.css" />
