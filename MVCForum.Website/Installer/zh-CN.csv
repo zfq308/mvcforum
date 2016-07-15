@@ -420,7 +420,7 @@ Topic.Label.SubscribeToTopic,Get notified of replies?
 Topic.Label.Tags,添加标签
 Topic.Label.TopicTitle,标题
 Topic.Label.UploadFiles,上传文件
-Topic.LastPost,Last Post
+Topic.LastPost,最后操作于
 Topic.LatestBy,Latest By
 Topic.Notification.NewTopics,A new topic or tag has been created in the {0} category
 Topic.Notification.Subject,New Discussion On 
@@ -433,6 +433,6 @@ Topic.Subscribe,订阅
 Topic.TagThisTopic,标签
 Topic.TitleFallBack,Discussion Topic
 Topic.UnSubscribe,取消关注
-Topic.Views,查看人数
+Topic.Views,查看次数
 Topic.Votes,表决
 Twitter.Error.EnabledButNotAddedKeys,You have enabled social logins but not added the Twitter id and secret key in the forum.config

@@ -146,6 +146,9 @@ namespace MVCForum.Domain.DomainModel
         /// </summary>
         public int Level { get; set; }
 
+       /// <summary>
+       /// 是否Pending(待审阅)此类型下的Topic
+       /// </summary>
         public bool? ModerateTopics { get; set; }
         public bool? ModeratePosts { get; set; }
 

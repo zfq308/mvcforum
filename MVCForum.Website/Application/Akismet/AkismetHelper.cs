@@ -8,6 +8,9 @@ using MVCForum.Website.Akismet.NET;
 
 namespace MVCForum.Website.Application
 {
+    /// <summary>
+    /// Akismet(Automattic Kismet)垃圾留言过滤系统
+    /// </summary>
     public class AkismetHelper
     {
         private readonly ISettingsService _settingsService;

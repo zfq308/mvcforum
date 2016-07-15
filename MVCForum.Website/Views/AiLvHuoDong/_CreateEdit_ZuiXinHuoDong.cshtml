@@ -21,7 +21,6 @@
             }
         </script>
 
-        @Html.ValidationSummary(true)
         <fieldset>
             @if (Model.Id != Guid.Empty && Model.ShenHeBiaoZhi == MVCForum.Domain.DomainModel.Enum_ShenHeBiaoZhi.AuditReject)
             {
@@ -160,21 +159,7 @@
                 <button type="submit" name="btn_Save" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
                     保存
                 </button><br />
-                @if (Model.Id != Guid.Empty && Model.ShenHeBiaoZhi == MVCForum.Domain.DomainModel.Enum_ShenHeBiaoZhi.WaitingAudit)
-                {
-                    <button type="submit" name="btn_AuditSuccess" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
-                        审核同意
-                    </button><br />
-                    <button type="submit" name="btn_AuditFail" class="btn-mvc-red btn-mvc-large btn-mvc-fullwidth">
-                        审核驳回
-                    </button>
-                }
-                @if (Model.Id != Guid.Empty && Model.ShenHeBiaoZhi == MVCForum.Domain.DomainModel.Enum_ShenHeBiaoZhi.AuditSuccess)
-                {
-                    <button type="submit" name="btn_GenerateHuoDong" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
-                        生成活动记录
-                    </button><br />
-                }
+        
             </div>
         </fieldset>
     </div>

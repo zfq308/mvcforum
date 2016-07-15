@@ -1,6 +1,6 @@
 ﻿@using MVCForum.Website.Application
 @using MVCForum.Website.ViewModels
-@model AiLvZiXunTopicsViewModel
+@model AiLvZiXun_ListViewModel
 @{
     //Layout = null;
     Layout = "~/Views/AiLvHuoDong/ZuiXinZiXunLayout.cshtml";
@@ -24,7 +24,7 @@
     @if (Model.TotalPages > 1)
     {
         //TODO: Benjamin 07-05,此处还没有指定Action的名字
-        @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().TopicsPerPage, totalCount, null, "Index", "AiLvHuoDong")
+        @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().TopicsPerPage, totalCount, null, "ZuiXinZiXun", "AiLvHuoDong")
     }
 
 </div>

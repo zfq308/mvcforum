@@ -95,7 +95,7 @@
                 </li>
             }
             <li>
-                <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> @Model.Views.KiloFormat() @Html.Lang("Topic.Views")
+                <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> @Html.Lang("Topic.Views") ：@Model.Views.KiloFormat()
             </li>
 
             <li><span class="glyphicon glyphicon-comment" aria-hidden="true"></span> @Html.Lang("Topic.LastPost") @DatesUI.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString())</li>

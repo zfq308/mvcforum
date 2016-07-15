@@ -12,7 +12,7 @@ using MVCForum.Domain.Constants;
 namespace MVCForum.Website.ViewModels
 {
 
-    public class AiLvHuoDong_TopicsViewModel
+    public class AiLvHuoDong_ListViewModel
     {
         public IList<AiLvHuoDong> AiLvHuoDongList { get; set; }
     }
@@ -149,5 +149,11 @@ namespace MVCForum.Website.ViewModels
         ///// </summary>
         //public DateTime CreatedTime { get; set; }
     }
+
+
+    //public class AiLvJiLu_ListViewModel
+    //{
+    //    public IList<AiLvHuoDong>
+    //}
 
 }

@@ -16,10 +16,12 @@ namespace MVCForum.Services
 
     public partial class VerifyCodeService : IVerifyCodeService
     {
+     log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        #region 建构式
+
         const int MaxVerifyTimes = 3;
         const int MaxVerifyCodeLifeTimeHour = 1;  // 短信1小时后自动失效过期
-
-        log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private readonly MVCForumContext _context;
 
@@ -32,6 +34,7 @@ namespace MVCForum.Services
             _context = new MVCForumContext();
         }
 
+        #endregion
 
         public void CheckInvalidVerifyCode()
         {

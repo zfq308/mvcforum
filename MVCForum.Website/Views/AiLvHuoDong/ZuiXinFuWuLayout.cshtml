@@ -9,7 +9,7 @@
         <div class="main-side-box clearfix">
             @if (User.IsInRole("Admin"))
             {
-                @Html.Action("CreateTopicButton", "Topic")
+                @Html.Action("CreateTopicButtonForZuiXinFuwu", "Topic")
             }
             @RenderSection("side", false)
         </div>

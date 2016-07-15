@@ -63,7 +63,7 @@ namespace MVCForum.Website.ViewModels
     /// <summary>
     /// 爱驴服务TopicViewModel
     /// </summary>
-    public class AiLvFuWuTopicsViewModel
+    public class AiLvFuWu_ListViewModel
     {
         public List<TopicViewModel> Topics { get; set; }
         public int? PageIndex { get; set; }
@@ -72,16 +72,16 @@ namespace MVCForum.Website.ViewModels
     }
 
     /// <summary>
-    /// 爱驴资讯TopicViewModel
+    /// 爱驴资讯ListViewModel
     /// </summary>
-    public class AiLvZiXunTopicsViewModel
+    public class AiLvZiXun_ListViewModel
     {
         public List<TopicViewModel> Topics { get; set; }
         public int? PageIndex { get; set; }
         public int? TotalCount { get; set; }
         public int? TotalPages { get; set; }
     }
-  
+
 
     #region 待检查的
 
@@ -144,19 +144,27 @@ namespace MVCForum.Website.ViewModels
         [ForumMvcResourceDisplayName("Post.Label.LockTopic")]
         public bool IsLocked { get; set; }
 
+        /// <summary>
+        /// Topic 所属Category实例的ID编号
+        /// </summary>
         [Required]
         [ForumMvcResourceDisplayName("Topic.Label.Category")]
-        public Guid Category { get; set; }
+        public Guid CategoryId { get; set; }
+
+        public List<SelectListItem> Categories { get; set; }
 
         public string Tags { get; set; }
 
         [ForumMvcResourceDisplayName("Topic.Label.PollCloseAfterDays")]
         public int PollCloseAfterDays { get; set; }
 
-        public List<SelectListItem> Categories { get; set; }
 
+
+        /// <summary>
+        /// 调查问卷的选项实例清单
+        /// </summary>
         public IList<PollAnswer> PollAnswers { get; set; }
-            
+
         [ForumMvcResourceDisplayName("Topic.Label.SubscribeToTopic")]
         public bool SubscribeToTopic { get; set; }
 
@@ -174,6 +182,12 @@ namespace MVCForum.Website.ViewModels
         public Guid TopicId { get; set; }
 
         public bool IsTopicStarter { get; set; }
+
+        /// <summary>
+        /// Topic所属类型枚举
+        /// </summary>
+        public Enum_TopicType TopicType { get; set; }
+
     }
 
     public class GetMorePostsViewModel

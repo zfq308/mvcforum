@@ -58,7 +58,7 @@ namespace MVCForum.Website.Controllers
         /// <returns></returns>
         public ActionResult ZuiXinHuoDong()
         {
-            var HuoDongList = new AiLvHuoDong_TopicsViewModel
+            var HuoDongList = new AiLvHuoDong_ListViewModel
             {
                 AiLvHuoDongList = _aiLvHuoDongService.GetAll()
             };
@@ -334,15 +334,11 @@ namespace MVCForum.Website.Controllers
 
         #endregion
 
-
         #region 爱驴资讯模块
-        /// <summary>
-        /// 爱驴资讯
-        /// </summary>
-        /// <returns></returns>
+
         public ActionResult ZuiXinZiXun()
         {
-            var ziXunList = new AiLvZiXunTopicsViewModel { Topics = new List<TopicViewModel>() };
+            var ziXunList = new AiLvZiXun_ListViewModel { Topics = new List<TopicViewModel>() };
             var topics = _topicService.GetAllTopicsByCategory(EnumCategoryType.AiLvZiXun);
             if (topics != null && topics.Count > 0)
             {
@@ -356,6 +352,33 @@ namespace MVCForum.Website.Controllers
         }
 
         #endregion
+
+        #region 爱驴服务模块
+
+        public ActionResult ZuiXinFuWu()
+        {
+            var fuwuList = new AiLvFuWu_ListViewModel { Topics = new List<TopicViewModel>() };
+            var topics = _topicService.GetAllTopicsByCategory(EnumCategoryType.AiLvFuWu);
+            if (topics != null && topics.Count > 0)
+            {
+                var settings = SettingsService.GetSettings();
+                var allowedCategories = new List<Category>();
+                allowedCategories.Add(_categoryservice.GetCategoryByEnumCategoryType(EnumCategoryType.AiLvFuWu));
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, settings);
+                fuwuList.Topics.AddRange(topicViewModels);
+            }
+            return View(fuwuList);
+        }
+
+        #endregion
+
+
+
+
+
+
+
+
 
         #region MyRegion
 
@@ -385,18 +408,6 @@ namespace MVCForum.Website.Controllers
         {
             return View();
         }
-
-        /// <summary>
-        /// 最新服务
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult ZuiXinFuWu()
-        {
-            return View();
-        }
-
-
-
 
         /// <summary>
         /// 爱驴账户

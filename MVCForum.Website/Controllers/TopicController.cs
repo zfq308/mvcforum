@@ -71,6 +71,34 @@ namespace MVCForum.Website.Controllers
 
         #endregion
 
+        #region 最新资讯部分
+
+        public PartialViewResult CreateTopicButtonForZuiXinFuwu()
+        {
+            var viewModel = new CreateTopicButtonViewModel
+            {
+                LoggedOnUser = LoggedOnReadOnlyUser,
+                UserCanPostTopics = false
+            };
+            return PartialView(viewModel);
+        }
+
+        [Authorize]
+        public ActionResult CreateZuiXinFuWu()
+        {
+            var allowedAccessCategories = new List<Category>();
+            allowedAccessCategories.Add(_categoryService.GetCategoryByEnumCategoryType(EnumCategoryType.AiLvFuWu));
+            if (allowedAccessCategories.Any() && LoggedOnReadOnlyUser.DisablePosting != true)
+            {
+                var viewModel = PrePareCreateEditTopicViewModel(allowedAccessCategories);
+                viewModel.TopicType = Enum_TopicType.Announcement;
+                return View(viewModel);
+            }
+            return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
+        }
+
+
+        #endregion
 
         #region 最新资讯部分
 
@@ -80,23 +108,8 @@ namespace MVCForum.Website.Controllers
             {
                 LoggedOnUser = LoggedOnReadOnlyUser,
                 UserCanPostTopics = false
-            };
 
-            //if (LoggedOnReadOnlyUser != null)
-            //{
-            //    // Add all categories to a permission set
-            //    var allCategories = _categoryService.GetAllUserLevelCategory();
-            //    using (UnitOfWorkManager.NewUnitOfWork())
-            //    {
-            //        var category = _categoryService.GetCategoryByEnumCategoryType(EnumCategoryType.AiLvZiXun);
-            //        viewModel.UserCanPostTopics = false;
-            //        //var permissionSet = RoleService.GetPermissions(category, UsersRole);
-            //        //if (permissionSet[SiteConstants.Instance.PermissionCreateTopics].IsTicked)
-            //        //{
-            //        //    viewModel.UserCanPostTopics = true;
-            //        //}
-            //    }
-            //}
+            };
             return PartialView(viewModel);
         }
 
@@ -108,6 +121,7 @@ namespace MVCForum.Website.Controllers
             if (allowedAccessCategories.Any() && LoggedOnReadOnlyUser.DisablePosting != true)
             {
                 var viewModel = PrePareCreateEditTopicViewModel(allowedAccessCategories);
+                viewModel.TopicType = Enum_TopicType.Announcement;
                 return View(viewModel);
             }
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
@@ -118,27 +132,32 @@ namespace MVCForum.Website.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult CreateZuiXinZiXun(CreateEditTopicViewModel topicViewModel)
         {
-            // Get the category
-            var category = _categoryService.Get(topicViewModel.Category);
+            #region 创建实例前对topicViewModel相关属性进行赋值
+
+            var category = _categoryService.Get(topicViewModel.CategoryId);
 
             // First check this user is allowed to create topics in this category
-            var permissions = RoleService.GetPermissions(category, UsersRole);
+            var permissionSet = RoleService.GetPermissions(category, UsersRole);
 
             // Now we have the category and permissionSet - Populate the optional permissions 
             // This is just in case the viewModel is return back to the view also sort the allowedCategories
-            topicViewModel.OptionalPermissions = GetCheckCreateTopicPermissions(permissions);
-            topicViewModel.Categories = _categoryService.GetBaseSelectListCategories(AllowedCreateCategories());
+            topicViewModel.OptionalPermissions = GetCheckCreateTopicPermissions(permissionSet);
+
+            //topicViewModel.Categories = _categoryService.GetBaseSelectListCategories(AllowedCreateCategories());
+            topicViewModel.Categories = _categoryService.GetBaseSelectListCategories(new List<Category>() { category });
+
             topicViewModel.IsTopicStarter = true;
             if (topicViewModel.PollAnswers == null)
             {
                 topicViewModel.PollAnswers = new List<PollAnswer>();
             }
             /*---- End Re-populate ViewModel ----*/
+            #endregion
 
             if (ModelState.IsValid)
             {
+                #region 检查禁止词
 
-                // Check stop words
                 var stopWords = _bannedWordService.GetAll(true);
                 foreach (var stopWord in stopWords)
                 {
@@ -150,36 +169,44 @@ namespace MVCForum.Website.Controllers
                             Message = LocalizationService.GetResourceString("StopWord.Error"),
                             MessageType = GenericMessages.danger
                         });
-
-                        // Ahhh found a stop word. Abandon operation captain.
                         return View(topicViewModel);
                     }
                 }
 
-                // Quick check to see if user is locked out, when logged in
+                #endregion
+
+                #region 若当前用户被锁定（状态为隐藏）或用户被禁止发布帖子 或当前用户还在等待审核，则签出系统，并报错
                 if (LoggedOnReadOnlyUser.IsLockedOut || LoggedOnReadOnlyUser.DisablePosting == true || !LoggedOnReadOnlyUser.IsApproved)
                 {
                     FormsAuthentication.SignOut();
                     return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoAccess"));
                 }
+                #endregion
 
-                var successfullyCreated = false;
                 var cancelledByEvent = false;
-                var moderate = false;
+                var moderate = false;   // 是否需要人工审阅
+                var successfullyCreated = false; //成功创建Topic标志位
+
                 var topic = new Topic();
+
+                #region 创建并保存Topic实例及其附属属性实例
 
                 using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
-
-
-                    // Check this users role has permission to create a post
-                    if (permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked || permissions[SiteConstants.Instance.PermissionReadOnly].IsTicked || !permissions[SiteConstants.Instance.PermissionCreateTopics].IsTicked)
+                    // 检查当前用户是否有创建帖子的权限
+                    if (permissionSet[SiteConstants.Instance.PermissionDenyAccess].IsTicked ||
+                        permissionSet[SiteConstants.Instance.PermissionReadOnly].IsTicked ||
+                        !permissionSet[SiteConstants.Instance.PermissionCreateTopics].IsTicked)
                     {
-                        // Add a model error that the user has no permissions
+                        // 无权限创建帖子
                         ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.NoPermission"));
                     }
                     else
                     {
+                        var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+
+                        #region 取得全部的禁止词清单
+
                         // We get the banned words here and pass them in, so its just one call
                         // instead of calling it several times and each call getting all the words back
                         var bannedWordsList = _bannedWordService.GetAll();
@@ -189,22 +216,25 @@ namespace MVCForum.Website.Controllers
                             bannedWords = bannedWordsList.Select(x => x.Word).ToList();
                         }
 
+                        #endregion
+
                         // Create the topic model
-                        var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
                         topic = new Topic
                         {
-                            Name = _bannedWordService.SanitiseBannedWords(topicViewModel.Name, bannedWords),
                             Category = category,
                             User = loggedOnUser,
-                            TopicType =  Enum_TopicType.Announcement
+                            TopicType = topicViewModel.TopicType
                         };
 
+
+                        topic.Name = _bannedWordService.SanitiseBannedWords(topicViewModel.Name, bannedWords);
+
                         // Check Permissions for topic topions
-                        if (permissions[SiteConstants.Instance.PermissionLockTopics].IsTicked)
+                        if (permissionSet[SiteConstants.Instance.PermissionLockTopics].IsTicked)
                         {
                             topic.IsLocked = topicViewModel.IsLocked;
                         }
-                        if (permissions[SiteConstants.Instance.PermissionCreateStickyTopics].IsTicked)
+                        if (permissionSet[SiteConstants.Instance.PermissionCreateStickyTopics].IsTicked)
                         {
                             topic.IsSticky = topicViewModel.IsSticky;
                         }
@@ -215,16 +245,18 @@ namespace MVCForum.Website.Controllers
                             // Check for any banned words
                             topicViewModel.Content = _bannedWordService.SanitiseBannedWords(topicViewModel.Content, bannedWords);
 
+                            #region 处理Topic创建事件
+
                             var e = new TopicMadeEventArgs { Topic = topic };
                             EventManager.Instance.FireBeforeTopicMade(this, e);
                             if (!e.Cancel)
                             {
+                                #region 处理调查问卷数据
 
-                                // See if this is a poll and add it to the topic
                                 if (topicViewModel.PollAnswers.Count(x => x != null) > 0)
                                 {
                                     // Do they have permission to create a new poll
-                                    if (permissions[SiteConstants.Instance.PermissionCreatePolls].IsTicked)
+                                    if (permissionSet[SiteConstants.Instance.PermissionCreatePolls].IsTicked)
                                     {
                                         // Create a new Poll
                                         var newPoll = new Poll
@@ -270,34 +302,42 @@ namespace MVCForum.Website.Controllers
                                         };
                                     }
                                 }
+                                #endregion
 
-                                // Check for moderation
+                                #region 检查审阅标志位（Check for moderation）
+
                                 if (category.ModerateTopics == true)
                                 {
                                     topic.Pending = true;
                                     moderate = true;
                                 }
 
-                                // Create the topic
-                                topic = _topicService.Add(topic);
+                                #endregion
 
-                                // Save the changes
+                                #region 保存Topic实例（Create the topic）
+
+                                topic = _topicService.Add(topic);
                                 unitOfWork.SaveChanges();
+
+                                #endregion
 
                                 // Now create and add the post to the topic
                                 var topicPost = _topicService.AddLastPost(topic, topicViewModel.Content);
 
-                                // Update the users points score for posting
-                                _membershipUserPointsService.Add(new MembershipUserPoints
-                                {
-                                    Points = SettingsService.GetSettings().PointsAddedPerPost,
-                                    User = loggedOnUser,
-                                    PointsFor = PointsFor.Post,
-                                    PointsForId = topicPost.Id
-                                });
+                                #region 更新用户等分点数， 爱驴网项目无此需要
 
+                                //_membershipUserPointsService.Add(new MembershipUserPoints
+                                //{
+                                //    Points = SettingsService.GetSettings().PointsAddedPerPost,
+                                //    User = loggedOnUser,
+                                //    PointsFor = PointsFor.Post,
+                                //    PointsForId = topicPost.Id
+                                //});
 
-                                // Now check its not spam
+                                #endregion
+
+                                #region 调用Akismet(Automattic Kismet)垃圾留言过滤系统，判断topic实例是否是垃圾信息。
+
                                 var akismetHelper = new AkismetHelper(SettingsService);
                                 if (akismetHelper.IsSpam(topic))
                                 {
@@ -305,21 +345,19 @@ namespace MVCForum.Website.Controllers
                                     moderate = true;
                                 }
 
+                                #endregion
+
+                                #region 处理上传的文件
+
                                 if (topicViewModel.Files != null)
                                 {
                                     // Get the permissions for this category, and check they are allowed to update
-                                    if (permissions[SiteConstants.Instance.PermissionAttachFiles].IsTicked &&
-                                        LoggedOnReadOnlyUser.DisableFileUploads != true)
+                                    if (permissionSet[SiteConstants.Instance.PermissionAttachFiles].IsTicked && LoggedOnReadOnlyUser.DisableFileUploads != true)
                                     {
                                         // woot! User has permission and all seems ok
                                         // Before we save anything, check the user already has an upload folder and if not create one
-                                        var uploadFolderPath =
-                                            HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath,
-                                                LoggedOnReadOnlyUser.Id));
-                                        if (!Directory.Exists(uploadFolderPath))
-                                        {
-                                            Directory.CreateDirectory(uploadFolderPath);
-                                        }
+                                        var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath, LoggedOnReadOnlyUser.Id));
+                                        if (!Directory.Exists(uploadFolderPath)) { Directory.CreateDirectory(uploadFolderPath); }
 
                                         // Loop through each file and get the file info and save to the users folder and Db
                                         foreach (var file in topicViewModel.Files)
@@ -327,8 +365,7 @@ namespace MVCForum.Website.Controllers
                                             if (file != null)
                                             {
                                                 // If successful then upload the file
-                                                var uploadResult = AppHelpers.UploadFile(file, uploadFolderPath,
-                                                    LocalizationService);
+                                                var uploadResult = AppHelpers.UploadFile(file, uploadFolderPath, LocalizationService);
                                                 if (!uploadResult.UploadSuccessful)
                                                 {
                                                     TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
@@ -354,20 +391,25 @@ namespace MVCForum.Website.Controllers
 
                                 }
 
-                                // Add the tags if any too
+                                #endregion
+
+                                #region 处理Tag标签
+
                                 if (!string.IsNullOrEmpty(topicViewModel.Tags))
                                 {
                                     // Sanitise the tags
-                                    topicViewModel.Tags = _bannedWordService.SanitiseBannedWords(topicViewModel.Tags,
-                                        bannedWords);
+                                    topicViewModel.Tags = _bannedWordService.SanitiseBannedWords(topicViewModel.Tags, bannedWords);
 
                                     // Now add the tags
                                     _topicTagService.Add(topicViewModel.Tags.ToLower(), topic);
                                 }
 
+                                #endregion
+
                                 // After tags sort the search field for the post
-                                topicPost.SearchField = _postService.SortSearchField(topicPost.IsTopicStarter, topic,
-                                    topic.Tags);
+                                topicPost.SearchField = _postService.SortSearchField(topicPost.IsTopicStarter, topic, topic.Tags);
+
+                                #region 订阅Topic邮件通知
 
                                 // Subscribe the user to the topic as they have checked the checkbox
                                 if (topicViewModel.SubscribeToTopic)
@@ -381,11 +423,18 @@ namespace MVCForum.Website.Controllers
                                     //save
                                     _topicNotificationService.Add(topicNotification);
                                 }
+
+                                #endregion
+
                             }
                             else
                             {
                                 cancelledByEvent = true;
                             }
+
+                            #endregion
+
+                            #region Commit数据
 
                             try
                             {
@@ -408,6 +457,7 @@ namespace MVCForum.Website.Controllers
                                 ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
                             }
 
+                            #endregion
                         }
                         else
                         {
@@ -416,16 +466,28 @@ namespace MVCForum.Website.Controllers
                     }
                 }
 
+                #endregion
+
+                #region 创建后动作
+
                 using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
                     if (successfullyCreated && !cancelledByEvent)
                     {
-                        // Success so now send the emails
-                        NotifyNewTopics(category, topic, unitOfWork);
+
+                        #region Topic 创建成功后发送通知邮件，爱驴网项目禁用此功能
+
+                        //NotifyNewTopics(category, topic, unitOfWork);
+
+                        #endregion
+
 
                         // Redirect to the newly created topic
                         return Redirect($"{topic.NiceUrl}?postbadges=true");
                     }
+
+                    #region 若Topic需要人工审阅，则给出提示信息，并跳转到首页
+
                     if (moderate)
                     {
                         // Moderation needed
@@ -438,11 +500,22 @@ namespace MVCForum.Website.Controllers
 
                         return RedirectToAction("Index", "Home");
                     }
+
+                    #endregion
                 }
+
+                #endregion
             }
 
             return View(topicViewModel);
         }
+
+        #endregion
+
+
+
+
+
 
         private CreateEditTopicViewModel PrePareCreateEditTopicViewModel(List<Category> allowedCategories)
         {
@@ -471,8 +544,23 @@ namespace MVCForum.Website.Controllers
             };
         }
 
-        #endregion
 
+
+
+        private List<Category> AllowedCreateCategories()
+        {
+            var allowedAccessCategories = _categoryService.GetAllowedCategories(UsersRole);
+            var allowedCreateTopicCategories = _categoryService.GetAllowedCategories(UsersRole, SiteConstants.Instance.PermissionCreateTopics);
+            var allowedCreateTopicCategoryIds = allowedCreateTopicCategories.Select(x => x.Id);
+            if (allowedAccessCategories.Any())
+            {
+                allowedAccessCategories.RemoveAll(x => allowedCreateTopicCategoryIds.Contains(x.Id));
+                allowedAccessCategories.RemoveAll(x => UsersRole.RoleName != AppConstants.AdminRoleName && x.IsLocked);
+            }
+            return allowedAccessCategories;
+        }
+
+        #region 创建帖子
 
         public PartialViewResult CreateTopicButton()
         {
@@ -503,22 +591,6 @@ namespace MVCForum.Website.Controllers
             }
             return PartialView(viewModel);
         }
-        #region Create Topic
-
-
-
-        private List<Category> AllowedCreateCategories()
-        {
-            var allowedAccessCategories = _categoryService.GetAllowedCategories(UsersRole);
-            var allowedCreateTopicCategories = _categoryService.GetAllowedCategories(UsersRole, SiteConstants.Instance.PermissionCreateTopics);
-            var allowedCreateTopicCategoryIds = allowedCreateTopicCategories.Select(x => x.Id);
-            if (allowedAccessCategories.Any())
-            {
-                allowedAccessCategories.RemoveAll(x => allowedCreateTopicCategoryIds.Contains(x.Id));
-                allowedAccessCategories.RemoveAll(x => UsersRole.RoleName != AppConstants.AdminRoleName && x.IsLocked);
-            }
-            return allowedAccessCategories;
-        }
 
         [Authorize]
         public ActionResult Create()
@@ -542,7 +614,7 @@ namespace MVCForum.Website.Controllers
         public ActionResult Create(CreateEditTopicViewModel topicViewModel)
         {
             // Get the category
-            var category = _categoryService.Get(topicViewModel.Category);
+            var category = _categoryService.Get(topicViewModel.CategoryId);
 
             // First check this user is allowed to create topics in this category
             var permissions = RoleService.GetPermissions(category, UsersRole);
@@ -864,10 +936,9 @@ namespace MVCForum.Website.Controllers
             return View(topicViewModel);
         }
 
-
         #endregion
 
-
+        #region 编辑帖子
 
         [Authorize]
         public ActionResult EditPostTopic(Guid id)
@@ -899,7 +970,7 @@ namespace MVCForum.Website.Controllers
                         {
                             Content = post.PostContent,
                             Id = post.Id,
-                            Category = topic.Category.Id,
+                            CategoryId = topic.Category.Id,
                             Name = topic.Name,
                             TopicId = topic.Id,
                             OptionalPermissions = GetCheckCreateTopicPermissions(permissions)
@@ -955,7 +1026,7 @@ namespace MVCForum.Website.Controllers
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
                 // Get the category
-                var category = _categoryService.Get(editPostViewModel.Category);
+                var category = _categoryService.Get(editPostViewModel.CategoryId);
 
                 // First check this user is allowed to create topics in this category
                 var permissions = RoleService.GetPermissions(category, UsersRole);
@@ -1050,9 +1121,9 @@ namespace MVCForum.Website.Controllers
                             if (post.IsTopicStarter)
                             {
                                 // if category has changed then update it
-                                if (topic.Category.Id != editPostViewModel.Category)
+                                if (topic.Category.Id != editPostViewModel.CategoryId)
                                 {
-                                    var cat = _categoryService.Get(editPostViewModel.Category);
+                                    var cat = _categoryService.Get(editPostViewModel.CategoryId);
                                     topic.Category = cat;
                                 }
                                 topic.IsLocked = editPostViewModel.IsLocked;
@@ -1245,6 +1316,9 @@ namespace MVCForum.Website.Controllers
             }
             return View(editPostViewModel);
         }
+
+        #endregion
+
 
         public ActionResult Show(string slug, int? p)
         {
