@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Website.Application;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MVCForum.Website.ViewModels
 {
@@ -129,13 +130,15 @@ namespace MVCForum.Website.ViewModels
 
     public class CreateEditTopicViewModel
     {
-        [Required]
-        [StringLength(100)]
+        [Required(ErrorMessage = "请填写必要的标题")]
+        [StringLength(100, ErrorMessage = "标题最长为100个字符")]
         [ForumMvcResourceDisplayName("Topic.Label.TopicTitle")]
         public string Name { get; set; }
 
+        //[Column(TypeName = "varchar(MAX)")]
+        //[MaxLength]
         [UIHint(AppConstants.EditorType), AllowHtml]
-        [StringLength(6000)]
+        [StringLength(600000, ErrorMessage = "内容过多，请点击 插入图片 按钮的方式显式加入图片")]
         public string Content { get; set; }
 
         [ForumMvcResourceDisplayName("Post.Label.IsStickyTopic")]
@@ -144,9 +147,6 @@ namespace MVCForum.Website.ViewModels
         [ForumMvcResourceDisplayName("Post.Label.LockTopic")]
         public bool IsLocked { get; set; }
 
-        /// <summary>
-        /// Topic 所属Category实例的ID编号
-        /// </summary>
         [Required]
         [ForumMvcResourceDisplayName("Topic.Label.Category")]
         public Guid CategoryId { get; set; }
@@ -157,8 +157,6 @@ namespace MVCForum.Website.ViewModels
 
         [ForumMvcResourceDisplayName("Topic.Label.PollCloseAfterDays")]
         public int PollCloseAfterDays { get; set; }
-
-
 
         /// <summary>
         /// 调查问卷的选项实例清单
@@ -171,7 +169,6 @@ namespace MVCForum.Website.ViewModels
         [ForumMvcResourceDisplayName("Topic.Label.UploadFiles")]
         public HttpPostedFileBase[] Files { get; set; }
 
-        // Permissions stuff
         public CheckCreateTopicPermissions OptionalPermissions { get; set; }
 
         // Edit Properties

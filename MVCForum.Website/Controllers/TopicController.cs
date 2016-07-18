@@ -505,9 +505,14 @@ namespace MVCForum.Website.Controllers
                 }
 
                 #endregion
-            }
 
-            return View(topicViewModel);
+                return View(topicViewModel);
+            }
+            else
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors);
+                return View(topicViewModel);
+            }
         }
 
         #endregion

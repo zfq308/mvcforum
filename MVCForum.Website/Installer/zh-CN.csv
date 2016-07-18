@@ -263,7 +263,7 @@ Poll.Button.Create,Add A Poll To This Topic
 Poll.Button.Remove,移除此投票
 Poll.Button.Vote,提交表决
 Poll.Placeholder.TypeAnswerHere,Type A Poll Answer Here
-Post.Attach,Attach
+Post.Attach,附加
 Post.AttachedFiles,附加文件
 Post.Browse,浏览...
 Post.Delete,删除
@@ -274,11 +274,11 @@ Post.Favourite,收藏
 Post.Favourited,已收藏
 Post.FilesUploaded,文件上传成功
 Post.IsSolution,Is Solution
-Post.Label.IsStickyTopic,Is Sticky Topic
-Post.Label.LockTopic,锁定Topic
+Post.Label.IsStickyTopic,置顶
+Post.Label.LockTopic,锁定
 Post.label.TopicCategory,Topic Category
 Post.Label.TopicName,Topic Name
-Post.LastEdited,Last edited
+Post.LastEdited,最后修改时间为
 Post.LikedBy,Liked by
 Post.MemberIsOnline,在线
 Post.Move,移动
@@ -405,15 +405,15 @@ Topic.Choose,Choose Existing Topic
 Topic.Comment,Answer
 Topic.Comments,意见
 Topic.CommentsDetails,备注
-Topic.CreateDiscussion,Create Discussion
+Topic.CreateDiscussion,发布
 Topic.Deleted,Topic Deleted
 Topic.DiscussionTaggedWith,标签： 
 Topic.HotTopics,最新发布
 Topic.InCategory, 在 
-Topic.IsLocked,内容被锁定
+Topic.IsLocked,锁定
 Topic.IsPoll,Poll
 Topic.IsSolved,Topic Is Solved
-Topic.IsSticky,Topic Is Sticky
+Topic.IsSticky,置顶
 Topic.Label.Category,选择类别
 Topic.Label.PollCloseAfterDays,Close Poll After Specified Amount Of Days? Leave as 0 to disable
 Topic.Label.SubscribeToTopic,Get notified of replies?

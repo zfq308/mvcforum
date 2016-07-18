@@ -3,6 +3,9 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Domain.DomainModel
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public partial class Vote : Entity
     {
         public Vote()

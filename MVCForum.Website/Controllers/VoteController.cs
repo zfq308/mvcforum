@@ -14,6 +14,8 @@ namespace MVCForum.Website.Controllers
 
     public class VoteController : BaseController
     {
+        #region 建构式
+
         private readonly IPostService _postService;
         private readonly IVoteService _voteService;
         private readonly ITopicService _topicService;
@@ -39,14 +41,21 @@ namespace MVCForum.Website.Controllers
             _membershipUserPointsService = membershipUserPointsService;
             _badgeService = badgeService;
         }
+        #endregion
 
+        #region 点赞和批评
+
+        /// <summary>
+        /// 为这个帖子点赞
+        /// </summary>
+        /// <param name="voteUpViewModel"></param>
         [HttpPost]
         [Authorize]
         public void VoteUpPost(VoteUpViewModel voteUpViewModel)
         {
             if (Request.IsAjaxRequest())
             {
-                // Quick check to see if user is locked out, when logged in
+                // 检查当前用户的状态，确保不是被锁定状态和等待审核状态
                 if (LoggedOnReadOnlyUser.IsLockedOut | !LoggedOnReadOnlyUser.IsApproved)
                 {
                     FormsAuthentication.SignOut();
@@ -54,14 +63,9 @@ namespace MVCForum.Website.Controllers
                 }
                 using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
-                    // Get a db user
-                    var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
-
-                    // Firstly get the post
+                    // 当前待评价的帖子
                     var post = _postService.Get(voteUpViewModel.Post);
-
-                    // Now get the current user
-                    var voter = loggedOnUser;
+                    var voter = MembershipService.GetUser(LoggedOnReadOnlyUser.Id); // 当前用户
 
                     // Also get the user that wrote the post
                     var postWriter = post.User;
@@ -84,30 +88,27 @@ namespace MVCForum.Website.Controllers
             }
         }
 
+        /// <summary>
+        /// 踩这个帖子
+        /// </summary>
+        /// <param name="voteDownViewModel"></param>
         [HttpPost]
         [Authorize]
         public void VoteDownPost(VoteDownViewModel voteDownViewModel)
         {
             if (Request.IsAjaxRequest())
             {
-                // Quick check to see if user is locked out, when logged in
+                // 检查当前用户的状态，确保不是被锁定状态和等待审核状态
                 if (LoggedOnReadOnlyUser.IsLockedOut | !LoggedOnReadOnlyUser.IsApproved)
                 {
                     FormsAuthentication.SignOut();
                     throw new Exception(LocalizationService.GetResourceString("Errors.NoAccess"));
                 }
-
-                // Get a db user
-                var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
-
-                // Firstly get the post
-                var post = _postService.Get(voteDownViewModel.Post);
-
-                // Now get the current user
-                var voter = loggedOnUser;
-
                 using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
+                    // 当前待评价的帖子
+                    var post = _postService.Get(voteDownViewModel.Post);
+                    var voter = MembershipService.GetUser(LoggedOnReadOnlyUser.Id); // 当前用户
 
                     // Also get the user that wrote the post
                     var postWriter = post.User;
@@ -119,13 +120,13 @@ namespace MVCForum.Website.Controllers
                     {
                         unitOfWork.Commit();
                     }
+
                     catch (Exception ex)
                     {
                         unitOfWork.Rollback();
                         LoggingService.Error(ex);
                         throw new Exception(LocalizationService.GetResourceString("Errors.GenericMessage"));
                     }
-
                 }
             }
         }
@@ -190,6 +191,8 @@ namespace MVCForum.Website.Controllers
             Negative,
         };
 
+        #endregion
+
         [HttpPost]
         [Authorize]
         public void MarkAsSolution(MarkAsSolutionViewModel markAsSolutionViewModel)
@@ -240,7 +243,11 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-
+        /// <summary>
+        /// 取得全部点赞者清单
+        /// </summary>
+        /// <param name="voteUpViewModel"></param>
+        /// <returns></returns>
         [HttpPost]
         public PartialViewResult GetVoters(VoteUpViewModel voteUpViewModel)
         {
@@ -262,7 +269,7 @@ namespace MVCForum.Website.Controllers
                 var post = _postService.Get(voteUpViewModel.Post);
                 var positiveVotes = post.Votes.Count(x => x.Amount > 0);
                 var negativeVotes = post.Votes.Count(x => x.Amount <= 0);
-                var viewModel = new ShowVotesViewModel { DownVotes = negativeVotes, UpVotes = positiveVotes};
+                var viewModel = new ShowVotesViewModel { DownVotes = negativeVotes, UpVotes = positiveVotes };
                 return PartialView(viewModel);
             }
             return null;

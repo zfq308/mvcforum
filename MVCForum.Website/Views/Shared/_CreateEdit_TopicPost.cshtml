@@ -79,9 +79,9 @@
     }
 
     <div class="form-group">
-        @Html.LabelFor(model => model.Category)
-        @Html.DropDownListFor(model => model.Category, Model.Categories, new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.Category)
+        @Html.LabelFor(model => model.CategoryId)
+        @Html.DropDownListFor(model => model.CategoryId, Model.Categories, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.CategoryId)
     </div>
     <div class="form-group">
         <label>@Html.Lang("Topic.Label.Tags")</label>
@@ -93,7 +93,7 @@
 else
 {
     <h2>@ViewBag.Title</h2>
-    @Html.HiddenFor(x => x.Category)
+    @Html.HiddenFor(x => x.CategoryId)
     @Html.HiddenFor(x => x.Name)
 }
 
@@ -114,7 +114,8 @@ else
             <button type="submit" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
                 @if (Model.Id == Guid.Empty)
                 {
-                    @Html.LanguageString("Topic.CreateDiscussion")
+                   // @Html.LanguageString("Topic.CreateDiscussion")
+                   @Html.Raw("发布")
                 }
                 else
                 {
@@ -124,13 +125,13 @@ else
         </div>
         @if (Model.IsTopicStarter)
         {
-            <div class="checkbox createsubscribe">
+            @*<div class="checkbox createsubscribe">
                 @using (Html.BeginLabelFor(m => m.SubscribeToTopic, new { @class = "checkbox" }))
                 {
                     @Html.CheckBoxFor(m => m.SubscribeToTopic)
                 }
                 @Html.ValidationMessageFor(m => m.SubscribeToTopic)
-            </div>
+            </div>*@
             <div class="checkbox createsticky" @Html.Raw(Model.OptionalPermissions.CanStickyTopic ? "" : displayNone)>
                 @using (Html.BeginLabelFor(m => m.IsSticky, new { @class = "checkbox" }))
                 {

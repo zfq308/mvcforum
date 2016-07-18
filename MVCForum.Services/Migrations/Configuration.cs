@@ -273,7 +273,8 @@ namespace MVCForum.Services.Migrations
                         EnablePolls = false,
 
                         MarkAsSolutionReminderTimeFrame = 7,
-                        EnableEmoticons = true
+                        EnableEmoticons = true,
+                        AkismentKey = "0a186c65abb7"
 
                     };
 

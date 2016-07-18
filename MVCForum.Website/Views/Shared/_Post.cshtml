@@ -93,9 +93,13 @@
                 {
                     <p><a href="@Model.ParentTopic.NiceUrl">@Model.ParentTopic.Name</a></p>
                 }
+
+
                 <a class="postmember-@postId" href="@Html.Raw(Model.Post.User.NiceUrl)">@Html.Raw(Model.Post.User.UserName)</a>
-                @Html.LanguageString("Post.PostedThis")
+                于
                 @DatesUI.GetPrettyDate(Model.Post.DateCreated.ToString())
+                提交此内容
+
                 @if (isAdmin && !string.IsNullOrEmpty(Model.Post.IpAddress))
                 {
                     <text> - @Model.Post.IpAddress</text>
@@ -229,7 +233,8 @@
                                 <a class="fileupload" href="@Url.Action("Download", "File", new { id = file.Id})">
                                     @if (AppHelpers.FileIsImage(file.FilePath))
                                     {
-                                        <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>
+                                        @*<span class="glyphicon glyphicon-picture" aria-hidden="true"></span>*@
+                                        <img src="@Url.Content(file.FilePath)" style="width:64px;height:64px" title="Image" />
                                     }
                                     else
                                     {
