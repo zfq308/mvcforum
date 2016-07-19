@@ -1,22 +1,8 @@
 ﻿@using MVCForum.Website.Application.ExtensionMethods
 @model MVCForum.Website.ViewModels.ADSetting_CreateEdit_ViewModel
-@{
-
-//const string displayNone = "style=\"display: none;\"";
-//ViewBag.ImageUploadType = Model.OptionalPermissions.CanInsertImages ? "forumimageinsert" : "image";
-}
-
-@*<div class="row">
-        <div class="col-md-12 topiccontent">
-            <div class="editor-field editorholder">
-                @Html.EditorFor(model => model.Content)
-                @Html.ValidationMessageFor(model => model.Content)
-            </div>
-        </div>
-    </div>*@
 
 <div class="row">
-    <div class="col-md-6 col-md-offset-3">
+    <div class="col-md-6 col-md-offset-1">
         <fieldset>
             <div class="form-group">
                 @Html.LabelFor(x => x.Link)

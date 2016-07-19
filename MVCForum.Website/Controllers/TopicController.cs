@@ -71,7 +71,7 @@ namespace MVCForum.Website.Controllers
 
         #endregion
 
-        #region 最新资讯部分
+        #region 最新服务部分
 
         public PartialViewResult CreateTopicButtonForZuiXinFuwu()
         {
@@ -130,7 +130,7 @@ namespace MVCForum.Website.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateZuiXinZiXun(CreateEditTopicViewModel topicViewModel)
+        public ActionResult CreateNewTopicRecord(CreateEditTopicViewModel topicViewModel)
         {
             #region 创建实例前对topicViewModel相关属性进行赋值
 
