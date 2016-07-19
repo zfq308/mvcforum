@@ -3,9 +3,11 @@ using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.Enums;
 using MVCForum.Domain.DomainModel.General;
 using MVCForum.Domain.Events;
+using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Services;
+using MVCForum.Services.Data.Context;
 using MVCForum.Utilities;
 using MVCForum.Website.Application;
 using MVCForum.Website.Application.ActionFilterAttributes;
@@ -45,9 +47,10 @@ namespace MVCForum.Website.Controllers
         private readonly IBannedWordService _bannedWordService;
         private readonly ICategoryService _categoryService;
         private readonly IVerifyCodeService _verifyCodeService;
+        private readonly MVCForumContext _context;
         #endregion
 
-        public MembersController(
+        public MembersController(IMVCForumContext context,
             //基类Service
             ILoggingService loggingService,
             IUnitOfWorkManager unitOfWorkManager,
@@ -70,6 +73,7 @@ namespace MVCForum.Website.Controllers
             ITopicService topicService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
+            _context = context as MVCForumContext;
             _postService = postService;
             _reportService = reportService;
             _emailService = emailService;
@@ -78,6 +82,7 @@ namespace MVCForum.Website.Controllers
             _categoryService = categoryService;
             _topicService = topicService;
             _verifyCodeService = verifyCodeService;
+            
 
         }
 
@@ -255,13 +260,19 @@ namespace MVCForum.Website.Controllers
         /// <returns></returns>
         public ActionResult CheckUserExistWhenRegister()
         {
+            return CheckUserExistWhenRegister(Request["UserName"]);
+        }
+
+        [HttpPost]
+        public ActionResult CheckUserExistWhenRegister(string username)
+        {
             try
             {
                 bool result;
-                string UserName = Request["UserName"];
-                var user = MembershipService.GetUser(UserName);
+                var user = MembershipService.GetUser(username);
                 result = user == null ? true : false;
                 return Json(result, JsonRequestBehavior.AllowGet);
+
             }
             catch (Exception ex)
             {
@@ -569,6 +580,10 @@ namespace MVCForum.Website.Controllers
                             }
                             return RedirectToAction("Index", "Home", new { area = string.Empty });
                         }
+                        else
+                        {
+                            return RedirectToAction("Edit", "Members", new { area = string.Empty, Id = MembershipService.GetUser(userToSave.UserName).Id });
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -672,7 +687,7 @@ namespace MVCForum.Website.Controllers
 
         [HttpPost]
         [BasicMultiButton("Btn_Generate50TestAccount")]
-        public  ActionResult GenerateTestAccount2()
+        public ActionResult GenerateTestAccount2()
         {
             Stopwatch MyStopWatch = new Stopwatch(); //性能计时器
             MyStopWatch.Start(); //启动计时器
@@ -919,6 +934,27 @@ namespace MVCForum.Website.Controllers
             ViewData["HomeTownCountyList"] = Items_HomeTownCounty;
 
             #endregion
+
+            #region 绑定审核意见信息
+
+            if (string.IsNullOrEmpty(user.AuditComments)) user.AuditComments = "";
+
+            var Items_AuditComments = new List<SelectListItem>();
+            Items_AuditComments.Add(new SelectListItem { Text = "", Value = "" });
+            Items_AuditComments.Add(new SelectListItem { Text = "审核通过", Value = "审核通过" });
+            Items_AuditComments.Add(new SelectListItem { Text = "驳回，内容不合规", Value = "驳回，内容不合规" });
+
+            foreach (SelectListItem item in Items_AuditComments)
+            {
+                if (item.Value == user.AuditComments)
+                {
+                    item.Selected = true;
+                }
+            }
+            ViewData["AuditCommentList"] = Items_AuditComments;
+
+            #endregion
+
         }
 
         [HttpPost]
@@ -1188,13 +1224,92 @@ namespace MVCForum.Website.Controllers
                 MobilePhone = user.MobilePhone,
                 Signature = user.Signature,
                 Avatar = user.Avatar,
-
+                IsApproved = user.IsApproved,
+                AuditComment = user.AuditComments,
+                
 
             };
             return viewModel;
         }
 
         #endregion
+
+
+
+        [Authorize]
+        public ActionResult Audit(Guid id)
+        {
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                if (UserIsAdmin)
+                {
+                    var user = MembershipService.GetUser(id);
+                    var viewModel = PopulateMemberViewModel(user);
+
+                    #region 绑定审核意见信息
+
+                    var Items_AuditComments = new List<SelectListItem>();
+                    Items_AuditComments.Add(new SelectListItem { Text = "审核通过", Value = "1" });
+                    Items_AuditComments.Add(new SelectListItem { Text = "驳回，内容不合规", Value = "0" });
+
+                    foreach (SelectListItem item in Items_AuditComments)
+                    {
+                        if (item.Value == user.AuditComments.ToString())
+                        {
+                            item.Selected = true;
+                        }
+                    }
+                    ViewData["AuditCommentList"] = Items_AuditComments;
+
+                    #endregion
+
+                    return View(viewModel);
+                }
+
+                return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
+            }
+        }
+
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult Audit(MemberFrontEndEditViewModel userModel)
+        {
+            if (string.IsNullOrEmpty(userModel.AuditComment) || userModel.Id == Guid.Empty)
+            {
+                return View(userModel);
+            }
+            //此处不校验userModel实例中的其他属性
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            {
+                var user = MembershipService.GetUser(userModel.Id);
+                try
+                {
+                    user.AuditComments = userModel.AuditComment;
+                    if (userModel.AuditComment.Contains("审核通过"))
+                    {
+                        user.IsApproved = true;
+                    }
+                    else
+                    {
+                        user.IsApproved = false;
+                    }
+
+                    _context.Entry<MembershipUser>(user).State = System.Data.Entity.EntityState.Modified;
+                    //EntityOperationUtils.ModifyObject(user);
+                    unitOfWork.Commit();
+                }
+                catch (Exception ex)
+                {
+                    unitOfWork.Rollback();
+                    LoggingService.Error(ex);
+                    ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
+                }
+
+                return RedirectToAction("Edit", "Members", new { Id = userModel.Id });
+            }
+
+        }
 
         #region 登录和登出
 

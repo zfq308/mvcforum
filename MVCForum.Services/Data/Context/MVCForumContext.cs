@@ -20,6 +20,7 @@ namespace MVCForum.Services.Data.Context
         public MVCForumContext()   
         {
             Configuration.LazyLoadingEnabled = true;
+           // Configuration.ProxyCreationEnabled = false;
         }
 
         public DbSet<Activity> Activity { get; set; }

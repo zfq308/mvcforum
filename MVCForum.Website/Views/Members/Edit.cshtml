@@ -21,7 +21,7 @@
 }
 <div class="row">
 
-    <div class="col-md-6 col-md-offset-3">
+    <div class="col-md-6 col-md-offset-1">
 
         <script type="text/javascript">
             $(document).ready(function () {
@@ -161,18 +161,39 @@
 
             <fieldset>
                 <legend>@ViewBag.Title</legend>
-
                 <p class="changepasswordtext">
+                    <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span>
                     @Html.Raw(string.Format(Html.LanguageString("Members.ChangePassword.Link"), string.Format("<a href=\"{0}\">{1}</a>", Url.Action("ChangePassword"), Html.LanguageString("Members.ChangePassword.Title"))))
                 </p>
+                @if (!Model.IsApproved)
+                {
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            <h5 class="panel-title">账号状态提示</h5>
+                        </div>
+                        <div class="panel-body">
+                            @if (!Model.AuditResult)
+                            {
+                                if (!string.IsNullOrEmpty(Model.AuditComment))
+                                {
+                                    <span><Font color='red'>当前账号审核被驳回。驳回原因为：Model.AuditComment</Font></span>
+                                }
+                                else
+                                {
+                                    <span><Font color='red'>当前账号还在管理员审核阶段，请耐心等候。</Font></span>
+                                }
+                            }
 
+                        </div>
+                    </div>
+                }
                 <div class="form-group">
                     @Html.LabelFor(x => x.UserName)
                     @Html.TextBoxFor(x => x.UserName, new { @class = "form-control", @readonly = "true" })
                     @Html.ValidationMessageFor(x => x.UserName)
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(x => x.RealName)
+                    @Html.LabelFor(x => x.RealName)<span><Font color='red'>(您的姓名不会对其他会员公开)</Font></span>
                     @Html.TextBoxFor(x => x.RealName, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.RealName)
                 </div>
@@ -188,7 +209,12 @@
                 </div>
                 <div class="form-group">
                     @Html.LabelFor(x => x.Birthday)
-                    @Html.TextBoxFor(x => x.Birthday, new { @class = "form-control" })
+                    @Html.TextBoxFor(x => x.Birthday, "{0:yyyy-MM-dd}",
+                                                      new
+                                                      {
+                                                          @class = "form-control",
+                                                          data_val_date = string.Format("您输入的出生日期必须是一个符合如此格式（2000-01-01）的日期数据")
+                                                      })
                     @Html.ValidationMessageFor(x => x.Birthday)
                 </div>
                 <div class="form-group">
@@ -246,9 +272,8 @@
                     @Html.DropDownListFor(x => x.LocationCounty, ViewData["HomeTownCountyList"] as List<SelectListItem>, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.LocationCounty)
                 </div>
-
                 <div class="form-group">
-                    @Html.LabelFor(x => x.HomeTown)<span><Font color='red'>(格式范例：广东省深圳市)</Font></span>
+                    @Html.LabelFor(x => x.HomeTown)@*<span><Font color='red'>(格式范例：广东省深圳市)</Font></span>*@
                     @Html.TextBoxFor(x => x.HomeTown, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.HomeTown)
                 </div>
@@ -257,30 +282,27 @@
                     @Html.TextBoxFor(x => x.Job, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.Job)
                 </div>
-
                 <div class="form-group">
                     @Html.LabelFor(x => x.IncomeRange)
                     @Html.DropDownListFor(x => x.IncomeRange, ViewData["IncomeRangeList"] as List<SelectListItem>, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.IncomeRange)
                 </div>
-
                 <div class="form-group">
                     @Html.LabelFor(x => x.Interest)
                     @Html.TextBoxFor(x => x.Interest, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.Interest)
                 </div>
-
                 <div class="form-group">
                     @Html.LabelFor(x => x.MobilePhone)
                     @Html.TextBoxFor(x => x.MobilePhone, new { @class = "form-control", @readonly = "true" })
                     @Html.ValidationMessageFor(x => x.MobilePhone)
                 </div>
-
                 <div class="row membereditavatar">
+
                     <div class="col-md-2">
                         <img src="@AppHelpers.MemberImage(Model.Avatar, "mail@163.com", Model.Id, SiteConstants.Instance.GravatarProfileSize)" alt="@Model.UserName">
                     </div>
-                    <div class="col-md-10">
+                    <div class="col-md-6">
                         @Html.LabelFor(x => x.Files)
                         <div class="input-group">
                             <span class="input-group-btn">
@@ -302,9 +324,17 @@
                     </div>
                 }
                 <div class="form-group">
-                    请注意：为保证交友的严肃性，爱驴网会对您填写的资料进行审核，只有审核通过后才能使用相关功能。工作人员会在8小时内处理完毕。若需紧急处理可以拨打客服电话，谢谢！
+                    @if (Model.IsApproved)
+                    {
+                        <span><Font color='red'>此账号已审核。</Font></span>
+                    }
+                    else
+                    {
+                        @Html.Raw("请注意：为保证交友的严肃性，爱驴网会对您填写的资料进行审核，只有审核通过后才能使用相关功能。工作人员会在8小时内处理完毕。若需紧急处理可以拨打客服电话，谢谢！")
+                    }
                 </div>
-                @if (User.IsInRole(AppConstants.AdminRoleName) || User.Identity.Name == Model.UserName)
+                @if (//User.IsInRole(AppConstants.AdminRoleName) ||
+                     User.Identity.Name == Model.UserName)
                 {
                     <div class="submit-holder">
                         <button type="submit" class="btn-mvc-green btn-mvc-large">@Html.LanguageString("Buttons.Save")</button>
@@ -313,5 +343,21 @@
             </fieldset>
         }
 
+        @if (User.IsInRole(AppConstants.AdminRoleName) && !Model.IsApproved)
+        {
+            using (Html.BeginForm("Audit", "Members", FormMethod.Post, new { enctype = "multipart/form-data", @class = "editmemberform" }))
+            {
+                @Html.HiddenFor(x => Model.Id)
+                <div class="form-group">
+                    @Html.LabelFor(x => x.AuditComment)
+                    @Html.DropDownListFor(x => x.AuditComment, ViewData["AuditCommentList"] as List<SelectListItem>, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.AuditComment)
+                </div>
+
+                <div class="submit-holder">
+                    <button type="submit" class="btn-mvc-green btn-mvc-large">保存审核意见</button>
+                </div>
+            }
+        }
     </div>
 </div>

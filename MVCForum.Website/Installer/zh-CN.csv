@@ -181,7 +181,7 @@ Members.NowBanned,Member is now banned
 Members.NowLoggedIn,You are now logged in
 Members.NowLoggedOut,You are now logged out
 Members.NowRegistered,You are now registered
-Members.NowRegisteredNeedApproval,You are now registered. But the forum admin must authorise your account
+Members.NowRegisteredNeedApproval,欢迎你加入爱驴网的大家庭，请完善您的个人信息，并等待管理员审核批准您的账号。
 Members.NowUnBanned,Member is now NOT banned
 Members.Points,成长点数
 Members.Profile.Age,年龄:
@@ -215,7 +215,7 @@ Moderate.AwaitingModeration,Your post is currently awaiting moderation. Once app
 Moderate.NavText,Pending Posts/Topics
 Moderate.NothingHere,Nothing here at the moment
 Moderate.Posts,Posts
-Moderate.Title,Moderate
+Moderate.Title,人工审阅
 Moderate.Topics,Topics
 Notification.Subscribe,关注
 Notification.UnSubscribe,取消关注

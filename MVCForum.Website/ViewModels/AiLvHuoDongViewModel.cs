@@ -8,6 +8,7 @@ using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.Enums;
 using MVCForum.Website.Application;
 using MVCForum.Domain.Constants;
+using MVCForum.Website.Application.ActionFilterAttributes;
 
 namespace MVCForum.Website.ViewModels
 {
@@ -55,6 +56,7 @@ namespace MVCForum.Website.ViewModels
         /// 活动结束时间
         /// </summary>
         [Display(Name = "活动结束时间")]
+        [DateTimeNotLessThan("StartTime", "StartTime")]
         public DateTime StopTime { get; set; }
 
         /// <summary>

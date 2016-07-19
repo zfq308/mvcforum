@@ -1,8 +1,8 @@
-﻿using System;
+﻿using MVCForum.Domain.Interfaces.Services;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
-using MVCForum.Domain.Interfaces.Services;
 
 namespace MVCForum.Website.Application.ActionFilterAttributes
 {
@@ -28,5 +28,7 @@ namespace MVCForum.Website.Application.ActionFilterAttributes
                 ValidationType = "mustbetrue"
             };
         }
+
+
     }
 }

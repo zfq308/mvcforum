@@ -20,6 +20,7 @@ namespace MVCForum.Website.ViewModels
         [Required(ErrorMessage = "请输入您要注册的账号。")]
         [ForumMvcResourceDisplayName("Members.Label.Username")]
         [StringLength(150, MinimumLength = 4)]
+        [Remote("CheckUserExistWhenRegister", "Members", HttpMethod = "POST", ErrorMessage = "账号已经存在,再重新输入一个账号吧。")]
         public string UserName { get; set; }
 
         [Required(ErrorMessage = "行不更名坐不改姓，你是谁？")]
@@ -35,6 +36,7 @@ namespace MVCForum.Website.ViewModels
         [Required(ErrorMessage = "不填电话，你让我怎么联系你？！")]
         [ForumMvcResourceDisplayName("Members.Label.MobilePhone")]
         [StringLength(11, MinimumLength = 11, ErrorMessage = "你开玩笑吧，手机号码是11位哦！")]
+        [RegularExpression(@"((\d{11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)", ErrorMessage = "格式不正确")]
         public string MobilePhone { get; set; }
 
         [Required(ErrorMessage = "快看手机，立即查看验证码。")]
@@ -72,6 +74,7 @@ namespace MVCForum.Website.ViewModels
         public bool IsApproved { get; set; }
 
         [ForumMvcResourceDisplayName("Members.Label.Comment")]
+        [DataType(DataType.MultilineText)] //当前字段是个多行文本  
         public string Comment { get; set; }
 
         [ForumMvcResourceDisplayName("Members.Label.Roles")]
@@ -90,19 +93,19 @@ namespace MVCForum.Website.ViewModels
         [Required]
         public Guid Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "账号信息不能缺失。")]
         [Display(Name = "账号")]
-        [StringLength(150, MinimumLength = 4)]
+        [StringLength(50, MinimumLength = 4, ErrorMessage = "账号是一段长度介于4位到50位的文字")]
         public string UserName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "真实姓名信息不能缺失。")]
         [Display(Name = "真实姓名")]
-        [StringLength(16, MinimumLength = 4)]
+        [StringLength(16, MinimumLength = 2, ErrorMessage = "您的姓名是一段长度介于2位到16位的文字")]
         public string RealName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "昵称信息不能缺失。")]
         [Display(Name = "昵称")]
-        [StringLength(24, MinimumLength = 2)]
+        [StringLength(24, MinimumLength = 2, ErrorMessage = "您的昵称是一段长度介于2位到16位的文字")]
         public string AliasName { get; set; }
 
         [Required]
@@ -111,6 +114,8 @@ namespace MVCForum.Website.ViewModels
 
         [Required]
         [Display(Name = "出生日期")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        [DataType(DataType.Date, ErrorMessage = "请按 2000-01-01 的日期格式输入您的出生日期信息")]
         public DateTime Birthday { get; set; }
 
         [Required]
@@ -122,11 +127,13 @@ namespace MVCForum.Website.ViewModels
         public Enum_MarriedStatus IsMarried { get; set; }
 
         [Display(Name = "身高cm")]
-        [Range(0, 250)]
+        [Range(0, 250, ErrorMessage = "请输入有效的身高数据（0~250,单位cm,无小数）。")]
+        [RegularExpression(@"^\d+$", ErrorMessage = "请输入有效的身高数据（0~250,单位cm,无小数）。")]
         public int Height { get; set; }
 
         [Display(Name = "体重kg")]
-        [Range(0, 150)]
+        [Range(0, 150, ErrorMessage = "请输入有效的体重数据（0~150,单位cm,无小数）。")]
+        [RegularExpression(@"^\d+$", ErrorMessage = "请输入有效的体重数据（0~150,单位kg,无小数）。")]
         public int Weight { get; set; }
 
         [Required]
@@ -141,7 +148,7 @@ namespace MVCForum.Website.ViewModels
         [Display(Name = "学校所在城市")]
         public string SchoolCity { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "学校名称是一段长度介于2位到20位的文字")]
         [Display(Name = "学校名称")]
         [StringLength(20, MinimumLength = 2)]
         public string SchoolName { get; set; }
@@ -158,23 +165,23 @@ namespace MVCForum.Website.ViewModels
         [Display(Name = "居住地所在县区")]
         public string LocationCounty { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "家乡是一段长度介于2位到100位的文字")]
         [Display(Name = "家乡")]
-        [StringLength(100, MinimumLength = 2)]
+        [StringLength(100, MinimumLength = 2, ErrorMessage = "家乡是一段长度介于2位到100位的文字")]
         public string HomeTown { get; set; }
 
         [Required]
         [Display(Name = "职业")]
-        [StringLength(20, MinimumLength = 2)]
+        [StringLength(20, MinimumLength = 2, ErrorMessage = "职业是一段长度介于2位到20位的文字")]
         public string Job { get; set; }
 
         [Required]
         [Display(Name = "月收入区段")]
         public Enum_IncomeRange IncomeRange { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "兴趣爱好是一段长度介于2位到100位的文字")]
         [Display(Name = "兴趣爱好")]
-        [StringLength(100, MinimumLength = 2)]
+        [StringLength(100, MinimumLength = 2, ErrorMessage = "兴趣爱好是一段长度介于2位到100位的文字")]
         public string Interest { get; set; }
 
         [Required]
@@ -187,50 +194,24 @@ namespace MVCForum.Website.ViewModels
         [AllowHtml]
         public string Signature { get; set; }
 
-
+        /// <summary>
+        /// 头像
+        /// </summary>
         public string Avatar { get; set; }
+
+        /// <summary>
+        /// 账号是否有通过审核
+        /// </summary>
+        public bool IsApproved { get; set; }
+
+        public bool AuditResult { get; set; }
+
+        [Display(Name = "审核意见")]
+        public string AuditComment { get; set; }
 
         [ForumMvcResourceDisplayName("Members.Label.UploadNewAvatar")]
         public HttpPostedFileBase[] Files { get; set; }
 
-        #region Unuse code
-
-        //[ForumMvcResourceDisplayName("Members.Label.EmailAddress")]
-        //[EmailAddress]
-        //[Required]
-        //public string Email { get; set; }
-
-        //[ForumMvcResourceDisplayName("Members.Label.Facebook")]
-        //[Url]
-        //[StringLength(60)]
-        //public string Facebook { get; set; }
-
-        //public bool DisableFileUploads { get; set; }
-
-        //[ForumMvcResourceDisplayName("Members.Label.DisableEmailNotifications")]
-        //public bool DisableEmailNotifications { get; set; }
-
-        //public int AmountOfPoints { get; set; }
-
-        //[ForumMvcResourceDisplayName("Members.Label.Age")]
-        //[Range(0, int.MaxValue)]
-        //public int? Age { get; set; }
-
-        //[ForumMvcResourceDisplayName("Members.Label.Website")]
-        //[Url]
-        //[StringLength(100)]
-        //public string Website { get; set; }
-
-        //[ForumMvcResourceDisplayName("Members.Label.Twitter")]
-        //[Url]
-        //[StringLength(60)]
-        //public string Twitter { get; set; }
-
-        //[Required]
-        //[StringLength(12, MinimumLength = 4)]
-        //public string QQ { get; set; }
-
-        #endregion
     }
 
     public class LogOnViewModel
