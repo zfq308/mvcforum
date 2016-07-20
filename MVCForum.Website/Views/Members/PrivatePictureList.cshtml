@@ -1,0 +1,37 @@
+﻿@using MVCForum.Website.Application.ExtensionMethods
+@using MVCForum.Domain.DomainModel
+@model MVCForum.Website.ViewModels.MemberFrontEndEditViewModel
+
+<div class="row">
+    <div class="col-md-6 col-md-offset-1">
+        <table class="table">
+            @foreach (MembershipUserPicture ad in Model.MembershipUserPictures)
+            {
+                <tr>
+                    <td>
+                        <img src="@ad.FileName" alt="@ad.Description" class="thumbnail" style="margin-bottom:0px" />
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>
+                        <span title="@ad.Description">
+                            @if (ad.Description.Length > 15)
+                            {
+                                Html.Raw(ad.Description.Substring(0, 15) + "...");
+                            }
+                            else
+                            {
+                                Html.Raw(ad.Description);
+                            }
+                        </span>
+                        <a href="@Url.Action("DeletePrivatePicture", new { ad.Id })" class="btn btn-link" style="padding-top:0px; padding-bottom:0px;" title="删除这张照片" onclick="return confirm('你确认需要删除这张照片吗?')">
+                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                        </a>
+                    </td>
+                </tr>
+            }
+            <tr><td><a href="@Url.Action("CreatePrivatePicture")">添加个人靓照</a></td></tr>
+        </table>
+    </div>
+</div>

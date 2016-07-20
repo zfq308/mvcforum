@@ -130,6 +130,7 @@
     <Compile Include="Data\Mapping\FavouriteMapping.cs" />
     <Compile Include="Data\Mapping\LanguageMapping.cs" />
     <Compile Include="Data\Mapping\MembershipUserMapping.cs" />
+    <Compile Include="Data\Mapping\MembershipUserPictureMapping.cs" />
     <Compile Include="Data\Mapping\MembershipUserPointsMapping.cs" />
     <Compile Include="Data\Mapping\SystemPermissionMapping.cs" />
     <Compile Include="Data\Mapping\PollMapping.cs" />
@@ -141,6 +142,7 @@
     <Compile Include="Data\Mapping\VerifyCodeMapping.cs" />
     <Compile Include="Data\Mapping\VoteMapping.cs" />
     <Compile Include="MembershipTodayStarService.cs" />
+    <Compile Include="MembershipUserPictureService.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Data\UnitOfWork\UnitOfWork.cs" />
     <Compile Include="Data\UnitOfWork\UnitOfWorkManager.cs" />

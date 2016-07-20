@@ -212,6 +212,9 @@ namespace MVCForum.Website.ViewModels
         [ForumMvcResourceDisplayName("Members.Label.UploadNewAvatar")]
         public HttpPostedFileBase[] Files { get; set; }
 
+
+        public IList<MembershipUserPicture> MembershipUserPictures { get; set; }
+
     }
 
     public class LogOnViewModel
