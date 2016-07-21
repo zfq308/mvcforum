@@ -33,58 +33,85 @@
         }
     </div>
 </div>
+
 <div class="row documentation-message">
     <div class="col-md-6">
-
         <div class="panel panel-mvc">
             <div class="panel-heading">最新活动</div>
             <div class="panel-body">
-                <p>
-                   最新活动清单
-                </p>
-                @if (Model.AiLv_ZuiXinHuoDongTop5.Any())
+                @if (Model.AiLv_ZuiXinHuoDongTop5 != null && Model.AiLv_ZuiXinHuoDongTop5.Count>0)
                 {
-                    <div class="tablescroll">
-                        <table class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        Entry Date
-                                    </th>
-                                    <th>
-                                        Module
-                                    </th>
+                    <table class="adtable">
+                        @foreach (var item in Model.AiLv_ZuiXinHuoDongTop5)
+                        {
+                            <tr>
+                                <td valign="top">
+                                    <img src="/Content/Images/HuodongIcon.jpg" alt="" class="thumbnail" style="margin-bottom:0px" />
+                                </td>
+                                <td style="padding-left:5px; width:100%;">
+                                    <table class="pad">
+                                        <tr>
+                                            <td>
+                                                <span>【@item.MingCheng】</span>,<label class="bg-success">@item.YuGuRenShu 人团</label>
+                                                @if (item.LeiBie == MVCForum.Domain.DomainModel.Enum_HuoDongLeiBie.SpecicalRegister)
+                                                {
+                                                    <label class="glyphicon glyphicon-lock" title="特定人群组团，需要输入邀请码。"></label>
+                                                }
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <small>
+                                                    活动费用(￥/人):<span>@item.Feiyong</span>
 
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var log in Model.AiLv_ZuiXinHuoDongTop5)
-                                {
-                                    <tr>
-                                        <td class="logentrydate">
-                                            @log.MingCheng
-                                        </td>
-                                        <td class="logentrymodule">
-                                            @log.LeiBie
-                                        </td>
-
-
-                                    </tr>
-                                }
-                                <tr>
-                                    <td class="logentrydate" colspan="2">show more...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                                                    <span style="padding-right:3px;padding-left:5px">发布时间</span>@item.CreatedTime.ToString("MM-dd HH:mm")
+                                                </small>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <small>
+                                                    活动时间： @item.StartTime.ToString("MM-dd HH:mm") ~ @item.StopTime.ToString("MM-dd HH:mm")
+                                                </small>
+                                            </td>
+                                        </tr>
+                                        @if (item.XingBieBiLi != "/")
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <small>参与人数性别比例：<span>@item.XingBieBiLi</span></small>
+                                                </td>
+                                            </tr>
+                                        }
+                                        <tr><td><small>活动地点：<span>@item.DiDian</span></small></td></tr>
+                                        <tr><td><small>报名截止至：@item.BaoMingJieZhiTime.ToString("MM-dd HH:mm")</small></td></tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border-bottom-width: 1px;" colspan="2"></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right;" colspan="2">
+                                    <a href="@Url.Action("EditAiLvHuoDong", new { item.Id })" class="btn btn-mvc">
+                                        点击查看
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                }
+                else
+                {
+                    <p>
+                        暂无活动信息
+                    </p>
                 }
             </div>
         </div>
-
     </div>
 
     <div class="col-md-6">
-
         <div class="panel panel-mvc">
             <div class="panel-heading">最新记录</div>
             <div class="panel-body">
@@ -97,7 +124,6 @@
     </div>
 
     <div class="col-md-6">
-
         <div class="panel panel-mvc">
             <div class="panel-heading">每日之星</div>
             <div class="panel-body">
@@ -127,28 +153,63 @@
         <div class="panel panel-mvc">
             <div class="panel-heading">最新服务</div>
             <div class="panel-body">
-                <p>
-                    此处为最新服务
-                </p>
+                @if (Model.AiLv_ZuiXinFuWuTop5 != null && Model.AiLv_ZuiXinFuWuTop5.Count > 0)
+                {
+                    <table>
+                        @foreach (var fuwu in Model.AiLv_ZuiXinFuWuTop5)
+                        {
+                            <tr>
+                                <td>
+                                    <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span>
+                                    <a href="@fuwu.NiceUrl">@fuwu.Name</a>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                }
+                else
+                {
+                    <p>
+                        暂无服务信息
+                    </p>
+                }
+
             </div>
         </div>
 
     </div>
 
     <div class="col-md-6">
-
         <div class="panel panel-mvc">
             <div class="panel-heading">最新资讯</div>
             <div class="panel-body">
-                <p>
-                    此处为最新资讯
-                </p>
+                @if (Model.AiLv_ZuiXinZiXunTop5 != null && Model.AiLv_ZuiXinZiXunTop5.Count > 0)
+                {
+                    <table>
+                        @foreach (var zixun in Model.AiLv_ZuiXinZiXunTop5)
+                        {
+                            <tr>
+                                <td>
+                                    <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span>
+                                    <a href="@zixun.NiceUrl">@zixun.Name</a>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                }
+                else
+                {
+                    <p>
+                        暂无资讯信息
+                    </p>
+                }
             </div>
         </div>
-
     </div>
 
 </div>
+
+
 
 @*@Html.Action("LatestTopics", "Topic")*@
 @*@Html.Partial("_DocumentationBlock")*@

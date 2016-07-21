@@ -17,7 +17,7 @@ namespace MVCForum.Services.Data.Mapping
             Property(x => x.Id).IsRequired();
             Property(x => x.UserId).IsRequired().HasColumnAnnotation("Index",
                                     new IndexAnnotation(new IndexAttribute("IX_MembershipUserPicture_UserId", 1) { IsUnique = false }));
-            Property(x => x.FileName).IsRequired().HasMaxLength(100);
+            Property(x => x.FileName).IsRequired().HasMaxLength(500);
             Property(x => x.OriginFileName).IsRequired().HasMaxLength(100);
             Property(x => x.Description).IsOptional().HasMaxLength(100);
             Property(x => x.UploadTime).IsRequired();

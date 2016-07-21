@@ -71,7 +71,7 @@ namespace MVCForum.Domain.Interfaces.Services
         void Delete(MembershipUserPicture picture);
         MembershipUserPicture Add(MembershipUserPicture newpic);
         MembershipUserPicture GetMembershipUserPicture(Guid id);
-
+        IList<MembershipUserPicture> GetMembershipUserPictureListByUserId(Guid Id);
         void AuditMembershipUserPicture(MembershipUserPicture PictureInstance, string AuditComment, Enum_UploadPictureAuditStatus Status);
         void AuditMembershipUserPicture(MembershipUser PictureOwner, string AuditComment, Enum_UploadPictureAuditStatus Status);
         void AuditMembershipUserPicture(Guid PictureOwnerId, string AuditComment, Enum_UploadPictureAuditStatus Status);

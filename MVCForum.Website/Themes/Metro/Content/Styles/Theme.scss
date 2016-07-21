@@ -153,7 +153,7 @@ body {
         @media (max-width: $media-query-medium) {
             .main-section {
                 position: relative;
-                padding-top: 62px; 
+                padding-top: 2px; 
                 .createtopicbutton {
                     position: absolute;
                     top: 0;
@@ -191,7 +191,7 @@ body {
         position: inherit;
 
         .main-side-box {
-            padding: 15px 0 0 0;
+            padding: 0px 0 0 0;
         }
     }
 }

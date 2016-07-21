@@ -44,4 +44,27 @@ namespace MVCForum.Website.ViewModels
 
     }
 
+
+    public class PrivatePicture_CreateEdit_ViewModel
+    {
+        // Edit Properties
+        [HiddenInput]
+        public Guid Id { get; set; }
+      
+        [HiddenInput]
+        public Guid UserId { get; set; }
+
+        [Display(Name = "上传文件名")]
+        public HttpPostedFileBase UploadFile { get; set; }
+
+        [Required]
+        [Display(Name = "上传图片文件")]
+        public string UploadFileName { get; set; }
+
+        [Required]
+        [Display(Name = "上传图片描述")]
+        public string Description { get; set; }
+
+    }
+
 }

@@ -3,35 +3,43 @@
 @model MVCForum.Website.ViewModels.MemberFrontEndEditViewModel
 
 <div class="row">
-    <div class="col-md-6 col-md-offset-1">
+    <div class="col-md-12">
         <table class="table">
             @foreach (MembershipUserPicture ad in Model.MembershipUserPictures)
             {
                 <tr>
-                    <td>
-                        <img src="@ad.FileName" alt="@ad.Description" class="thumbnail" style="margin-bottom:0px" />
+                    <td align="center">
+                        <a href="@ad.FileName">
+                            <img src="@ad.FileName" title="@ad.Description" class="thumbnail" style="margin-bottom:0px;height:150px;width:200px" />
+                        </a>
                     </td>
-
                 </tr>
                 <tr>
-                    <td>
-                        <span title="@ad.Description">
-                            @if (ad.Description.Length > 15)
-                            {
-                                Html.Raw(ad.Description.Substring(0, 15) + "...");
-                            }
-                            else
-                            {
-                                Html.Raw(ad.Description);
-                            }
-                        </span>
+                    <td align="right">
+                        @if (ad.Description.Length > 15)
+                        {
+                            <span>
+                                @ad.Description.Substring(0, 15)...
+                            </span>
+                        }
+                        else
+                        {
+                            <span>@ad.Description</span>
+                        }
                         <a href="@Url.Action("DeletePrivatePicture", new { ad.Id })" class="btn btn-link" style="padding-top:0px; padding-bottom:0px;" title="删除这张照片" onclick="return confirm('你确认需要删除这张照片吗?')">
                             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                         </a>
                     </td>
                 </tr>
             }
-            <tr><td><a href="@Url.Action("CreatePrivatePicture")">添加个人靓照</a></td></tr>
+            <tr>
+                <td>
+                    @if (User.Identity.Name == Model.UserName)
+                    {  <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span>
+                    <a href="@Url.Action("CreatePrivatePicture")">添加个人靓照</a>
+                    }
+                </td>
+            </tr>
         </table>
     </div>
 </div>

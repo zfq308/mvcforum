@@ -17,18 +17,26 @@ namespace MVCForum.Services
 {
     public partial class TopicService : ITopicService
     {
-        private readonly ITopicNotificationService _topicNotificationService;
+        #region 成员变量定义
+
         private readonly MVCForumContext _context;
-        private readonly IMembershipUserPointsService _membershipUserPointsService;
+
         private readonly ISettingsService _settingsService;
-        private readonly IVoteService _voteService;
         private readonly IPostService _postService;
         private readonly IUploadedFileService _uploadedFileService;
         private readonly IFavouriteService _favouriteService;
         private readonly IRoleService _roleService;
+        private readonly ICategoryService _categoryService;
+
+        private readonly ITopicNotificationService _topicNotificationService;
+        private readonly IMembershipUserPointsService _membershipUserPointsService;
+        private readonly IVoteService _voteService;
         private readonly IPollService _pollService;
         private readonly IPollAnswerService _pollAnswerService;
-        private readonly ICategoryService _categoryService;
+
+        #endregion
+
+        #region 建构式
 
         public TopicService(IMVCForumContext context,
             ICategoryService categoryService,
@@ -50,6 +58,8 @@ namespace MVCForum.Services
             _pollAnswerService = pollAnswerService;
             _context = context as MVCForumContext;
         }
+
+        #endregion
 
         public Topic SanitizeTopic(Topic topic)
         {
@@ -197,6 +207,27 @@ namespace MVCForum.Services
             // Return a paged list
             return new PagedList<Topic>(results, pageIndex, pageSize, total);
         }
+
+
+        public IList<Topic> GetRecentTopics(int amountToTake, Category allowedCategory)
+        {
+            var total = _context.Topic.AsNoTracking().Count(x => x.Pending != true && x.Category.Id == allowedCategory.Id);
+            if (amountToTake < total)
+            {
+                total = amountToTake;
+            }
+
+            return _context.Topic.AsNoTracking()
+                                 .Include(x => x.Category)
+                                 .Include(x => x.LastPost.User)
+                                 .Include(x => x.User)
+                                 .Where(x => x.Pending != true && x.Category.Id == allowedCategory.Id)
+                                 .OrderByDescending(x => x.LastPost.DateCreated)
+                                 .Take(amountToTake)
+                                 .ToList();
+        }
+
+
 
         /// <summary>
         /// Returns a specified amount of most recent topics in a list used for RSS feeds
@@ -803,7 +834,7 @@ namespace MVCForum.Services
 
         public IList<Topic> GetAllTopicsByCategory(EnumCategoryType mCategoryType)
         {
-            var cat=_categoryService.GetCategoryByEnumCategoryType(mCategoryType);
+            var cat = _categoryService.GetCategoryByEnumCategoryType(mCategoryType);
             if (cat != null)
             {
                 return GetAllTopicsByCategory(cat.Id);
@@ -941,6 +972,11 @@ namespace MVCForum.Services
                 .ToList();
         }
 
+        public IList<Topic> GetRecentTopics(int amountToTake, List<Category> allowedCategories)
+        {
+            throw new NotImplementedException();
+        }
 
+      
     }
 }

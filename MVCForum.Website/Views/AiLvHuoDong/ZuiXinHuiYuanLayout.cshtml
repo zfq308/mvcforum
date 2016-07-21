@@ -7,10 +7,10 @@
     </div>
     <div class="col-md-3 sidelayoutsection">
         <div class="main-side-box clearfix">
-            @if (User.IsInRole("Admin"))
+            @*@if (User.IsInRole("Admin"))
             {
                 @Html.Action("CreateTopicButton", "Topic")
-            }
+            }*@
             @RenderSection("side", false)
         </div>
     </div>

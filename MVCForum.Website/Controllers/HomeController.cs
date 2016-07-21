@@ -46,29 +46,15 @@ namespace MVCForum.Website.Controllers
 
         #endregion
 
+        [OutputCache(CacheProfile = "IndexPageCache")]
         public ActionResult Index()
         {
             var returnView = new AiLvHomeViewModel();
-
-
-            returnView.AiLv_ZuiXinHuoDongTop5 = new List<AiLvHuoDong>();
-            var m1 = new AiLvHuoDong();
-            m1.MingCheng = "AAAA";
-            m1.LeiBie = Enum_HuoDongLeiBie.FreeRegister;
-            returnView.AiLv_ZuiXinHuoDongTop5.Add(m1);
-
-
+            returnView.AiLv_ZuiXinHuoDongTop5 = (List<AiLvHuoDong>)_aiLvHuoDongService.GetRecentAiLvHuodong(5);
             returnView.AiLv_ADCollectionTop5 = (List<ADSetting>)_adSettingService.GetRecentTop5();
-
-
-
-
-
+            returnView.AiLv_ZuiXinZiXunTop5 = (List<Topic>)_topicService.GetRecentTopics(5, _categoryService.GetCategoryByEnumCategoryType(EnumCategoryType.AiLvZiXun));
+            returnView.AiLv_ZuiXinFuWuTop5 = (List<Topic>)_topicService.GetRecentTopics(5, _categoryService.GetCategoryByEnumCategoryType(EnumCategoryType.AiLvFuWu));
             return View(returnView);
-
-
-
-            //return View();
         }
 
         public ActionResult ServiceProtocal()

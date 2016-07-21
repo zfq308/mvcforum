@@ -73,6 +73,10 @@ namespace MVCForum.Services
             return _context.MembershipUserPicture.FirstOrDefault(x => x.Id == id);
         }
 
+        public IList<MembershipUserPicture> GetMembershipUserPictureListByUserId(Guid Id)
+        {
+            return _context.MembershipUserPicture.Where(x => x.UserId == Id).ToList();
+        }
     }
 
 }

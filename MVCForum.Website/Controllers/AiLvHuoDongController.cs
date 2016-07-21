@@ -275,6 +275,7 @@ namespace MVCForum.Website.Controllers
 
         #endregion
 
+        #region 删除活动
 
         [Authorize(Roles = "Admin,Supplier")]
         public ActionResult DeleteAiLvHuoDong(Guid Id)
@@ -293,6 +294,10 @@ namespace MVCForum.Website.Controllers
             return RedirectToAction("ZuiXinHuoDong");
 
         }
+
+        #endregion
+
+        #region 活动审核
 
         [Authorize(Roles = "Admin")]
         [BasicMultiButton("btn_AuditSuccess")]
@@ -331,6 +336,7 @@ namespace MVCForum.Website.Controllers
             return RedirectToAction("ZuiXinHuoDong");
 
         }
+        #endregion
 
         #endregion
 
@@ -372,15 +378,7 @@ namespace MVCForum.Website.Controllers
 
         #endregion
 
-
-
-
-
-
-
-
-
-        #region MyRegion
+        #region 其他View视图
 
         /// <summary>
         /// 最新记录

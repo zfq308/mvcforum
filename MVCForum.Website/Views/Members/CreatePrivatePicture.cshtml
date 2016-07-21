@@ -1,0 +1,47 @@
+﻿@using MVCForum.Website.Application.ExtensionMethods
+@model MVCForum.Website.ViewModels.PrivatePicture_CreateEdit_ViewModel
+@{
+    ViewBag.Title = "添加个人照片";
+    Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+<div class="row">
+    <div class="col-md-8 col-md-offset-1">
+        @using (Html.BeginForm("CreatePrivatePicture", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.ValidationSummary(true)
+            @Html.AntiForgeryToken()
+            <fieldset>
+
+                <div class="form-group createuploadfiles">
+                    @Html.LabelFor(x => x.UploadFileName)
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                            <span class="btn btn-default btn-file">
+                                选择图片<input type="file" name="files" id="files" value="" class="form-control">
+                            </span>
+                        </span>
+                        @*<input type="text" class="form-control" readonly="">*@
+
+                        @Html.TextBoxFor(model => model.UploadFileName, new { @class = "form-control", @readonly = "true" })
+                    </div>
+                    @Html.ValidationMessageFor(x => x.UploadFileName)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Description)
+                    @Html.TextBoxFor(model => model.Description, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Description)
+                </div>
+                <div class="submit-holder">
+                    <button type="submit" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
+                        保存
+                    </button>
+                </div>
+            </fieldset>
+        }
+    </div>
+</div>
+
+
+

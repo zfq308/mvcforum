@@ -10,6 +10,8 @@ using MVCForum.Website.Application.ActionFilterAttributes;
 
 namespace MVCForum.Website.ViewModels
 {
+
+
     public class ActiveMembersViewModel
     {
         public IList<MembershipUser> ActiveMembers { get; set; }

@@ -17,6 +17,7 @@ namespace MVCForum.Domain.Interfaces.Services
         Topic Add(Topic topic);
         IList<Topic> GetTodaysTopics(int amountToTake, List<Category> allowedCategories);
         PagedList<Topic> GetRecentTopics(int pageIndex, int pageSize, int amountToTake, List<Category> allowedCategories);
+        IList<Topic> GetRecentTopics(int amountToTake, Category allowedCategory);
         IList<Topic> GetRecentRssTopics(int amountToTake, List<Category> allowedCategories);
         IList<Topic> GetTopicsByUser(Guid memberId, List<Category> allowedCategories);
         IList<Topic> GetTopicsByLastPost(List<Guid> postIds, List<Category> allowedCategories);

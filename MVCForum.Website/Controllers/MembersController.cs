@@ -16,6 +16,7 @@ using MVCForum.Website.ViewModels;
 using MVCForum.Website.ViewModels.Mapping;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.IO;
@@ -48,6 +49,7 @@ namespace MVCForum.Website.Controllers
         private readonly ICategoryService _categoryService;
         private readonly IVerifyCodeService _verifyCodeService;
         private readonly MVCForumContext _context;
+        private readonly IMembershipUserPictureService _MembershipUserPictureService;
         #endregion
 
         public MembersController(IMVCForumContext context,
@@ -70,7 +72,9 @@ namespace MVCForum.Website.Controllers
             IPollAnswerService pollAnswerService,
             IVoteService voteService,
             ICategoryService categoryService,
-            ITopicService topicService)
+            ITopicService topicService,
+            IMembershipUserPictureService MembershipUserPictureService
+            )
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _context = context as MVCForumContext;
@@ -82,7 +86,8 @@ namespace MVCForum.Website.Controllers
             _categoryService = categoryService;
             _topicService = topicService;
             _verifyCodeService = verifyCodeService;
-            
+
+            _MembershipUserPictureService = MembershipUserPictureService;
 
         }
 
@@ -1196,8 +1201,9 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        private static MemberFrontEndEditViewModel PopulateMemberViewModel(MembershipUser user)
+        private MemberFrontEndEditViewModel PopulateMemberViewModel(MembershipUser user)
         {
+            var MembershipUserPictureslist = _MembershipUserPictureService.GetMembershipUserPictureListByUserId(user.Id);
             var viewModel = new MemberFrontEndEditViewModel
             {
                 Id = user.Id,
@@ -1226,7 +1232,7 @@ namespace MVCForum.Website.Controllers
                 Avatar = user.Avatar,
                 IsApproved = user.IsApproved,
                 AuditComment = user.AuditComments,
-                
+                MembershipUserPictures = MembershipUserPictureslist,
 
             };
             return viewModel;
@@ -1234,7 +1240,101 @@ namespace MVCForum.Website.Controllers
 
         #endregion
 
+        #region 个人图片管理
 
+        [Authorize]
+        public ActionResult CreatePrivatePicture()
+        {
+            return View(new PrivatePicture_CreateEdit_ViewModel());
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult CreatePrivatePicture(PrivatePicture_CreateEdit_ViewModel adViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var ad = new MembershipUserPicture();
+                ad.UploadTime = DateTime.Now;
+                ad.UserId = LoggedOnReadOnlyUser.Id;
+                ad.Description = adViewModel.Description;
+                ad.AuditStatus = Enum_UploadPictureAuditStatus.WaitingAudit;
+                ad.AuditComment = "";
+                ad.AuditTime = DateTime.Now;
+
+                HttpPostedFileBase mUploadFile = Request.Files["files"];
+                if (mUploadFile != null) adViewModel.UploadFile = mUploadFile;
+                if (adViewModel.UploadFile != null)
+                {
+                    #region 准备上传路径
+                    var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath, LoggedOnReadOnlyUser.Id));
+                    if (!Directory.Exists(uploadFolderPath))
+                    {
+                        Directory.CreateDirectory(uploadFolderPath);
+                    }
+                    #endregion
+
+                    var uploadResult = AppHelpers.UploadFile(adViewModel.UploadFile, uploadFolderPath, LocalizationService);
+                    if (!uploadResult.UploadSuccessful)
+                    {
+                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        {
+                            Message = uploadResult.ErrorMessage,
+                            MessageType = GenericMessages.danger
+                        };
+                        return View(adViewModel);
+                    }
+                    ad.OriginFileName = adViewModel.UploadFileName;
+                    ad.FileName = uploadResult.UploadedFileUrl;
+
+                    _context.MembershipUserPicture.Add(ad);
+                    _context.SaveChanges();
+
+                    #region 重置审核标志位
+
+                    if (!UserIsAdmin)
+                    {
+                        var user = base.MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+                        user.AuditComments = "";
+                        user.IsApproved = false;
+                        _context.Entry<MembershipUser>(user).State = System.Data.Entity.EntityState.Modified;
+                        _context.SaveChanges();
+                    }
+
+                    #endregion
+                }
+
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = "个人照片已上传，等待管理员审核。",
+                    MessageType = GenericMessages.info
+                };
+                return RedirectToAction("Edit", "Members", new { Id = LoggedOnReadOnlyUser.Id });
+            }
+            return View(adViewModel);
+        }
+
+        [Authorize]
+        public ActionResult DeletePrivatePicture(Guid Id)
+        {
+            var ad = _MembershipUserPictureService.GetMembershipUserPicture(Id);
+            try
+            {
+                _MembershipUserPictureService.Delete(ad);
+                _context.Entry<MembershipUserPicture>(ad).State = EntityState.Deleted;
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                LoggingService.Error(ex);
+            }
+
+            return RedirectToAction("Edit", "Members", new { Id = LoggedOnReadOnlyUser.Id });
+        }
+
+        #endregion
+
+        #region 用户审核
 
         [Authorize]
         public ActionResult Audit(Guid id)
@@ -1270,7 +1370,6 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-
         [HttpPost]
         [Authorize]
         public ActionResult Audit(MemberFrontEndEditViewModel userModel)
@@ -1289,6 +1388,9 @@ namespace MVCForum.Website.Controllers
                     if (userModel.AuditComment.Contains("审核通过"))
                     {
                         user.IsApproved = true;
+
+                        // 审核通过照片
+                        _MembershipUserPictureService.AuditMembershipUserPicture(user, "默认审核通过", Enum_UploadPictureAuditStatus.Auditted);
                     }
                     else
                     {
@@ -1310,6 +1412,8 @@ namespace MVCForum.Website.Controllers
             }
 
         }
+
+        #endregion
 
         #region 登录和登出
 
@@ -1918,6 +2022,9 @@ namespace MVCForum.Website.Controllers
         }
 
         #endregion
+
+
+
 
         [ChildActionOnly]
         public PartialViewResult LatestMembersJoined()
