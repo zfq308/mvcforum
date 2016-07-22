@@ -46,6 +46,10 @@ namespace MVCForum.Website.Controllers
 
         #endregion
 
+        /// <summary>
+        /// 首页
+        /// </summary>
+        /// <returns></returns>
         [OutputCache(CacheProfile = "IndexPageCache")]
         public ActionResult Index()
         {
@@ -57,23 +61,37 @@ namespace MVCForum.Website.Controllers
             return View(returnView);
         }
 
+        /// <summary>
+        /// 服务协议
+        /// </summary>
+        /// <returns></returns>
         public ActionResult ServiceProtocal()
         {
             return View();
         }
 
+        /// <summary>
+        /// 隐私政策
+        /// </summary>
+        /// <returns></returns>
         public ActionResult PrivacyPolicy()
         {
             return View();
         }
 
-
+        /// <summary>
+        /// 爱驴简介
+        /// </summary>
+        /// <returns></returns>
         public ActionResult AiLvJianJie()
         {
             return View();
         }
 
-
+        /// <summary>
+        /// 联系客服
+        /// </summary>
+        /// <returns></returns>
         public ActionResult LianXiKeFu()
         {
             return View();
@@ -354,7 +372,6 @@ namespace MVCForum.Website.Controllers
 
             return View();
         }
-
 
         public ActionResult PostedIn()
         {

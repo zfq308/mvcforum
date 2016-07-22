@@ -972,10 +972,7 @@ namespace MVCForum.Services
                 .ToList();
         }
 
-        public IList<Topic> GetRecentTopics(int amountToTake, List<Category> allowedCategories)
-        {
-            throw new NotImplementedException();
-        }
+       
 
       
     }

@@ -6,15 +6,17 @@
 }
 
 <h2>@ViewBag.Title</h2>
-
-<div class="row">
-    <div class="col-md-8 col-md-offset-1">
-        @using (Html.BeginForm("Create", "ADSetting", FormMethod.Post, new { enctype = "multipart/form-data"}))
-            {
-            @Html.ValidationSummary(true)
-            @Html.AntiForgeryToken()
-            @Html.Partial("_CreateEdit_ADSetting", Model)
-        }
+<div class="panel">
+    <div class="panel-content">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-1">
+                @using (Html.BeginForm("Create", "ADSetting", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    @Html.ValidationSummary(true)
+                    @Html.AntiForgeryToken()
+                    @Html.Partial("_CreateEdit_ADSetting", Model)
+                }
+            </div>
+        </div>
     </div>
 </div>
-
