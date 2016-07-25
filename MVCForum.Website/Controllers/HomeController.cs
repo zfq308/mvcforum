@@ -23,7 +23,7 @@ namespace MVCForum.Website.Controllers
         private readonly IActivityService _activityService;
         private readonly IAiLvHuoDongService _aiLvHuoDongService;
         private readonly IADSettingService _adSettingService;
-
+        private readonly IMembershipService _membershipService;
         public HomeController(ILoggingService loggingService,
             IUnitOfWorkManager unitOfWorkManager,
             IActivityService activityService,
@@ -42,6 +42,7 @@ namespace MVCForum.Website.Controllers
             _activityService = activityService;
             _aiLvHuoDongService = ailvhuodongService;
             _adSettingService = adSettingService;
+            _membershipService = membershipService;
         }
 
         #endregion
@@ -58,6 +59,7 @@ namespace MVCForum.Website.Controllers
             returnView.AiLv_ADCollectionTop5 = (List<ADSetting>)_adSettingService.GetRecentTop5();
             returnView.AiLv_ZuiXinZiXunTop5 = (List<Topic>)_topicService.GetRecentTopics(5, _categoryService.GetCategoryByEnumCategoryType(EnumCategoryType.AiLvZiXun));
             returnView.AiLv_ZuiXinFuWuTop5 = (List<Topic>)_topicService.GetRecentTopics(5, _categoryService.GetCategoryByEnumCategoryType(EnumCategoryType.AiLvFuWu));
+            returnView.AiLv_ZuiXinHuiYuanTop5 = (List<MembershipUser>)_membershipService.GetLatestUsers(10, true, true);
             return View(returnView);
         }
 
@@ -93,6 +95,12 @@ namespace MVCForum.Website.Controllers
         /// </summary>
         /// <returns></returns>
         public ActionResult LianXiKeFu()
+        {
+            return View();
+        }
+
+
+        public ActionResult DebugBoard()
         {
             return View();
         }

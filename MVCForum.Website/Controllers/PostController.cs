@@ -19,6 +19,8 @@ namespace MVCForum.Website.Controllers
     [Authorize]
     public partial class PostController : BaseController
     {
+        #region 定义成员变量
+   
         private readonly ITopicService _topicService;
         private readonly ITopicNotificationService _topicNotificationService;
         private readonly ICategoryService _categoryService;
@@ -29,10 +31,15 @@ namespace MVCForum.Website.Controllers
         private readonly IVoteService _voteService;
         private readonly IPostEditService _postEditService;
 
+        #endregion
+
+        #region 建构式
+       
         public PostController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService, ITopicService topicService, IPostService postService,
             ISettingsService settingsService, ICategoryService categoryService,
-            ITopicNotificationService topicNotificationService, IEmailService emailService, IReportService reportService, IBannedWordService bannedWordService, IVoteService voteService, IPostEditService postEditService)
+            ITopicNotificationService topicNotificationService, IEmailService emailService, IReportService reportService, 
+            IBannedWordService bannedWordService, IVoteService voteService, IPostEditService postEditService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _topicService = topicService;
@@ -46,6 +53,7 @@ namespace MVCForum.Website.Controllers
             _postEditService = postEditService;
         }
 
+        #endregion
 
         [HttpPost]
         public ActionResult CreatePost(CreateAjaxPostViewModel post)

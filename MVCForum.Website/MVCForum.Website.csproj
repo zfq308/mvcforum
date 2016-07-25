@@ -1031,6 +1031,7 @@
     <Content Include="Scripts\tinymce\tinymce.js" />
     <Content Include="Scripts\verifycode.js" />
     <Content Include="Scripts\verifycodeByAccount.js" />
+    <Content Include="Themes\Metro\Content\Images\logo2.png" />
     <Content Include="Themes\Metro\Content\Styles\Theme.min.css" />
     <Content Include="Views\Moderate\Index.cshtml" />
     <Content Include="Views\Moderate\GetMoreTopics.cshtml" />
@@ -1137,6 +1138,9 @@
     <Content Include="Views\Members\CreatePrivatePicture.cshtml" />
     <Content Include="Scripts\jquery-3.1.0.slim.min.map" />
     <Content Include="Scripts\jquery-3.1.0.min.map" />
+    <Content Include="Views\Home\DebugBoard.cshtml" />
+    <Content Include="Views\Topic\CreateTopicButtonForMeiRiXinqing.cshtml" />
+    <Content Include="Views\Topic\CreateMeiRiXinqing.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />

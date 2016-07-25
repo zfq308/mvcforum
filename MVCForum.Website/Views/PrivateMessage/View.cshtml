@@ -6,8 +6,7 @@
 
 <div class="pmview">
     <div class="row">
-
-        <div class="@(Model.IsAjaxRequest ? "col-md-12" : "col-md-8 col-md-offset-2")">            
+        <div class="@(Model.IsAjaxRequest ? "col-md-12" : "col-md-8 col-md-offset-1")">            
             @if (!Model.IsAjaxRequest)
             {
                 <div class="btn-group top-pm-nav">
@@ -23,6 +22,7 @@
                     </a>
                 </h1>
             }
+
             <ul class="pmadminav">
                 <li>
                     <a href="#" class="btn-mvc pm-block" data-userid="@Model.From.Id" data-blocktext="@Html.Lang("PM.Block") @Model.From.UserName" data-isblocked="@Model.IsBlocked.ToString().ToLower()" data-blockedtext="@Html.Lang("PM.Blocked") @Model.From.UserName">                        
@@ -40,6 +40,7 @@
                     </li>
                 }
             </ul>
+
             <div class="createmessageholder">
                 @Html.Action("Create", new {to = Model.From.Id})
             </div>

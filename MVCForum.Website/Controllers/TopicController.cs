@@ -127,6 +127,36 @@ namespace MVCForum.Website.Controllers
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
         }
 
+        #endregion
+
+        #region 每日心情
+        public PartialViewResult CreateTopicButtonForMeiRiXinqing()
+        {
+            var viewModel = new CreateTopicButtonViewModel
+            {
+                LoggedOnUser = LoggedOnReadOnlyUser,
+                UserCanPostTopics = false
+
+            };
+            return PartialView(viewModel);
+        }
+
+        [Authorize]
+        public ActionResult CreateMeiRiXinQing()
+        {
+            var allowedAccessCategories = new List<Category>();
+            allowedAccessCategories.Add(_categoryService.GetCategoryByEnumCategoryType(EnumCategoryType.MeiRiXinqing));
+            if (allowedAccessCategories.Any() && LoggedOnReadOnlyUser.DisablePosting != true)
+            {
+                var viewModel = PrePareCreateEditTopicViewModel(allowedAccessCategories);
+                viewModel.TopicType = Enum_TopicType.Announcement;
+                return View(viewModel);
+            }
+            return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
+        }
+        #endregion
+
+
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
@@ -515,13 +545,6 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        #endregion
-
-
-
-
-
-
         private CreateEditTopicViewModel PrePareCreateEditTopicViewModel(List<Category> allowedCategories)
         {
             var userIsAdmin = UserIsAdmin;
@@ -549,9 +572,6 @@ namespace MVCForum.Website.Controllers
             };
         }
 
-
-
-
         private List<Category> AllowedCreateCategories()
         {
             var allowedAccessCategories = _categoryService.GetAllowedCategories(UsersRole);
@@ -565,6 +585,16 @@ namespace MVCForum.Website.Controllers
             return allowedAccessCategories;
         }
 
+
+        
+
+
+
+
+
+
+        
+        
         #region 创建帖子
 
         public PartialViewResult CreateTopicButton()

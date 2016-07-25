@@ -1,4 +1,4 @@
-using System;
+Ôªøusing System;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -8,47 +8,53 @@ namespace MVCForum.Domain.DomainModel.General
 
     public class TProvince
     {
+        #region Â±ûÊÄß
         public int ProvinceId;
         public string ProvinceName;
+        #endregion
 
+        public static TProvince LoadProvinceByProvincedId(int ProvinceId)
+        {
+            return LoadAllProvinceList().Where(x => x.ProvinceId == ProvinceId).FirstOrDefault();
+        }
 
         public static List<TProvince> LoadAllProvinceList()
         {
             var ProvinceList = new List<TProvince>();
-            ProvinceList.Add(new TProvince() { ProvinceId = 110000, ProvinceName = "±±æ© –" });
-            ProvinceList.Add(new TProvince() { ProvinceId = 120000, ProvinceName = "ÃÏΩÚ –" });
-            ProvinceList.Add(new TProvince() { ProvinceId = 130000, ProvinceName = "∫”±± °" });
-            ProvinceList.Add(new TProvince() { ProvinceId = 140000, ProvinceName = "…ΩŒ˜ °" });
-            ProvinceList.Add(new TProvince() { ProvinceId = 150000, ProvinceName = "ƒ⁄√…π≈" });
-            ProvinceList.Add(new TProvince() { ProvinceId = 210000, ProvinceName = "¡…ƒ˛ °" });
-            ProvinceList.Add(new TProvince() { ProvinceId = 220000, ProvinceName = "º™¡÷ °" });
-            ProvinceList.Add(new TProvince() { ProvinceId = 230000, ProvinceName = "∫⁄¡˙Ω≠" });
-            ProvinceList.Add(new TProvince() { ProvinceId = 310000, ProvinceName = "…œ∫£ –" });
-            ProvinceList.Add(new TProvince() { ProvinceId = 320000, ProvinceName = "Ω≠À’ °" });
-            ProvinceList.Add(new TProvince() { ProvinceId = 330000, ProvinceName = "’„Ω≠ °" });
-            ProvinceList.Add(new TProvince() { ProvinceId = 340000, ProvinceName = "∞≤ª’ °" });
-            ProvinceList.Add(new TProvince() { ProvinceId = 350000, ProvinceName = "∏£Ω® °" });
-            ProvinceList.Add(new TProvince() { ProvinceId = 360000, ProvinceName = "Ω≠Œ˜ °" });
-            ProvinceList.Add(new TProvince() { ProvinceId = 370000, ProvinceName = "…Ω∂´ °" });
-            ProvinceList.Add(new TProvince() { ProvinceId = 410000, ProvinceName = "∫”ƒœ °" });
-            ProvinceList.Add(new TProvince() { ProvinceId = 420000, ProvinceName = "∫˛±± °" });
-            ProvinceList.Add(new TProvince() { ProvinceId = 430000, ProvinceName = "∫˛ƒœ °" });
-            ProvinceList.Add(new TProvince() { ProvinceId = 440000, ProvinceName = "π„∂´ °" });
-            ProvinceList.Add(new TProvince() { ProvinceId = 450000, ProvinceName = "π„Œ˜" });
-            ProvinceList.Add(new TProvince() { ProvinceId = 460000, ProvinceName = "∫£ƒœ °" });
-            ProvinceList.Add(new TProvince() { ProvinceId = 500000, ProvinceName = "÷ÿ«Ï –" });
-            ProvinceList.Add(new TProvince() { ProvinceId = 510000, ProvinceName = "Àƒ¥® °" });
-            ProvinceList.Add(new TProvince() { ProvinceId = 520000, ProvinceName = "πÛ÷› °" });
-            ProvinceList.Add(new TProvince() { ProvinceId = 530000, ProvinceName = "‘∆ƒœ °" });
-            ProvinceList.Add(new TProvince() { ProvinceId = 540000, ProvinceName = "Œ˜≤ÿ" });
-            ProvinceList.Add(new TProvince() { ProvinceId = 610000, ProvinceName = "…¬Œ˜ °" });
-            ProvinceList.Add(new TProvince() { ProvinceId = 620000, ProvinceName = "∏ À‡ °" });
-            ProvinceList.Add(new TProvince() { ProvinceId = 630000, ProvinceName = "«‡∫£ °" });
-            ProvinceList.Add(new TProvince() { ProvinceId = 640000, ProvinceName = "ƒ˛œƒ" });
-            ProvinceList.Add(new TProvince() { ProvinceId = 650000, ProvinceName = "–¬ΩÆ" });
-            ProvinceList.Add(new TProvince() { ProvinceId = 710000, ProvinceName = "Ã®ÕÂ °" });
-            ProvinceList.Add(new TProvince() { ProvinceId = 810000, ProvinceName = "œ„∏€Ãÿ±––’˛«¯" });
-            ProvinceList.Add(new TProvince() { ProvinceId = 820000, ProvinceName = "∞ƒ√≈Ãÿ±––’˛«¯" });
+            ProvinceList.Add(new TProvince() { ProvinceId = 110000, ProvinceName = "Âåó‰∫¨Â∏Ç" });
+            ProvinceList.Add(new TProvince() { ProvinceId = 120000, ProvinceName = "Â§©Ê¥•Â∏Ç" });
+            ProvinceList.Add(new TProvince() { ProvinceId = 130000, ProvinceName = "Ê≤≥ÂåóÁúÅ" });
+            ProvinceList.Add(new TProvince() { ProvinceId = 140000, ProvinceName = "Â±±Ë•øÁúÅ" });
+            ProvinceList.Add(new TProvince() { ProvinceId = 150000, ProvinceName = "ÂÜÖËíôÂè§" });
+            ProvinceList.Add(new TProvince() { ProvinceId = 210000, ProvinceName = "ËæΩÂÆÅÁúÅ" });
+            ProvinceList.Add(new TProvince() { ProvinceId = 220000, ProvinceName = "ÂêâÊûóÁúÅ" });
+            ProvinceList.Add(new TProvince() { ProvinceId = 230000, ProvinceName = "ÈªëÈæôÊ±ü" });
+            ProvinceList.Add(new TProvince() { ProvinceId = 310000, ProvinceName = "‰∏äÊµ∑Â∏Ç" });
+            ProvinceList.Add(new TProvince() { ProvinceId = 320000, ProvinceName = "Ê±üËãèÁúÅ" });
+            ProvinceList.Add(new TProvince() { ProvinceId = 330000, ProvinceName = "ÊµôÊ±üÁúÅ" });
+            ProvinceList.Add(new TProvince() { ProvinceId = 340000, ProvinceName = "ÂÆâÂæΩÁúÅ" });
+            ProvinceList.Add(new TProvince() { ProvinceId = 350000, ProvinceName = "Á¶èÂª∫ÁúÅ" });
+            ProvinceList.Add(new TProvince() { ProvinceId = 360000, ProvinceName = "Ê±üË•øÁúÅ" });
+            ProvinceList.Add(new TProvince() { ProvinceId = 370000, ProvinceName = "Â±±‰∏úÁúÅ" });
+            ProvinceList.Add(new TProvince() { ProvinceId = 410000, ProvinceName = "Ê≤≥ÂçóÁúÅ" });
+            ProvinceList.Add(new TProvince() { ProvinceId = 420000, ProvinceName = "ÊπñÂåóÁúÅ" });
+            ProvinceList.Add(new TProvince() { ProvinceId = 430000, ProvinceName = "ÊπñÂçóÁúÅ" });
+            ProvinceList.Add(new TProvince() { ProvinceId = 440000, ProvinceName = "Âπø‰∏úÁúÅ" });
+            ProvinceList.Add(new TProvince() { ProvinceId = 450000, ProvinceName = "ÂπøË•ø" });
+            ProvinceList.Add(new TProvince() { ProvinceId = 460000, ProvinceName = "Êµ∑ÂçóÁúÅ" });
+            ProvinceList.Add(new TProvince() { ProvinceId = 500000, ProvinceName = "ÈáçÂ∫ÜÂ∏Ç" });
+            ProvinceList.Add(new TProvince() { ProvinceId = 510000, ProvinceName = "ÂõõÂ∑ùÁúÅ" });
+            ProvinceList.Add(new TProvince() { ProvinceId = 520000, ProvinceName = "Ë¥µÂ∑ûÁúÅ" });
+            ProvinceList.Add(new TProvince() { ProvinceId = 530000, ProvinceName = "‰∫ëÂçóÁúÅ" });
+            ProvinceList.Add(new TProvince() { ProvinceId = 540000, ProvinceName = "Ë•øËóè" });
+            ProvinceList.Add(new TProvince() { ProvinceId = 610000, ProvinceName = "ÈôïË•øÁúÅ" });
+            ProvinceList.Add(new TProvince() { ProvinceId = 620000, ProvinceName = "ÁîòËÇÉÁúÅ" });
+            ProvinceList.Add(new TProvince() { ProvinceId = 630000, ProvinceName = "ÈùíÊµ∑ÁúÅ" });
+            ProvinceList.Add(new TProvince() { ProvinceId = 640000, ProvinceName = "ÂÆÅÂ§è" });
+            ProvinceList.Add(new TProvince() { ProvinceId = 650000, ProvinceName = "Êñ∞ÁñÜ" });
+            ProvinceList.Add(new TProvince() { ProvinceId = 710000, ProvinceName = "Âè∞ÊπæÁúÅ" });
+            ProvinceList.Add(new TProvince() { ProvinceId = 810000, ProvinceName = "È¶ôÊ∏ØÁâπÂà´Ë°åÊîøÂå∫" });
+            ProvinceList.Add(new TProvince() { ProvinceId = 820000, ProvinceName = "Êæ≥Èó®ÁâπÂà´Ë°åÊîøÂå∫" });
             return ProvinceList;
         }
     }

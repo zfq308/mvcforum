@@ -133,7 +133,9 @@
     <Compile Include="DomainModel\Entities\Topic.cs" />
     <Compile Include="DomainModel\General\TCity.cs" />
     <Compile Include="DomainModel\General\TCountry.cs" />
+    <Compile Include="DomainModel\General\TEducation.cs" />
     <Compile Include="DomainModel\General\Theme.cs" />
+    <Compile Include="DomainModel\General\TIncomeRange.cs" />
     <Compile Include="DomainModel\General\TProvince.cs" />
     <Compile Include="DomainModel\General\UploadedFile.cs" />
     <Compile Include="DomainModel\General\UploadFileResult.cs" />

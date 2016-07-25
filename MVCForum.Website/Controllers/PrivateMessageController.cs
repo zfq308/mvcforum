@@ -16,12 +16,19 @@ namespace MVCForum.Website.Controllers
     [Authorize]
     public partial class PrivateMessageController : BaseController
     {
+        #region 定义成员变量
+
         private readonly IPrivateMessageService _privateMessageService;
         private readonly IEmailService _emailService;
         private readonly IConfigService _configService;
 
-        public PrivateMessageController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService,
-            ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, IPrivateMessageService privateMessageService,
+        #endregion
+
+        #region 建构式
+
+        public PrivateMessageController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
+            IMembershipService membershipService, ILocalizationService localizationService,
+            IRoleService roleService, ISettingsService settingsService, IPrivateMessageService privateMessageService,
             IEmailService emailService, IConfigService configService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
@@ -29,6 +36,8 @@ namespace MVCForum.Website.Controllers
             _emailService = emailService;
             _configService = configService;
         }
+
+        #endregion
 
         public ActionResult Index(int? p)
         {
@@ -169,7 +178,7 @@ namespace MVCForum.Website.Controllers
                             var receiverCount = _privateMessageService.GetAllReceivedByUser(memberTo.Id).Count;
                             if (receiverCount > settings.MaxPrivateMessagesPerMember)
                             {
-                                return  Content(string.Format(LocalizationService.GetResourceString("PM.ReceivedItemsOverCapcity"), memberTo.UserName));
+                                return Content(string.Format(LocalizationService.GetResourceString("PM.ReceivedItemsOverCapcity"), memberTo.UserName));
                             }
 
                             // If the receiver is about to go over the allowance them let then know too

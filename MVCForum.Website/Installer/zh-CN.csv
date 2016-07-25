@@ -54,7 +54,7 @@ Category.MostRecent,Most recent:
 Category.NoDiscussions,当前板块中没有内容
 Category.SubCategoriesHeading,Sub Categories In
 Confirmation.DeleteMembersPosts,你确认吗? 这将删除全部的发布内容!
-Confirmation.SrubAndBan,Are you sure you want to do this? It will delete all their posts and then ban them
+Confirmation.SrubAndBan,你确认执行这个操作吗？ 这将清除掉该用户在本网站所产生的所有数据
 Date.DaysAgo,{0}天前
 Date.HoursAgo,{0}小时前
 Date.JustNow,刚才
@@ -70,7 +70,7 @@ Errors.GenericMessage,很抱歉！在你的操作过程中系统记录下了一�
 Errors.NoAccess,不能访问
 Errors.NoPermission,您无权执行这个操作。
 Errors.NoPermissionPolls,Topic Created. But you do not have permission to create polls
-Errors.NothingToDisplay,Nothing To Display
+Errors.NothingToDisplay,无呈现内容
 Facebook.Error.EnabledButNotAddedKeys,You have enabled Facebook login but not added your AppId or Secret key to the forum.config
 Favourites.NoMemberFavourites,You have not starred any posts
 Favourites.PageTitle,My Favourites
@@ -99,10 +99,10 @@ Leaderboard.ThisYearsStars,This Years Rock Stars
 LogOn.LogOff,登出
 LogOn.LogOn,登录
 Member.HasNewPrivateMessages,你要新的消息请注意查收
-Member.ProfileUpdated,Profile Updated
+Member.ProfileUpdated,个人资料已更新
 Members.Admin,Admin
 Members.AlreadyRegistered,你已经注册了吗?
-Members.BanUser,Ban User
+Members.BanUser,禁用此会员账号
 Members.CantUnlock,用户不存在！不能完成锁定动作.
 Members.ChangePassword.Error,当前密码不正确或新密码无效
 Members.ChangePassword.Link,您可以点击此处来{0}
@@ -111,7 +111,7 @@ Members.ChangePassword.Text,新密码的最短长度要求{0}位.
 Members.ChangePassword.Title,修改密码
 Members.DateJoined,注册时间
 Members.DeleteAllPosts,删除全部回复
-Members.EditMember,Edit Member
+Members.EditMember,审核此账号
 Members.EditProfile,编辑个人资料
 Members.Errors.DuplicateEmail,A user name for that e-mail address already exists. Please enter a different e-mail address.
 Members.Errors.DuplicateUserName,此账号已被注册。请输入其他的账号名称.
@@ -173,24 +173,24 @@ Members.MemberEmailAuthorisation.Subject,邮件确认
 Members.MemberEmailAuthorisationNeeded,We have sent you a confirmation email - please click the confirmation link in your email to approve your account.
 Members.MemberEmailAuthorisationNeededMessage,Click the link in your confirmation email to approve your account.
 Members.MemberEmailAuthorisationResend,重新发送确认邮件
-Members.MessageMe,Message Me
+Members.MessageMe,私信
 Members.NewMemberRegistered,New member registered on {0} ({1})
 Members.NewMemberSubject,新用户已注册
 Members.NowApproved,你的账号已被审核通过.
-Members.NowBanned,Member is now banned
-Members.NowLoggedIn,You are now logged in
-Members.NowLoggedOut,You are now logged out
-Members.NowRegistered,You are now registered
+Members.NowBanned,该用户的账户已被禁用.
+Members.NowLoggedIn,您已登录本系统.
+Members.NowLoggedOut,您已登出本系统.
+Members.NowRegistered,您已在本系统完成注册.
 Members.NowRegisteredNeedApproval,欢迎你加入爱驴网的大家庭，请完善您的个人信息，并等待管理员审核批准您的账号。
-Members.NowUnBanned,Member is now NOT banned
+Members.NowUnBanned,用户账号从禁用状态恢复。
 Members.Points,成长点数
 Members.Profile.Age,年龄:
 Members.Profile.Badges,Badges
 Members.Profile.DiscussionActivity,Discussion Activity
 Members.Profile.Facebook,Facebook:
 Members.Profile.IsSocialAccount,其他社交账号
-Members.Profile.Joined,Joined:
-Members.Profile.LastOnline,最后上线
+Members.Profile.Joined,账号创建时间
+Members.Profile.LastOnline,最后上线时间
 Members.Profile.Location,居住地:
 Members.Profile.Points,Points:
 Members.Profile.Posts,Posts:
@@ -205,10 +205,10 @@ Members.ResetPassword.SuccessText,你的密码已成功修改.
 Members.ResetPassword.Text,An email has been sent with details on how to reset your password. 
 Members.ResetPassword.Title,密码重置请求已发出
 Members.SearchMembers,找朋友
-Members.SrubAndBan,Scrub Member
+Members.SrubAndBan,擦除用户数据
 Members.SuccessfulSrub,操作完毕
 Members.UnableToGetEmailAddress,Unable to gain access to your email address - please check your permissions
-Members.UnBanUser,Unban User
+Members.UnBanUser,恢复此会员账号
 Members.Users,会员
 Microsoft.Error.EnabledButNotAddedKeys,You have enabled Microsoft login but not added your AppId or Secret key to the forum.config
 Moderate.AwaitingModeration,Your post is currently awaiting moderation. Once approved it will appear on the site
@@ -238,24 +238,24 @@ PM.MessageSubject,主题
 PM.NewPrivateMessage,New Private Message
 PM.NewPrivateMessageBody,{0} has just sent you a private message.
 PM.NewPrivateMessageSubject,New Private Message
-PM.NoMessages,您当前没有收到任何私人短信息
+PM.NoMessages,您当前没有收到任何私信
 PM.OriginalMessage,Original Message
 PM.PrivateMessages,私信
 PM.Read,Read
 PM.ReceivedItemsOverCapcity,{0} has exceeded their inbox size - unable to send message
-PM.ReceivedPrivateMessages,Received Private Messages
-PM.RecipientUsername,接收人
+PM.ReceivedPrivateMessages,接收的私信信息
+PM.RecipientUsername,收信人
 PM.Reply,回复
 PM.Send,发出
 PM.SendingToQuickly,You are trying to send messages to quickly
 PM.Sent,Sent:
 PM.SentItemsOverCapcity,Your sent items is over capacity - delete messages to be able to send
 PM.SentPrivateMessages,Sent Private Messages
-PM.ShowMore,Show More Messages
+PM.ShowMore,加载更多
 PM.ShowMoreLoading,载入中...
 PM.Subject,主题
 PM.TalkToSelf,自己和自己聊是不是有点...
-PM.Title,Message: 
+PM.Title,发私信给: 
 PM.To,To
 PM.UnableFindMember,Unable to find that member
 Points.ThisWeeksHighEarners,This Weeks High Earners

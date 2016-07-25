@@ -44,9 +44,29 @@
     </a>
 </li>
 
+@if (User.Identity.IsAuthenticated)
+{
+    <li>
+        <a href="@Url.Action("Following", "Home")"
+           class="@(TempData[AppConstants.CurrentController].ToString() == "home" && TempData[AppConstants.CurrentAction].ToString() == "following" ? "active" : "")">
+            @Html.Lang("SubNav.Following")
+        </a>
+    </li>
+    @*<li>
+            <a href="@Url.Action("PostedIn", "Home")"
+               class="@(TempData[AppConstants.CurrentController].ToString() == "home" && TempData[AppConstants.CurrentAction].ToString() == "postedin" ? "active" : "")">
+                @Html.Lang("SubNav.PostedIn")
+            </a>
+        </li>*@
+    <li>
+        <a href="@Url.Action("Index", "Favourite")"
+           class="@(TempData[AppConstants.CurrentController].ToString() == "favourite" && TempData[AppConstants.CurrentAction].ToString() == "index" ? "active" : "")">
+            @Html.Lang("SubNav.Favourites")
+        </a>
+    </li>
+}
 
-
-@if (User.IsInRole("Admin") || User.IsInRole("Supplier"))
+@if (User.IsInRole(AppConstants.AdminRoleName) || User.IsInRole(AppConstants.SupplierRoleName))
 {
     <li>
         <a href="@Url.Action("ADSettingList", "ADSetting")"
@@ -56,48 +76,35 @@
     </li>
 }
 
+            @* @if (Html.Settings().EnablePoints)
+                {
+                    <li>
+                        <a href="@Url.Action("Leaderboard", "Home")"
+                           class="@(TempData[AppConstants.CurrentController].ToString() == "home" && TempData[AppConstants.CurrentAction].ToString() == "leaderboard" ? "active" : "")">
+                            @Html.LanguageString("Layout.Nav.Leaderboard")
+                        </a>
+                    </li>
+                }
 
-    @*@if (User.Identity.IsAuthenticated)
-        {
-            <li>
-                <a href="@Url.Action("Following", "Home")"
-                   class="@(TempData[AppConstants.CurrentController].ToString() == "home" && TempData[AppConstants.CurrentAction].ToString() == "following" ? "active" : "")">
-                    @Html.Lang("SubNav.Following")
-                </a>
-            </li>
-            <li>
-                <a href="@Url.Action("PostedIn", "Home")"
-                   class="@(TempData[AppConstants.CurrentController].ToString() == "home" && TempData[AppConstants.CurrentAction].ToString() == "postedin" ? "active" : "")">
-                    @Html.Lang("SubNav.PostedIn")
-                </a>
-            </li>
-            <li>
-                <a href="@Url.Action("Index", "Favourite")"
-                   class="@(TempData[AppConstants.CurrentController].ToString() == "favourite" && TempData[AppConstants.CurrentAction].ToString() == "index" ? "active" : "")">
-                    @Html.Lang("SubNav.Favourites")
-                </a>
-            </li>
-        }
+                <li>
+                    <a href="@Url.Action("Activity", "Home")"
+                       class="@(TempData[AppConstants.CurrentController].ToString() == "home" && TempData[AppConstants.CurrentAction].ToString() == "activity" ? "active" : "")">
+                        @Html.LanguageString("Layout.Nav.Activity")
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("AllBadges", "Badge")"
+                       class="@(TempData[AppConstants.CurrentController].ToString() == "badge" && TempData[AppConstants.CurrentAction].ToString() == "allbadges" ? "active" : "")">
+                        @Html.LanguageString("Layout.Nav.Badges")
+                    </a>
+                </li>*@
 
-        @if (Html.Settings().EnablePoints)
-        {
-            <li>
-                <a href="@Url.Action("Leaderboard", "Home")"
-                   class="@(TempData[AppConstants.CurrentController].ToString() == "home" && TempData[AppConstants.CurrentAction].ToString() == "leaderboard" ? "active" : "")">
-                    @Html.LanguageString("Layout.Nav.Leaderboard")
-                </a>
-            </li>
-        }
-
-        <li>
-            <a href="@Url.Action("Activity", "Home")"
-               class="@(TempData[AppConstants.CurrentController].ToString() == "home" && TempData[AppConstants.CurrentAction].ToString() == "activity" ? "active" : "")">
-                @Html.LanguageString("Layout.Nav.Activity")
-            </a>
-        </li>
-        <li>
-            <a href="@Url.Action("AllBadges", "Badge")"
-               class="@(TempData[AppConstants.CurrentController].ToString() == "badge" && TempData[AppConstants.CurrentAction].ToString() == "allbadges" ? "active" : "")">
-                @Html.LanguageString("Layout.Nav.Badges")
-            </a>
-        </li>*@
+            @if (User.IsInRole(AppConstants.AdminRoleName))
+            {
+                <li>
+                    <a href="@Url.Action("DebugBoard", "Home")"
+                       class="@(TempData[AppConstants.CurrentController].ToString() == "home" && TempData[AppConstants.CurrentAction].ToString() == "debugboard" ? "active" : "")">
+                        系统测试面板
+                    </a>
+                </li>
+            }

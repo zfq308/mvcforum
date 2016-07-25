@@ -340,6 +340,29 @@ namespace MVCForum.Website.Controllers
 
         #endregion
 
+        #region 爱驴记录模块
+      
+        /// <summary>
+        /// 最新记录
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ZuiXinJilu()
+        {
+            var JiluList = new AiLvJiLu_ListViewModel { Topics = new List<TopicViewModel>() };
+            var topics = _topicService.GetAllTopicsByCategory(EnumCategoryType.AiLvJiLu);
+            if (topics != null && topics.Count > 0)
+            {
+                var settings = SettingsService.GetSettings();
+                var allowedCategories = new List<Category>();
+                allowedCategories.Add(_categoryservice.GetCategoryByEnumCategoryType(EnumCategoryType.AiLvJiLu));
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, settings);
+                JiluList.Topics.AddRange(topicViewModels);
+            }
+            return View(JiluList);
+        }
+
+        #endregion
+
         #region 爱驴资讯模块
 
         public ActionResult ZuiXinZiXun()
@@ -380,14 +403,7 @@ namespace MVCForum.Website.Controllers
 
         #region 其他View视图
 
-        /// <summary>
-        /// 最新记录
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult ZuiXinJilu()
-        {
-            return View();
-        }
+
 
         /// <summary>
         /// 每日之星

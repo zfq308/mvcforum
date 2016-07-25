@@ -1,9 +1,10 @@
 ﻿@using System.Globalization
 @using MVCForum.Utilities
+@using MVCForum.Domain.DomainModel.General
 @model MVCForum.Website.ViewModels.ViewMemberViewModel
 @{
     Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
-    ViewBag.Title = string.Concat(Model.User.UserName, " ",Html.LanguageString("Members.ProfileTitle"));
+    ViewBag.Title = string.Concat(Model.User.UserName, " ", Html.LanguageString("Members.ProfileTitle"));
 }
 
 @section Header
@@ -40,20 +41,29 @@
 
 @section side
 {
-    @Html.Partial("_CommonSideNav") 
+    @Html.Partial("_CommonSideNav")
 }
-
 
 <div class="memberprofilepublic">
 
     <div class="row">
 
         <div class="col-md-3 memberavatardetails">
-            <p class="memberavatar"><img src="@Model.User.MemberImage(SiteConstants.Instance.GravatarProfileSize)" alt="@Model.User.UserName"></p>
-
-            @if (User.Identity.IsAuthenticated && Model.User.UserName != User.Identity.Name && Html.CurrentMember().DisablePrivateMessages != true && Html.Settings().EnablePrivateMessages)
+            <p class="memberavatar">
+                <img src="@Model.User.MemberImage(SiteConstants.Instance.GravatarProfileSize)" alt="@Model.User.UserName">
+            </p>
+            @if (User.Identity.IsAuthenticated &&
+                Model.User.UserName != User.Identity.Name &&
+                Html.CurrentMember().DisablePrivateMessages != true &&
+                Html.Settings().EnablePrivateMessages)
             {
-                <p><a href="@Url.Action("View", "PrivateMessage", new { from = Model.User.Id }, null)" class="btn-mvc pm-panel" data-name="@string.Concat(Html.LanguageString("PM.Title"), Model.User.UserName)">@Html.LanguageString("Members.MessageMe")</a></p>
+                <p>
+                    <a href="@Url.Action("View", "PrivateMessage", new { from = Model.User.Id }, null)"
+                       class="btn-mvc pm-panel"
+                       data-name="@string.Concat(Html.LanguageString("PM.Title"), Model.User.UserName)">
+                        @Html.LanguageString("Members.MessageMe")
+                    </a>
+                </p>
             }
 
             @if (User.Identity.IsAuthenticated && Html.Settings().EnableMemberReporting && Model.User.Id != Model.LoggedOnUserId)
@@ -63,7 +73,6 @@
 
             @if (Model.Permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
             {
-
                 // If this is an admins profile then do not show
                 if (!Model.User.Roles.Any(x => x.RoleName.Contains(AppConstants.AdminRoleName)))
                 {
@@ -75,42 +84,72 @@
         </div>
 
         <div class="col-md-9 membermaindetails">
-
             <div class="membersection memberbio">
                 <div class="row">
                     <div class="col-md-12">
                         <h3>@Model.User.UserName</h3>
                     </div>
                     <div class="col-md-6">
-                        <p>@Html.LanguageString("Members.Profile.Joined") @DatesUI.GetPrettyDate(Model.User.CreateDate.ToString())</p>
-                        @if (Model.User.LastActivityDate != null)
-                        {
-                            <p>@(Html.LanguageString("Members.Profile.LastOnline")): @DatesUI.GetPrettyDate(Model.User.LastActivityDate.ToString())</p>
-                        }                        
-                        <p>@Html.LanguageString("Members.Profile.Posts") @Model.User.Posts.Count</p>
-                        <p>@Html.LanguageString("Members.Profile.Points") @Model.User.TotalPoints</p>
-                        <p>@Html.LanguageString("Members.Profile.Age") @Html.Raw(Model.User.Age > 0 ? Model.User.Age.ToString() : "")</p>  
+                        <p><b>昵称:</b> @Model.User.AliasName</p>
+                        <p>
+                            @if (User.IsInRole(AppConstants.AdminRoleName))
+                            {
+                                <b>真实姓名:</b> @Model.User.RealName
+                            }
+                        </p>
+                        <p>
+                            @if (User.IsInRole(AppConstants.AdminRoleName))
+                            {
+                                <b>联系方式：</b>@Model.User.MobilePhone
+                            }
+                        </p>
+                        <p><b>性别:</b> @Html.Raw(Model.User.Gender == MVCForum.Domain.DomainModel.Enum_Gender.boy ? "男生" : "女生")</p>
+                        <p><b>年龄:</b> @Html.Raw(Model.User.Age > 0 ? Model.User.Age.ToString() : "")</p>
+                        <p><b>婚姻状态:</b> @Html.Raw(Model.User.IsMarried == MVCForum.Domain.DomainModel.Enum_MarriedStatus.Single ? "未婚" : "已婚")</p>
+                        <p><b>身高(cm):</b> @Model.User.Height</p>
+                        <p><b>体重(kg):</b> @Model.User.Weight</p>
+                        <p><b>学历:</b> @TEducation.LoadEducationByEducationId(Model.User.Education).EducationName</p>
+                        <p><b>毕业院校:</b> @Model.User.SchoolName</p>
                     </div>
                     <div class="col-md-6">
-                        <p>@Html.LanguageString("Members.Profile.Location") @Html.Raw(string.IsNullOrEmpty(Model.User.Location) ? "" : Model.User.Location)</p>
-                        <p>@Html.LanguageString("Members.Profile.Website") @Html.Raw(string.IsNullOrEmpty(Model.User.Website) ? "" : string.Format("<a href='{0}' rel='nofollow'>{0}</a>", Model.User.Website))</p>
-                        <p>@Html.LanguageString("Members.Profile.Twitter") @Html.Raw(string.IsNullOrEmpty(Model.User.Twitter) ? "" : string.Format("<a href='{0}' rel='nofollow'>{0}</a>", Model.User.Twitter))</p>
-                        <p>@Html.LanguageString("Members.Profile.Facebook") @Html.Raw(string.IsNullOrEmpty(Model.User.Facebook) ? "" : string.Format("<a href='{0}' rel='nofollow'>{0}</a>", Model.User.Facebook))</p>  
+                        <p><b>家乡:</b> @Model.User.HomeTown</p>
+                        <p>
+                            <b>现居住地:</b> @Html.Raw(TProvince.LoadProvinceByProvincedId(Convert.ToInt32(Model.User.LocationProvince)).ProvinceName),
+                            @Html.Raw(TCity.LoadCityByCityId(Convert.ToInt32(Model.User.LocationCity)).CityName),
+                            @Html.Raw(TCountry.LoadCountryByCountryId(Convert.ToInt32(Model.User.LocationCounty)).CountryName)
+                        </p>
+                        <p><b>职业:</b> @Model.User.Job</p>
+                        <p><b>月收入:</b> @TIncomeRange.LoadIncomeRangeByIncomeRangeId(Convert.ToString((int)Model.User.IncomeRange)).IncomeRangeName</p>
+                        <p><b>账号创建时间:</b> @DatesUI.GetPrettyDate(Model.User.CreateDate.ToString())</p>
+                        <p><b>账号状态:</b> @Html.Raw(Model.User.IsApproved ? "已审核" : "待审核")</p>
+
+
+                        @if (Model.User.LastActivityDate != null)
+                        {
+                            <p><b>最后上线时间:</b> @DatesUI.GetPrettyDate(Model.User.LastActivityDate.ToString())</p>
+                        }
+
+                        <p>
+                            @if (User.IsInRole(AppConstants.AdminRoleName))
+                            {
+                                <b>用户类型:</b> @Model.User.UserType
+                            }
+                        </p>
+
+
                     </div>
                 </div>
             </div>
 
             <div class="membersection memberlatesttopics">
-
                 <h3>@Html.LanguageString("Members.Profile.DiscussionActivity")</h3>
                 <div class="memberdiscussions">
-                    <span class="ajaxspinner" title="@Html.LanguageString("Ajax.PleaseWait")">@Html.LanguageString("Ajax.PleaseWait")</span>
+                    <span class="ajaxspinner" title="@Html.LanguageString(" Ajax.PleaseWait")">@Html.LanguageString("Ajax.PleaseWait")</span>
                 </div>
-
             </div>
 
 
-            @if (Model.User.Badges != null && Model.User.Badges.Any())
+            @*@if (Model.User.Badges != null && Model.User.Badges.Any())
             {
                 <div class="membersection badgeactivity">
                     <h3>@Html.LanguageString("Members.Profile.Badges")</h3>
@@ -119,7 +158,7 @@
                         @Html.Partial("_Badge", badge)
                     }
                 </div>
-            }
+            }*@
 
             @if (User.IsInRole(AppConstants.AdminRoleName))
             {

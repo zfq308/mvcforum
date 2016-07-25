@@ -332,6 +332,7 @@ namespace MVCForum.Services
                 _context.MembershipUser.Add(user);
             }
         }
+
         /// <summary>
         /// 生成5个供应商测试账号
         /// </summary>
@@ -536,188 +537,168 @@ namespace MVCForum.Services
             return new PagedList<MembershipUser>(results, pageIndex, pageSize, totalCount);
         }
 
+        /// <summary>
+        /// 取得最新注册的amountToTake个用户实例的集合
+        /// </summary>
+        /// <param name="amountToTake"></param>
+        /// <param name="isApproved">仅筛选已经审核过的用户实例</param>
+        /// <returns></returns>
+        public IList<MembershipUser> GetLatestUsers(int amountToTake, bool isApproved = false, bool RemoveMarriedFilter = false)
+        {
+            if (isApproved)
+            {
+                if (RemoveMarriedFilter)
+                {
+                    return _context.MembershipUser.Include(x => x.Roles).AsNoTracking()
+                                               .Where(x => x.IsApproved == true && x.IsMarried == Enum_MarriedStatus.Single)
+                                               .OrderByDescending(x => x.CreateDate)
+                                               .Take(amountToTake)
+                                               .ToList();
+                }
+                else
+                {
+                    return _context.MembershipUser.Include(x => x.Roles).AsNoTracking()
+                           .Where(x => x.IsApproved == true)
+                           .OrderByDescending(x => x.CreateDate)
+                           .Take(amountToTake)
+                           .ToList();
+                }
+            }
+            else
+            {
+                if (RemoveMarriedFilter)
+                {
+                    return _context.MembershipUser.Include(x => x.Roles).AsNoTracking()
+                                             .Where(x => x.IsMarried == Enum_MarriedStatus.Single)
+                                             .OrderByDescending(x => x.CreateDate)
+                                             .Take(amountToTake)
+                                             .ToList();
+                }
+                else
+                {
+                    return _context.MembershipUser.Include(x => x.Roles).AsNoTracking()
+                                          .OrderByDescending(x => x.CreateDate)
+                                          .Take(amountToTake)
+                                          .ToList();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 12分钟内的活动用户
+        /// </summary>
+        /// <returns></returns>
+        public IList<MembershipUser> GetActiveMembers()
+        {
+            // Get members that last activity date is valid
+
+            var date = DateTime.Now.AddMinutes(-AppConstants.TimeSpanInMinutesToShowMembers);
+            return _context.MembershipUser
+                .Where(x => x.LastActivityDate > date)
+                .AsNoTracking()
+                .ToList();
+        }
+
+        /// <summary>
+        /// 当前用户的个数
+        /// </summary>
+        /// <param name="isApproved">仅筛选已经审核过的用户实例</param>
+        /// <returns></returns>
+        public int MemberCount(bool isApproved = false)
+        {
+            if (isApproved)
+            {
+                return _context.MembershipUser.AsNoTracking().Where(x => x.IsApproved == true).Count();
+            }
+            else
+            {
+                return _context.MembershipUser.AsNoTracking().Count();
+            }
+        }
+
+
+        #region ==================在爱驴网项目中禁用的方法==========================
+
+        [Obsolete("此方法在爱驴网项目中禁用")]
+        public MembershipUser GetUserByEmail(string email, bool removeTracking = false)
+        {
+            email = StringUtils.SafePlainText(email);
+            if (removeTracking)
+            {
+                return _context.MembershipUser.AsNoTracking()
+                    .Include(x => x.Roles)
+                    .FirstOrDefault(name => name.Email == email);
+            }
+            return _context.MembershipUser
+                .Include(x => x.Roles)
+                .FirstOrDefault(name => name.Email == email);
+        }
+
+        [Obsolete("此方法在爱驴网项目中禁用")]
+        public IList<MembershipUser> GetLowestPointUsers(int amountToTake)
+        {
+            return _context.MembershipUser
+                 .Join(_context.MembershipUserPoints.AsNoTracking(), // The sequence to join to the first sequence.
+                        user => user.Id, // A function to extract the join key from each element of the first sequence.
+                        userPoints => userPoints.User.Id, // A function to extract the join key from each element of the second sequence
+                        (user, userPoints) => new { MembershipUser = user, UserPoints = userPoints } // A function to create a result element from two matching elements.
+                    )
+                 .AsNoTracking()
+                .OrderBy(x => x.UserPoints)
+                .Take(amountToTake)
+                .Select(t => t.MembershipUser)
+                .ToList();
+        }
+
+        [Obsolete("此方法在爱驴网项目中禁用")]
+        public IList<MembershipUser> GetUsersByDaysPostsPoints(int amoutOfDaysSinceRegistered, int amoutOfPosts)
+        {
+            var registerEnd = DateTime.Now;
+            var registerStart = registerEnd.AddDays(-amoutOfDaysSinceRegistered);
+            return _context.MembershipUser
+                .Where(x =>
+                        x.Posts.Count <= amoutOfPosts &&
+                        x.CreateDate > registerStart &&
+                        x.CreateDate <= registerEnd)
+                .ToList();
+        }
+
+        #region 通过第三方登录Id取得用户实例（此功能已禁用）
+
+        [Obsolete("此方法在爱驴网项目中禁用")]
+        public MembershipUser GetUserByFacebookId(long facebookId)
+        {
+            return _context.MembershipUser
+                .Include(x => x.Roles)
+                .FirstOrDefault(name => name.FacebookId == facebookId);
+        }
+        [Obsolete("此方法在爱驴网项目中禁用")]
+        public MembershipUser GetUserByTwitterId(string twitterId)
+        {
+            return _context.MembershipUser
+                .Include(x => x.Roles)
+                .FirstOrDefault(name => name.TwitterAccessToken == twitterId);
+        }
+        [Obsolete("此方法在爱驴网项目中禁用")]
+        public MembershipUser GetUserByGoogleId(string googleId)
+        {
+            return _context.MembershipUser
+                .Include(x => x.Roles)
+                .FirstOrDefault(name => name.GoogleAccessToken == googleId);
+        }
+        [Obsolete("此方法在爱驴网项目中禁用")]
+        public MembershipUser GetUserByOpenIdToken(string openId)
+        {
+            openId = StringUtils.GetSafeHtml(openId);
+            return _context.MembershipUser
+                .Include(x => x.Roles)
+                .FirstOrDefault(name => name.MiscAccessToken == openId);
+        }
+
         #endregion
 
-        #region Membership账号的导入和导出
+        #endregion
 
-        public string ToCsv(List<MembershipUser> userlist)
-        {
-            var csv = new StringBuilder();
-            csv.AppendLine("账号,昵称,真实姓名,联系方式,性别,年龄,婚否,身高,体重,现居地,最后登录时间,审核标志位,会员状态,会员类别");
-            foreach (var user in userlist)
-            {
-                csv.AppendFormat("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13}",
-                    user.UserName,
-                    user.AliasName,
-                    user.RealName,
-                    user.MobilePhone,
-                    user.Gender == Enum_Gender.boy ? "男" : "女",
-                    user.Age,
-                    user.IsMarried == Enum_MarriedStatus.Married ? "已婚" : "单身",
-                    user.Height,
-                    user.Weight,
-                    string.Concat(user.LocationProvince, user.LocationCity, user.LocationCounty),
-                    user.LastLoginDate.ToString("yyyy-MM-dd HH:mm:ss"),
-                    user.IsApproved ? "已审核" : "待审核",
-                    user.IsLockedOut ? "用户已隐藏" : "正常状态",
-                    user.UserType.ToString()
-                    );
-                csv.AppendLine();
-            }
-            return csv.ToString();
-        }
-
-        /// <summary>
-        /// 导出所有会员信息到CSV档输出string中
-        /// </summary>
-        /// <returns></returns>
-        public string ToCsv()
-        {
-            var userlist = GetAll().ToList();
-            return ToCsv(userlist);
-        }
-
-        /// <summary>
-        /// 从特定的CSV文件中导入会员数据
-        /// </summary>
-        /// <returns></returns>
-        [Obsolete("因爱驴网项目无此需求，故此方法代码还没有实现。")]
-        public CsvReport FromCsv(List<string> allLines)
-        {
-            var usersProcessed = new List<string>();
-            var commaSeparator = new[] { ',' };
-            var report = new CsvReport();
-
-            //if (allLines == null || allLines.Count == 0)
-            //{
-            //    report.Errors.Add(new CsvErrorWarning
-            //    {
-            //        ErrorWarningType = CsvErrorWarningType.BadDataFormat,
-            //        Message = "No users found."
-            //    });
-            //    return report;
-            //}
-            //var settings = _settingsService.GetSettings(true);
-            //var lineCounter = 0;
-            //foreach (var line in allLines)
-            //{
-            //    try
-            //    {
-            //        lineCounter++;
-
-            //        // Each line is made up of n items in a predefined order
-
-            //        var values = line.Split(commaSeparator);
-
-            //        if (values.Length < 2)
-            //        {
-            //            report.Errors.Add(new CsvErrorWarning
-            //            {
-            //                ErrorWarningType = CsvErrorWarningType.MissingKeyOrValue,
-            //                Message = $"Line {lineCounter}: insufficient values supplied."
-            //            });
-
-            //            continue;
-            //        }
-
-            //        var userName = values[0];
-
-            //        if (userName.IsNullEmpty())
-            //        {
-            //            report.Errors.Add(new CsvErrorWarning
-            //            {
-            //                ErrorWarningType = CsvErrorWarningType.MissingKeyOrValue,
-            //                Message = $"Line {lineCounter}: no username supplied."
-            //            });
-
-            //            continue;
-            //        }
-
-            //        var email = values[1];
-            //        if (email.IsNullEmpty())
-            //        {
-            //            report.Errors.Add(new CsvErrorWarning
-            //            {
-            //                ErrorWarningType = CsvErrorWarningType.MissingKeyOrValue,
-            //                Message = $"Line {lineCounter}: no email supplied."
-            //            });
-
-            //            continue;
-            //        }
-
-            //        // get the user
-            //        var userToImport = GetUser(userName);
-
-            //        if (userToImport != null)
-            //        {
-            //            report.Errors.Add(new CsvErrorWarning
-            //            {
-            //                ErrorWarningType = CsvErrorWarningType.AlreadyExists,
-            //                Message = $"Line {lineCounter}: user already exists in forum."
-            //            });
-
-            //            continue;
-            //        }
-
-            //        if (usersProcessed.Contains(userName))
-            //        {
-            //            report.Errors.Add(new CsvErrorWarning
-            //            {
-            //                ErrorWarningType = CsvErrorWarningType.AlreadyExists,
-            //                Message = $"Line {lineCounter}: user already exists in import file."
-            //            });
-
-            //            continue;
-            //        }
-
-            //        usersProcessed.Add(userName);
-
-            //        userToImport = CreateEmptyUser();
-            //        userToImport.UserName = userName;
-            //        userToImport.Slug = ServiceHelpers.GenerateSlug(userToImport.UserName, GetUserBySlugLike(ServiceHelpers.CreateUrl(userToImport.UserName)), userToImport.Slug);
-            //        userToImport.Email = email;
-            //        userToImport.IsApproved = true;
-            //        userToImport.PasswordSalt = StringUtils.CreateSalt(AppConstants.SaltSize);
-
-            //        string createDateStr = null;
-            //        if (values.Length >= 3)
-            //        {
-            //            createDateStr = values[2];
-            //        }
-            //        userToImport.CreateDate = createDateStr.IsNullEmpty() ? DateTime.Now : DateTime.Parse(createDateStr);
-
-            //        if (values.Length >= 4)
-            //        {
-            //            //TODO: Benjamin Check again and fix the issue.
-            //            // userToImport.Age = Int32.Parse(values[3]);
-            //        }
-            //        if (values.Length >= 5)
-            //        {
-            //            userToImport.HomeTown = values[4];
-            //        }
-            //        if (values.Length >= 6)
-            //        {
-            //            userToImport.Website = values[5];
-            //        }
-            //        if (values.Length >= 7)
-            //        {
-            //            userToImport.Facebook = values[6];
-            //        }
-            //        if (values.Length >= 8)
-            //        {
-            //            userToImport.Signature = values[7];
-            //        }
-            //        userToImport.Roles = new List<MembershipRole> { settings.NewMemberStartingRole };
-            //        Add(userToImport);
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        report.Errors.Add(new CsvErrorWarning { ErrorWarningType = CsvErrorWarningType.GeneralError, Message = ex.Message });
-            //    }
-            //}
-
-            return report;
-        }
 
         #endregion
 
@@ -917,7 +898,7 @@ namespace MVCForum.Services
         }
 
         /// <summary>
-        /// 删除用户下的所有Post和Topic集合
+        /// 删除所有用户数据
         /// </summary>
         /// <param name="user"></param>
         /// <param name="unitOfWork"></param>
@@ -925,14 +906,19 @@ namespace MVCForum.Services
         {
             // TODO - This REALLY needs to be refactored
 
-            // PROFILE
+            #region 基本信息的擦除
+
+            user.IsApproved = false;
+            user.Avatar = string.Empty;
+
             user.Website = string.Empty;
             user.Twitter = string.Empty;
             user.Facebook = string.Empty;
-            user.Avatar = string.Empty;
             user.Signature = string.Empty;
 
-            // User Votes
+            #endregion
+
+            #region User Votes
             if (user.Votes != null)
             {
                 var votesToDelete = new List<Vote>();
@@ -943,8 +929,9 @@ namespace MVCForum.Services
                 }
                 user.Votes.Clear();
             }
+            #endregion
 
-            // User Badges
+            #region User Badges
             if (user.Badges != null)
             {
                 var toDelete = new List<Badge>();
@@ -968,7 +955,9 @@ namespace MVCForum.Services
                 user.BadgeTypesTimeLastChecked.Clear();
             }
 
-            // User category notifications
+            #endregion
+
+            #region User category notifications
             if (user.CategoryNotifications != null)
             {
                 var toDelete = new List<CategoryNotification>();
@@ -979,8 +968,10 @@ namespace MVCForum.Services
                 }
                 user.CategoryNotifications.Clear();
             }
+            #endregion
 
-            // User PM Received
+            #region User PrivateMessage Received
+
             var pmUpdate = false;
             if (user.PrivateMessagesReceived != null)
             {
@@ -993,8 +984,10 @@ namespace MVCForum.Services
                 }
                 user.PrivateMessagesReceived.Clear();
             }
+            #endregion
 
-            // User PM Sent
+            #region User PrivateMessage Sent
+
             if (user.PrivateMessagesSent != null)
             {
                 pmUpdate = true;
@@ -1012,7 +1005,10 @@ namespace MVCForum.Services
                 unitOfWork.SaveChanges();
             }
 
-            // User Favourites
+            #endregion
+
+            #region User Favourites
+
             if (user.Favourites != null)
             {
                 var toDelete = new List<Favourite>();
@@ -1024,6 +1020,10 @@ namespace MVCForum.Services
                 user.Favourites.Clear();
             }
 
+            #endregion
+
+            #region User TopicNotifications
+
             if (user.TopicNotifications != null)
             {
                 var notificationsToDelete = new List<TopicNotification>();
@@ -1034,6 +1034,8 @@ namespace MVCForum.Services
                 }
                 user.TopicNotifications.Clear();
             }
+            
+            #endregion
 
             // Also clear their points
             var userPoints = user.Points;
@@ -1177,6 +1179,21 @@ namespace MVCForum.Services
             }
         }
 
+        /// <summary>
+        /// Save user (does NOT update password data)
+        /// </summary>
+        /// <param name="user"></param>
+        public void ProfileUpdated(MembershipUser user)
+        {
+            var e = new UpdateProfileEventArgs { User = user };
+            EventManager.Instance.FireBeforeProfileUpdated(this, e);
+
+            if (!e.Cancel)
+            {
+                EventManager.Instance.FireAfterProfileUpdated(this, new UpdateProfileEventArgs { User = user });
+                _activityService.ProfileUpdated(user);
+            }
+        }
 
         #endregion
 
@@ -1318,51 +1335,190 @@ namespace MVCForum.Services
 
         #endregion
 
+        #region Membership账号的导入和导出
 
-
-        //  =================以下代码还需要Review=================
-
-        /// <summary>
-        /// 取得最新注册的amountToTake个用户实例的集合
-        /// </summary>
-        /// <param name="amountToTake"></param>
-        /// <param name="isApproved">仅筛选已经审核过的用户实例</param>
-        /// <returns></returns>
-        public IList<MembershipUser> GetLatestUsers(int amountToTake, bool isApproved = false)
+        public string ToCsv(List<MembershipUser> userlist)
         {
-            if (isApproved)
+            var csv = new StringBuilder();
+            csv.AppendLine("账号,昵称,真实姓名,联系方式,性别,年龄,婚否,身高,体重,现居地,最后登录时间,审核标志位,会员状态,会员类别");
+            foreach (var user in userlist)
             {
-                return _context.MembershipUser.Include(x => x.Roles).AsNoTracking()
-                            .Where(x => x.IsApproved == true)
-                            .OrderByDescending(x => x.CreateDate)
-                            .Take(amountToTake)
-                            .ToList();
+                csv.AppendFormat("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13}",
+                    user.UserName,
+                    user.AliasName,
+                    user.RealName,
+                    user.MobilePhone,
+                    user.Gender == Enum_Gender.boy ? "男" : "女",
+                    user.Age,
+                    user.IsMarried == Enum_MarriedStatus.Married ? "已婚" : "单身",
+                    user.Height,
+                    user.Weight,
+                    string.Concat(user.LocationProvince, user.LocationCity, user.LocationCounty),
+                    user.LastLoginDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                    user.IsApproved ? "已审核" : "待审核",
+                    user.IsLockedOut ? "用户已隐藏" : "正常状态",
+                    user.UserType.ToString()
+                    );
+                csv.AppendLine();
             }
-            else
-            {
-                return _context.MembershipUser.Include(x => x.Roles).AsNoTracking()
-                         .OrderByDescending(x => x.CreateDate)
-                         .Take(amountToTake)
-                         .ToList();
-            }
+            return csv.ToString();
         }
 
         /// <summary>
-        /// 当前用户的个数
+        /// 导出所有会员信息到CSV档输出string中
         /// </summary>
-        /// <param name="isApproved">仅筛选已经审核过的用户实例</param>
         /// <returns></returns>
-        public int MemberCount(bool isApproved = false)
+        public string ToCsv()
         {
-            if (isApproved)
-            {
-                return _context.MembershipUser.AsNoTracking().Where(x => x.IsApproved == true).Count();
-            }
-            else
-            {
-                return _context.MembershipUser.AsNoTracking().Count();
-            }
+            var userlist = GetAll().ToList();
+            return ToCsv(userlist);
         }
+
+        /// <summary>
+        /// 从特定的CSV文件中导入会员数据
+        /// </summary>
+        /// <returns></returns>
+        [Obsolete("因爱驴网项目无此需求，故此方法代码还没有实现。")]
+        public CsvReport FromCsv(List<string> allLines)
+        {
+            var usersProcessed = new List<string>();
+            var commaSeparator = new[] { ',' };
+            var report = new CsvReport();
+
+            //if (allLines == null || allLines.Count == 0)
+            //{
+            //    report.Errors.Add(new CsvErrorWarning
+            //    {
+            //        ErrorWarningType = CsvErrorWarningType.BadDataFormat,
+            //        Message = "No users found."
+            //    });
+            //    return report;
+            //}
+            //var settings = _settingsService.GetSettings(true);
+            //var lineCounter = 0;
+            //foreach (var line in allLines)
+            //{
+            //    try
+            //    {
+            //        lineCounter++;
+
+            //        // Each line is made up of n items in a predefined order
+
+            //        var values = line.Split(commaSeparator);
+
+            //        if (values.Length < 2)
+            //        {
+            //            report.Errors.Add(new CsvErrorWarning
+            //            {
+            //                ErrorWarningType = CsvErrorWarningType.MissingKeyOrValue,
+            //                Message = $"Line {lineCounter}: insufficient values supplied."
+            //            });
+
+            //            continue;
+            //        }
+
+            //        var userName = values[0];
+
+            //        if (userName.IsNullEmpty())
+            //        {
+            //            report.Errors.Add(new CsvErrorWarning
+            //            {
+            //                ErrorWarningType = CsvErrorWarningType.MissingKeyOrValue,
+            //                Message = $"Line {lineCounter}: no username supplied."
+            //            });
+
+            //            continue;
+            //        }
+
+            //        var email = values[1];
+            //        if (email.IsNullEmpty())
+            //        {
+            //            report.Errors.Add(new CsvErrorWarning
+            //            {
+            //                ErrorWarningType = CsvErrorWarningType.MissingKeyOrValue,
+            //                Message = $"Line {lineCounter}: no email supplied."
+            //            });
+
+            //            continue;
+            //        }
+
+            //        // get the user
+            //        var userToImport = GetUser(userName);
+
+            //        if (userToImport != null)
+            //        {
+            //            report.Errors.Add(new CsvErrorWarning
+            //            {
+            //                ErrorWarningType = CsvErrorWarningType.AlreadyExists,
+            //                Message = $"Line {lineCounter}: user already exists in forum."
+            //            });
+
+            //            continue;
+            //        }
+
+            //        if (usersProcessed.Contains(userName))
+            //        {
+            //            report.Errors.Add(new CsvErrorWarning
+            //            {
+            //                ErrorWarningType = CsvErrorWarningType.AlreadyExists,
+            //                Message = $"Line {lineCounter}: user already exists in import file."
+            //            });
+
+            //            continue;
+            //        }
+
+            //        usersProcessed.Add(userName);
+
+            //        userToImport = CreateEmptyUser();
+            //        userToImport.UserName = userName;
+            //        userToImport.Slug = ServiceHelpers.GenerateSlug(userToImport.UserName, GetUserBySlugLike(ServiceHelpers.CreateUrl(userToImport.UserName)), userToImport.Slug);
+            //        userToImport.Email = email;
+            //        userToImport.IsApproved = true;
+            //        userToImport.PasswordSalt = StringUtils.CreateSalt(AppConstants.SaltSize);
+
+            //        string createDateStr = null;
+            //        if (values.Length >= 3)
+            //        {
+            //            createDateStr = values[2];
+            //        }
+            //        userToImport.CreateDate = createDateStr.IsNullEmpty() ? DateTime.Now : DateTime.Parse(createDateStr);
+
+            //        if (values.Length >= 4)
+            //        {
+            //            //TODO: Benjamin Check again and fix the issue.
+            //            // userToImport.Age = Int32.Parse(values[3]);
+            //        }
+            //        if (values.Length >= 5)
+            //        {
+            //            userToImport.HomeTown = values[4];
+            //        }
+            //        if (values.Length >= 6)
+            //        {
+            //            userToImport.Website = values[5];
+            //        }
+            //        if (values.Length >= 7)
+            //        {
+            //            userToImport.Facebook = values[6];
+            //        }
+            //        if (values.Length >= 8)
+            //        {
+            //            userToImport.Signature = values[7];
+            //        }
+            //        userToImport.Roles = new List<MembershipRole> { settings.NewMemberStartingRole };
+            //        Add(userToImport);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        report.Errors.Add(new CsvErrorWarning { ErrorWarningType = CsvErrorWarningType.GeneralError, Message = ex.Message });
+            //    }
+            //}
+
+            return report;
+        }
+
+        #endregion
+
+        #region 其他辅助功能
 
         /// <summary>
         /// 返回最后的登录状态
@@ -1456,23 +1612,6 @@ namespace MVCForum.Services
             return roles.ToArray();
         }
 
-
-
-        /// <summary>
-        /// 12分钟内的活动用户
-        /// </summary>
-        /// <returns></returns>
-        public IList<MembershipUser> GetActiveMembers()
-        {
-            // Get members that last activity date is valid
-
-            var date = DateTime.Now.AddMinutes(-AppConstants.TimeSpanInMinutesToShowMembers);
-            return _context.MembershipUser
-                .Where(x => x.LastActivityDate > date)
-                .AsNoTracking()
-                .ToList();
-        }
-
         public string ErrorCodeToString(MembershipCreateStatus createStatus)
         {
             // See http://go.microsoft.com/fwlink/?LinkID=177550 for a full list of status codes.
@@ -1511,106 +1650,7 @@ namespace MVCForum.Services
             }
         }
 
-        /// <summary>
-        /// Save user (does NOT update password data)
-        /// </summary>
-        /// <param name="user"></param>
-        public void ProfileUpdated(MembershipUser user)
-        {
-            var e = new UpdateProfileEventArgs { User = user };
-            EventManager.Instance.FireBeforeProfileUpdated(this, e);
-
-            if (!e.Cancel)
-            {
-                EventManager.Instance.FireAfterProfileUpdated(this, new UpdateProfileEventArgs { User = user });
-                _activityService.ProfileUpdated(user);
-            }
-        }
-
-
-
-        #region ==================在爱驴网项目中禁用的方法==========================
-
-        [Obsolete("此方法在爱驴网项目中禁用")]
-        public MembershipUser GetUserByEmail(string email, bool removeTracking = false)
-        {
-            email = StringUtils.SafePlainText(email);
-            if (removeTracking)
-            {
-                return _context.MembershipUser.AsNoTracking()
-                    .Include(x => x.Roles)
-                    .FirstOrDefault(name => name.Email == email);
-            }
-            return _context.MembershipUser
-                .Include(x => x.Roles)
-                .FirstOrDefault(name => name.Email == email);
-        }
-
-        [Obsolete("此方法在爱驴网项目中禁用")]
-        public IList<MembershipUser> GetLowestPointUsers(int amountToTake)
-        {
-            return _context.MembershipUser
-                 .Join(_context.MembershipUserPoints.AsNoTracking(), // The sequence to join to the first sequence.
-                        user => user.Id, // A function to extract the join key from each element of the first sequence.
-                        userPoints => userPoints.User.Id, // A function to extract the join key from each element of the second sequence
-                        (user, userPoints) => new { MembershipUser = user, UserPoints = userPoints } // A function to create a result element from two matching elements.
-                    )
-                 .AsNoTracking()
-                .OrderBy(x => x.UserPoints)
-                .Take(amountToTake)
-                .Select(t => t.MembershipUser)
-                .ToList();
-        }
-
-        [Obsolete("此方法在爱驴网项目中禁用")]
-        public IList<MembershipUser> GetUsersByDaysPostsPoints(int amoutOfDaysSinceRegistered, int amoutOfPosts)
-        {
-            var registerEnd = DateTime.Now;
-            var registerStart = registerEnd.AddDays(-amoutOfDaysSinceRegistered);
-            return _context.MembershipUser
-                .Where(x =>
-                        x.Posts.Count <= amoutOfPosts &&
-                        x.CreateDate > registerStart &&
-                        x.CreateDate <= registerEnd)
-                .ToList();
-        }
-
-        #region 通过第三方登录Id取得用户实例（此功能已禁用）
-
-        [Obsolete("此方法在爱驴网项目中禁用")]
-        public MembershipUser GetUserByFacebookId(long facebookId)
-        {
-            return _context.MembershipUser
-                .Include(x => x.Roles)
-                .FirstOrDefault(name => name.FacebookId == facebookId);
-        }
-        [Obsolete("此方法在爱驴网项目中禁用")]
-        public MembershipUser GetUserByTwitterId(string twitterId)
-        {
-            return _context.MembershipUser
-                .Include(x => x.Roles)
-                .FirstOrDefault(name => name.TwitterAccessToken == twitterId);
-        }
-        [Obsolete("此方法在爱驴网项目中禁用")]
-        public MembershipUser GetUserByGoogleId(string googleId)
-        {
-            return _context.MembershipUser
-                .Include(x => x.Roles)
-                .FirstOrDefault(name => name.GoogleAccessToken == googleId);
-        }
-        [Obsolete("此方法在爱驴网项目中禁用")]
-        public MembershipUser GetUserByOpenIdToken(string openId)
-        {
-            openId = StringUtils.GetSafeHtml(openId);
-            return _context.MembershipUser
-                .Include(x => x.Roles)
-                .FirstOrDefault(name => name.MiscAccessToken == openId);
-        }
-
-        #endregion
-
         #endregion
 
     }
-
 }

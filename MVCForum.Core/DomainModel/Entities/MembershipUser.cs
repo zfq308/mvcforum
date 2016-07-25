@@ -129,32 +129,16 @@ namespace MVCForum.Domain.DomainModel
     {
         public MembershipUser()
         {
+            #region 基本字段
+
             Id = GuidComb.GenerateComb();
-            LastPasswordChangedDate = (DateTime)SqlDateTime.MinValue;
-            PasswordResetTokenCreatedAt = (DateTime)SqlDateTime.MinValue;
-            IsLockedOut = false;
-            IsBanned = false;
-            LastLockoutDate = (DateTime)SqlDateTime.MinValue;
-            LastActivityDate = null;
-            LoginIdExpires = null;
-            HasAgreedToTermsAndConditions = true;
-            DisableEmailNotifications = false;
-            IsApproved = false; // 设定每个用户注册都需要审核，系统不允许自动审核
-            IsLockedOut = false;
+            UserName = "";
+            RealName = "";
+            AliasName = "";
             Gender = Enum_Gender.boy;
             Birthday = new DateTime(2000, 1, 1);
             IsLunarCalendar = Enum_Calendar.PublicCalendar;
             IsMarried = Enum_MarriedStatus.Single;
-            IncomeRange = 0;
-            DisablePosting = false;
-            DisablePrivateMessages = false;
-            DisableFileUploads = false;
-            LastLoginDate = (DateTime)SqlDateTime.MinValue;
-            UserType = Enum_UserType.A;
-
-            UserName = "";
-            RealName = "";
-            Email = "";
             Height = 0;
             Weight = 0;
             Education = "";
@@ -166,13 +150,45 @@ namespace MVCForum.Domain.DomainModel
             LocationCity = "110100";
             LocationCounty = "110108";
             Job = "";
+            IncomeRange = Enum_IncomeRange.R_NOClass;
             Interest = "";
             MobilePhone = "";
-            Password = "";
-            Slug = "";
+            UserType = Enum_UserType.A;
             Comment = "";
             Avatar = "";
+
+            #endregion
+
+            #region 密码
+
+            Password = "";
+            LastPasswordChangedDate = (DateTime)SqlDateTime.MinValue;
+            PasswordResetTokenCreatedAt = (DateTime)SqlDateTime.MinValue;
+
+            #endregion
+
+            IsApproved = false; // 设定每个用户注册都需要审核，系统不允许自动审核
+
+            #region 其他
+
+            Slug = "";
             Signature = "";
+            Email = "";
+            IsLockedOut = false;
+            IsBanned = false;
+            LastLockoutDate = (DateTime)SqlDateTime.MinValue;
+            LastActivityDate = null;
+            LoginIdExpires = null;
+            HasAgreedToTermsAndConditions = true;
+            DisableEmailNotifications = false;
+
+            IsLockedOut = false;
+            DisablePosting = false;
+            DisablePrivateMessages = false;
+            DisableFileUploads = false;
+            LastLoginDate = (DateTime)SqlDateTime.MinValue;
+
+            #endregion
         }
 
         #region 用户基本信息属性
@@ -332,11 +348,11 @@ namespace MVCForum.Domain.DomainModel
         /// </summary>
         public bool IsApproved { get; set; }
         /// <summary>
-        /// 是否锁定此账户（隐藏用户）
+        /// 是否锁定此账户
         /// </summary>
         public bool IsLockedOut { get; set; }
         /// <summary>
-        /// 是否禁用此账户
+        /// 是否禁用此账户（隐藏用户）
         /// </summary>
         public bool IsBanned { get; set; }
         /// <summary>
@@ -584,7 +600,7 @@ namespace MVCForum.Domain.DomainModel
         #endregion
 
         #region 属性
-       
+
         /// <summary>
         /// 用户属性变更Id
         /// </summary>

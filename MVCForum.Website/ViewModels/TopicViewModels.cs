@@ -10,6 +10,52 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MVCForum.Website.ViewModels
 {
+    /// <summary>
+    /// 爱驴服务TopicViewModel
+    /// </summary>
+    public class AiLvFuWu_ListViewModel
+    {
+        public List<TopicViewModel> Topics { get; set; }
+        public int? PageIndex { get; set; }
+        public int? TotalCount { get; set; }
+        public int? TotalPages { get; set; }
+    }
+
+    /// <summary>
+    /// 爱驴资讯ListViewModel
+    /// </summary>
+    public class AiLvZiXun_ListViewModel
+    {
+        public List<TopicViewModel> Topics { get; set; }
+        public int? PageIndex { get; set; }
+        public int? TotalCount { get; set; }
+        public int? TotalPages { get; set; }
+    }
+
+    /// <summary>
+    /// 爱驴记录ListViewModel
+    /// </summary>
+    public class AiLvJiLu_ListViewModel
+    {
+        public List<TopicViewModel> Topics { get; set; }
+        public int? PageIndex { get; set; }
+        public int? TotalCount { get; set; }
+        public int? TotalPages { get; set; }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public class CreateTopicButtonViewModel
     {
         public MembershipUser LoggedOnUser { get; set; }
@@ -60,29 +106,6 @@ namespace MVCForum.Website.ViewModels
         // Misc
         public bool ShowUnSubscribedLink { get; set; }
     }
-
-    /// <summary>
-    /// 爱驴服务TopicViewModel
-    /// </summary>
-    public class AiLvFuWu_ListViewModel
-    {
-        public List<TopicViewModel> Topics { get; set; }
-        public int? PageIndex { get; set; }
-        public int? TotalCount { get; set; }
-        public int? TotalPages { get; set; }
-    }
-
-    /// <summary>
-    /// 爱驴资讯ListViewModel
-    /// </summary>
-    public class AiLvZiXun_ListViewModel
-    {
-        public List<TopicViewModel> Topics { get; set; }
-        public int? PageIndex { get; set; }
-        public int? TotalCount { get; set; }
-        public int? TotalPages { get; set; }
-    }
-
 
     #region 待检查的
 
@@ -222,6 +245,5 @@ namespace MVCForum.Website.ViewModels
     }
 
     #endregion
-
 
 }

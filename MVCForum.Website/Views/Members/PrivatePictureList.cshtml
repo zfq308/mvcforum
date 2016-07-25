@@ -5,32 +5,35 @@
 <div class="row">
     <div class="col-md-12">
         <table class="table">
-            @foreach (MembershipUserPicture ad in Model.MembershipUserPictures)
+            @if (Model.MembershipUserPictures != null)
             {
-                <tr>
-                    <td align="center">
-                        <a href="@ad.FileName">
-                            <img src="@ad.FileName" title="@ad.Description" class="thumbnail" style="margin-bottom:0px;height:150px;width:200px" />
-                        </a>
-                    </td>
-                </tr>
-                <tr>
-                    <td align="right">
-                        @if (ad.Description.Length > 15)
-                        {
-                            <span>
-                                @ad.Description.Substring(0, 15)...
-                            </span>
-                        }
-                        else
-                        {
-                            <span>@ad.Description</span>
-                        }
-                        <a href="@Url.Action("DeletePrivatePicture", new { ad.Id })" class="btn btn-link" style="padding-top:0px; padding-bottom:0px;" title="删除这张照片" onclick="return confirm('你确认需要删除这张照片吗?')">
-                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                        </a>
-                    </td>
-                </tr>
+                foreach (MembershipUserPicture ad in Model.MembershipUserPictures)
+                {
+                    <tr>
+                        <td align="center">
+                            <a href="@ad.FileName">
+                                <img src="@ad.FileName" title="@ad.Description" class="thumbnail" style="margin-bottom:0px;height:150px;width:200px" />
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">
+                            @if (ad.Description.Length > 15)
+                            {
+                                <span>
+                                    @ad.Description.Substring(0, 15)...
+                                </span>
+                            }
+                            else
+                            {
+                                <span>@ad.Description</span>
+                            }
+                            <a href="@Url.Action("DeletePrivatePicture", new { ad.Id })" class="btn btn-link" style="padding-top:0px; padding-bottom:0px;" title="删除这张照片" onclick="return confirm('你确认需要删除这张照片吗?')">
+                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                            </a>
+                        </td>
+                    </tr>
+                }
             }
             <tr>
                 <td>

@@ -153,9 +153,6 @@ namespace MVCForum.Website.ViewModels
     }
 
 
-    //public class AiLvJiLu_ListViewModel
-    //{
-    //    public IList<AiLvHuoDong>
-    //}
+
 
 }

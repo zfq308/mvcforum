@@ -230,53 +230,60 @@ namespace MVCForum.Services.Migrations
                         //TODO: 【重要】每次上线测试前需要修改这个参数
                         ForumName = "爱驴网，爱驴户外",
                         ForumUrl = "http://localhost:9666/",
-                        ForumKeepAliveURL = "http://localhost:9666/home/jianjie",
-
-
+                        ForumKeepAliveURL = "http://localhost:9666/home",
                         IsClosed = false,
-                        EnableRSSFeeds = false,
                         DisplayEditedBy = true,
                         EnablePostFileAttachments = false,
-                        EnableMarkAsSolution = false,
+
                         EnableSpamReporting = true,
                         EnableMemberReporting = true,
-                        EnableEmailSubscriptions = false,
                         ManuallyAuthoriseNewMembers = true,
-                        EmailAdminOnNewMemberSignUp = false,
                         TopicsPerPage = 10,
                         PostsPerPage = 10,
+                        EnableEmoticons = true,
                         EnablePrivateMessages = true,
-                        MaxPrivateMessagesPerMember = 50,
+                        MaxPrivateMessagesPerMember = 200,
                         PrivateMessageFloodControl = 1,
-                        EnableSignatures = false,
-
-                        EnablePoints = false,
-                        PointsAllowedToVoteAmount = 1,
-                        PointsAllowedForExtendedProfile = 1,
-                        PointsAddedPerPost = 1,
-                        PointsAddedForSolution = 4,
-                        PointsDeductedNagativeVote = 2,
-                        PointsAddedPostiveVote = 2,
-
-                        AdminEmailAddress = "zfq3082002@163.com",
-                        NotificationReplyEmail = "noreply@myemail.com",
-                        SMTPEnableSSL = false,
-
                         Theme = "Metro",
                         NewMemberStartingRole = standardRole,
                         DisableStandardRegistration = false,
                         DefaultLanguage = language,
                         ActivitiesPerPage = 10,
 
-                        EnableAkisment = false,
+                        UCPaasConfig_Account= "4c890bb2b861ac9eac78d381efea6cb2",
+                        UCPaasConfig_Token= "29755cc149863eced52be76f3f6bcebf",
+                        UCPaasConfig_AppId= "3b77d120b23c4d5bb3d38e5e01868550",
+                        UCPaasConfig_TemplatedId= "26343",
+
+
+                        #region 非关键设置项
+
+                        EnableRSSFeeds = false,
+                        EnableEmailSubscriptions = false,
+                        EmailAdminOnNewMemberSignUp = false,
+                        EnableSignatures = false,
+                        EnablePoints = false,
+                        
                         EnableSocialLogins = false,
                         EnablePolls = false,
-
+                        PointsAllowedToVoteAmount = 1,
+                        PointsAllowedForExtendedProfile = 1,
+                        PointsAddedPerPost = 1,
+                        PointsAddedForSolution = 4,
+                        PointsDeductedNagativeVote = 2,
+                        PointsAddedPostiveVote = 2,
+                        AdminEmailAddress = "zfq3082002@163.com",
+                        NotificationReplyEmail = "noreply@myemail.com",
+                        SMTPEnableSSL = false,
+                        EnableMarkAsSolution = false,
                         MarkAsSolutionReminderTimeFrame = 7,
-                        EnableEmoticons = true,
+                        EnableAkisment = false,
                         AkismentKey = "0a186c65abb7"
 
+                        #endregion
+
                     };
+
 
                     context.Setting.Add(settings);
                     context.SaveChanges();
@@ -504,7 +511,7 @@ namespace MVCForum.Services.Migrations
                     var SampleCategory = context.Category.Where(x => x.Name == "Example Category").SingleOrDefault();
                     var topic = new Topic
                     {
-                        TopicType =  Enum_TopicType.Announcement,
+                        TopicType = Enum_TopicType.Announcement,
                         Category = SampleCategory,
                         CreateDate = DateTime.Now,
                         User = admin,

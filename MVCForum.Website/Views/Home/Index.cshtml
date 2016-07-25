@@ -136,20 +136,34 @@
     </div>
 
     <div class="col-md-6">
-
         <div class="panel panel-mvc">
             <div class="panel-heading">最新会员</div>
             <div class="panel-body">
-                <p>
-                    此处为最新会员
-                </p>
+                @if (Model.AiLv_ZuiXinHuiYuanTop5 != null && Model.AiLv_ZuiXinHuiYuanTop5.Count > 0)
+                {
+                    <table>
+                        @foreach (var huiyuan in Model.AiLv_ZuiXinHuiYuanTop5)
+                        {
+                            <tr>
+                                <td>
+                                    <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span>
+                                    <a href="@huiyuan.NiceUrl">@huiyuan.AliasName</a>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                }
+                else
+                {
+                    <p>
+                        暂无会员信息
+                    </p>
+                }
             </div>
         </div>
-
     </div>
 
     <div class="col-md-6">
-
         <div class="panel panel-mvc">
             <div class="panel-heading">最新服务</div>
             <div class="panel-body">
@@ -176,7 +190,6 @@
 
             </div>
         </div>
-
     </div>
 
     <div class="col-md-6">

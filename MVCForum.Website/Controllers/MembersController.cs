@@ -808,15 +808,12 @@ namespace MVCForum.Website.Controllers
             #endregion
 
             #region 绑定学历信息
-
             var Items_Education = new List<SelectListItem>();
-            Items_Education.Add(new SelectListItem { Text = "高中以下", Value = "1" });
-            Items_Education.Add(new SelectListItem { Text = "高中，中专", Value = "2" });
-            Items_Education.Add(new SelectListItem { Text = "大专", Value = "3" });
-            Items_Education.Add(new SelectListItem { Text = "本科", Value = "4" });
-            Items_Education.Add(new SelectListItem { Text = "硕士", Value = "5" });
-            Items_Education.Add(new SelectListItem { Text = "博士", Value = "6" });
-            Items_Education.Add(new SelectListItem { Text = "其他", Value = "7" });
+            Items_Education.AddRange(TEducation.LoadAllEducationList().Select(x =>
+            {
+                return new SelectListItem { Text = x.EducationName, Value = x.EducationId };
+            }));
+
             foreach (SelectListItem item in Items_Education)
             {
                 if (item.Value == user.Education.ToString())
@@ -831,10 +828,11 @@ namespace MVCForum.Website.Controllers
             #region 绑定收入信息
 
             var Items_IncomeRange = new List<SelectListItem>();
-            Items_IncomeRange.Add(new SelectListItem { Text = "1万以下", Value = "1" });
-            Items_IncomeRange.Add(new SelectListItem { Text = "1万至5万", Value = "2" });
-            Items_IncomeRange.Add(new SelectListItem { Text = "5万以上", Value = "3" });
-            Items_IncomeRange.Add(new SelectListItem { Text = "不好说", Value = "4" });
+
+            Items_IncomeRange.AddRange(TIncomeRange.LoadAllIncomeList().Select(x =>
+            {
+                return new SelectListItem { Text = x.IncomeRangeName, Value = x.IncomeRangeId };
+            }));
             foreach (SelectListItem item in Items_IncomeRange)
             {
                 if (item.Value == user.IncomeRange.ToString())

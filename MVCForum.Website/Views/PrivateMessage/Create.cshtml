@@ -6,7 +6,7 @@
             HttpMethod = "POST",
             LoadingElementId = "createpostwait",
             OnSuccess = "AjaxPrivateMessageSuccess()",
-            OnFailure = "AjaxPostError('Error creating private message')",
+            OnFailure = "AjaxPostError('请注意：创建私信时发生错误')",
             UpdateTargetId = "newpmmarker",
             OnBegin = "AjaxPostBegin()"
         }, new { @id = "postcodeform", @class = "form-createpm" }))
