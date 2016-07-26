@@ -72,12 +72,12 @@ namespace MVCForum.Website.Controllers
             Items_LeiBieList.Add(new SelectListItem { Text = "特殊邀请", Value = "2" });
             ViewData["LeiBieList"] = Items_LeiBieList;
 
+
             var Items_YaoQiuList = new List<SelectListItem>();
             Items_YaoQiuList.Add(new SelectListItem { Text = "单身人士", Value = "1" });
             Items_YaoQiuList.Add(new SelectListItem { Text = "邀请人员", Value = "2" });
             Items_YaoQiuList.Add(new SelectListItem { Text = "无要求", Value = "3" });
             ViewData["YaoQiuList"] = Items_YaoQiuList;
-
         }
 
         #region 创建活动
@@ -99,6 +99,8 @@ namespace MVCForum.Website.Controllers
                     model.StartTime = DateTime.Today.AddDays(14).AddHours(8);
                     model.StopTime = DateTime.Today.AddDays(15);
                     model.BaoMingJieZhiTime = DateTime.Today.AddDays(10).AddHours(20);
+                    model.LeiBie = Enum_HuoDongLeiBie.FreeRegister;
+
                     return View(model);
                 }
 
@@ -129,7 +131,7 @@ namespace MVCForum.Website.Controllers
                     item.ZhuYiShiXiang = ViewModel.ZhuYiShiXiang;
                     item.YuGuRenShu = ViewModel.YuGuRenShu;
                     item.XingBieBiLi = ViewModel.XingBieBiLi;
-                    item.YaoQingMa = ViewModel.YaoQingMa;
+                    item.YaoQingMa = string.IsNullOrEmpty(ViewModel.YaoQingMa) ? "" : ViewModel.YaoQingMa;
                     item.ZhuangTai = Enum_HuoDongZhuangTai.Registing;
                     item.GongYingShangUserId = LoggedOnReadOnlyUser.Id.ToString();
                     if (UserIsAdmin)
@@ -341,7 +343,7 @@ namespace MVCForum.Website.Controllers
         #endregion
 
         #region 爱驴记录模块
-      
+
         /// <summary>
         /// 最新记录
         /// </summary>
@@ -359,6 +361,57 @@ namespace MVCForum.Website.Controllers
                 JiluList.Topics.AddRange(topicViewModels);
             }
             return View(JiluList);
+        }
+
+
+        [Authorize(Roles = "Admin")]
+        public ActionResult CreateAiLvHuodongJilu(Guid Id)
+        {
+            var item = _aiLvHuoDongService.Get(Id);
+
+            var model = new CreateEditTopicViewModel();
+
+            var category = _categoryservice.GetCategoryByEnumCategoryType(EnumCategoryType.AiLvJiLu);
+            model.CategoryId = category.Id;
+            var allowedCategories = new List<Category>();
+            allowedCategories.Add(category);
+            model.Categories = _categoryservice.GetBaseSelectListCategories(allowedCategories);
+
+            var permissions = RoleService.GetPermissions(null, UsersRole);
+            var canInsertImages = UserIsAdmin;
+            if (!canInsertImages)
+            {
+                canInsertImages = permissions[SiteConstants.Instance.PermissionInsertEditorImages].IsTicked;
+            }
+
+            model.OptionalPermissions = new CheckCreateTopicPermissions
+            {
+                CanLockTopic = UserIsAdmin,
+                CanStickyTopic = UserIsAdmin,
+                CanUploadFiles = UserIsAdmin,
+                CanCreatePolls = UserIsAdmin,
+                CanInsertImages = canInsertImages
+            };
+            model.PollAnswers = new List<PollAnswer>();
+            model.IsTopicStarter = true;
+            model.PollCloseAfterDays = 0;
+
+            model.Name = "【" + item.MingCheng.Trim() + "】的活动";
+
+            var checkexistHuodongJilu = _topicService.GetAllTopicsByCategory(category.Id).Where(x => x.Name == model.Name).Count();
+            if (checkexistHuodongJilu == 0)
+            {
+                return RedirectToAction("CreateNewTopicRecord", "Topic", new { model });
+            }
+            else
+            {
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = "活动记录已存在。",
+                    MessageType = GenericMessages.danger
+                };
+                return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
+            }
         }
 
         #endregion

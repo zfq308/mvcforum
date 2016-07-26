@@ -157,6 +157,37 @@ namespace MVCForum.Website.Controllers
         #endregion
 
 
+        #region 活动记录
+        public PartialViewResult CreateTopicButtonForHuodongJilu()
+        {
+            var viewModel = new CreateTopicButtonViewModel
+            {
+                LoggedOnUser = LoggedOnReadOnlyUser,
+                UserCanPostTopics = false
+            };
+            return PartialView(viewModel);
+        }
+
+        [Authorize]
+        public ActionResult CreateHuoDongJiLu()
+        {
+            var allowedAccessCategories = new List<Category>();
+            allowedAccessCategories.Add(_categoryService.GetCategoryByEnumCategoryType(EnumCategoryType.AiLvJiLu));
+            if (allowedAccessCategories.Any() && LoggedOnReadOnlyUser.DisablePosting != true)
+            {
+                var viewModel = PrePareCreateEditTopicViewModel(allowedAccessCategories);
+                viewModel.TopicType = Enum_TopicType.Announcement;
+                viewModel.Name = "的记录";
+                return View(viewModel);
+            }
+            return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
+        }
+
+
+        #endregion
+
+
+
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
