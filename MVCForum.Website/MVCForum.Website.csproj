@@ -1142,7 +1142,8 @@
     <Content Include="Views\Topic\CreateTopicButtonForMeiRiXinqing.cshtml" />
     <Content Include="Views\Topic\CreateMeiRiXinqing.cshtml" />
     <Content Include="Views\Topic\CreateTopicButtonForHuodongJilu.cshtml" />
-    <Content Include="Views\Topic\CreateZuiXinFuwu - Copy.cshtml" />
+    <Content Include="Views\Topic\CreateZuiXinFuwu.cshtml" />
+    <Content Include="Views\AiLvHuoDong\ViewActivity.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />

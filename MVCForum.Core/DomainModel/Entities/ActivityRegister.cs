@@ -23,6 +23,32 @@ namespace MVCForum.Domain.DomainModel
         PayedFee = 2,
     }
 
+    public enum Enum_VerifyActivityRegisterStatus
+    {
+        /// <summary>
+        /// 报名校验成功
+        /// </summary>
+        Success=0,
+        /// <summary>
+        /// 报名校验失败--超过报名截止日期
+        /// </summary>
+        Fail_BeyondDeadlineTime=1,
+        /// <summary>
+        /// 报名校验失败--此活动限未婚人士参加
+        /// </summary>
+        Fail_VerifyMarriedStatus = 2,
+        /// <summary>
+        /// 报名校验失败--此活动同性别名额已满员
+        /// </summary>
+        Fail_VerifyUserGender = 3,
+        /// <summary>
+        /// 报名校验失败--验证码错误
+        /// </summary>
+        Fail_VerifyYaoQingMa = 4,
+    }
+
+
+
     /// <summary>
     /// 爱驴活动报名类
     /// </summary>

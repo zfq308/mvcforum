@@ -21,18 +21,21 @@ namespace MVCForum.Website.Controllers
     public class AiLvHuoDongController : BaseController
     {
 
-        #region 建构式
+
 
         private readonly IAiLvHuoDongService _aiLvHuoDongService;
         private readonly ITopicService _topicService;
         private readonly ICategoryService _categoryservice;
         private readonly MVCForumContext _context;
+        private readonly IActivityRegisterService _ActivityRegisterService;
 
+        #region 建构式  
         public AiLvHuoDongController(
             IMVCForumContext context,
             ICategoryService Categoryservice,
             ITopicService TopicService,
             IAiLvHuoDongService aiLvHuoDongService,
+            IActivityRegisterService ActivityRegisterService,
 
             ILoggingService loggingService,
             IUnitOfWorkManager unitOfWorkManager,
@@ -43,6 +46,7 @@ namespace MVCForum.Website.Controllers
              : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _aiLvHuoDongService = aiLvHuoDongService;
+            _ActivityRegisterService = ActivityRegisterService;
             _topicService = TopicService;
             _categoryservice = Categoryservice;
             _context = context as MVCForumContext;
@@ -247,7 +251,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin,Supplier")]
+        //[Authorize(Roles = "Admin,Supplier")]
         public ActionResult EditAiLvHuoDong(Guid Id)
         {
             var item = _aiLvHuoDongService.Get(Id);
@@ -339,6 +343,75 @@ namespace MVCForum.Website.Controllers
 
         }
         #endregion
+
+        #endregion
+
+
+        #region 活动报名
+        /// <summary>
+        /// 参与活动报名
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [Authorize()]
+        public ActionResult CreateActivityRegister(AiLvHuoDong_CreateEdit_ViewModel model)
+        {
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            {
+                var huodong = _aiLvHuoDongService.Get(model.Id);
+                var ar = new ActivityRegister(model.Id, LoggedOnReadOnlyUser);
+
+                switch (_ActivityRegisterService.CheckRegisterStatus(huodong, LoggedOnReadOnlyUser))
+                {
+                    case Enum_VerifyActivityRegisterStatus.Success:
+                        //_ActivityRegisterService.Add(ar);
+                        EntityOperationUtils.InsertObject(ar);
+                        break;
+                    case Enum_VerifyActivityRegisterStatus.Fail_BeyondDeadlineTime:
+                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        {
+                            Message = "已超过报名时限。",
+                            MessageType = GenericMessages.danger
+                        };
+                        return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
+                    case Enum_VerifyActivityRegisterStatus.Fail_VerifyMarriedStatus:
+                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        {
+                            Message = "此活动限未婚人士参加。",
+                            MessageType = GenericMessages.danger
+                        };
+                        return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
+                    case Enum_VerifyActivityRegisterStatus.Fail_VerifyUserGender:
+                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        {
+                            Message = "此活动同性别名额已满员。",
+                            MessageType = GenericMessages.danger
+                        };
+                        return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
+                    default:
+                        break;
+                }
+                try
+                {
+                   
+                    unitOfWork.Commit();
+                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    {
+                        Message = "活动已报名。",
+                        MessageType = GenericMessages.info
+                    };
+                    return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
+                }
+                catch (Exception ex)
+                {
+                    unitOfWork.Rollback();
+                    LoggingService.Error(ex);
+                    ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
+                }
+                return View();
+            }
+        }
+
 
         #endregion
 
@@ -456,7 +529,32 @@ namespace MVCForum.Website.Controllers
 
         #region 其他View视图
 
-
+        public ActionResult ViewActivity(Guid Id)
+        {
+            var item = _aiLvHuoDongService.Get(Id);
+            var EditModel = new AiLvHuoDong_CreateEdit_ViewModel
+            {
+                Id = item.Id,
+                MingCheng = item.MingCheng,
+                LeiBie = item.LeiBie,
+                YaoQiu = item.YaoQiu,
+                StartTime = item.StartTime,
+                StopTime = item.StopTime,
+                BaoMingJieZhiTime = item.BaoMingJieZhiTime,
+                DiDian = item.DiDian,
+                LiuCheng = item.LiuCheng,
+                Feiyong = item.Feiyong,
+                FeiyongShuoMing = item.FeiyongShuoMing,
+                ZhuYiShiXiang = item.ZhuYiShiXiang,
+                YuGuRenShu = item.YuGuRenShu,
+                XingBieBiLi = item.XingBieBiLi,
+                YaoQingMa = item.YaoQingMa,
+                ZhuangTai = item.ZhuangTai,
+                ShenHeBiaoZhi = item.ShenHeBiaoZhi,
+                GongYingShangUserId=item.GongYingShangUserId,
+            };
+            return View(EditModel);
+        }
 
         /// <summary>
         /// 每日之星

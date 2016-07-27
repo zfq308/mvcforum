@@ -76,23 +76,23 @@ namespace MVCForum.Services
         /// <param name="huodong"></param>
         /// <param name="user"></param>
         /// <returns></returns>
-        public bool CheckRegisterStatus(AiLvHuoDong huodong, MembershipUser user)
+        public Enum_VerifyActivityRegisterStatus CheckRegisterStatus(AiLvHuoDong huodong, MembershipUser user)
         {
             if (!CheckHuoDongJieZhiShijian(huodong))
             {
-                return false;
+                return Enum_VerifyActivityRegisterStatus.Fail_BeyondDeadlineTime;
             }
 
             if (!CheckUserMarriedStatus(huodong, user))
             {
-                return false;
+                return Enum_VerifyActivityRegisterStatus.Fail_VerifyMarriedStatus;
             }
 
             if (!CheckUserGender(huodong, user))
             {
-                return false;
+                return Enum_VerifyActivityRegisterStatus.Fail_VerifyUserGender;
             }
-            return true;
+            return Enum_VerifyActivityRegisterStatus.Success;
         }
 
         /// <summary>

@@ -49,7 +49,7 @@ namespace MVCForum.Domain.Interfaces.Services
         /// <param name="huodong"></param>
         /// <param name="user"></param>
         /// <returns></returns>
-        bool CheckRegisterStatus(AiLvHuoDong huodong, MembershipUser user);
+        Enum_VerifyActivityRegisterStatus CheckRegisterStatus(AiLvHuoDong huodong, MembershipUser user);
     }
 
 }

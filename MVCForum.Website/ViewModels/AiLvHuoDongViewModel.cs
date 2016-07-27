@@ -135,10 +135,10 @@ namespace MVCForum.Website.ViewModels
         [Display(Name = "活动状态")]
         public Enum_HuoDongZhuangTai ZhuangTai { set; get; }
 
-        ///// <summary>
-        ///// 若生成记录用户是供应商，则记下供应商的Id
-        ///// </summary>
-        //public string GongYingShangUserId { get; set; }
+        /// <summary>
+        /// 若生成记录用户是供应商，则记下供应商的Id
+        /// </summary>
+        public string GongYingShangUserId { get; set; }
 
         /// <summary>
         /// 活动发布审核标志位，若活动为管理员创建，其值为1，若活动为供应商创建，其值初始时为0，审核通过后为1，驳回审核后，其值为2.

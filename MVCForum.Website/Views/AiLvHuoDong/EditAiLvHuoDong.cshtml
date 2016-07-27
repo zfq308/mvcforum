@@ -17,38 +17,5 @@
             @Html.Partial("_CreateEdit_ZuiXinHuoDong", Model)
             @Html.HiddenFor(x => x.Id)
         }
-
-
-        @using (Html.BeginForm("AuditAiLvHuodong_Success", "AiLvHuoDong", FormMethod.Post, new { enctype = "multipart/form-data" }))
-        {
-            if (Model.Id != Guid.Empty && Model.ShenHeBiaoZhi == MVCForum.Domain.DomainModel.Enum_ShenHeBiaoZhi.WaitingAudit)
-            {
-                <button type="submit" name="btn_AuditSuccess" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
-                    审核同意
-                </button>
-            }
-        }
-
-
-        @using (Html.BeginForm("AuditAiLvHuodong_Fail", "AiLvHuoDong", FormMethod.Post, new { enctype = "multipart/form-data" }))
-        {
-            if (Model.Id != Guid.Empty && Model.ShenHeBiaoZhi == MVCForum.Domain.DomainModel.Enum_ShenHeBiaoZhi.WaitingAudit)
-            {
-                <button type="submit" name="btn_AuditFail" class="btn-mvc-red btn-mvc-large btn-mvc-fullwidth">
-                    审核驳回
-                </button>
-            }
-        }
-
-        @using (Html.BeginForm("CreateAiLvHuodongJilu", "AiLvHuoDong", FormMethod.Post, new { enctype = "multipart/form-data" }))
-        {
-            if (Model.Id != Guid.Empty && Model.ShenHeBiaoZhi == MVCForum.Domain.DomainModel.Enum_ShenHeBiaoZhi.AuditSuccess)
-            {
-                <button type="submit" name="btn_GenerateHuoDong" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
-                    生成活动记录
-                </button><br />
-            }
-        }
-
     </div>
 </div>
