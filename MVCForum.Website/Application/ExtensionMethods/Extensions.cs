@@ -8,6 +8,7 @@ using System.Web.Routing;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
+using MVCForum.Domain.DomainModel.General;
 
 namespace MVCForum.Website.Application
 {
@@ -22,7 +23,7 @@ namespace MVCForum.Website.Application
             return htmlHelper.ActionLink(linkText, actionName, adminControllerName, new { Area = "Admin" }, new { });
         }
 
-        public static string MemberImage(this MembershipUser user,  int size)
+        public static string MemberImage(this MembershipUser user, int size)
         {
             return AppHelpers.MemberImage(user.Avatar, user.Email, user.Id, size);
         }
@@ -58,7 +59,7 @@ namespace MVCForum.Website.Application
                 return (num / 1000D).ToString("0.#") + "K";
 
             return num.ToString(CultureInfo.InvariantCulture);
-        } 
+        }
 
         /// <summary>
         /// Gets the specific language text from the language key
@@ -83,18 +84,30 @@ namespace MVCForum.Website.Application
             return list.Distinct(new StructEqualityComparer<T, TKey>(lookup));
         }
 
+        public static MvcHtmlString ConvertEducationName(this HtmlHelper helper, string EducationId)
+        {
+            var EducationName = TEducation.LoadEducationByEducationId(EducationId).EducationName;
+            return new MvcHtmlString(EducationName);
+        }
 
-   //     <nav>
-   //   <ul class="pagination">
-   //     <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
-   //     <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-   //     <li><a href="#">2</a></li>
-   //     <li><a href="#">3</a></li>
-   //     <li><a href="#">4</a></li>
-   //     <li><a href="#">5</a></li>
-   //     <li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
-   //  </ul>
-   //</nav>
+
+        public static MvcHtmlString ConvertIncomeRange(this HtmlHelper helper,int IncomeId)
+        {
+            var IncomeRangeText = TIncomeRange.LoadIncomeRangeByIncomeRangeId(Convert.ToString(IncomeId)).IncomeRangeName;
+            return new MvcHtmlString(IncomeRangeText);
+        }
+
+        //     <nav>
+        //   <ul class="pagination">
+        //     <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+        //     <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+        //     <li><a href="#">2</a></li>
+        //     <li><a href="#">3</a></li>
+        //     <li><a href="#">4</a></li>
+        //     <li><a href="#">5</a></li>
+        //     <li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+        //  </ul>
+        //</nav>
 
         public static MvcHtmlString Pager(this HtmlHelper helper, int currentPage, int pageSize, int totalItemCount, object routeValues, string actionOveride = null, string controllerOveride = null)
         {
@@ -102,7 +115,7 @@ namespace MVCForum.Website.Application
             var cGroupSize = SiteConstants.Instance.PagingGroupSize;
             var pageCount = (int)Math.Ceiling(totalItemCount / (double)pageSize);
 
-            if(pageCount <= 0)
+            if (pageCount <= 0)
             {
                 return null;
             }
@@ -138,7 +151,7 @@ namespace MVCForum.Website.Application
                 var previous = new TagBuilder("a");
                 previous.SetInnerText("«");
                 previous.AddCssClass("previous");
-                var routingValues = new RouteValueDictionary(routeValues) {{"p", currentPage - 1}};
+                var routingValues = new RouteValueDictionary(routeValues) { { "p", currentPage - 1 } };
                 previous.MergeAttribute("href", urlHelper.Action(actionName, controllerName, routingValues));
                 previousli.InnerHtml = previous.ToString();
                 container.InnerHtml += previousli;
@@ -151,7 +164,7 @@ namespace MVCForum.Website.Application
                 var previousDots = new TagBuilder("a");
                 previousDots.SetInnerText("...");
                 previousDots.AddCssClass("previous-dots");
-                var routingValues = new RouteValueDictionary(routeValues) {{"p", groupStart - cGroupSize}};
+                var routingValues = new RouteValueDictionary(routeValues) { { "p", groupStart - cGroupSize } };
                 previousDots.MergeAttribute("href", urlHelper.Action(actionName, controllerName, routingValues));
                 previousDotsli.InnerHtml = previousDots.ToString();
                 container.InnerHtml += previousDotsli.ToString();
@@ -161,9 +174,9 @@ namespace MVCForum.Website.Application
             {
                 var pageNumberli = new TagBuilder("li");
                 pageNumberli.AddCssClass(((i == currentPage)) ? "active" : "p");
-                var pageNumber = new TagBuilder("a");                
+                var pageNumber = new TagBuilder("a");
                 pageNumber.SetInnerText((i).ToString());
-                var routingValues = new RouteValueDictionary(routeValues) {{"p", i}};
+                var routingValues = new RouteValueDictionary(routeValues) { { "p", i } };
                 pageNumber.MergeAttribute("href", urlHelper.Action(actionName, controllerName, routingValues));
                 pageNumberli.InnerHtml = pageNumber.ToString();
                 container.InnerHtml += pageNumberli.ToString();
@@ -176,7 +189,7 @@ namespace MVCForum.Website.Application
                 var nextDots = new TagBuilder("a");
                 nextDots.SetInnerText("...");
                 nextDots.AddCssClass("next-dots");
-                var routingValues = new RouteValueDictionary(routeValues) {{"p", groupEnd + 1}};
+                var routingValues = new RouteValueDictionary(routeValues) { { "p", groupEnd + 1 } };
                 nextDots.MergeAttribute("href", urlHelper.Action(actionName, controllerName, routingValues));
                 nextDotsli.InnerHtml = nextDots.ToString();
                 container.InnerHtml += nextDotsli.ToString();
@@ -189,7 +202,7 @@ namespace MVCForum.Website.Application
                 var next = new TagBuilder("a");
                 next.SetInnerText("»");
                 next.AddCssClass("next");
-                var routingValues = new RouteValueDictionary(routeValues) {{"p", currentPage + 1}};
+                var routingValues = new RouteValueDictionary(routeValues) { { "p", currentPage + 1 } };
                 next.MergeAttribute("href", urlHelper.Action(actionName, controllerName, routingValues));
                 nextli.InnerHtml = next.ToString();
                 container.InnerHtml += nextli.ToString();
@@ -219,4 +232,7 @@ namespace MVCForum.Website.Application
             return lookup(obj).GetHashCode();
         }
     }
+
+
+
 }

@@ -1,6 +1,8 @@
 ﻿@using System.Globalization
 @using MVCForum.Utilities
 @using MVCForum.Domain.DomainModel.General
+@using MVCForum.Website.Application.ExtensionMethods
+
 @model MVCForum.Website.ViewModels.ViewMemberViewModel
 @{
     Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
@@ -108,7 +110,9 @@
                         <p><b>婚姻状态:</b> @Html.Raw(Model.User.IsMarried == MVCForum.Domain.DomainModel.Enum_MarriedStatus.Single ? "未婚" : "已婚")</p>
                         <p><b>身高(cm):</b> @Model.User.Height</p>
                         <p><b>体重(kg):</b> @Model.User.Weight</p>
-                        <p><b>学历:</b> @TEducation.LoadEducationByEducationId(Model.User.Education).EducationName</p>
+                        <p><b>学历:</b> @Model.User.Education                      
+                        @*@Html.ConvertEducationName(Model.User.Education)*@
+                        </p>
                         <p><b>毕业院校:</b> @Model.User.SchoolName</p>
                     </div>
                     <div class="col-md-6">
@@ -119,7 +123,10 @@
                             @Html.Raw(TCountry.LoadCountryByCountryId(Convert.ToInt32(Model.User.LocationCounty)).CountryName)
                         </p>
                         <p><b>职业:</b> @Model.User.Job</p>
-                        <p><b>月收入:</b> @TIncomeRange.LoadIncomeRangeByIncomeRangeId(Convert.ToString((int)Model.User.IncomeRange)).IncomeRangeName</p>
+                        <p><b>月收入:</b> 
+                        @Html.ConvertIncomeRange((int)Model.User.IncomeRange);
+                        
+                        </p>
                         <p><b>账号创建时间:</b> @DatesUI.GetPrettyDate(Model.User.CreateDate.ToString())</p>
                         <p><b>账号状态:</b> @Html.Raw(Model.User.IsApproved ? "已审核" : "待审核")</p>
 

@@ -77,7 +77,7 @@ namespace MVCForum.Domain.DomainModel
 
             }
             CreateTime = DateTime.Now;
-            PayCompletedTime = DateTime.MaxValue;
+            PayCompletedTime = new DateTime(1900, 1, 1, 0, 0, 0);
         }
 
         #endregion
