@@ -291,6 +291,7 @@
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
     <Compile Include="Controllers\ADSettingController.cs" />
     <Compile Include="Controllers\AiLvHuoDongController.cs" />
+    <Compile Include="Controllers\DebugBoardController.cs" />
     <Compile Include="Controllers\ErrorsController.cs" />
     <Compile Include="Controllers\ModerateController.cs" />
     <Compile Include="Areas\Admin\ViewModels\AdminBadgeViewModels.cs" />
@@ -1138,12 +1139,12 @@
     <Content Include="Views\Members\CreatePrivatePicture.cshtml" />
     <Content Include="Scripts\jquery-3.1.0.slim.min.map" />
     <Content Include="Scripts\jquery-3.1.0.min.map" />
-    <Content Include="Views\Home\DebugBoard.cshtml" />
     <Content Include="Views\Topic\CreateTopicButtonForMeiRiXinqing.cshtml" />
     <Content Include="Views\Topic\CreateMeiRiXinqing.cshtml" />
     <Content Include="Views\Topic\CreateTopicButtonForHuodongJilu.cshtml" />
     <Content Include="Views\Topic\CreateZuiXinFuwu.cshtml" />
     <Content Include="Views\AiLvHuoDong\ViewActivity.cshtml" />
+    <Content Include="Views\DebugBoard\Index.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />

@@ -651,83 +651,6 @@ namespace MVCForum.Website.Controllers
 
         #endregion
 
-        #region 生成测试账号
-        [HttpPost]
-        [BasicMultiButton("Btn_Generate5SupplierAccount")]
-        public ActionResult GenerateTestAccount()
-        {
-            Stopwatch MyStopWatch = new Stopwatch(); //性能计时器
-            MyStopWatch.Start(); //启动计时器
-
-            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
-            {
-                try
-                {
-                    MembershipService.Create5SupplierAccount();
-                    unitOfWork.Commit();
-                }
-                catch (Exception ex)
-                {
-                    unitOfWork.Rollback();
-                    LoggingService.Error(ex);
-                    FormsAuthentication.SignOut();
-                    ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
-                }
-            }
-
-            ShowMessage(new GenericMessageViewModel
-            {
-                //Message = LocalizationService.GetResourceString("Member.ProfileUpdated"),
-                Message = "生成5个供应商测试账号执行完毕",
-                MessageType = GenericMessages.success
-            });
-
-            MyStopWatch.Stop();
-            decimal t = MyStopWatch.ElapsedMilliseconds;
-            logger.Debug(string.Format("生成5个供应商测试账号执行完毕.Timecost:{0} seconds.", t / 1000));
-
-            return RedirectToAction("Register", "Members");
-            //return Content("生成5个供应商测试账号执行完毕");
-        }
-
-        [HttpPost]
-        [BasicMultiButton("Btn_Generate50TestAccount")]
-        public ActionResult GenerateTestAccount2()
-        {
-            Stopwatch MyStopWatch = new Stopwatch(); //性能计时器
-            MyStopWatch.Start(); //启动计时器
-
-            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
-            {
-                try
-                {
-                    MembershipService.Create50TestAccount();
-                    unitOfWork.Commit();
-                }
-                catch (Exception ex)
-                {
-                    unitOfWork.Rollback();
-                    LoggingService.Error(ex);
-                    FormsAuthentication.SignOut();
-                    ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
-                }
-            }
-            ShowMessage(new GenericMessageViewModel
-            {
-                //Message = LocalizationService.GetResourceString("Member.ProfileUpdated"),
-                Message = "生成50个测试账号执行完毕",
-                MessageType = GenericMessages.success
-            });
-
-            MyStopWatch.Stop();
-            decimal t = MyStopWatch.ElapsedMilliseconds;
-            logger.Debug(string.Format("生成50个测试账号执行完毕.Timecost:{0} seconds.", t / 1000));
-            return RedirectToAction("Register", "Members");
-            //return Content("生成50个测试账号执行完毕");
-        }
-
-        #endregion
-
         #region 用户编辑
 
         [Authorize]
@@ -1495,7 +1418,7 @@ namespace MVCForum.Website.Controllers
                                     if (Url.IsLocalUrl(model.ReturnUrl) && model.ReturnUrl.Length > 1 && model.ReturnUrl.StartsWith("/")
                                         && !model.ReturnUrl.StartsWith("//") && !model.ReturnUrl.StartsWith("/\\"))
                                     {
-                                        return Redirect(model.ReturnUrl);
+                                        return Redirect(RedirectURL(model.ReturnUrl));
                                     }
 
                                     message.Message = LocalizationService.GetResourceString("Members.NowLoggedIn");
@@ -1601,6 +1524,18 @@ namespace MVCForum.Website.Controllers
                 }
                 return View(model);
             }
+        }
+
+
+
+        private string RedirectURL(string OriginalURL)
+        {
+            if (!string.IsNullOrEmpty(OriginalURL))
+            {
+                if (OriginalURL == "/ailvhuodong/createactivityregister/") { return "/ailvhuodong/ZuiXinHuoDong/"; }
+                return OriginalURL;
+            }
+            return "/Home/Index";
         }
 
         /// <summary>

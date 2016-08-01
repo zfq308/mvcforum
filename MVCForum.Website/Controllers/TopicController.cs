@@ -567,7 +567,7 @@ namespace MVCForum.Website.Controllers
 
                 #endregion
 
-                return View(topicViewModel);
+                return RedirectToAction("ZuiXinJilu", "AiLvHuoDong");
             }
             else
             {
@@ -575,6 +575,15 @@ namespace MVCForum.Website.Controllers
                 return View(topicViewModel);
             }
         }
+
+        [AcceptVerbs(HttpVerbs.Get)]
+        public ActionResult CreateNewTopicRecord()
+        {
+            return CreateNewTopicRecord(TempData["model"] as CreateEditTopicViewModel);
+        }
+
+
+
 
         private CreateEditTopicViewModel PrePareCreateEditTopicViewModel(List<Category> allowedCategories)
         {

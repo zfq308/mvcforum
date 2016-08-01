@@ -102,8 +102,8 @@
             @if (User.IsInRole(AppConstants.AdminRoleName))
             {
                 <li>
-                    <a href="@Url.Action("DebugBoard", "Home")"
-                       class="@(TempData[AppConstants.CurrentController].ToString() == "home" && TempData[AppConstants.CurrentAction].ToString() == "debugboard" ? "active" : "")">
+                    <a href="@Url.Action("Index", "DebugBoard")"
+                       class="@(TempData[AppConstants.CurrentController].ToString() == "debugboard" && TempData[AppConstants.CurrentAction].ToString() == "index" ? "active" : "")">
                         系统测试面板
                     </a>
                 </li>

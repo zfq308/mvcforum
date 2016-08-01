@@ -100,12 +100,6 @@ namespace MVCForum.Website.Controllers
         }
 
 
-        public ActionResult DebugBoard()
-        {
-            return View();
-        }
-
-
         #region 暂不使用的代码
 
         public ActionResult TermsAndConditions()

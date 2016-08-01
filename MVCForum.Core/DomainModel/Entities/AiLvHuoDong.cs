@@ -34,10 +34,14 @@ namespace MVCForum.Domain.DomainModel
         /// 单身人士
         /// </summary>
         Single = 1,
+        
+        
         /// <summary>
         /// 特别邀请
         /// </summary>
-        Specific = 2,
+        Specific = 2, //TODO: 此项是否可以删除，它完全可以通过Enum_HuoDongLeiBie.SpecicalRegister 来代替。
+
+
         /// <summary>
         /// 无要求，全员皆可
         /// </summary>

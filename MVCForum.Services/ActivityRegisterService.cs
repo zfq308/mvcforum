@@ -78,6 +78,11 @@ namespace MVCForum.Services
         /// <returns></returns>
         public Enum_VerifyActivityRegisterStatus CheckRegisterStatus(AiLvHuoDong huodong, MembershipUser user)
         {
+            if (user == null || user.IsApproved == false)
+            {
+                return Enum_VerifyActivityRegisterStatus.Fail_VerifyUserApproveStatus;
+            }
+
             if (!CheckHuoDongJieZhiShijian(huodong))
             {
                 return Enum_VerifyActivityRegisterStatus.Fail_BeyondDeadlineTime;

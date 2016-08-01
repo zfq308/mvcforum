@@ -28,11 +28,11 @@ namespace MVCForum.Domain.DomainModel
         /// <summary>
         /// 报名校验成功
         /// </summary>
-        Success=0,
+        Success = 0,
         /// <summary>
         /// 报名校验失败--超过报名截止日期
         /// </summary>
-        Fail_BeyondDeadlineTime=1,
+        Fail_BeyondDeadlineTime = 1,
         /// <summary>
         /// 报名校验失败--此活动限未婚人士参加
         /// </summary>
@@ -45,6 +45,10 @@ namespace MVCForum.Domain.DomainModel
         /// 报名校验失败--验证码错误
         /// </summary>
         Fail_VerifyYaoQingMa = 4,
+        /// <summary>
+        /// 报名校验失败--用户还未通过审核
+        /// </summary>
+        Fail_VerifyUserApproveStatus = 5,
     }
 
 
@@ -70,7 +74,10 @@ namespace MVCForum.Domain.DomainModel
                 UserId = user.Id;
                 UserGender = user.Gender;
                 UserTelphone = user.MobilePhone;
+
             }
+            CreateTime = DateTime.Now;
+            PayCompletedTime = DateTime.MaxValue;
         }
 
         #endregion

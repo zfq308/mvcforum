@@ -24,7 +24,7 @@
                                     <span>【@item.MingCheng】</span>,<label class="bg-success">@item.YuGuRenShu 人团</label>
                                     @if (item.LeiBie == MVCForum.Domain.DomainModel.Enum_HuoDongLeiBie.SpecicalRegister)
                                     {
-                                        <label class="glyphicon glyphicon-lock" title="特定人群组团，需要输入邀请码。"></label>
+                                    <label class="glyphicon glyphicon-lock" title="特定人群组团，需要输入邀请码。"></label>
                                     }
                                 </td>
                             </tr>
@@ -46,11 +46,11 @@
                             </tr>
                             @if (item.XingBieBiLi != "/")
                             {
-                                <tr>
-                                    <td>
-                                        <small>参与人数性别比例：<span>@item.XingBieBiLi</span></small>
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td>
+                                    <small>参与人数性别比例：<span>@item.XingBieBiLi</span></small>
+                                </td>
+                            </tr>
                             }
                             <tr><td><small>活动地点：<span>@item.DiDian</span></small></td></tr>
                             <tr><td><small>报名截止至：@item.BaoMingJieZhiTime.ToString("MM-dd HH:mm")</small></td></tr>
@@ -62,10 +62,11 @@
                 </tr>
                 <tr>
                     <td style="text-align:right;" colspan="2">
-                        <a href="@Url.Action("EditAiLvHuoDong", new { item.Id })" class="btn btn-mvc">
+                        <a href="@Url.Action("ViewActivity","AiLvHuoDong", new { item.Id })" class="btn btn-mvc">
                             点击查看
                         </a>
                     </td>
+
                 </tr>
             }
         </table>
