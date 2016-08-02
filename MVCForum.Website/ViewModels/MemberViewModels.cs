@@ -219,6 +219,63 @@ namespace MVCForum.Website.ViewModels
 
     }
 
+    public class MemberSearchConfigViewMode
+    {
+        [Display(Name = "账号")]
+        [StringLength(50, MinimumLength = 4, ErrorMessage = "账号是一段长度介于4位到50位的文字")]
+        public string UserName { get; set; }
+      
+        [Display(Name = "真实姓名")]
+        [StringLength(16, MinimumLength = 2, ErrorMessage = "您的姓名是一段长度介于2位到16位的文字")]
+        public string RealName { get; set; }
+      
+        [Display(Name = "昵称")]
+        [StringLength(24, MinimumLength = 2, ErrorMessage = "您的昵称是一段长度介于2位到16位的文字")]
+        public string AliasName { get; set; }
+
+        [Display(Name = "性别")]
+        public Enum_Gender Gender { get; set; }
+        
+        [Display(Name = "婚否")]
+        public Enum_MarriedStatus IsMarried { get; set; }
+
+        [Display(Name = "年龄")]
+        [Range(15, 70, ErrorMessage = "请输入有效的年龄数据（15~70）。")]
+        [RegularExpression(@"^\d+$", ErrorMessage = "请输入有效的年龄数据（15~70）。")]
+        public int Age { get; set; }
+
+        [Display(Name = "学历")]
+        public string Education { get; set; }
+
+        [Display(Name = "毕业院校")]
+        [StringLength(20, MinimumLength = 2)]
+        public string SchoolName { get; set; }
+
+        [Display(Name = "居住地所在省份")]
+        public string LocationProvince { get; set; }
+
+        [Display(Name = "居住地所在城市")]
+        public string LocationCity { get; set; }
+
+        [Display(Name = "居住地所在县区")]
+        public string LocationCounty { get; set; }
+
+        [Display(Name = "家乡")]
+        [StringLength(100, MinimumLength = 2, ErrorMessage = "家乡是一段长度介于2位到100位的文字")]
+        public string HomeTown { get; set; }
+
+        [Display(Name = "职业")]
+        [StringLength(20, MinimumLength = 2, ErrorMessage = "职业是一段长度介于2位到20位的文字")]
+        public string Job { get; set; }
+
+        [Display(Name = "月收入区段")]
+        public Enum_IncomeRange IncomeRange { get; set; }
+
+        [Display(Name = "最近未登录天数")]
+        [RegularExpression(@"^\d+$", ErrorMessage = "请输入有效的年龄数据（15~70）。")]
+        public int NoLoginDaySinceLastLoginDate { get; set; }
+    }
+
     public class LogOnViewModel
     {
         public string ReturnUrl { get; set; }
