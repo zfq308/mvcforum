@@ -1,0 +1,197 @@
+﻿@using MVCForum.Website
+
+@model MVCForum.Domain.DomainModel.MembershipUserSearchModel
+
+@{
+    ViewBag.Title = "找朋友";
+    Layout = "~/Views/Shared/_LayoutFullWidth.cshtml";
+}
+
+@*@section side
+    {
+        @Html.Partial("_CommonSideNav")
+    }*@
+
+<div class="searchmembers">
+    <div class="mainheading clearfix">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>@ViewBag.Title</h2>
+            </div>
+            <div class="col-md-9 col-md-offset-1">
+                <script type="text/javascript">
+                    $(document).ready(function () {
+                        GetByJquery();
+                        $("#LocationProvince").change(function () { GetLocationCity(); });
+                        $("#LocationCity").change(function () { GetLocationCountry(); });
+
+
+                    });
+
+                    function GetByJquery() {
+                        var htprovince = $("#LocationProvince").val();
+                        $("#LocationProvince").empty();
+                        $.getJSON("/Members/GetHometownProvince/", function (data) {
+                            $.each(data, function (i, item) {
+                                if (item["ProvinceId"] == htprovince) {
+                                    $("<option selected ></option>")
+                                             .val(item["ProvinceId"])
+                                             .text(item["ProvinceName"])
+                                             .appendTo($("#LocationProvince"));
+                                }
+                                else {
+                                    $("<option></option>")
+                                             .val(item["ProvinceId"])
+                                             .text(item["ProvinceName"])
+                                             .appendTo($("#LocationProvince"));
+                                }
+
+                            });
+                            GetLocationCity();
+                        });
+                    }
+
+                    function GetLocationCity() {
+                        var htcity = $("#LocationCity").val();
+
+                        $("#LocationCity").empty();
+                        var url = "/Members/GetHometownCity/" + $("#LocationProvince").val() + "/";
+                        var a = $(".LocationProvince");
+
+                        $.getJSON(url, function (data) {
+
+                            $.each(data, function (i, item) {
+                                if (item["CityId"] == htcity) {
+                                    $("<option selected ></option>")
+                                              .val(item["CityId"])
+                                              .text(item["CityName"])
+                                              .appendTo($("#LocationCity"));
+                                }
+                                else {
+                                    $("<option></option>")
+                                              .val(item["CityId"])
+                                              .text(item["CityName"])
+                                              .appendTo($("#LocationCity"));
+                                }
+
+                            });
+                            GetLocationCountry();
+                        });
+                    }
+
+                    function GetLocationCountry() {
+                        var County = $("#LocationCounty").val();
+
+                        $("#LocationCounty").empty();
+                        var url = "/Members/GetHometownCountry/" + $("#LocationProvince").val() + "," + $("#LocationCity").val() + "/";
+                        $.getJSON(url, function (data) {
+                            $.each(data, function (i, item) {
+
+                                if (item["CountryId"] == County) {
+                                    $("<option selected ></option>")
+                                              .val(item["CountryId"])
+                                              .text(item["CountryName"])
+                                              .appendTo($("#LocationCounty"));
+                                }
+                                else {
+                                    $("<option></option>")
+                                              .val(item["CountryId"])
+                                              .text(item["CountryName"])
+                                              .appendTo($("#LocationCounty"));
+                                }
+
+                            });
+                        });
+                    }
+                </script>
+
+                @using (Html.BeginForm("SearchEx", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.UserName)
+                        @Html.TextBoxFor(x => x.UserName, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(x => x.UserName)
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.AliasName)
+                        @Html.TextBoxFor(x => x.AliasName, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(x => x.AliasName)
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.Gender)
+                        @Html.DropDownListFor(x => x.Gender, ViewData["GenderList"] as List<SelectListItem>, "==请选择==", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(x => x.Gender)
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.IsMarried)
+                        @Html.DropDownListFor(m => m.IsMarried, ViewData["MarriedList"] as List<SelectListItem>, "==请选择==", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(x => x.IsMarried)
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.AgeRange)
+                        @Html.DropDownListFor(m => m.AgeRange, ViewData["AgeList"] as List<SelectListItem>, "==请选择==", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(x => x.AgeRange)
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.Education)
+                        @Html.DropDownListFor(x => x.Education, ViewData["EducationList"] as List<SelectListItem>, "==请选择==", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(x => x.Education)
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.SchoolName)
+                        @Html.TextBoxFor(x => x.SchoolName, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(x => x.SchoolName)
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.LocationProvince)
+                        @Html.DropDownListFor(x => x.LocationProvince, ViewData["HomeTownProvinceList"] as List<SelectListItem>, "==请选择==", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(x => x.LocationProvince)
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.LocationCity)
+                        @Html.DropDownListFor(x => x.LocationCity, ViewData["HomeTownCityList"] as List<SelectListItem>, "==请选择==", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(x => x.LocationCity)
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.LocationCounty)
+                        @Html.DropDownListFor(x => x.LocationCounty, ViewData["HomeTownCountyList"] as List<SelectListItem>, "==请选择==", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(x => x.LocationCounty)
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.Job)
+                        @Html.TextBoxFor(x => x.Job, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(x => x.Job)
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.IncomeRange)
+                        @Html.DropDownListFor(x => x.IncomeRange, ViewData["IncomeRangeList"] as List<SelectListItem>, "==请选择==", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(x => x.IncomeRange)
+                    </div>
+                    if (User.IsInRole(AppConstants.AdminRoleName))
+                    {
+                        <div class="form-group">
+                            @Html.LabelFor(x => x.UserType)
+                            @Html.DropDownListFor(x => x.UserType, ViewData["UserTypeList"] as List<SelectListItem>, "==请选择==", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.UserType)
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(x => x.UserStatus)
+                            @Html.DropDownListFor(x => x.UserStatus, ViewData["UserStatusList"] as List<SelectListItem>, "==请选择==", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.UserStatus)
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(x => x.NoLoginDays)
+                            @Html.TextBoxFor(x => x.NoLoginDays, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.NoLoginDays)
+                        </div>
+                    }
+
+                    <div class="submit-holder">
+                        <button type="submit" class="btn-mvc-green btn-mvc-large">@Html.LanguageString("Buttons.Search")</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+</div>

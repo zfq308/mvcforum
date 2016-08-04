@@ -1034,7 +1034,7 @@ namespace MVCForum.Services
                 }
                 user.TopicNotifications.Clear();
             }
-            
+
             #endregion
 
             // Also clear their points
@@ -1200,89 +1200,184 @@ namespace MVCForum.Services
         #region 用户搜索
         private List<MembershipUser> SearchbyCondition(MembershipUserSearchModel searchusermodel)
         {
-            #region 过滤搜索条件
             var total = _context.MembershipUser.ToList();
-            if (!String.IsNullOrEmpty(searchusermodel.UserName))
+
+            if (searchusermodel != null)
             {
-                total = total.Where(p => p.UserName.ToLower() == searchusermodel.UserName.ToLower()).ToList();
-            }
-            if (!String.IsNullOrEmpty(searchusermodel.RealName))
-            {
-                total = total.Where(p => p.RealName.ToLower() == searchusermodel.RealName.ToLower()).ToList();
-            }
-            if (!String.IsNullOrEmpty(searchusermodel.AliasName))
-            {
-                total = total.Where(p => p.AliasName.ToLower() == searchusermodel.AliasName.ToLower()).ToList();
-            }
-            total = total.Where(p => p.Gender == searchusermodel.Gender).ToList();
-            #region Search Age
-            switch (searchusermodel.AgeRange)
-            {
-                case Enum_AgeRange.R_LowerThan20Year:
-                    total = total.Where(p => p.Age < 20).ToList();
-                    break;
-                case Enum_AgeRange.R_20YearsTo25Year:
-                    total = total.Where(p => p.Age >= 20 && p.Age < 25).ToList();
-                    break;
-                case Enum_AgeRange.R_25YearsTo30Year:
-                    total = total.Where(p => p.Age >= 25 && p.Age < 30).ToList();
-                    break;
-                case Enum_AgeRange.R_30YearsTo35Year:
-                    total = total.Where(p => p.Age >= 30 && p.Age < 35).ToList();
-                    break;
-                case Enum_AgeRange.R_35YearsTo40Year:
-                    total = total.Where(p => p.Age >= 35 && p.Age < 40).ToList();
-                    break;
-                case Enum_AgeRange.R_40YearsTo50Year:
-                    total = total.Where(p => p.Age >= 40 && p.Age < 50).ToList();
-                    break;
-                case Enum_AgeRange.R_GreatThan50Year:
-                    total = total.Where(p => p.Age >= 50).ToList();
-                    break;
-            }
-            #endregion
-            total = total.Where(p => p.IsMarried == searchusermodel.IsMarried).ToList();
-            if (searchusermodel.Height > 0)
-            {
-                total = total.Where(p => p.Height >= searchusermodel.Height).ToList();
-            }
-            if (!String.IsNullOrEmpty(searchusermodel.Education))
-            {
-                total = total.Where(p => p.Education == searchusermodel.Education).ToList();
-            }
-            if (!String.IsNullOrEmpty(searchusermodel.HomeTown))
-            {
-                total = total.Where(p => p.HomeTown.Contains(searchusermodel.HomeTown)).ToList();
-            }
-            if (!String.IsNullOrEmpty(searchusermodel.SchoolName))
-            {
-                total = total.Where(p => p.SchoolName.Contains(searchusermodel.SchoolName)).ToList();
-            }
-            if (!String.IsNullOrEmpty(searchusermodel.LocationProvince) && !String.IsNullOrEmpty(searchusermodel.LocationCity) && !String.IsNullOrEmpty(searchusermodel.LocationCounty))
-            {
-                total = total.Where(p => p.LocationProvince == searchusermodel.LocationProvince &&
-                p.LocationCity == searchusermodel.LocationCity &&
-                p.LocationCounty == searchusermodel.LocationCounty
-                ).ToList();
-            }
-            if (!String.IsNullOrEmpty(searchusermodel.Job))
-            {
-                total = total.Where(p => p.Job.Contains(searchusermodel.Job)).ToList();
-            }
-            total = total.Where(p => p.IncomeRange == searchusermodel.IncomeRange).ToList();
+                #region 过滤搜索条件
+                //账号
+                if (!String.IsNullOrEmpty(searchusermodel.UserName))
+                {
+                    total = total.Where(p => p.UserName.ToLower() == searchusermodel.UserName.ToLower()).ToList();
+                }
+                //真实姓名
+                if (!String.IsNullOrEmpty(searchusermodel.RealName))
+                {
+                    total = total.Where(p => p.RealName.ToLower() == searchusermodel.RealName.ToLower()).ToList();
+                }
+                //昵称
+                if (!String.IsNullOrEmpty(searchusermodel.AliasName))
+                {
+                    total = total.Where(p => p.AliasName.ToLower() == searchusermodel.AliasName.ToLower()).ToList();
+                }
+                //婚否
+                if (!string.IsNullOrEmpty(searchusermodel.IsMarried))
+                {
+                    if (searchusermodel.IsMarried == "1") //isMarried
+                    {
+                        total = total.Where(p => p.IsMarried == Enum_MarriedStatus.Married).ToList();
+                    }
+                    else
+                    {
+                        total = total.Where(p => p.IsMarried == Enum_MarriedStatus.Single).ToList();
+                    }
+                }
+                //性别
+                if (!string.IsNullOrEmpty(searchusermodel.Gender))
+                {
+                    if (searchusermodel.Gender == "1") // the people is man
+                    {
+                        total = total.Where(p => p.Gender == Enum_Gender.boy).ToList();
+                    }
+                    else //the people is female.
+                    {
+                        total = total.Where(p => p.Gender == Enum_Gender.girl).ToList();
+                    }
+                }
+                #region 年龄段
+                if (!string.IsNullOrEmpty(searchusermodel.AgeRange))
+                {
+                    switch (searchusermodel.AgeRange)
+                    {
+                        case "1":
+                            total = total.Where(p => p.Age < 20).ToList();
+                            break;
+                        case "2":
+                            total = total.Where(p => p.Age >= 20 && p.Age < 25).ToList();
+                            break;
+                        case "3":
+                            total = total.Where(p => p.Age >= 25 && p.Age < 30).ToList();
+                            break;
+                        case "4":
+                            total = total.Where(p => p.Age >= 30 && p.Age < 35).ToList();
+                            break;
+                        case "5":
+                            total = total.Where(p => p.Age >= 35 && p.Age < 40).ToList();
+                            break;
+                        case "6":
+                            total = total.Where(p => p.Age >= 40 && p.Age < 50).ToList();
+                            break;
+                        case "7":
+                            total = total.Where(p => p.Age >= 50).ToList();
+                            break;
+                    }
+
+                }
+
+                #endregion
+
+                //学历
+                if (!String.IsNullOrEmpty(searchusermodel.Education))
+                {
+                    total = total.Where(p => p.Education == searchusermodel.Education).ToList();
+                }
+                //毕业院校
+                if (!String.IsNullOrEmpty(searchusermodel.SchoolName))
+                {
+                    total = total.Where(p => p.SchoolName.Contains(searchusermodel.SchoolName)).ToList();
+                }
+                //居住地
+                //if (!String.IsNullOrEmpty(searchusermodel.LocationProvince) && !String.IsNullOrEmpty(searchusermodel.LocationCity) && !String.IsNullOrEmpty(searchusermodel.LocationCounty))
+                //{
+                //    total = total.Where(p => p.LocationProvince == searchusermodel.LocationProvince &&
+                //    p.LocationCity == searchusermodel.LocationCity &&
+                //    p.LocationCounty == searchusermodel.LocationCounty
+                //    ).ToList();
+                //}
+                //职业
+                if (!String.IsNullOrEmpty(searchusermodel.Job))
+                {
+                    total = total.Where(p => p.Job.Contains(searchusermodel.Job)).ToList();
+                }
+                //月收入
+                if (!String.IsNullOrEmpty(searchusermodel.IncomeRange))
+                {
+                    switch (searchusermodel.IncomeRange)
+                    {
+                        case "1":
+                            total = total.Where(p => p.IncomeRange == Enum_IncomeRange.R_Lowthan1W).ToList();
+                            break;
+                        case "2":
+                            total = total.Where(p => p.IncomeRange == Enum_IncomeRange.R_1WTo5W).ToList();
+                            break;
+                        case "3":
+                            total = total.Where(p => p.IncomeRange == Enum_IncomeRange.R_5WMore).ToList();
+                            break;
+                        case "4":
+                            total = total.Where(p => p.IncomeRange == Enum_IncomeRange.R_NOClass).ToList();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                //最近未登录天数
+                if (searchusermodel.NoLoginDays > 0)
+                {
+                    var d = DateTime.Now - TimeSpan.FromDays(searchusermodel.NoLoginDays);
+                    total = total.Where(p => p.LastLoginDate <= d).ToList();
+                }
+
+                //会员类型
+                if (!string.IsNullOrEmpty(searchusermodel.UserType))
+                {
+                    switch (searchusermodel.UserType)
+                    {
+                        case "1":
+                            total = total.Where(p => p.UserType == Enum_UserType.A).ToList();
+                            break;
+                        case "2":
+                            total = total.Where(p => p.UserType == Enum_UserType.B).ToList();
+                            break;
+                        case "3":
+                            total = total.Where(p => p.UserType == Enum_UserType.C).ToList();
+                            break;
+                        case "4":
+                            total = total.Where(p => p.UserType == Enum_UserType.D).ToList();
+                            break;
+                        case "5":
+                            total = total.Where(p => p.UserType == Enum_UserType.E).ToList();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(searchusermodel.UserStatus))
+                {
+                    switch (searchusermodel.UserStatus)
+                    {
+                        case "1":
+                            total = total.Where(p => p.IsApproved == true).ToList();
+                            break;
+                        case "2":
+                            total = total.Where(p => p.IsApproved == false).ToList();
+                            break;
+                        case "3":
+                            total = total.Where(p => p.IsLockedOut == true).ToList();
+                            break;
+                        case "4":
+                            total = total.Where(p => p.IsBanned == true).ToList();
+                            break;
+                        default:
+                            break;
+                    }
+                }
 
 
-            if (searchusermodel.LastLoginDateInterval > 0)
-            {
-                var d = DateTime.Now - TimeSpan.FromDays(searchusermodel.LastLoginDateInterval);
-                total = total.Where(p => p.LastLoginDate <= d).ToList();
+                //total = total.Where(p => p.IsLockedOut == searchusermodel.IsLockedOut).ToList();
+
+                #endregion
             }
-            total = total.Where(p => p.UserType == searchusermodel.UserType).ToList();
-            total = total.Where(p => p.IsApproved == searchusermodel.IsApproved).ToList();
-            total = total.Where(p => p.IsLockedOut == searchusermodel.IsLockedOut).ToList();
-
-            #endregion
-
             return total;
         }
 

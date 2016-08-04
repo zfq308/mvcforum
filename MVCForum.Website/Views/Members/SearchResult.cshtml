@@ -1,0 +1,31 @@
+﻿
+@{
+    ViewBag.Title = "搜索结果";
+    ViewBag.RecordsPerPage = 20;
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="row">
+    <div class="col-xs-12 col-md-offset-2 col-md-8">
+        <div class="panel panel-default">
+            <div class="panel-heading c-list">
+                <span class="title">会员清单</span>
+            </div>
+            <ul class="list-group infinite-scroll">
+                @Html.Partial("_MemberUserList")
+            </ul>
+        </div>
+        @Html.Partial("_Loading")
+    </div>
+</div>
+
+
+    <script src="~/Scripts/infiniteScroll.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("div#loading").hide();
+        });
+        var moreRowsUrl = '@Url.Action("SearchResult", "Members")';
+        $(window).scroll(ulScrollHandler);
+    </script>

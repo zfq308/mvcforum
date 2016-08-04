@@ -779,6 +779,7 @@
     <Content Include="Content\Images\social-icons\xanga.png" />
     <Content Include="Content\Images\social-icons\yahoo.png" />
     <Content Include="Content\Images\social-icons\youtube.png" />
+    <Content Include="Content\Images\spin.gif" />
     <Content Include="Content\jstree\jstree.js" />
     <Content Include="Content\jstree\jstree.min.js" />
     <Content Include="Content\jstree\themes\default\30px.png" />
@@ -866,6 +867,7 @@
     <Content Include="Content\bootstrap\js\bootstrap-prettify.js" />
     <Content Include="Scripts\cache\Cache.txt" />
     <None Include="Scripts\jquery-3.1.0.intellisense.js" />
+    <Content Include="Scripts\infiniteScroll.js" />
     <Content Include="Scripts\jquery-3.1.0.js" />
     <Content Include="Scripts\jquery-3.1.0.min.js" />
     <Content Include="Scripts\jquery-3.1.0.slim.js" />
@@ -1145,6 +1147,10 @@
     <Content Include="Views\Topic\CreateZuiXinFuwu.cshtml" />
     <Content Include="Views\AiLvHuoDong\ViewActivity.cshtml" />
     <Content Include="Views\DebugBoard\Index.cshtml" />
+    <Content Include="Views\Members\SearchEx.cshtml" />
+    <Content Include="Views\Members\SearchResult.cshtml" />
+    <Content Include="Views\Shared\_MemberUserList.cshtml" />
+    <Content Include="Views\Shared\_Loading.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />

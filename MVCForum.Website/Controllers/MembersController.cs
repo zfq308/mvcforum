@@ -683,7 +683,7 @@ namespace MVCForum.Website.Controllers
 
             var Items_Gender = new List<SelectListItem>();
             Items_Gender.Add(new SelectListItem { Text = "男", Value = "1" });
-            Items_Gender.Add(new SelectListItem { Text = "女", Value = "0" });
+            Items_Gender.Add(new SelectListItem { Text = "女", Value = "2" });
 
             foreach (SelectListItem item in Items_Gender)
             {
@@ -700,7 +700,7 @@ namespace MVCForum.Website.Controllers
 
             var Items_Married = new List<SelectListItem>();
             Items_Married.Add(new SelectListItem { Text = "已婚", Value = "1" });
-            Items_Married.Add(new SelectListItem { Text = "未婚", Value = "0" });
+            Items_Married.Add(new SelectListItem { Text = "未婚", Value = "2" });
 
             foreach (SelectListItem item in Items_Married)
             {
@@ -1571,130 +1571,6 @@ namespace MVCForum.Website.Controllers
 
         #endregion
 
-        #region EmailConfirm 相关动作
-
-
-        private void SendEmailConfirmationEmail(MembershipUser userToSave)
-        {
-            var settings = SettingsService.GetSettings();
-            var manuallyAuthoriseMembers = settings.ManuallyAuthoriseNewMembers;
-            var memberEmailAuthorisationNeeded = settings.NewMemberEmailConfirmation == true;
-            if (manuallyAuthoriseMembers == false && memberEmailAuthorisationNeeded)
-            {
-                if (!string.IsNullOrEmpty(userToSave.Email))
-                {
-                    // SEND AUTHORISATION EMAIL
-                    var sb = new StringBuilder();
-                    var confirmationLink = string.Concat(StringUtils.ReturnCurrentDomain(), Url.Action("EmailConfirmation", new { id = userToSave.Id }));
-                    sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Members.MemberEmailAuthorisation.EmailBody"),
-                                                settings.ForumName,
-                                                string.Format("<p><a href=\"{0}\">{0}</a></p>", confirmationLink)));
-                    var email = new Email
-                    {
-                        EmailTo = userToSave.Email,
-                        NameTo = userToSave.UserName,
-                        Subject = LocalizationService.GetResourceString("Members.MemberEmailAuthorisation.Subject")
-                    };
-                    email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
-                    _emailService.SendMail(email);
-
-                    // ADD COOKIE
-                    // We add a cookie for 7 days, which will display the resend email confirmation button
-                    // This cookie is removed when they click the confirmation link
-                    var myCookie = new HttpCookie(AppConstants.MemberEmailConfirmationCookieName)
-                    {
-                        Value = $"{userToSave.Email}#{userToSave.UserName}",
-                        Expires = DateTime.Now.AddDays(7)
-                    };
-                    // Add the cookie.
-                    Response.Cookies.Add(myCookie);
-                }
-            }
-        }
-
-        public ActionResult ResendEmailConfirmation(string username)
-        {
-            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
-            {
-                var user = MembershipService.GetUser(username);
-                if (user != null)
-                {
-                    SendEmailConfirmationEmail(user);
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = LocalizationService.GetResourceString("Members.MemberEmailAuthorisationNeeded"),
-                        MessageType = GenericMessages.success
-                    };
-                }
-
-                try
-                {
-                    unitOfWork.Commit();
-                }
-                catch (Exception ex)
-                {
-                    unitOfWork.Rollback();
-                    LoggingService.Error(ex);
-                }
-            }
-            return RedirectToAction("Index", "Home");
-        }
-
-        /// <summary>
-        /// Email confirmation page from the link in the users email
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public ActionResult EmailConfirmation(Guid id)
-        {
-            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
-            {
-                // Checkconfirmation
-                var user = MembershipService.GetUser(id);
-                if (user != null)
-                {
-                    // Set the user to active
-                    user.IsApproved = true;
-
-                    // Delete Cookie and log them in if this cookie is present
-                    if (Request.Cookies[AppConstants.MemberEmailConfirmationCookieName] != null)
-                    {
-                        var myCookie = new HttpCookie(AppConstants.MemberEmailConfirmationCookieName)
-                        {
-                            Expires = DateTime.Now.AddDays(-1)
-                        };
-                        Response.Cookies.Add(myCookie);
-
-                        // Login code
-                        FormsAuthentication.SetAuthCookie(user.UserName, false);
-                    }
-
-                    // Show a new message
-                    // We use temp data because we are doing a redirect
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = LocalizationService.GetResourceString("Members.NowApproved"),
-                        MessageType = GenericMessages.success
-                    };
-                }
-
-                try
-                {
-                    unitOfWork.Commit();
-                }
-                catch (Exception ex)
-                {
-                    unitOfWork.Rollback();
-                    LoggingService.Error(ex);
-                }
-            }
-
-            return RedirectToAction("Index", "Home");
-        }
-
-
-        #endregion
-
         #region 密码相关
 
         #region 修改密码
@@ -1956,7 +1832,239 @@ namespace MVCForum.Website.Controllers
 
         #endregion
 
+        #region Search Members
 
+
+        public ActionResult Search(int? p, string search)
+        {
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                var pageIndex = p ?? 1;
+                var allUsers = string.IsNullOrEmpty(search) ? MembershipService.GetAll(pageIndex, SiteConstants.Instance.AdminListPageSize) :
+                                    MembershipService.SearchMembers(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
+
+                // Redisplay list of users
+                var allViewModelUsers = allUsers.Select(user => new PublicSingleMemberListViewModel
+                {
+                    UserName = user.UserName,
+                    NiceUrl = user.NiceUrl,
+                    CreateDate = user.CreateDate,
+                    TotalPoints = user.TotalPoints,
+                }).ToList();
+
+                var memberListModel = new PublicMemberListViewModel
+                {
+                    Users = allViewModelUsers,
+                    PageIndex = pageIndex,
+                    TotalCount = allUsers.TotalCount,
+                    Search = search
+                };
+
+                return View(memberListModel);
+            }
+        }
+
+        public ActionResult SearchEx()
+        {
+            var viewModel = new MembershipUserSearchModel();
+
+            BindSearchExControlData();
+            return View(viewModel);
+        }
+        private void BindSearchExControlData()
+        {
+            #region 绑定性别信息
+
+            var Items_Gender = new List<SelectListItem>();
+
+            Items_Gender.Add(new SelectListItem { Text = "男", Value = "1" });
+            Items_Gender.Add(new SelectListItem { Text = "女", Value = "2" });
+            ViewData["GenderList"] = Items_Gender;
+
+            #endregion
+
+            #region 绑定年龄阶段信息
+
+            var Items_Age = new List<SelectListItem>();
+            Items_Age.Add(new SelectListItem { Text = "小于20岁", Value = "1" });
+            Items_Age.Add(new SelectListItem { Text = "20到25岁之间", Value = "2" });
+            Items_Age.Add(new SelectListItem { Text = "25到30岁之间", Value = "3" });
+            Items_Age.Add(new SelectListItem { Text = "30到35岁之间", Value = "4" });
+            Items_Age.Add(new SelectListItem { Text = "35到40岁之间", Value = "5" });
+            Items_Age.Add(new SelectListItem { Text = "40到50岁之间", Value = "6" });
+            Items_Age.Add(new SelectListItem { Text = "50岁以上", Value = "7" });
+            ViewData["AgeList"] = Items_Age;
+
+            #endregion
+
+            #region 绑定婚姻状况信息
+
+            var Items_Married = new List<SelectListItem>();
+            Items_Married.Add(new SelectListItem { Text = "已婚", Value = "1" });
+            Items_Married.Add(new SelectListItem { Text = "未婚", Value = "2" });
+
+
+            ViewData["MarriedList"] = Items_Married;
+
+            #endregion
+
+            #region 绑定学历信息
+            var Items_Education = new List<SelectListItem>();
+            Items_Education.AddRange(TEducation.LoadAllEducationList().Select(x =>
+            {
+                return new SelectListItem { Text = x.EducationName, Value = x.EducationId };
+            }));
+
+
+            ViewData["EducationList"] = Items_Education;
+
+            #endregion
+
+            #region 绑定收入信息
+
+            var Items_IncomeRange = new List<SelectListItem>();
+            Items_IncomeRange.AddRange(TIncomeRange.LoadAllIncomeList().Select(x =>
+            {
+                return new SelectListItem { Text = x.IncomeRangeName, Value = x.IncomeRangeId };
+            }));
+            ViewData["IncomeRangeList"] = Items_IncomeRange;
+
+            #endregion
+
+            #region 绑定用户类型
+            var Items_UserType = new List<SelectListItem>();
+
+            Items_UserType.Add(new SelectListItem { Text = "A", Value = "1" });
+            Items_UserType.Add(new SelectListItem { Text = "B", Value = "2" });
+            Items_UserType.Add(new SelectListItem { Text = "C", Value = "3" });
+            Items_UserType.Add(new SelectListItem { Text = "D", Value = "4" });
+            Items_UserType.Add(new SelectListItem { Text = "E", Value = "5" });
+         
+            ViewData["UserTypeList"] = Items_UserType;
+            #endregion
+
+            #region 绑定用户状态
+            var Items_UserStatus = new List<SelectListItem>();
+
+            Items_UserStatus.Add(new SelectListItem { Text = "正常已审核的注册会员", Value = "1" });
+            Items_UserStatus.Add(new SelectListItem { Text = "等待审核的注册会员", Value = "2" });
+            Items_UserStatus.Add(new SelectListItem { Text = "用户状态被锁定", Value = "3" });
+            Items_UserStatus.Add(new SelectListItem { Text = "用户状态被禁用", Value = "4" });
+            //Items_UserStatus.Add(new SelectListItem { Text = "用户在每日之星推广阶段", Value = "5" });
+
+            ViewData["UserStatusList"] = Items_UserStatus;
+            #endregion
+
+            #region 绑定居住地所属省信息
+
+            var Items_HomeTownProvince = new List<SelectListItem>();
+            List<TProvince> HomeTownProvincelst = TProvince.LoadAllProvinceList();
+
+            foreach (var item in HomeTownProvincelst)
+            {
+                if ( item.ProvinceId.ToString()=="440000") //广东省
+                {
+                    Items_HomeTownProvince.Add(new SelectListItem { Text = item.ProvinceName, Value = item.ProvinceId.ToString(), Selected = true });
+                }
+                else
+                {
+                    Items_HomeTownProvince.Add(new SelectListItem { Text = item.ProvinceName, Value = item.ProvinceId.ToString() });
+                }
+            }
+        
+            ViewData["HomeTownProvinceList"] = Items_HomeTownProvince;
+
+            #endregion
+
+            #region 绑定居住地所属市信息
+
+            var Items_HomeTownCity = new List<SelectListItem>();
+            List<TCity> HomeTownCitylst = TCity.LoadCityListByProvince(Convert.ToInt32("440300")); //深圳市
+
+
+            foreach (var item in HomeTownCitylst)
+            {
+                if ( item.CityId.ToString()== "440300")
+                {
+                    Items_HomeTownCity.Add(new SelectListItem { Text = item.CityName, Value = item.CityId.ToString(), Selected = true });
+                }
+                else
+                {
+                    Items_HomeTownCity.Add(new SelectListItem { Text = item.CityName, Value = item.CityId.ToString() });
+                }
+            }
+
+            ViewData["HomeTownCityList"] = Items_HomeTownCity;
+
+            #endregion
+
+            #region 绑定居住地所属县信息
+
+
+            var Items_HomeTownCounty = new List<SelectListItem>();
+            List<TCountry> HomeTownCountylst = TCountry.LoadCountryByProvinceAndCity(Convert.ToInt32("440000"), Convert.ToInt32("440300"));
+
+            foreach (var item in HomeTownCountylst)
+            {
+                Items_HomeTownCounty.Add(new SelectListItem { Text = item.CountryName, Value = item.CountryId.ToString() });
+            }
+            ViewData["HomeTownCountyList"] = Items_HomeTownCounty;
+
+            #endregion
+
+        }
+
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public ActionResult SearchEx(MembershipUserSearchModel model)
+        {
+            model.NoLoginDays = 0;
+            TempData["searchconfigurationmodel"] = model;
+            return RedirectToAction("SearchResult", "Members");
+        }
+
+        public ActionResult SearchResult(int? pageNum)
+        {
+            pageNum = pageNum ?? 0;
+            ViewBag.IsEndOfRecords = false;
+            if (Request.IsAjaxRequest())
+            {
+                var customers = GetRecordsForPage(pageNum.Value);
+                ViewBag.IsEndOfRecords = (customers.Any()) && ((pageNum.Value * 20) >= customers.Last().Key);
+                return PartialView("_MemberUserList", customers);
+            }
+            else
+            {
+                LoadAllCustomersToSession();
+                ViewBag.Customers = GetRecordsForPage(pageNum.Value);
+                return View("SearchResult");
+            }
+        }
+
+        public void LoadAllCustomersToSession()
+        {
+            MembershipUserSearchModel ConfigModel = TempData["searchconfigurationmodel"] as MembershipUserSearchModel;
+            var customers = MembershipService.SearchMembers(ConfigModel, 20);
+            int custIndex = 1;
+            Session["Customers"] = customers.ToDictionary(x => custIndex++, x => x);
+            ViewBag.TotalNumberCustomers = customers.Count();
+        }
+
+        public Dictionary<int, MembershipUser> GetRecordsForPage(int pageNum)
+        {
+            Dictionary<int, MembershipUser> customers = (Session["Customers"] as Dictionary<int, MembershipUser>);
+
+            int from = (pageNum * 20);
+            int to = from + 20;
+
+            return customers
+                .Where(x => x.Key > from && x.Key <= to)
+                .OrderBy(x => x.Key)
+                .ToDictionary(x => x.Key, x => x.Value);
+        }
+
+
+        #endregion
 
 
         [ChildActionOnly]
@@ -2192,34 +2300,9 @@ namespace MVCForum.Website.Controllers
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
         }
 
-        public ActionResult Search(int? p, string search)
-        {
-            using (UnitOfWorkManager.NewUnitOfWork())
-            {
-                var pageIndex = p ?? 1;
-                var allUsers = string.IsNullOrEmpty(search) ? MembershipService.GetAll(pageIndex, SiteConstants.Instance.AdminListPageSize) :
-                                    MembershipService.SearchMembers(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
 
-                // Redisplay list of users
-                var allViewModelUsers = allUsers.Select(user => new PublicSingleMemberListViewModel
-                {
-                    UserName = user.UserName,
-                    NiceUrl = user.NiceUrl,
-                    CreateDate = user.CreateDate,
-                    TotalPoints = user.TotalPoints,
-                }).ToList();
 
-                var memberListModel = new PublicMemberListViewModel
-                {
-                    Users = allViewModelUsers,
-                    PageIndex = pageIndex,
-                    TotalCount = allUsers.TotalCount,
-                    Search = search
-                };
 
-                return View(memberListModel);
-            }
-        }
 
 
         /// <summary>
@@ -2250,6 +2333,129 @@ namespace MVCForum.Website.Controllers
             }
         }
 
+        #region EmailConfirm 相关动作
+
+
+        private void SendEmailConfirmationEmail(MembershipUser userToSave)
+        {
+            var settings = SettingsService.GetSettings();
+            var manuallyAuthoriseMembers = settings.ManuallyAuthoriseNewMembers;
+            var memberEmailAuthorisationNeeded = settings.NewMemberEmailConfirmation == true;
+            if (manuallyAuthoriseMembers == false && memberEmailAuthorisationNeeded)
+            {
+                if (!string.IsNullOrEmpty(userToSave.Email))
+                {
+                    // SEND AUTHORISATION EMAIL
+                    var sb = new StringBuilder();
+                    var confirmationLink = string.Concat(StringUtils.ReturnCurrentDomain(), Url.Action("EmailConfirmation", new { id = userToSave.Id }));
+                    sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Members.MemberEmailAuthorisation.EmailBody"),
+                                                settings.ForumName,
+                                                string.Format("<p><a href=\"{0}\">{0}</a></p>", confirmationLink)));
+                    var email = new Email
+                    {
+                        EmailTo = userToSave.Email,
+                        NameTo = userToSave.UserName,
+                        Subject = LocalizationService.GetResourceString("Members.MemberEmailAuthorisation.Subject")
+                    };
+                    email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
+                    _emailService.SendMail(email);
+
+                    // ADD COOKIE
+                    // We add a cookie for 7 days, which will display the resend email confirmation button
+                    // This cookie is removed when they click the confirmation link
+                    var myCookie = new HttpCookie(AppConstants.MemberEmailConfirmationCookieName)
+                    {
+                        Value = $"{userToSave.Email}#{userToSave.UserName}",
+                        Expires = DateTime.Now.AddDays(7)
+                    };
+                    // Add the cookie.
+                    Response.Cookies.Add(myCookie);
+                }
+            }
+        }
+
+        public ActionResult ResendEmailConfirmation(string username)
+        {
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            {
+                var user = MembershipService.GetUser(username);
+                if (user != null)
+                {
+                    SendEmailConfirmationEmail(user);
+                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    {
+                        Message = LocalizationService.GetResourceString("Members.MemberEmailAuthorisationNeeded"),
+                        MessageType = GenericMessages.success
+                    };
+                }
+
+                try
+                {
+                    unitOfWork.Commit();
+                }
+                catch (Exception ex)
+                {
+                    unitOfWork.Rollback();
+                    LoggingService.Error(ex);
+                }
+            }
+            return RedirectToAction("Index", "Home");
+        }
+
+        /// <summary>
+        /// Email confirmation page from the link in the users email
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult EmailConfirmation(Guid id)
+        {
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            {
+                // Checkconfirmation
+                var user = MembershipService.GetUser(id);
+                if (user != null)
+                {
+                    // Set the user to active
+                    user.IsApproved = true;
+
+                    // Delete Cookie and log them in if this cookie is present
+                    if (Request.Cookies[AppConstants.MemberEmailConfirmationCookieName] != null)
+                    {
+                        var myCookie = new HttpCookie(AppConstants.MemberEmailConfirmationCookieName)
+                        {
+                            Expires = DateTime.Now.AddDays(-1)
+                        };
+                        Response.Cookies.Add(myCookie);
+
+                        // Login code
+                        FormsAuthentication.SetAuthCookie(user.UserName, false);
+                    }
+
+                    // Show a new message
+                    // We use temp data because we are doing a redirect
+                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    {
+                        Message = LocalizationService.GetResourceString("Members.NowApproved"),
+                        MessageType = GenericMessages.success
+                    };
+                }
+
+                try
+                {
+                    unitOfWork.Commit();
+                }
+                catch (Exception ex)
+                {
+                    unitOfWork.Rollback();
+                    LoggingService.Error(ex);
+                }
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+
+
+        #endregion
 
     }
 }

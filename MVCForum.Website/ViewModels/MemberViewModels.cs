@@ -11,11 +11,45 @@ using MVCForum.Website.Application.ActionFilterAttributes;
 namespace MVCForum.Website.ViewModels
 {
 
+    #region Search相关ViewModel
 
-    public class ActiveMembersViewModel
+    public class SearchMemberResultSingleMemberViewModel
     {
-        public IList<MembershipUser> ActiveMembers { get; set; }
+        [ForumMvcResourceDisplayName("Members.Label.Username")]
+        public string UserName { get; set; }
+
+        public string NiceUrl { get; set; }
+
+        [ForumMvcResourceDisplayName("Members.Label.DateJoined")]
+        public DateTime CreateDate { get; set; }
+
     }
+
+
+
+    public class PublicMemberListViewModel
+    {
+        [ForumMvcResourceDisplayName("Members.Label.Users")]
+        public IList<PublicSingleMemberListViewModel> Users { get; set; }
+        public int? PageIndex { get; set; }
+        public int? TotalCount { get; set; }
+        public string Search { get; set; }
+    }
+    public class PublicSingleMemberListViewModel
+    {
+        [ForumMvcResourceDisplayName("Members.Label.Username")]
+        public string UserName { get; set; }
+
+        public string NiceUrl { get; set; }
+
+        [ForumMvcResourceDisplayName("Members.Label.DateJoined")]
+        public DateTime CreateDate { get; set; }
+
+        public int TotalPoints { get; set; }
+    }
+
+    #endregion
+
 
     public class MemberAddViewModel
     {
@@ -345,27 +379,12 @@ namespace MVCForum.Website.ViewModels
         public Dictionary<string, string> Users { get; set; }
     }
 
-    public class PublicMemberListViewModel
+
+    public class ActiveMembersViewModel
     {
-        [ForumMvcResourceDisplayName("Members.Label.Users")]
-        public IList<PublicSingleMemberListViewModel> Users { get; set; }
-        public int? PageIndex { get; set; }
-        public int? TotalCount { get; set; }
-        public string Search { get; set; }
+        public IList<MembershipUser> ActiveMembers { get; set; }
     }
 
-    public class PublicSingleMemberListViewModel
-    {
-        [ForumMvcResourceDisplayName("Members.Label.Username")]
-        public string UserName { get; set; }
-
-        public string NiceUrl { get; set; }
-
-        [ForumMvcResourceDisplayName("Members.Label.DateJoined")]
-        public DateTime CreateDate { get; set; }
-
-        public int TotalPoints { get; set; }
-    }
 
     #region 密码操作相关ViewModel
 

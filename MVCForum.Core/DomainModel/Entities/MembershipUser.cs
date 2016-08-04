@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using MVCForum.Domain.DomainModel.Entities;
 using MVCForum.Utilities;
 using System.Data.SqlTypes;
+using System.ComponentModel.DataAnnotations;
 
 namespace MVCForum.Domain.DomainModel
 {
@@ -34,23 +35,50 @@ namespace MVCForum.Domain.DomainModel
         /// <summary>
         /// A类
         /// </summary>
-        A = 0,
+        A = 1,
         /// <summary>
         /// B类
         /// </summary>
-        B = 1,
+        B = 2,
         /// <summary>
         /// C类
         /// </summary>
-        C = 2,
+        C = 3,
         /// <summary>
         /// D类
         /// </summary>
-        D = 3,
+        D = 4,
         /// <summary>
         /// E类
         /// </summary>
-        E = 4,
+        E = 5,
+    }
+
+    /// <summary>
+    /// 用户状态枚举
+    /// </summary>
+    public enum Enum_UserStatus
+    {
+        /// <summary>
+        /// 正常已审核的注册会员
+        /// </summary>
+        Normal=1,
+        /// <summary>
+        /// 等待审核的注册会员
+        /// </summary>
+        WaitingForApprove=2,
+        /// <summary>
+        /// 用户状态被锁定
+        /// </summary>
+        IsLocked=3,
+        /// <summary>
+        /// 用户状态被禁用
+        /// </summary>
+        IsBanned=4,
+        /// <summary>
+        /// 用户在每日之星推广阶段
+        /// </summary>
+        IsStar=5,
     }
 
     /// <summary>
@@ -65,7 +93,7 @@ namespace MVCForum.Domain.DomainModel
         /// <summary>
         /// 女
         /// </summary>
-        girl = 0,
+        girl = 2,
     }
 
     /// <summary>
@@ -95,7 +123,7 @@ namespace MVCForum.Domain.DomainModel
         /// <summary>
         /// 未婚
         /// </summary>
-        Single = 0,
+        Single = 2,
     }
 
     /// <summary>
@@ -103,15 +131,14 @@ namespace MVCForum.Domain.DomainModel
     /// </summary>
     public enum Enum_AgeRange
     {
-        R_LowerThan20Year = 0,
-        R_20YearsTo25Year = 1,
-        R_25YearsTo30Year = 2,
-        R_30YearsTo35Year = 3,
-        R_35YearsTo40Year = 4,
-        R_40YearsTo50Year = 5,
-        R_GreatThan50Year = 6,
+        R_LowerThan20Year = 1,
+        R_20YearsTo25Year = 2,
+        R_25YearsTo30Year = 3,
+        R_30YearsTo35Year = 4,
+        R_35YearsTo40Year = 5,
+        R_40YearsTo50Year = 6,
+        R_GreatThan50Year = 7,
     }
-
 
     public enum Enum_IncomeRange
     {
@@ -542,38 +569,63 @@ namespace MVCForum.Domain.DomainModel
     /// <summary>
     /// 会员搜索模型类
     /// </summary>
-    public partial class MembershipUserSearchModel
+    public class MembershipUserSearchModel
     {
+        [Display(Name = "账号")]
+        [StringLength(50, MinimumLength = 4, ErrorMessage = "账号是一段长度介于4位到50位的文字")]
         public string UserName { get; set; }
-        public string AliasName { get; set; }
+
+        [Display(Name = "真实姓名")]
+        [StringLength(16, MinimumLength = 2, ErrorMessage = "您的姓名是一段长度介于2位到16位的文字")]
         public string RealName { get; set; }
-        public Enum_Gender Gender { get; set; }
-        public Enum_AgeRange AgeRange { get; set; }
-        public Enum_MarriedStatus IsMarried { get; set; }
-        public int Height { get; set; }
+
+        [Display(Name = "昵称")]
+        [StringLength(24, MinimumLength = 2, ErrorMessage = "您的昵称是一段长度介于2位到16位的文字")]
+        public string AliasName { get; set; }
+
+        [Display(Name = "性别")]
+        public string Gender { get; set; }
+
+        [Display(Name = "年龄")]
+        public string AgeRange { get; set; }
+
+        [Display(Name = "学历")]
         public string Education { get; set; }
+
+        [Display(Name = "毕业院校")]
+        [StringLength(20, MinimumLength = 2)]
         public string SchoolName { get; set; }
 
-        public string HomeTown { get; set; }
-
+        [Display(Name = "居住地所在省份")]
         public string LocationProvince { get; set; }
+
+        [Display(Name = "居住地所在城市")]
         public string LocationCity { get; set; }
+
+        [Display(Name = "居住地所在县区")]
         public string LocationCounty { get; set; }
+
+        [Display(Name = "职业")]
+        [StringLength(20, MinimumLength = 2, ErrorMessage = "职业是一段长度介于2位到20位的文字")]
         public string Job { get; set; }
 
-        public Enum_IncomeRange IncomeRange { get; set; }
+        [Display(Name = "月收入区段")]
+        public string IncomeRange { get; set; }
 
-        /// <summary>
-        /// 离最后登录间隔天数
-        /// </summary>
-        public int LastLoginDateInterval { get; set; }
+        [Display(Name = "婚否")]
+        public string IsMarried { get; set; }
 
-        public Enum_UserType UserType { get; set; }
-        public bool IsApproved { get; set; }
-        public bool IsLockedOut { get; set; }
+        [Display(Name = "最近未登录天数")]
+        public int NoLoginDays { get; set; }
 
+        [Display(Name = "会员类别")]
+        public string UserType { get; set; }
+
+        [Display(Name = "会员状态")]
+        public string UserStatus { get; set; }
 
     }
+
 
     /// <summary>
     /// 用户属性变更记录项

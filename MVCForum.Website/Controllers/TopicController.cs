@@ -579,6 +579,7 @@ namespace MVCForum.Website.Controllers
         [AcceptVerbs(HttpVerbs.Get)]
         public ActionResult CreateNewTopicRecord()
         {
+            // Benjamin, 主动POST方式，通过Tempdata中转
             return CreateNewTopicRecord(TempData["model"] as CreateEditTopicViewModel);
         }
 

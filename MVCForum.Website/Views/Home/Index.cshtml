@@ -25,7 +25,7 @@
         @foreach (var ad in Model.AiLv_ADCollectionTop5)
         {
             <div class="item @if (idx == 0) { @Html.Raw("active"); }">
-                <a href="@ad.Link" class="thumbnail">
+                <a href="@ad.Link" class="thumbnail" style="height:200px; width:auto">
                     <img src="@Html.Settings().ForumUrl.TrimEnd('/')@ad.ImageSaveURL" alt="AD">
                 </a>
             </div>

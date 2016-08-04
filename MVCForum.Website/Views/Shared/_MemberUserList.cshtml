@@ -1,0 +1,25 @@
+﻿@{
+    Random random = new Random();
+}
+
+
+@if (ViewBag.Customers != null)
+{
+    foreach (var cust in (ViewBag.Customers as Dictionary<int, MVCForum.Domain.DomainModel.MembershipUser>))
+    {
+        MVCForum.Domain.DomainModel.MembershipUser obj = cust.Value;
+        <li class="list-group-item">
+            <div class="col-xs-6 col-sm-2 col-md-2">
+                <img src="~/Content/uploads/@obj.Avatar" alt="@obj.Id" class="img-responsive img-circle">
+                @*<img src="http://api.randomuser.me/portraits/men/@(random.Next(99)).jpg" alt="@obj.Id" class="img-responsive img-circle">*@
+            </div>
+            <div class="col-xs-6 col-sm-10 col-md-8 col-lg-2">
+                <span class="name">@obj.AliasName</span><br />
+                <span class="text-muted">@obj.UserName</span><br />
+                @*<span>Address:</span><span class="text-muted">@cust.Value.MailingAddress</span><br />
+                    <span>Email:</span><span class="text-muted">@cust.Value.Email</span><br>*@
+            </div>
+            <div class="clearfix"></div>
+        </li>
+    }
+}
