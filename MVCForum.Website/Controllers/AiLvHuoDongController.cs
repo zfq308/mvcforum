@@ -951,6 +951,7 @@ namespace MVCForum.Website.Controllers
             var checkexistHuodongJilu = _topicService.GetAllTopicsByCategory(category.Id).Where(x => x.Name == model.Name).Count();
             if (checkexistHuodongJilu == 0)
             {
+                //Benjamin, 以POST方式主动提交Action
                 TempData["model"] = model;
                 return RedirectToAction("CreateNewTopicRecord", "Topic", new { model });
             }

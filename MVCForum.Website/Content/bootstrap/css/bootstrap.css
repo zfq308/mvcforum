@@ -1116,6 +1116,10 @@ figure {
 img {
   vertical-align: middle;
 }
+
+
+
+
 .img-responsive,
 .thumbnail > img,
 .thumbnail a > img,
@@ -1124,10 +1128,7 @@ img {
   display: block;
   max-width: 100%;
   height: auto;
-
-  /*AiLvLover*/
-  height:200px;
-  /*width:auto;*/
+  width:auto;
 }
 .img-rounded {
   border-radius: 6px;

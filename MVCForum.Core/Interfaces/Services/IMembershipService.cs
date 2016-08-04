@@ -57,8 +57,9 @@ namespace MVCForum.Domain.Interfaces.Services
         #region 搜索
 
         PagedList<MembershipUser> SearchMembers(string search, int pageIndex, int pageSize);
-        IList<MembershipUser> SearchMembers(string username, int amount);
 
+        IList<MembershipUser> SearchMembers(string username, int amount);
+        IList<MembershipUser> SearchMembers(MembershipUserSearchModel searchusermodel, int amount);
         #endregion
 
         #region 报表导入导出
