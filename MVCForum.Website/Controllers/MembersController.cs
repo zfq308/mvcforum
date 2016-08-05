@@ -2044,7 +2044,7 @@ namespace MVCForum.Website.Controllers
         public void LoadAllCustomersToSession()
         {
             MembershipUserSearchModel ConfigModel = TempData["searchconfigurationmodel"] as MembershipUserSearchModel;
-            var customers = MembershipService.SearchMembers(ConfigModel, 20);
+            var customers = MembershipService.SearchMembers(ConfigModel, 1000);
             int custIndex = 1;
             Session["Customers"] = customers.ToDictionary(x => custIndex++, x => x);
             ViewBag.TotalNumberCustomers = customers.Count();

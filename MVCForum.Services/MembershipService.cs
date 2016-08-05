@@ -18,6 +18,7 @@ using MVCForum.Services.Data.Context;
 using MVCForum.Utilities;
 using System.Diagnostics;
 using DataGenerationFramework.Core;
+using MVCForum.Domain.DomainModel.General;
 
 namespace MVCForum.Services
 {
@@ -145,18 +146,12 @@ namespace MVCForum.Services
         /// <returns></returns>
         public MembershipUser SanitizeUser(MembershipUser membershipUser)
         {
-            //TODO:Benjamin, 此方法需要对关键属性进行操作。下列代码应为关键属性的操作。
             membershipUser.Comment = StringUtils.SafePlainText(membershipUser.Comment);
             membershipUser.Password = StringUtils.SafePlainText(membershipUser.Password);
             membershipUser.PasswordAnswer = StringUtils.SafePlainText(membershipUser.PasswordAnswer);
             membershipUser.PasswordQuestion = StringUtils.SafePlainText(membershipUser.PasswordQuestion);
             membershipUser.Signature = StringUtils.GetSafeHtml(membershipUser.Signature, true);
             membershipUser.UserName = StringUtils.SafePlainText(membershipUser.UserName);
-
-            //membershipUser.Email = StringUtils.SafePlainText(membershipUser.Email);
-            //membershipUser.Twitter = StringUtils.SafePlainText(membershipUser.Twitter);
-            //membershipUser.Website = StringUtils.SafePlainText(membershipUser.Website);
-            //membershipUser.Avatar = StringUtils.SafePlainText(membershipUser.Avatar);
             return membershipUser;
         }
 
@@ -278,76 +273,68 @@ namespace MVCForum.Services
         /// </summary>
         public void Create50TestAccount()
         {
-            ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.UserName).SetStringTypeEnum(EnumStringType.RandomString,6,6);
+            ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.UserName).SetStringTypeEnum(EnumStringType.RandomString, 6, 6);
             ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.RealName).SetStringTypeEnum(EnumStringType.HumanData_ChineseName);
             ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.Email).SetStringTypeEnum(EnumStringType.HumanData_EmailAddress);
-            //ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.CompanyName).SetStringTypeEnum(EnumStringType.Business_ChineseCompanyName);
-            //ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.Name).SetStringTypeEnum(EnumStringType.RandomChineseString, 23, 100);
-            //ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.Date).Range(DateTime.Now.AddDays(-100), DateTime.Now.AddDays(150));
-            //ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.DateOnly).Range(DateTime.Now.AddDays(-100), DateTime.Now.AddDays(150)).DateOnly(true);
+            ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.Birthday).Range(new DateTime(1980, 1, 1), new DateTime(2003, 1, 1));
+            ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.Height).UseMin(150).UseMax(200);
+            ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.Weight).UseMin(45).UseMax(110);
+            ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.HomeTown).SetStringTypeEnum(EnumStringType.GEOData_ChineseHomeTown);
+            ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.SchoolName).SetStringTypeEnum(EnumStringType.HumanData_ChineseSchoolName);
+            ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.Interest).SetStringTypeEnum(EnumStringType.Language_ChineseFourWord);
+            ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.MobilePhone).SetStringTypeEnum(EnumStringType.HumanData_ChineseMobileNumber);
+            ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.IsApproved);
 
-            int count = 200;
+            int count = 50;
             var items = ReflectionDataGenerate.Items<MembershipUser>(count).ToList();
+            var EducationList = new List<string>();
+            EducationList.AddRange(TEducation.LoadAllEducationList().Select(x =>
+            {
+                return x.EducationName;
+            }));
+            var CountryList = TCountry.LoadAllCountry();
+
             for (int i = 0; i < count; i++)
             {
                 var item = items[i];
                 item.AliasName = item.RealName + item.UserName;
-            }
+                item.Gender = RandomHelper.GetEnum<Enum_Gender>();
+                item.IsLunarCalendar = RandomHelper.GetEnum<Enum_Calendar>();
 
+                item.IsMarried = RandomHelper.GetEnum<Enum_MarriedStatus>();
+                item.Education = RandomHelper.GetListElement<string>(EducationList);
 
-            for (int i = 100; i < 150; i++)
-            {
-                var user = new MembershipUser
-                {
-                    #region 基本信息
-                    UserName = "Test" + i.ToString().Substring(1),
-                    RealName = "测试账号_" + i.ToString().Substring(1),
-                    AliasName = "测试账号_" + i.ToString().Substring(1),
-                    Email = "Test@email.com",
-                    Gender = (i % 2 == 0) ? Enum_Gender.boy : Enum_Gender.girl,
-                    Birthday = new DateTime(2000, 1, 1),
-                    IsLunarCalendar = Enum_Calendar.PublicCalendar,
-                    IsMarried = (i % 2 == 0) ? Enum_MarriedStatus.Married : Enum_MarriedStatus.Single,
-                    Height = i + 50,
-                    Weight = 50,
-                    Education = "硕士",
-                    HomeTown = "深圳市龙华新区",
-                    SchoolProvince = "110000",
-                    SchoolCity = "110100",
-                    SchoolName = "我的大学",
-                    LocationProvince = "110000",
-                    LocationCity = "110100",
-                    LocationCounty = "110108",
-                    Job = "BigBoss",
-                    IncomeRange = (i % 2 == 0) ? Enum_IncomeRange.R_5WMore : Enum_IncomeRange.R_Lowthan1W,
-                    Interest = "发呆",
-                    MobilePhone = "13686886937",
-                    Avatar = "",
-                    #endregion
+                var schoolInfo = RandomHelper.GetListElement<TCountry>(CountryList);
+                item.SchoolProvince = schoolInfo.ProvinceId.ToString();
+                item.SchoolCity = schoolInfo.CityId.ToString();
 
-                    Password = "password",
-                    IsApproved = false,  //默认为待审核状态
-                    CreateDate = DateTime.Now,
-                    LastLoginDate = DateTime.Now,
-                    LastUpdateTime = DateTime.Now,
-                    UserType = Enum_UserType.A,
-                    Slug = ServiceHelpers.CreateUrl("Test" + i.ToString().Substring(1)),
-                    DisablePosting = false,
-                    DisablePrivateMessages = false,
-                    DisableFileUploads = false,
-                    Comment = "Test" + i.ToString().Substring(1)
+                var locationInfo = RandomHelper.GetListElement<TCountry>(CountryList);
+                item.LocationProvince = locationInfo.ProvinceId.ToString();
+                item.LocationCity = locationInfo.CityId.ToString();
+                item.LocationCounty = locationInfo.CountryId.ToString();
+                item.IncomeRange = RandomHelper.GetEnum<Enum_IncomeRange>();
+                item.Avatar = "";
+                item.UserType = RandomHelper.GetEnum<Enum_UserType>();
+                item.Password = "password";
+                item.CreateDate = DateTime.Now;
+                item.LastLoginDate = DateTime.Now;
+                item.LastUpdateTime = DateTime.Now;
+                item.Slug = ServiceHelpers.CreateUrl("Test" + i.ToString());
+                item.DisablePosting = false;
+                item.DisablePrivateMessages = false;
+                item.DisableFileUploads = false;
+                item.Comment = "Test" + i.ToString();
 
-                };
                 // Hash the password
                 var salt = StringUtils.CreateSalt(AppConstants.SaltSize);
-                var hash = StringUtils.GenerateSaltedHash(user.Password, salt);
-                user.Password = hash;
-                user.PasswordSalt = salt;
+                var hash = StringUtils.GenerateSaltedHash(item.Password, salt);
+                item.Password = hash;
+                item.PasswordSalt = salt;
 
                 var standardRole = _context.MembershipRole.FirstOrDefault(x => x.RoleName == SiteConstants.Instance.StandardMembers);
-                user.Roles = new List<MembershipRole> { standardRole };
+                item.Roles = new List<MembershipRole> { standardRole };
 
-                _context.MembershipUser.Add(user);
+                _context.MembershipUser.Add(item);
             }
         }
 
