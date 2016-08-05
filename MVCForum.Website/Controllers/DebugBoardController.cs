@@ -15,6 +15,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 
+
 namespace MVCForum.Website.Controllers
 {
     public class DebugBoardController : BaseController
@@ -120,40 +121,6 @@ namespace MVCForum.Website.Controllers
             return RedirectToAction("Register", "Members");
             //return Content("生成50个测试账号执行完毕");
         }
-
-
-
-
-
-
-        //[HttpPost]
-        //[BasicMultiButton("Btn_GenerateAiLvHuodong")]
-        //public ActionResult GenerateAiLvHuodong()
-        //{
-        //    using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
-        //    {
-        //        try
-        //        {
-        //            MembershipService.Create50TestAccount();
-        //            unitOfWork.Commit();
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            unitOfWork.Rollback();
-        //            LoggingService.Error(ex);
-        //            FormsAuthentication.SignOut();
-        //            ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
-        //        }
-        //    }
-        //    ShowMessage(new GenericMessageViewModel
-        //    {
-        //        //Message = LocalizationService.GetResourceString("Member.ProfileUpdated"),
-        //        Message = "爱驴活动的测试数据已生成完毕。",
-        //        MessageType = GenericMessages.success
-        //    });
-        //    return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
-        //}
-
 
         [HttpPost]
         [Authorize(Roles = "Admin")]

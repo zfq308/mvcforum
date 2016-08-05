@@ -1,0 +1,60 @@
+﻿
+@{
+    ViewBag.Title = "DebugBoard Index";
+    Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@if (User.IsInRole(AppConstants.AdminRoleName))
+{
+    using (Html.BeginForm("GenerateTestAccount", "DebugBoard", FormMethod.Post, new { @class = "form-register" }))
+    {
+
+        <div class="submit-holder">
+            <button type="submit" class="btn-mvc-green btn-mvc-large" name="Btn_Generate50TestAccount">
+                生成50个普通测试账号
+            </button>
+        </div>
+    }
+
+    <br /><br />
+
+    using (Html.BeginForm("GenerateTestAccount2", "DebugBoard", FormMethod.Post, new { @class = "form-register" }))
+    {
+        <div class="submit-holder">
+            <button type="submit" class="btn-mvc-green btn-mvc-large" name="Btn_Generate5SupplierAccount">
+                生成5个供应商测试账号
+            </button>
+        </div>
+    }
+
+    <br /><br />
+
+
+    using (Html.BeginForm("CreateTestAiLvHuoDongData", "DebugBoard", FormMethod.Post, new { @class = "form-register" }))
+    {
+
+        <div class="submit-holder">
+            <button type="submit" class="btn-mvc-green btn-mvc-large" name="Btn_GenerateAiLvHuodong">
+                生成各种类型的爱驴活动
+            </button>
+        </div>
+    }
+
+    <br /><br />
+
+
+    using (Html.BeginForm("ClearAiLvHuodong", "DebugBoard", FormMethod.Post, new { @class = "form-register" }))
+    {
+
+        <div class="submit-holder">
+            <button type="submit" class="btn-mvc-green btn-mvc-large" name="Btn_ClearAiLvHuodong">
+                清空各种类型的爱驴活动
+            </button>
+        </div>
+    }
+
+    <br /><br />
+
+}

@@ -17,6 +17,7 @@ using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Services.Data.Context;
 using MVCForum.Utilities;
 using System.Diagnostics;
+using DataGenerationFramework.Core;
 
 namespace MVCForum.Services
 {
@@ -277,6 +278,23 @@ namespace MVCForum.Services
         /// </summary>
         public void Create50TestAccount()
         {
+            ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.UserName).SetStringTypeEnum(EnumStringType.RandomString,6,6);
+            ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.RealName).SetStringTypeEnum(EnumStringType.HumanData_ChineseName);
+            ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.Email).SetStringTypeEnum(EnumStringType.HumanData_EmailAddress);
+            //ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.CompanyName).SetStringTypeEnum(EnumStringType.Business_ChineseCompanyName);
+            //ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.Name).SetStringTypeEnum(EnumStringType.RandomChineseString, 23, 100);
+            //ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.Date).Range(DateTime.Now.AddDays(-100), DateTime.Now.AddDays(150));
+            //ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.DateOnly).Range(DateTime.Now.AddDays(-100), DateTime.Now.AddDays(150)).DateOnly(true);
+
+            int count = 200;
+            var items = ReflectionDataGenerate.Items<MembershipUser>(count).ToList();
+            for (int i = 0; i < count; i++)
+            {
+                var item = items[i];
+                item.AliasName = item.RealName + item.UserName;
+            }
+
+
             for (int i = 100; i < 150; i++)
             {
                 var user = new MembershipUser
