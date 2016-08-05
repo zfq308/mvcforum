@@ -25,7 +25,7 @@ namespace MVCForum.Services
         public const int BadgeCheckIntervalMinutes = 10;
 
         /// <summary>
-        /// Constructor
+        /// 建构式
         /// </summary>
         /// <param name="loggingService"> </param>
         /// <param name="localizationService"> </param>
