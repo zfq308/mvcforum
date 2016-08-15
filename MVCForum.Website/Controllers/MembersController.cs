@@ -2015,7 +2015,6 @@ namespace MVCForum.Website.Controllers
         }
 
         [HttpPost]
-        //[ValidateAntiForgeryToken]
         public ActionResult SearchEx(MembershipUserSearchModel model)
         {
             model.NoLoginDays = 0;
@@ -2031,6 +2030,7 @@ namespace MVCForum.Website.Controllers
             {
                 var customers = GetRecordsForPage(pageNum.Value);
                 ViewBag.IsEndOfRecords = (customers.Any()) && ((pageNum.Value * 20) >= customers.Last().Key);
+                ViewBag.Customers = customers;
                 return PartialView("_MemberUserList", customers);
             }
             else

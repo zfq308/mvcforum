@@ -28,6 +28,7 @@ namespace MVCForum.Website.Controllers
         private readonly ICategoryService _categoryservice;
         private readonly MVCForumContext _context;
         private readonly IActivityRegisterService _ActivityRegisterService;
+        private readonly IMembershipService _MembershipService;
 
         #region 建构式  
         public AiLvHuoDongController(
@@ -49,6 +50,7 @@ namespace MVCForum.Website.Controllers
             _ActivityRegisterService = ActivityRegisterService;
             _topicService = TopicService;
             _categoryservice = Categoryservice;
+            _MembershipService = membershipService;
             _context = context as MVCForumContext;
         }
 
@@ -437,6 +439,8 @@ namespace MVCForum.Website.Controllers
         }
 
 
+
+
         #endregion
 
         #region 爱驴记录模块
@@ -555,7 +559,7 @@ namespace MVCForum.Website.Controllers
 
         #endregion
 
-        #region 其他View视图
+
 
         public ActionResult ViewActivity(Guid Id)
         {
@@ -581,9 +585,47 @@ namespace MVCForum.Website.Controllers
                 ShenHeBiaoZhi = item.ShenHeBiaoZhi,
                 GongYingShangUserId = item.GongYingShangUserId,
             };
+            var userlist = _ActivityRegisterService.GetActivityRegisterListByHongDong(item);
+            if (userlist != null && userlist.Count > 0)
+            {
+                List<Guid> BoyUserId = new List<Guid>();
+                List<Guid> GirlUserId = new List<Guid>();
+                EditModel.BoyJoinner = new List<MembershipUser>();
+                EditModel.GirlJoiner = new List<MembershipUser>();
+                foreach (ActivityRegister ar in userlist)
+                {
+                    if (ar.UserGender== Enum_Gender.boy)
+                    {
+                       if(!BoyUserId.Contains(ar.UserId))
+                        {
+                            BoyUserId.Add(ar.UserId);
+                            var user = _MembershipService.GetUser(ar.UserId);
+                            if(user!=null)
+                            {
+                                EditModel.BoyJoinner.Add(ar.User);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (!GirlUserId.Contains(ar.UserId))
+                        {
+                            GirlUserId.Add(ar.UserId);
+                            var user = _MembershipService.GetUser(ar.UserId);
+                            if (user != null)
+                            {
+                                EditModel.GirlJoiner.Add(ar.User);
+                            }
+                        }
+
+                    }
+                }
+            }
+
             return View(EditModel);
         }
 
+        #region 其他View视图
         /// <summary>
         /// 每日之星
         /// </summary>

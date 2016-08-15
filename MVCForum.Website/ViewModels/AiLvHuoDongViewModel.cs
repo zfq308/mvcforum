@@ -150,6 +150,15 @@ namespace MVCForum.Website.ViewModels
         ///// 记录生成时间
         ///// </summary>
         //public DateTime CreatedTime { get; set; }
+
+        /// <summary>
+        /// 参加活动的男生集合
+        /// </summary>
+        public IList<MembershipUser> BoyJoinner { get; set; }
+        /// <summary>
+        /// 参加活动的女生集合
+        /// </summary>
+        public IList<MembershipUser> GirlJoiner { get; set; }
     }
 
 
