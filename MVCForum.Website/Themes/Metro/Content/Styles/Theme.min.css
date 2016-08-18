@@ -5,7 +5,7 @@ input.form-control,textarea.form-control,select.form-control{-ms-border-radius:0
     max-width:100%;
     border:#808080 solid 1px;
 }
-.adtable img{width:180px; height:140px} 
+.adtable img{width:100px; height:80px} 
 .adtable table,tbody,tr,td{margin-bottom: 1px;padding:1px;border-top-width: 0px;} 
 .pad span{border:#808080 solid 0px;border-bottom-width: 1px; color:dodgerblue;font-weight:bold;}
 

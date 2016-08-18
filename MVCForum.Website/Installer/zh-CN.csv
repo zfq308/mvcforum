@@ -40,7 +40,7 @@ Badges.PageTitle,Badges
 Badges.UnableToAward,Unable to award badges as badge collection is null for user {0}
 Buttons.ChangePassword,修改密码
 Buttons.Continue,继续
-Buttons.CreatePost,Add Post
+Buttons.CreatePost,保存
 Buttons.Edit,编辑
 Buttons.LogOn,登录
 Buttons.Report,报告问题

@@ -50,12 +50,14 @@ namespace MVCForum.Website.ViewModels
         /// 活动开始时间
         /// </summary>
         [Display(Name = "活动开始时间")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
         public DateTime StartTime { get; set; }
 
         /// <summary>
         /// 活动结束时间
         /// </summary>
         [Display(Name = "活动结束时间")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
         [DateTimeNotLessThan("StartTime", "StartTime")]
         public DateTime StopTime { get; set; }
 
@@ -63,6 +65,7 @@ namespace MVCForum.Website.ViewModels
         /// 活动报名截止时间
         /// </summary>
         [Display(Name = "报名截止时间")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
         public DateTime BaoMingJieZhiTime { get; set; }
 
         /// <summary>

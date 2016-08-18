@@ -680,6 +680,8 @@
     <Content Include="Content\Images\ajaxloader-large.gif" />
     <Content Include="Content\Images\ajaxloader.gif" />
     <Content Include="Content\Images\arrow-spinner-blue.gif" />
+    <Content Include="Content\Images\bar1.jpg" />
+    <Content Include="Content\Images\bar2.jpg" />
     <Content Include="Content\Images\Default.jpg" />
     <Content Include="Content\Images\emoticons\angel-emoticon.png" />
     <Content Include="Content\Images\emoticons\angry-emoticon.png" />
@@ -780,6 +782,7 @@
     <Content Include="Content\Images\social-icons\yahoo.png" />
     <Content Include="Content\Images\social-icons\youtube.png" />
     <Content Include="Content\Images\spin.gif" />
+    <Content Include="Content\Images\t.jpg" />
     <Content Include="Content\jstree\jstree.js" />
     <Content Include="Content\jstree\jstree.min.js" />
     <Content Include="Content\jstree\themes\default\30px.png" />

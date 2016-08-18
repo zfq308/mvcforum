@@ -654,6 +654,12 @@ namespace MVCForum.Website.Controllers
         #region 用户编辑
 
         [Authorize]
+        public ActionResult Edit()
+        {
+            return Edit(LoggedOnReadOnlyUser.Id);
+        }
+
+        [Authorize]
         public ActionResult Edit(Guid id)
         {
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -1939,7 +1945,7 @@ namespace MVCForum.Website.Controllers
             Items_UserType.Add(new SelectListItem { Text = "C", Value = "3" });
             Items_UserType.Add(new SelectListItem { Text = "D", Value = "4" });
             Items_UserType.Add(new SelectListItem { Text = "E", Value = "5" });
-         
+
             ViewData["UserTypeList"] = Items_UserType;
             #endregion
 
@@ -1962,7 +1968,7 @@ namespace MVCForum.Website.Controllers
 
             foreach (var item in HomeTownProvincelst)
             {
-                if ( item.ProvinceId.ToString()=="440000") //广东省
+                if (item.ProvinceId.ToString() == "440000") //广东省
                 {
                     Items_HomeTownProvince.Add(new SelectListItem { Text = item.ProvinceName, Value = item.ProvinceId.ToString(), Selected = true });
                 }
@@ -1971,7 +1977,7 @@ namespace MVCForum.Website.Controllers
                     Items_HomeTownProvince.Add(new SelectListItem { Text = item.ProvinceName, Value = item.ProvinceId.ToString() });
                 }
             }
-        
+
             ViewData["HomeTownProvinceList"] = Items_HomeTownProvince;
 
             #endregion
@@ -1984,7 +1990,7 @@ namespace MVCForum.Website.Controllers
 
             foreach (var item in HomeTownCitylst)
             {
-                if ( item.CityId.ToString()== "440300")
+                if (item.CityId.ToString() == "440300")
                 {
                     Items_HomeTownCity.Add(new SelectListItem { Text = item.CityName, Value = item.CityId.ToString(), Selected = true });
                 }

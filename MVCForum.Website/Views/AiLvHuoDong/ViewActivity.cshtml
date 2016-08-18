@@ -15,64 +15,64 @@
         {
             using (Html.BeginForm("AuditAiLvHuodong_Success", "AiLvHuoDong", FormMethod.Post, new { enctype = "multipart/form-data" }))
             {
-                @Html.HiddenFor(x => x.Id)
+        @Html.HiddenFor(x => x.Id)
                 if (Model.Id != Guid.Empty && Model.ShenHeBiaoZhi == MVCForum.Domain.DomainModel.Enum_ShenHeBiaoZhi.WaitingAudit)
                 {
-                    <button type="submit" name="btn_AuditSuccess" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
-                        审核同意
-                    </button><br />
+        <button type="submit" name="btn_AuditSuccess" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
+            审核同意
+        </button><br />
                 }
             }
 
             using (Html.BeginForm("AuditAiLvHuodong_Fail", "AiLvHuoDong", FormMethod.Post, new { enctype = "multipart/form-data" }))
             {
-                @Html.HiddenFor(x => x.Id)
+        @Html.HiddenFor(x => x.Id)
                 if (Model.Id != Guid.Empty && Model.ShenHeBiaoZhi == MVCForum.Domain.DomainModel.Enum_ShenHeBiaoZhi.WaitingAudit)
                 {
-                    <button type="submit" name="btn_AuditFail" class="btn-mvc-red btn-mvc-large btn-mvc-fullwidth">
-                        审核驳回
-                    </button><br />
+        <button type="submit" name="btn_AuditFail" class="btn-mvc-red btn-mvc-large btn-mvc-fullwidth">
+            审核驳回
+        </button><br />
                 }
             }
 
             using (Html.BeginForm("CreateAiLvHuodongJilu", "AiLvHuoDong", FormMethod.Post, new { enctype = "multipart/form-data" }))
             {
-                @Html.HiddenFor(x => x.Id)
+        @Html.HiddenFor(x => x.Id)
                 if (Model.Id != Guid.Empty && Model.ShenHeBiaoZhi == MVCForum.Domain.DomainModel.Enum_ShenHeBiaoZhi.AuditSuccess)
                 {
-                    <button type="submit" name="btn_GenerateHuoDong" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
-                        生成活动记录
-                    </button><br />
+        <button type="submit" name="btn_GenerateHuoDong" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
+            生成活动记录
+        </button><br />
                 }
             }
         }
 
         @if (User.IsInRole(AppConstants.AdminRoleName) || Model.GongYingShangUserId == User.Identity.Name)
         {
-            <a href="@Url.Action("EditAiLvHuoDong", "AiLvHuoDong", new { id = Model.Id }, null)" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">编辑活动</a>
-            <br />
+        <a href="@Url.Action("EditAiLvHuoDong", "AiLvHuoDong", new { id = Model.Id }, null)" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">编辑活动</a>
+        <br />
         }
 
         @if (Model.ShenHeBiaoZhi == MVCForum.Domain.DomainModel.Enum_ShenHeBiaoZhi.AuditSuccess)
         {
             using (Html.BeginForm("CreateActivityRegister", "AiLvHuoDong", FormMethod.Post, new { enctype = "multipart/form-data" }))
             {
-                @Html.HiddenFor(x => x.Id)
+        @Html.HiddenFor(x => x.Id)
                 if (Model.Id != Guid.Empty && Model.ShenHeBiaoZhi == MVCForum.Domain.DomainModel.Enum_ShenHeBiaoZhi.AuditSuccess)
                 {
                     if (Model.LeiBie == MVCForum.Domain.DomainModel.Enum_HuoDongLeiBie.SpecicalRegister)
                     {
-                        <div class="form-group" id="divyaoqingma">
-                            @Html.LabelFor(x => x.YaoQingMa)
-                            @Html.TextBoxFor(model => model.YaoQingMa, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(model => model.YaoQingMa)
-                        </div>
+        <div class="form-group" id="divyaoqingma">
+            @Html.LabelFor(x => x.YaoQingMa)
+            @Html.TextBoxFor(model => model.YaoQingMa, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.YaoQingMa)
+        </div>
                     }
-                    <div class="submit-holder">
-                        <button type="submit" name="btn_GenerateHuoDong" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
-                            我要报名
-                        </button><br />
-                    </div>
+        <div class="submit-holder">
+            <button type="submit" name="btn_GenerateHuoDong" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
+                我要报名
+            </button><br />
+        </div>
                 }
             }
         }
@@ -106,7 +106,6 @@
             </div>
             <div class="form-group">
                 @Html.LabelFor(x => x.YaoQiu)
-                @*@Html.DisplayTextFor(x => x.YaoQiu)*@
                 @switch (Model.YaoQiu)
                 {
                     case MVCForum.Domain.DomainModel.Enum_HuoDongYaoQiu.Single:
@@ -116,7 +115,7 @@
                         @Html.Raw("特别邀请");
                         break;
                     case MVCForum.Domain.DomainModel.Enum_HuoDongYaoQiu.None:
-                        @Html.Raw("无要求");
+                        @Html.Raw("人人可参加");
                         break;
                     default:
                         break;
@@ -144,7 +143,7 @@
             </div>
             <div class="form-group">
                 @Html.LabelFor(x => x.Feiyong)
-                @Html.DisplayTextFor(model => model.Feiyong)
+                ￥@Html.DisplayTextFor(model => model.Feiyong) /人
             </div>
             <div class="form-group">
                 @Html.LabelFor(x => x.FeiyongShuoMing)

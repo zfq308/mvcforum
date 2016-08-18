@@ -2,44 +2,27 @@
 {
 <script src="@Url.Content("~/scripts/tinymce/tinymce.js")" type="text/javascript"></script>
 <script src="@Url.Content("~/Scripts/tinymceplugins/ImageUpload/imageupload.js")" type="text/javascript"></script>
-    <script type="text/javascript">        
+    <script type="text/javascript">
         tinymce.init({
             selector: "textarea.rte",
-            //language: "zh-CN" ,              //语言 ，可自行下载中文
-            theme: "modern",               //主题
+            theme: "modern",
+            language: "zh_CN",
             plugins: [
                 "autosave link image lists hr anchor forumimageinsert",
                 "wordcount visualblocks visualchars code fullscreen media nonbreaking"
             ],
-            toolbar1: "bold italic underline strikethrough bullist hr | link unlink @(ViewBag.ImageUploadType ?? "image") code blockquote | formatselect",
-
+            toolbar1: "bold italic underline bullist hr | link unlink @(ViewBag.ImageUploadType ?? "image") | formatselect",
             theme_advanced_toolbar_location : "top",
-            //定义工具栏工具的对其方式
             theme_advanced_toolbar_align : "left",
-            //定义输入框下方是否显示状态栏，默认不显示
-            theme_advanced_statusbar_location : "bottom",
-            //定义是否可以改变输入窗口大小
             theme_advanced_resizing : true,
-
             remove_linebreaks: false,
             relative_urls: false,
             menubar: false,
             toolbar_items_size: 'small',
             content_css: app_base + "content/tinymce.css",
-            height: 175,
             nonbreaking_force_tab: true
-            //setup: function(editor) {
-            //    editor.on( 'keydown', function(editor, evt) {
-            //        if (evt.keyCode == 9) {
-            //            editor.execCommand('mceInsertContent', false, '&emsp;&emsp;');
-            //            evt.preventDefault();
-            //        }
-            //    } );
-            //}
-          
         });
 
-        // Language strings
         var buttonTitle = '@(Html.Lang("TinyMCE.InsertImage.ButtonTitle"))';
         var buttonOk = '@(Html.Lang("TinyMCE.InsertImage.ButtonOk"))';
         var buttonClose = '@(Html.Lang("TinyMCE.InsertImage.ButtonClose"))';

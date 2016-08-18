@@ -5,70 +5,71 @@
     ViewBag.Title = "最新活动";
 }
 
-<div class="panel" style="padding-top:2px">
-    <div class="panel-heading">
-        <h2>@ViewBag.Title</h2>
-    </div>
-    <div class="panel-content">
-        <table class="adtable">
-            @foreach (var item in Model.AiLvHuoDongList)
-            {
-                <tr>
-                    <td valign="top">
-                        <img src="/Content/Images/HuodongIcon.jpg" alt="" class="thumbnail" style="margin-bottom:0px" />
-                    </td>
-                    <td style="padding-left:5px; width:100%;">
-                        <table class="pad">
-                            <tr>
-                                <td>
-                                    <span>【@item.MingCheng】</span>,<label class="bg-success">@item.YuGuRenShu 人团</label>
-                                    @if (item.LeiBie == MVCForum.Domain.DomainModel.Enum_HuoDongLeiBie.SpecicalRegister)
-                                    {
-                                    <label class="glyphicon glyphicon-lock" title="特定人群组团，需要输入邀请码。"></label>
-                                    }
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <small>
-                                        活动费用(￥/人):<span>@item.Feiyong</span>
+<div class="panel" style="padding-top:2px"><div class="panel-heading">
+    <h2>@ViewBag.Title</h2>
+</div>
+    <div class="col-md-12">
+       
+        <div class="panel-content">
+            <table style="border:none">
+                @foreach (var item in Model.AiLvHuoDongList)
+                {
+                    <tr>
+                        <td style="padding-left:5px; width:100%;">
+                            <table class="pad">
+                                <tr>
+                                    <td valign="top">
+                                        <img src="/Content/Images/bar1.jpg" alt="" style="margin-bottom:0px;width:100%;height:80px" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span>【@item.MingCheng】</span>,<label class="bg-success">@item.YuGuRenShu 人团</label>
+                                        @if (item.LeiBie == MVCForum.Domain.DomainModel.Enum_HuoDongLeiBie.SpecicalRegister)
+                                        {
+                                            <label class="glyphicon glyphicon-lock" title="特定人群组团，需要输入邀请码。"></label>
+                                        }
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <small>
+                                            ￥@item.Feiyong /人 &nbsp;
+                                            <img src="~/Content/Images/t.jpg" title="发布时间" /> @item.CreatedTime.ToString("MM-dd HH:mm")
+                                        </small>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <small>
+                                            活动时间： @item.StartTime.ToString("MM-dd HH:mm") ~ @item.StopTime.ToString("MM-dd HH:mm")
+                                        </small>
+                                    </td>
+                                </tr>
+                                @if (item.XingBieBiLi != "/")
+                                {
+                                    <tr>
+                                        <td>
+                                            <small>参与人数性别比例：<span>@item.XingBieBiLi</span></small>
+                                        </td>
+                                    </tr>
+                                }
+                                <tr><td><small>活动地点：<span>@item.DiDian</span></small></td></tr>
+                                <tr><td><small>报名截止至：@item.BaoMingJieZhiTime.ToString("MM-dd HH:mm")</small></td></tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:right;">
+                            <a href="@Url.Action("ViewActivity","AiLvHuoDong", new { item.Id })" class="btn btn-mvc">
+                                点击查看
+                            </a>
+                        </td>
 
-                                        <span style="padding-right:3px;padding-left:5px">发布时间</span>@item.CreatedTime.ToString("MM-dd HH:mm")
-                                    </small>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <small>
-                                        活动时间： @item.StartTime.ToString("MM-dd HH:mm") ~ @item.StopTime.ToString("MM-dd HH:mm")
-                                    </small>
-                                </td>
-                            </tr>
-                            @if (item.XingBieBiLi != "/")
-                            {
-                            <tr>
-                                <td>
-                                    <small>参与人数性别比例：<span>@item.XingBieBiLi</span></small>
-                                </td>
-                            </tr>
-                            }
-                            <tr><td><small>活动地点：<span>@item.DiDian</span></small></td></tr>
-                            <tr><td><small>报名截止至：@item.BaoMingJieZhiTime.ToString("MM-dd HH:mm")</small></td></tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="border-bottom-width: 1px;" colspan="2"></td>
-                </tr>
-                <tr>
-                    <td style="text-align:right;" colspan="2">
-                        <a href="@Url.Action("ViewActivity","AiLvHuoDong", new { item.Id })" class="btn btn-mvc">
-                            点击查看
-                        </a>
-                    </td>
-
-                </tr>
-            }
-        </table>
+                    </tr>
+                    <tr><td><hr style="height:1px;border:none;border-top:1px dashed #0066CC;" /></td></tr>
+                }
+            </table>
+        </div>
     </div>
 </div>
