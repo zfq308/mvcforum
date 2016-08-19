@@ -91,20 +91,20 @@ namespace MVCForum.Website.Controllers
                     {
                         return Content(LocalizationService.GetResourceString("PM.SentItemsOverCapcity"));
                     }
-                    if (senderCount > (settings.MaxPrivateMessagesPerMember - SiteConstants.Instance.PrivateMessageWarningAmountLessThanAllowedSize))
-                    {
-                        // Send user a warning they are about to exceed 
-                        var sb = new StringBuilder();
-                        sb.AppendFormat("<p>{0}</p>", LocalizationService.GetResourceString("PM.AboutToExceedInboxSizeBody"));
-                        var email = new Email
-                        {
-                            EmailTo = LoggedOnReadOnlyUser.Email,
-                            NameTo = LoggedOnReadOnlyUser.UserName,
-                            Subject = LocalizationService.GetResourceString("PM.AboutToExceedInboxSizeSubject")
-                        };
-                        email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
-                        _emailService.SendMail(email);
-                    }
+                    //if (senderCount > (settings.MaxPrivateMessagesPerMember - SiteConstants.Instance.PrivateMessageWarningAmountLessThanAllowedSize))
+                    //{
+                    //    // Send user a warning they are about to exceed 
+                    //    var sb = new StringBuilder();
+                    //    sb.AppendFormat("<p>{0}</p>", LocalizationService.GetResourceString("PM.AboutToExceedInboxSizeBody"));
+                    //    var email = new Email
+                    //    {
+                    //        EmailTo = LoggedOnReadOnlyUser.Email,
+                    //        NameTo = LoggedOnReadOnlyUser.UserName,
+                    //        Subject = LocalizationService.GetResourceString("PM.AboutToExceedInboxSizeSubject")
+                    //    };
+                    //    email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
+                    //    _emailService.SendMail(email);
+                    //}
 
                     // Set editor permissions
                     ViewBag.ImageUploadType = permissions[SiteConstants.Instance.PermissionInsertEditorImages].IsTicked ? "forumimageinsert" : "image";
@@ -203,23 +203,23 @@ namespace MVCForum.Website.Controllers
 
                             try
                             {
-                                // Finally send an email to the user so they know they have a new private message
-                                // As long as they have not had notifications disabled
-                                if (memberTo.DisableEmailNotifications != true)
-                                {
-                                    var email = new Email
-                                    {
-                                        EmailTo = memberTo.Email,
-                                        Subject = LocalizationService.GetResourceString("PM.NewPrivateMessageSubject"),
-                                        NameTo = memberTo.UserName
-                                    };
+                                //// Finally send an email to the user so they know they have a new private message
+                                //// As long as they have not had notifications disabled
+                                //if (memberTo.DisableEmailNotifications != true)
+                                //{
+                                //    var email = new Email
+                                //    {
+                                //        EmailTo = memberTo.Email,
+                                //        Subject = LocalizationService.GetResourceString("PM.NewPrivateMessageSubject"),
+                                //        NameTo = memberTo.UserName
+                                //    };
 
-                                    var sb = new StringBuilder();
-                                    sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("PM.NewPrivateMessageBody"), LoggedOnReadOnlyUser.UserName));
-                                    sb.Append(AppHelpers.ConvertPostContent(createPrivateMessageViewModel.Message));
-                                    email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
-                                    _emailService.SendMail(email);
-                                }
+                                //    var sb = new StringBuilder();
+                                //    sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("PM.NewPrivateMessageBody"), LoggedOnReadOnlyUser.UserName));
+                                //    sb.Append(AppHelpers.ConvertPostContent(createPrivateMessageViewModel.Message));
+                                //    email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
+                                //    _emailService.SendMail(email);
+                                //}
 
                                 unitOfWork.Commit();
 

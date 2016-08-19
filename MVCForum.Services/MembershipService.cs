@@ -1437,29 +1437,63 @@ namespace MVCForum.Services
 
         #region Membership账号的导入和导出
 
-        public string ToCsv(List<MembershipUser> userlist)
+        public string ToCsv(List<MembershipUser> userlist, bool isAdmin)
         {
+
             var csv = new StringBuilder();
-            csv.AppendLine("账号,昵称,真实姓名,联系方式,性别,年龄,婚否,身高,体重,现居地,最后登录时间,审核标志位,会员状态,会员类别");
-            foreach (var user in userlist)
+
+
+            if (isAdmin)
             {
-                csv.AppendFormat("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13}",
-                    user.UserName,
-                    user.AliasName,
-                    user.RealName,
-                    user.MobilePhone,
-                    user.Gender == Enum_Gender.boy ? "男" : "女",
-                    user.Age,
-                    user.IsMarried == Enum_MarriedStatus.Married ? "已婚" : "单身",
-                    user.Height,
-                    user.Weight,
-                    string.Concat(user.LocationProvince, user.LocationCity, user.LocationCounty),
-                    user.LastLoginDate.ToString("yyyy-MM-dd HH:mm:ss"),
-                    user.IsApproved ? "已审核" : "待审核",
-                    user.IsLockedOut ? "用户已隐藏" : "正常状态",
-                    user.UserType.ToString()
-                    );
-                csv.AppendLine();
+                csv.AppendLine("账号,昵称,真实姓名,联系方式,性别,年龄,婚否,身高,体重,现居地,最后登录时间,审核标志位,会员状态,会员类别");
+                foreach (var user in userlist)
+                {
+                    csv.AppendFormat("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13}",
+                        user.UserName,
+                        user.AliasName,
+                        user.RealName,
+                        user.MobilePhone,
+                        user.Gender == Enum_Gender.boy ? "男" : "女",
+                        user.Age,
+                        user.IsMarried == Enum_MarriedStatus.Married ? "已婚" : "单身",
+                        user.Height,
+                        user.Weight,
+                        string.Concat(TProvince.LoadProvinceByProvincedId(Convert.ToInt32(user.LocationProvince)).ProvinceName,
+                                      TCity.LoadCityByCityId(Convert.ToInt32(user.LocationCity)).CityName,
+                                      TCountry.LoadCountryByCountryId(Convert.ToInt32(user.LocationCounty)).CountryName),
+                        user.LastLoginDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                        user.IsApproved ? "已审核" : "待审核",
+                        user.IsBanned ? "用户已隐藏" : "正常状态",
+                        user.UserType.ToString()
+                        );
+                    csv.AppendLine();
+                }
+            }
+            else
+            {
+                csv.AppendLine("账号,昵称,性别,年龄,婚否,身高,体重,现居地,最后登录时间,审核标志位,会员状态,会员类别");
+                foreach (var user in userlist)
+                {
+                    csv.AppendFormat("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11}",
+                        user.UserName,
+                        user.AliasName,
+                        user.RealName,
+                        user.MobilePhone,
+                        user.Gender == Enum_Gender.boy ? "男" : "女",
+                        user.Age,
+                        user.IsMarried == Enum_MarriedStatus.Married ? "已婚" : "单身",
+                        user.Height,
+                        user.Weight,
+                        string.Concat(TProvince.LoadProvinceByProvincedId(Convert.ToInt32(user.LocationProvince)).ProvinceName,
+                                      TCity.LoadCityByCityId(Convert.ToInt32(user.LocationCity)).CityName,
+                                      TCountry.LoadCountryByCountryId(Convert.ToInt32(user.LocationCounty)).CountryName),
+                        user.LastLoginDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                        user.IsApproved ? "已审核" : "待审核",
+                        user.IsBanned ? "用户已隐藏" : "正常状态",
+                        user.UserType.ToString()
+                        );
+                    csv.AppendLine();
+                }
             }
             return csv.ToString();
         }
@@ -1471,7 +1505,7 @@ namespace MVCForum.Services
         public string ToCsv()
         {
             var userlist = GetAll().ToList();
-            return ToCsv(userlist);
+            return ToCsv(userlist,false);
         }
 
         /// <summary>

@@ -654,12 +654,6 @@ namespace MVCForum.Website.Controllers
         #region 用户编辑
 
         [Authorize]
-        public ActionResult Edit()
-        {
-            return Edit(LoggedOnReadOnlyUser.Id);
-        }
-
-        [Authorize]
         public ActionResult Edit(Guid id)
         {
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -1181,62 +1175,90 @@ namespace MVCForum.Website.Controllers
         {
             if (ModelState.IsValid)
             {
-                var ad = new MembershipUserPicture();
-                ad.UploadTime = DateTime.Now;
-                ad.UserId = LoggedOnReadOnlyUser.Id;
-                ad.Description = adViewModel.Description;
-                ad.AuditStatus = Enum_UploadPictureAuditStatus.WaitingAudit;
-                ad.AuditComment = "";
-                ad.AuditTime = DateTime.Now;
-
-                HttpPostedFileBase mUploadFile = Request.Files["files"];
-                if (mUploadFile != null) adViewModel.UploadFile = mUploadFile;
-                if (adViewModel.UploadFile != null)
+                var piclist = _MembershipUserPictureService.GetMembershipUserPictureListByUserId(LoggedOnReadOnlyUser.Id);
+                if (piclist != null && piclist.Count >= 6)
                 {
-                    #region 准备上传路径
-                    var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath, LoggedOnReadOnlyUser.Id));
-                    if (!Directory.Exists(uploadFolderPath))
+                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                     {
-                        Directory.CreateDirectory(uploadFolderPath);
+                        Message = "最多上传6张您的靓照。",
+                        MessageType = GenericMessages.danger
+                    };
+                    return RedirectToAction("PrivatePictureList", "Members", new { Id = LoggedOnReadOnlyUser.Id });
+                }
+                else
+                {
+                    #region 新加个人照片
+
+                    var ad = new MembershipUserPicture();
+                    ad.UploadTime = DateTime.Now;
+                    ad.UserId = LoggedOnReadOnlyUser.Id;
+                    ad.Description = adViewModel.Description;
+                    ad.AuditStatus = Enum_UploadPictureAuditStatus.WaitingAudit;
+                    ad.AuditComment = "";
+                    ad.AuditTime = DateTime.Now;
+
+                    HttpPostedFileBase mUploadFile = Request.Files["files"];
+                    if (mUploadFile != null) adViewModel.UploadFile = mUploadFile;
+                    if (adViewModel.UploadFile != null)
+                    {
+                        #region 准备上传路径
+                        var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath, LoggedOnReadOnlyUser.Id));
+                        if (!Directory.Exists(uploadFolderPath))
+                        {
+                            Directory.CreateDirectory(uploadFolderPath);
+                        }
+                        #endregion
+
+                        var uploadResult = AppHelpers.UploadFile(adViewModel.UploadFile, uploadFolderPath, LocalizationService);
+                        if (!uploadResult.UploadSuccessful)
+                        {
+                            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                            {
+                                Message = uploadResult.ErrorMessage,
+                                MessageType = GenericMessages.danger
+                            };
+                            return View(adViewModel);
+                        }
+                        ad.OriginFileName = adViewModel.UploadFileName;
+                        ad.FileName = uploadResult.UploadedFileUrl;
+
+                        _context.MembershipUserPicture.Add(ad);
+                        _context.SaveChanges();
+
+                        #region 重置审核标志位
+
+                        if (!UserIsAdmin)
+                        {
+                            var user = base.MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+                            user.AuditComments = "";
+                            user.IsApproved = false;
+                            _context.Entry<MembershipUser>(user).State = System.Data.Entity.EntityState.Modified;
+                            _context.SaveChanges();
+                        }
+
+                        #endregion
                     }
                     #endregion
 
-                    var uploadResult = AppHelpers.UploadFile(adViewModel.UploadFile, uploadFolderPath, LocalizationService);
-                    if (!uploadResult.UploadSuccessful)
-                    {
-                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                        {
-                            Message = uploadResult.ErrorMessage,
-                            MessageType = GenericMessages.danger
-                        };
-                        return View(adViewModel);
-                    }
-                    ad.OriginFileName = adViewModel.UploadFileName;
-                    ad.FileName = uploadResult.UploadedFileUrl;
-
-                    _context.MembershipUserPicture.Add(ad);
-                    _context.SaveChanges();
-
-                    #region 重置审核标志位
-
+                    string outputstr = "";
                     if (!UserIsAdmin)
                     {
-                        var user = base.MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
-                        user.AuditComments = "";
-                        user.IsApproved = false;
-                        _context.Entry<MembershipUser>(user).State = System.Data.Entity.EntityState.Modified;
-                        _context.SaveChanges();
+                        outputstr = "个人照片已上传，等待管理员审核。";
+                    }
+                    else
+                    {
+                        outputstr = "个人照片已上传。";
                     }
 
-                    #endregion
+                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    {
+
+                        Message = outputstr,
+                        MessageType = GenericMessages.info
+                    };
+                    return RedirectToAction("PrivatePictureList", "Members", new { Id = LoggedOnReadOnlyUser.Id });
                 }
 
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                {
-                    Message = "个人照片已上传，等待管理员审核。",
-                    MessageType = GenericMessages.info
-                };
-                return RedirectToAction("Edit", "Members", new { Id = LoggedOnReadOnlyUser.Id });
             }
             return View(adViewModel);
         }
@@ -1256,8 +1278,23 @@ namespace MVCForum.Website.Controllers
                 LoggingService.Error(ex);
             }
 
-            return RedirectToAction("Edit", "Members", new { Id = LoggedOnReadOnlyUser.Id });
+            return RedirectToAction("PrivatePictureList", "Members", new { Id = LoggedOnReadOnlyUser.Id });
         }
+
+        [Authorize]
+        public ActionResult PrivatePictureList(Guid Id)
+        {
+            MemberFrontEndEditViewModel model = new MemberFrontEndEditViewModel();
+            MembershipUser user = MembershipService.GetUser(Id);
+            var MembershipUserPictureslist = _MembershipUserPictureService.GetMembershipUserPictureListByUserId(user.Id);
+            model.UserName = user.UserName;
+            model.MembershipUserPictures = MembershipUserPictureslist;
+            return View(model);
+        }
+
+
+
+
 
         #endregion
 
@@ -2021,10 +2058,11 @@ namespace MVCForum.Website.Controllers
         }
 
         [HttpPost]
+        [BasicMultiButton("btn_search")]
         public ActionResult SearchEx(MembershipUserSearchModel model)
         {
             model.NoLoginDays = 0;
-            TempData["searchconfigurationmodel"] = model;
+            Session["searchconfigurationmodel"] = model;
             return RedirectToAction("SearchResult", "Members");
         }
 
@@ -2049,7 +2087,7 @@ namespace MVCForum.Website.Controllers
 
         public void LoadAllCustomersToSession()
         {
-            MembershipUserSearchModel ConfigModel = TempData["searchconfigurationmodel"] as MembershipUserSearchModel;
+            MembershipUserSearchModel ConfigModel = Session["searchconfigurationmodel"] as MembershipUserSearchModel;
             var customers = MembershipService.SearchMembers(ConfigModel, 1000);
             int custIndex = 1;
             Session["Customers"] = customers.ToDictionary(x => custIndex++, x => x);
@@ -2069,7 +2107,17 @@ namespace MVCForum.Website.Controllers
                 .ToDictionary(x => x.Key, x => x.Value);
         }
 
-
+        [Authorize]
+        [BasicMultiButton("btn_Export")]
+        public ActionResult ExportUsers()
+        {
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                MembershipUserSearchModel ConfigModel = Session["searchconfigurationmodel"] as MembershipUserSearchModel;
+                var customers = MembershipService.SearchMembers(ConfigModel, 1000).ToList();
+                return new CsvFileResult { FileDownloadName = "MVCForumUsers.csv", Body = MembershipService.ToCsv(customers, UserIsAdmin) };
+            }
+        }
         #endregion
 
 
@@ -2143,24 +2191,24 @@ namespace MVCForum.Website.Controllers
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var member = MembershipService.GetUserBySlug(slug);
-                var loggedonId = UserIsAuthenticated ? LoggedOnReadOnlyUser.Id : Guid.Empty;
-                var permissions = RoleService.GetPermissions(null, UsersRole);
-                if (member != null && member.Badges.Count > 0)
+                //var loggedonId = UserIsAuthenticated ? LoggedOnReadOnlyUser.Id : Guid.Empty;
+                if (member != null)
                 {
-                    // Localise the badge names
-                    foreach (var item in member.Badges)
+                    var loggedonId = member.Id;
+                    var permissions = RoleService.GetPermissions(null, UsersRole);
+                    var picturelist = _MembershipUserPictureService.GetMembershipUserPictureListByUserId(loggedonId);
+                    return View(new ViewMemberViewModel
                     {
-                        var partialKey = string.Concat("Badge.", item.Name);
-                        item.DisplayName = LocalizationService.GetResourceString(string.Concat(partialKey, ".Name"));
-                        item.Description = LocalizationService.GetResourceString(string.Concat(partialKey, ".Desc"));
-                    }
+                        User = member,
+                        LoggedOnUserId = loggedonId,
+                        Permissions = permissions,
+                        MembershipUserPictures = picturelist
+                    });
                 }
-                return View(new ViewMemberViewModel
+                else
                 {
-                    User = member,
-                    LoggedOnUserId = loggedonId,
-                    Permissions = permissions
-                });
+                    return View();
+                }
             }
         }
 

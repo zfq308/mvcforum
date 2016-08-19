@@ -322,7 +322,7 @@ namespace MVCForum.Website.Application
                 var storageProvider = StorageProvider.Current;
                 return storageProvider.BuildFileUrl(userId, "/", avatar, string.Format("?width={0}&crop=0,0,{0},{0}", size));
             }
-
+            email = userId.ToString().Replace("-", "") + "@163.com";
             return StringUtils.GetGravatarImage(email, size);
         }
 

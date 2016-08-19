@@ -783,6 +783,12 @@
     <Content Include="Content\Images\social-icons\youtube.png" />
     <Content Include="Content\Images\spin.gif" />
     <Content Include="Content\Images\t.jpg" />
+    <Content Include="Content\Images\t2.jpg" />
+    <Content Include="Content\Images\t3.jpg" />
+    <Content Include="Content\Images\t4.jpg" />
+    <Content Include="Content\Images\t4.png" />
+    <Content Include="Content\Images\t5.png" />
+    <Content Include="Content\Images\t6.jpg" />
     <Content Include="Content\jstree\jstree.js" />
     <Content Include="Content\jstree\jstree.min.js" />
     <Content Include="Content\jstree\themes\default\30px.png" />

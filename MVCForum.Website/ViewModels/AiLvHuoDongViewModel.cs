@@ -166,5 +166,9 @@ namespace MVCForum.Website.ViewModels
 
 
 
+    public class AiLvZhangHu_ViewModel
+    {
+        public MembershipUser User { get; set; }
+    }
 
 }

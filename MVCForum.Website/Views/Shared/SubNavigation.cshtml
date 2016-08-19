@@ -37,9 +37,6 @@
 @if (User.Identity.IsAuthenticated)
 {
     <li>
-
-
-
         <a href="@Url.Action("AiLvZhangHu", "AiLvHuoDong")"
            class="@(TempData[AppConstants.CurrentController].ToString() == "ailvhuodong" && TempData[AppConstants.CurrentAction].ToString() == "ailvzhanghu" ? "active" : "")">
             我的

@@ -1,86 +1,45 @@
-﻿@{
+﻿@model MVCForum.Website.ViewModels.AiLvZhangHu_ViewModel
+@{
     Layout = "~/Views/AiLvHuoDong/AiLvZhangHuLayout.cshtml";
-    ViewBag.Title = "爱驴账户";
+    ViewBag.Title = "我的";
 }
-
-@*@section side
-    {
-        @Html.Partial("_CommonSideNav")
-    }*@
 
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="span12">
+            <fieldset>
+                <legend>@ViewBag.Title</legend>
 
-            @*<a href="@Url.Action("Edit", "Members")">@Html.LanguageString("Buttons.Edit") @User.Identity.Name</a>*@
+                <div class="form-group">
+                    <img src="@AppHelpers.MemberImage(Model.User.Avatar, "mail@163.com", Model.User.Id, SiteConstants.Instance.GravatarProfileSize)" alt="@Model.User.UserName">
+                    <label style="font-size:24px;padding-left:30px">@Model.User.UserName</label>
 
-            <div class="tabbable" id="tabs-979034">
-                <ul class="nav nav-tabs">
-                    <li class="active">
-                        <a href="#panel-meirixinqing" data-toggle="tab" style="padding:10px 3px;">每日心情</a>
-                    </li>
-                    <li>
-                        <a href="#panel-haoyoudongtai" data-toggle="tab" style="padding:10px 3px;">好友动态</a>
-                    </li>
-                    <li>
-                        <a href="#panel-haoyouliebiao" data-toggle="tab" style="padding:10px 3px;">好友列表</a>
-                    </li>
-                    <li>
-                        <a href="#panel-sixin" data-toggle="tab" style="padding:10px 3px;">私信</a>
-                    </li>
-                </ul>
-                <div class="tab-content">
-                
-                    <div class="tab-pane active" id="panel-meirixinqing">
-                        <a href="@Url.Action("CreateMeiRiXinqing", "Topic")" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
-                            每日心情
-                        </a>
-                        <ul class="unstyled">
-                            <li>
-                                新闻资讯
-                            </li>
-                            <li>
-                                体育竞技
-                            </li>
-                            <li>
-                                娱乐八卦
-                            </li>
-                            <li>
-                                前沿科技
-                            </li>
-                            <li>
-                                环球财经
-                            </li>
-                            <li>
-                                天气预报
-                            </li>
-                            <li>
-                                房产家居
-                            </li>
-                            <li>
-                                网络游戏
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="tab-pane" id="panel-haoyoudongtai">
-                        <p>
-                            好友动态.
-                        </p>
-                    </div>
-
-                    <div class="tab-pane" id="panel-haoyouliebiao">
-                        <p>
-                            好友列表.
-                        </p>
-                    </div>
-                    <div class="tab-pane" id="panel-sixin">
-                        <p>
-                            私信.
-                        </p>
-                    </div>
                 </div>
-            </div>
-
+                <div class="form-group">
+                    <img src="~/Content/Images/t4.jpg" title="编辑个人信息" />
+                    <a style="margin-left:15px" href="@Url.Action("Edit", "Members", new { id = Model.User.Id })">编辑 @Model.User.UserName</a>
+                </div>
+                <div class="form-group">
+                    <img src="~/Content/Images/t2.jpg" title="相册" />
+                    <a style="margin-left:15px" href="@Url.Action("PrivatePictureList", "Members", new { id = Model.User.Id })">相册</a>
+                </div>
+                <div class="form-group">
+                    <img src="~/Content/Images/t3.jpg" title="每日心情" />
+                    <a style="margin-left:15px" href="@Url.Action("Edit", "Members", new { id = Model.User.Id })">每日心情</a>
+                </div>
+                <div class="form-group">
+                    <img src="~/Content/Images/t4.png" title="好友列表" />
+                    <a style="margin-left:15px" href="@Url.Action("Edit", "Members", new { id = Model.User.Id })">好友列表</a>
+                </div>
+                <div class="form-group">
+                    <img src="~/Content/Images/t5.png" title="好友动态" />
+                    <a style="margin-left:15px" href="@Url.Action("Edit", "Members", new { id = Model.User.Id })">好友动态</a>
+                </div>
+                <div class="form-group">
+                    <img src="~/Content/Images/t6.jpg" title="私信" />
+                    <a style="margin-left:15px" href="@Url.Action("View", "PrivateMessage", new { id = Model.User.Id })">私信</a>
+                </div>
+            </fieldset>
         </div>
     </div>
 </div>

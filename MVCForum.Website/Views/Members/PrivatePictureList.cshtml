@@ -28,9 +28,13 @@
                             {
                                 <span>@ad.Description</span>
                             }
-                            <a href="@Url.Action("DeletePrivatePicture", new { ad.Id })" class="btn btn-link" style="padding-top:0px; padding-bottom:0px;" title="删除这张照片" onclick="return confirm('你确认需要删除这张照片吗?')">
-                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                            </a>
+
+                            @if (User.Identity.Name == Model.UserName)
+                            {
+                                <a href="@Url.Action("DeletePrivatePicture", new { ad.Id })" class="btn btn-link" style="padding-top:0px; padding-bottom:0px;" title="删除这张照片" onclick="return confirm('你确认需要删除这张照片吗?')">
+                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                                </a>
+                            }
                         </td>
                     </tr>
                 }
@@ -38,8 +42,9 @@
             <tr>
                 <td>
                     @if (User.Identity.Name == Model.UserName)
-                    {  <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span>
-                    <a href="@Url.Action("CreatePrivatePicture")">添加个人靓照</a>
+                    {
+                        <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span>
+                        <a href="@Url.Action("CreatePrivatePicture")">添加个人靓照</a>
                     }
                 </td>
             </tr>

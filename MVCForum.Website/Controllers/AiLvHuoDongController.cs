@@ -645,12 +645,16 @@ namespace MVCForum.Website.Controllers
         }
 
         /// <summary>
-        /// 爱驴账户
+        /// 我的
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         public ActionResult AiLvZhangHu()
         {
-            return View();
+            AiLvZhangHu_ViewModel model = new AiLvZhangHu_ViewModel();
+            model.User = LoggedOnReadOnlyUser;
+
+            return View(model);
         }
 
         #endregion

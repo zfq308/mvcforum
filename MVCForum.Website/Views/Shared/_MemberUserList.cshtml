@@ -9,17 +9,54 @@
     {
         MVCForum.Domain.DomainModel.MembershipUser obj = cust.Value;
         <li class="list-group-item">
-            <div class="col-xs-6 col-sm-2 col-md-2">
-                <img src="~/Content/uploads/@obj.Avatar" alt="@obj.Id" class="img-responsive img-circle">
+            <div class="col-xs-3 col-sm-2 col-md-2  col-lg-1">
+                <img src="@AppHelpers.MemberImage(obj.Avatar, "", obj.Id, 48)" alt="@obj.UserName">
                 @*<img src="http://api.randomuser.me/portraits/men/@(random.Next(99)).jpg" alt="@obj.Id" class="img-responsive img-circle">*@
             </div>
-            <div class="col-xs-6 col-sm-10 col-md-8 col-lg-2">
-                <span class="name">@obj.AliasName</span><br />
-                <span class="text-muted">@obj.UserName</span><br />
-                @*<span>Address:</span><span class="text-muted">@cust.Value.MailingAddress</span><br />
-                    <span>Email:</span><span class="text-muted">@cust.Value.Email</span><br>*@
+            <div class="col-xs-9 col-sm-10 col-md-10 col-lg-11">
+                <a href="@obj.NiceUrl">@obj.AliasName</a>
+                @{
+                    var approveFlag = obj.IsApproved ? "(已审核)" : "(待审核)";
+                }
+                <span style="color:red">@approveFlag</span>
+                <br />
+                <span class="text-muted">
+                    @{
+                        var Gender = "";
+                        if (obj.Gender == MVCForum.Domain.DomainModel.Enum_Gender.boy)
+                        {
+                            Gender = "男";
+                        }
+                        else
+                        {
+                            Gender = "女";
+                        }
+                    }
+                    @Gender
+                </span>
+
+                <span class="text-muted">
+                    &nbsp;  &nbsp;  @obj.Age 岁
+                </span>
+
+                <span class="text-muted">
+                    @{
+                        var IsMarried = "";
+                        if (obj.IsMarried == MVCForum.Domain.DomainModel.Enum_MarriedStatus.Married)
+                        {
+                            IsMarried = "已婚";
+                        }
+                        else
+                        {
+                            IsMarried = "未婚";
+                        }
+                    }
+                    &nbsp;  &nbsp; @IsMarried
+                </span>
+
+                <br />
             </div>
             <div class="clearfix"></div>
         </li>
-    }
-}
+                            }
+                        }

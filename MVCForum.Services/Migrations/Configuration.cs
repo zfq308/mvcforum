@@ -467,7 +467,7 @@ namespace MVCForum.Services.Migrations
                         LocationCity = "110100",
                         LocationCounty = "110108",
                         Job = "BigBoss",
-                        IncomeRange = 0,
+                        IncomeRange =  Enum_IncomeRange.R_1WTo5W,
                         Interest = "发呆",
                         MobilePhone = "13686886937",
                         Avatar = "",

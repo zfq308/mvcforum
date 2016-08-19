@@ -2,6 +2,7 @@
 @using MVCForum.Utilities
 @using MVCForum.Domain.DomainModel.General
 @using MVCForum.Website.Application.ExtensionMethods
+@using MVCForum.Website.ViewModels
 
 @model MVCForum.Website.ViewModels.ViewMemberViewModel
 @{
@@ -12,33 +13,33 @@
 @section Header
 {
     @*<script type="text/javascript">
-        $(function () {
-            $.post(app_base + "Members/GetMemberDiscussions",
-                { "Id": '@Model.User.Id' },
-                function (data) {
-                    $(".memberdiscussions").html(data);
-                });
-            TimeBadges();
-        });
-        function TimeBadges() {
-            var timeBadgeViewModel = new Object();
-            timeBadgeViewModel.Id = '@Model.User.Id';
-            var strung = JSON.stringify(timeBadgeViewModel);
-            $.ajax({
-                url: app_base + 'Badge/Time',
-                type: 'POST',
-                dataType: 'html',
-                data: strung,
-                contentType: 'application/json; charset=utf-8',
-                success: function (data) {
-
-                },
-                error: function (xhr, ajaxOptions, thrownError) {
-                    ShowUserMessage("Error: " + xhr.status + " " + thrownError);
-                }
+            $(function () {
+                $.post(app_base + "Members/GetMemberDiscussions",
+                    { "Id": '@Model.User.Id' },
+                    function (data) {
+                        $(".memberdiscussions").html(data);
+                    });
+                TimeBadges();
             });
-        }
-    </script>*@
+            function TimeBadges() {
+                var timeBadgeViewModel = new Object();
+                timeBadgeViewModel.Id = '@Model.User.Id';
+                var strung = JSON.stringify(timeBadgeViewModel);
+                $.ajax({
+                    url: app_base + 'Badge/Time',
+                    type: 'POST',
+                    dataType: 'html',
+                    data: strung,
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                    }
+                });
+            }
+        </script>*@
 }
 
 @section side
@@ -103,6 +104,7 @@
                             @if (User.IsInRole(AppConstants.AdminRoleName))
                             {
                                 <b>联系方式：</b>@Model.User.MobilePhone
+
                             }
                         </p>
                         <p><b>性别:</b> @Html.Raw(Model.User.Gender == MVCForum.Domain.DomainModel.Enum_Gender.boy ? "男生" : "女生")</p>
@@ -110,8 +112,9 @@
                         <p><b>婚姻状态:</b> @Html.Raw(Model.User.IsMarried == MVCForum.Domain.DomainModel.Enum_MarriedStatus.Single ? "未婚" : "已婚")</p>
                         <p><b>身高(cm):</b> @Model.User.Height</p>
                         <p><b>体重(kg):</b> @Model.User.Weight</p>
-                        <p><b>学历:</b> @Model.User.Education                      
-                        @*@Html.ConvertEducationName(Model.User.Education)*@
+                        <p>
+                            <b>学历:</b> @Model.User.Education
+                            @*@Html.ConvertEducationName(Model.User.Education)*@
                         </p>
                         <p><b>毕业院校:</b> @Model.User.SchoolName</p>
                     </div>
@@ -123,9 +126,10 @@
                             @Html.Raw(TCountry.LoadCountryByCountryId(Convert.ToInt32(Model.User.LocationCounty)).CountryName)
                         </p>
                         <p><b>职业:</b> @Model.User.Job</p>
-                        <p><b>月收入:</b> 
-                        @Html.ConvertIncomeRange((int)Model.User.IncomeRange);
-                        
+                        <p>
+                            <b>月收入:</b>
+                            @Html.ConvertIncomeRange((int)Model.User.IncomeRange);
+
                         </p>
                         <p><b>账号创建时间:</b> @DatesUI.GetPrettyDate(Model.User.CreateDate.ToString())</p>
                         <p><b>账号状态:</b> @Html.Raw(Model.User.IsApproved ? "已审核" : "待审核")</p>
@@ -148,32 +152,60 @@
                 </div>
             </div>
 
-            <div class="membersection memberlatesttopics">
-                <h3>@Html.LanguageString("Members.Profile.DiscussionActivity")</h3>
-                <div class="memberdiscussions">
-                    <span class="ajaxspinner" title="@Html.LanguageString(" Ajax.PleaseWait")">@Html.LanguageString("Ajax.PleaseWait")</span>
-                </div>
+            <div class="form-group">
+               <h3>个人相册</h3>
+                @{
+                    var model2 = new MemberFrontEndEditViewModel();
+                    model2.UserName = Model.User.UserName;
+                    model2.Id = Model.LoggedOnUserId;
+                    model2.MembershipUserPictures = Model.MembershipUserPictures;
+                }
+                @Html.Partial("PrivatePictureList", model2);
             </div>
-
-
-            @*@if (Model.User.Badges != null && Model.User.Badges.Any())
-            {
-                <div class="membersection badgeactivity">
-                    <h3>@Html.LanguageString("Members.Profile.Badges")</h3>
-                    @foreach (var badge in Model.User.Badges)
-                    {
-                        @Html.Partial("_Badge", badge)
-                    }
-                </div>
-            }*@
-
-            @if (User.IsInRole(AppConstants.AdminRoleName))
+            @*@if (User.IsInRole(AppConstants.AdminRoleName))
             {
                 <div class="membersection adminpublicomments">
                     @Html.Raw(Model.User.Comment)
                 </div>
-            }
+            }*@
 
+            @*<div class="membersection memberlatesttopics">
+                    <h3>@Html.LanguageString("Members.Profile.DiscussionActivity")</h3>
+                    <div class="memberdiscussions">
+                        <span class="ajaxspinner" title="@Html.LanguageString(" Ajax.PleaseWait")">@Html.LanguageString("Ajax.PleaseWait")</span>
+                    </div>
+                </div>
+            <div class="membersection memberlatesttopics">
+                <h3></h3>
+                <div class="memberdiscussions">
+                    <span class="ajaxspinner" title="@Html.LanguageString(" Ajax.PleaseWait")"></span>
+                </div>
+            </div><div class="membersection memberlatesttopics">
+                <h3></h3>
+                <div class="memberdiscussions">
+                    <span class="ajaxspinner" title="@Html.LanguageString(" Ajax.PleaseWait")"></span>
+                </div>
+            </div>
+            @if (Model.User.Badges != null && Model.User.Badges.Any())
+                {
+                    <div class="membersection badgeactivity">
+                        <h3>@Html.LanguageString("Members.Profile.Badges")</h3>
+                        @foreach (var badge in Model.User.Badges)
+                        {
+                            @Html.Partial("_Badge", badge)
+                        }
+                    </div>
+                }
+            <div class="membersection badgeactivity">
+                <h3></h3>
+            </div>
+            <div class="membersection badgeactivity">
+                <h3></h3>
+            </div>*@
+
+
+
+         
         </div>
 
     </div>
