@@ -208,7 +208,6 @@ namespace MVCForum.Services
             return new PagedList<Topic>(results, pageIndex, pageSize, total);
         }
 
-
         public IList<Topic> GetRecentTopics(int amountToTake, Category allowedCategory)
         {
             var total = _context.Topic.AsNoTracking().Count(x => x.Pending != true && x.Category.Id == allowedCategory.Id);

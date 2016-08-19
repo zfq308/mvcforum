@@ -29,17 +29,30 @@ namespace MVCForum.Services
         private readonly IUploadedFileService _uploadedFileService;
         private readonly ILoggingService _loggingService;
         private readonly IMembershipService _membershipService;
+        private readonly IActivityRegisterService _ActivityRegisterService;
+        private readonly ITopicService _topicservice;
+        private readonly ICategoryService _categoryService;
+        private readonly IPostService _postservice;
 
         #endregion
 
         #region 建构式
 
-        public AiLvHuoDongService(IMVCForumContext context, ISettingsService settingsService, ILoggingService loggingService, IUploadedFileService uploadedFileService, IMembershipService membershipService)
+        public AiLvHuoDongService(IMVCForumContext context, ISettingsService settingsService, ILoggingService loggingService,
+            IUploadedFileService uploadedFileService, IMembershipService membershipService,
+            IActivityRegisterService activityRegisterService,
+            ICategoryService categoryservice,
+            IPostService postservice,
+            ITopicService topicservice)
         {
             _settingsService = settingsService;
             _loggingService = loggingService;
             _uploadedFileService = uploadedFileService;
             _membershipService = membershipService;
+            _ActivityRegisterService = activityRegisterService;
+            _topicservice = topicservice;
+            _categoryService = categoryservice;
+            _postservice = postservice;
             _context = context as MVCForumContext;
 
         }
@@ -68,7 +81,45 @@ namespace MVCForum.Services
         {
             try
             {
+                // 删除报名者
+                var registerlist = _ActivityRegisterService.GetActivityRegisterListByHongDong(huodong);
+                if (registerlist != null && registerlist.Count > 0)
+                {
+                    foreach (var item in registerlist)
+                    {
+                        _context.ActivityRegister.Remove(item);
+                    }
+                }
+
+                // 删除活动记录
+                var allowedAccessCategories = new List<Category>();
+                allowedAccessCategories.Add(_categoryService.GetCategoryByEnumCategoryType(EnumCategoryType.AiLvJiLu));
+                var topic = _topicservice.GetAll(allowedAccessCategories).Where(x => x.Name == "【" + huodong.MingCheng.Trim() + "】的活动记录").FirstOrDefault();
+
+                var postlist = _postservice.GetPostsByTopic(topic.Id);
+
+                _context.SaveChanges();
+
+                if (postlist!=null && postlist.Count>0)
+                {
+                    foreach (var post in postlist)
+                    {
+                        _context.Post.Attach(post);
+                        _context.Post.Remove(post);
+                        _context.Entry<Post>(post).State = EntityState.Deleted;
+                    }
+                    _context.SaveChanges();
+                }
+
+                _context.Topic.Attach(topic);
+                _context.Topic.Remove(topic);
+                _context.Entry<Topic>(topic).State = EntityState.Deleted;
+                _context.SaveChanges();
+
+                _context.AiLvHuoDong.Attach(huodong);
                 _context.AiLvHuoDong.Remove(huodong);
+                _context.Entry<AiLvHuoDong>(huodong).State = EntityState.Deleted;
+                _context.SaveChanges();
                 return true;
             }
             catch (Exception ex)
@@ -80,7 +131,7 @@ namespace MVCForum.Services
 
         #endregion
 
-        #region 查询/取得爱驴活动记录
+        #region 查询/取得爱驴活动实例
 
         public AiLvHuoDong Get(Guid id)
         {
@@ -92,7 +143,7 @@ namespace MVCForum.Services
             return _context.AiLvHuoDong.AsNoTracking().ToList();
         }
 
-      
+
         public IList<AiLvHuoDong> GetRecentAiLvHuodong(int amountToTake)
         {
             var results = _context.AiLvHuoDong.AsNoTracking().Where(x => x.ShenHeBiaoZhi == Enum_ShenHeBiaoZhi.AuditSuccess)

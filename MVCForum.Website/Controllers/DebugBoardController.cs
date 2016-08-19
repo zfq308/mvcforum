@@ -9,6 +9,7 @@ using MVCForum.Website.Application.ActionFilterAttributes;
 using MVCForum.Website.Areas.Admin.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Diagnostics;
 using System.Linq;
 using System.Web;
@@ -22,6 +23,7 @@ namespace MVCForum.Website.Controllers
     {
         log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private readonly MVCForumContext _context;
+        private readonly IAiLvHuoDongService _aiLvHuoDongService;
 
         #region 建构式
 
@@ -31,11 +33,12 @@ namespace MVCForum.Website.Controllers
             IMembershipService membershipService,
             ILocalizationService localizationService,
             IRoleService roleService,
+            IAiLvHuoDongService aiLvHuoDongService,
             ISettingsService settingsService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _context = context as MVCForumContext;
-
+            _aiLvHuoDongService = aiLvHuoDongService;
 
         }
 
@@ -124,10 +127,40 @@ namespace MVCForum.Website.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public ActionResult ClearAiLvHuodong()
         {
-            //TODO: 待完成
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            {
+                try
+                {
+                    var allHuodong = _aiLvHuoDongService.GetAll();
+                    if (allHuodong != null && allHuodong.Count > 0)
+                    {
+                        foreach (var item in allHuodong)
+                        {
+                            _aiLvHuoDongService.Delete(item);
+                            _context.Entry<AiLvHuoDong>(item).State = EntityState.Deleted;
+                        }
+                    }
+                    _context.SaveChanges();
+                    unitOfWork.Commit();
+                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    {
+                        Message = "历史活动及其记录已清除。",
+                        MessageType = GenericMessages.info
+                    };
+                    return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
+                }
+                catch (Exception ex)
+                {
+                    unitOfWork.Rollback();
+                    LoggingService.Error(ex);
+                    ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
+                }
+                return View();
+
+            }
             return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
         }
 
