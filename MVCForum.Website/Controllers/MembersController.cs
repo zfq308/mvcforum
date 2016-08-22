@@ -50,6 +50,7 @@ namespace MVCForum.Website.Controllers
         private readonly IVerifyCodeService _verifyCodeService;
         private readonly MVCForumContext _context;
         private readonly IMembershipUserPictureService _MembershipUserPictureService;
+        private readonly IMembershipTodayStarService _MembershipTodayStarService;
         #endregion
 
         public MembersController(IMVCForumContext context,
@@ -73,7 +74,8 @@ namespace MVCForum.Website.Controllers
             IVoteService voteService,
             ICategoryService categoryService,
             ITopicService topicService,
-            IMembershipUserPictureService MembershipUserPictureService
+            IMembershipUserPictureService MembershipUserPictureService,
+            IMembershipTodayStarService MembershipTodayStarService
             )
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
@@ -88,6 +90,7 @@ namespace MVCForum.Website.Controllers
             _verifyCodeService = verifyCodeService;
 
             _MembershipUserPictureService = MembershipUserPictureService;
+            _MembershipTodayStarService = MembershipTodayStarService;
 
         }
 
@@ -1335,7 +1338,7 @@ namespace MVCForum.Website.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = AppConstants.AdminRoleName)]
         public ActionResult Audit(MemberFrontEndEditViewModel userModel)
         {
             if (string.IsNullOrEmpty(userModel.AuditComment) || userModel.Id == Guid.Empty)
@@ -2186,6 +2189,17 @@ namespace MVCForum.Website.Controllers
             return Json(new { Timer = "reset" }, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        [Authorize(Roles = AppConstants.AdminRoleName)]
+        public ActionResult SubmitMeiRiZhiXing(ViewMemberViewModel model)
+        {
+            //Guid Id, DateTime starttime, DateTime stoptime
+
+            return RedirectToAction("Index", "Home");
+
+        }
+
+
         public ActionResult GetByName(string slug)
         {
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -2197,12 +2211,27 @@ namespace MVCForum.Website.Controllers
                     var loggedonId = member.Id;
                     var permissions = RoleService.GetPermissions(null, UsersRole);
                     var picturelist = _MembershipUserPictureService.GetMembershipUserPictureListByUserId(loggedonId);
+                    var meiRiZhiXing = _MembershipTodayStarService.Get(member);
+                    if (meiRiZhiXing == null)
+                    {
+                        meiRiZhiXing = new MembershipTodayStar()
+                        {
+                            JobId = "",
+                            CreateDate = DateTime.Now,
+                            StartTime = DateTime.Now,
+                            StopTime = DateTime.Now.AddDays(7),
+                            Operator = LoggedOnReadOnlyUser.UserName,
+                            Status =  false,
+                            UserId = loggedonId
+                        };
+                    }
                     return View(new ViewMemberViewModel
                     {
                         User = member,
                         LoggedOnUserId = loggedonId,
                         Permissions = permissions,
-                        MembershipUserPictures = picturelist
+                        MembershipUserPictures = picturelist,
+                        MeiRiZhiXing = meiRiZhiXing
                     });
                 }
                 else

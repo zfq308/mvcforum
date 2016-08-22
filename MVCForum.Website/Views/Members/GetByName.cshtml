@@ -67,14 +67,13 @@
                         <p>
                             @if (User.IsInRole(AppConstants.AdminRoleName))
                             {
-                            <b>真实姓名:</b> @Model.User.RealName
+                                <b>真实姓名:</b> @Model.User.RealName
                             }
                         </p>
                         <p>
                             @if (User.IsInRole(AppConstants.AdminRoleName))
                             {
-                            <b>联系方式：</b>@Model.User.MobilePhone
-
+                                <b>联系方式：</b>@Model.User.MobilePhone
                             }
                         </p>
                         <p><b>性别:</b> @Html.Raw(Model.User.Gender == MVCForum.Domain.DomainModel.Enum_Gender.boy ? "男生" : "女生")</p>
@@ -84,9 +83,6 @@
                         <p><b>体重(kg):</b> @Model.User.Weight</p>
                         <p>
                             <b>学历:</b>
-                            @*@{
-                                    var EducationName = TEducation.LoadEducationByEducationId(Model.User.Education).EducationName;
-                                }*@
                             @Model.User.Education
                         </p>
                         <p><b>毕业院校:</b> @Model.User.SchoolName</p>
@@ -102,25 +98,19 @@
                         <p>
                             <b>月收入:</b>
                             @Html.ConvertIncomeRange((int)Model.User.IncomeRange);
-
                         </p>
                         <p><b>账号创建时间:</b> @DatesUI.GetPrettyDate(Model.User.CreateDate.ToString())</p>
                         <p><b>账号状态:</b> @Html.Raw(Model.User.IsApproved ? "已审核" : "待审核")</p>
-
-
                         @if (Model.User.LastActivityDate != null)
                         {
-                        <p><b>最后上线时间:</b> @DatesUI.GetPrettyDate(Model.User.LastActivityDate.ToString())</p>
+                            <p><b>最后上线时间:</b> @DatesUI.GetPrettyDate(Model.User.LastActivityDate.ToString())</p>
                         }
-
                         <p>
                             @if (User.IsInRole(AppConstants.AdminRoleName))
                             {
-                            <b>用户类型:</b> @Model.User.UserType
+                                <b>用户类型:</b> @Model.User.UserType
                             }
                         </p>
-
-
                     </div>
                 </div>
             </div>
@@ -135,6 +125,44 @@
                 }
                 @Html.Partial("PrivatePictureList", model2)
             </div>
+
+            @if (User.IsInRole(AppConstants.AdminRoleName))
+            {
+                <div class="form-group">
+                    <h3>每日之星</h3>
+                    @using (Html.BeginForm("SubmitMeiRiZhiXing", "Members", FormMethod.Post, new { enctype = "multipart/form-data"}))
+                    {
+                        @Html.HiddenFor(x=>x.MeiRiZhiXing.UserId)
+                        <div class="form-group" >
+                            <span>开始时间</span>
+                            @Html.TextBoxFor(model => model.MeiRiZhiXing.StartTime, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.MeiRiZhiXing.StartTime)
+                        </div>
+                        <div class="form-group">
+                            <span>结束时间</span>
+                            @Html.TextBoxFor(model => model.MeiRiZhiXing.StopTime, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.MeiRiZhiXing.StopTime)
+                        </div>
+                        @*<div class="form-group">
+                            <span>生效标志</span>
+                            @Html.TextBoxFor(model => model.MeiRiZhiXing.Status, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.MeiRiZhiXing.Status)
+                        </div>*@
+                        <div class="form-group">
+                            <span>激活每日之星</span>
+                            @Html.CheckBoxFor(model => model.MeiRiZhiXing.Status , new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.MeiRiZhiXing.Status)
+                        </div>
+                        if (Model.User.Id != Guid.Empty)
+                        {
+                            <button type="submit" name="btn_SubmitMeiRiZhiXing" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
+                                设定每日之星
+                            </button><br />
+                        }
+                    }
+                </div>
+
+            }
 
         </div>
 

@@ -340,6 +340,8 @@ namespace MVCForum.Website.ViewModels
         public Guid LoggedOnUserId { get; set; }
         public PermissionSet Permissions { get; set; }
         public IList<MembershipUserPicture> MembershipUserPictures { get; set; }
+        public MembershipTodayStar MeiRiZhiXing { get; set; }
+
     }
 
     public class ViewMemberDiscussionsViewModel

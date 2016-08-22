@@ -62,23 +62,23 @@ namespace MVCForum.Domain.DomainModel
         /// <summary>
         /// 正常已审核的注册会员
         /// </summary>
-        Normal=1,
+        Normal = 1,
         /// <summary>
         /// 等待审核的注册会员
         /// </summary>
-        WaitingForApprove=2,
+        WaitingForApprove = 2,
         /// <summary>
         /// 用户状态被锁定
         /// </summary>
-        IsLocked=3,
+        IsLocked = 3,
         /// <summary>
         /// 用户状态被禁用
         /// </summary>
-        IsBanned=4,
+        IsBanned = 4,
         /// <summary>
         /// 用户在每日之星推广阶段
         /// </summary>
-        IsStar=5,
+        IsStar = 5,
     }
 
     /// <summary>
@@ -749,7 +749,7 @@ namespace MVCForum.Domain.DomainModel
             UserId = userid;
             StartTime = starttime;
             StopTime = stoptime;
-            Status = (int)status;
+            Status = status == MembershipTodayStarStatus.Valid ? true : false;
         }
 
         #region 相关属性
@@ -773,7 +773,7 @@ namespace MVCForum.Domain.DomainModel
         /// <summary>
         /// 今日之星记录的状态：1为有效，0为无效
         /// </summary>
-        public int Status { get; set; }
+        public bool Status { get; set; }
         /// <summary>
         /// 今日之星操作票据流水号，默认为空，有值时为支付/购买交易的流水号
         /// </summary>

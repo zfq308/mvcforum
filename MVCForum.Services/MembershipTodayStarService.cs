@@ -42,10 +42,10 @@ namespace MVCForum.Services
         {
             try
             {
-                var collection = _context.MembershipTodayStar.Where(x => x.Status == (int)MembershipTodayStarStatus.Valid).ToList();
+                var collection = _context.MembershipTodayStar.Where(x => x.Status == true).ToList();
                 foreach (MembershipTodayStar item in collection)
                 {
-                    if (item.StopTime < DateTime.Now) item.Status = (int)MembershipTodayStarStatus.Invalid;
+                    if (item.StopTime < DateTime.Now) item.Status = false;
                 }
                 _context.SaveChanges();
 
@@ -92,7 +92,7 @@ namespace MVCForum.Services
 
         public List<MembershipTodayStar> LoadAllAvailidUsers()
         {
-            return _context.MembershipTodayStar.Where(x => x.Status == (int)MembershipTodayStarStatus.Valid).ToList();
+            return _context.MembershipTodayStar.Where(x => x.Status == true).ToList();
         }
     }
 
