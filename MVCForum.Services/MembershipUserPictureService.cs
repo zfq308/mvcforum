@@ -49,7 +49,7 @@ namespace MVCForum.Services
         {
             if (PictureOwner != null)
             {
-                AuditMembershipUserPicture(PictureOwner, AuditComment, Status);
+                AuditMembershipUserPicture(PictureOwner.Id, AuditComment, Status);
             }
         }
 
