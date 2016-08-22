@@ -156,7 +156,6 @@ namespace MVCForum.Website.Controllers
         }
         #endregion
 
-
         #region 活动记录
         public PartialViewResult CreateTopicButtonForHuodongJilu()
         {
@@ -177,7 +176,7 @@ namespace MVCForum.Website.Controllers
             {
                 var viewModel = PrePareCreateEditTopicViewModel(allowedAccessCategories);
                 viewModel.TopicType = Enum_TopicType.Announcement;
-                viewModel.Name = "的记录";
+                viewModel.Name = "【】的活动记录"; ;
                 return View(viewModel);
             }
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
