@@ -410,21 +410,99 @@ namespace MVCForum.Services.Migrations
 
                 CategoryPermissionForRoleService cprs = new CategoryPermissionForRoleService(context);
                 //TODO: 重要！！！权限系统，需要为不同的角色，Category分配权限
+            
                 cprs.Add(new CategoryPermissionForRole()
                 {
-                    Category = Category_AiLvZiXun,
-                    MembershipRole = adminRole,
+                    Category = Category_MeiRiXinqing,
+                    MembershipRole = standardRole,
                     Permission = Permission_CreateTopics,
                     IsTicked = true,
                 });
 
                 cprs.Add(new CategoryPermissionForRole()
                 {
-                    Category = Category_AiLvZiXun,
-                    MembershipRole = adminRole,
+                    Category = Category_MeiRiXinqing,
+                    MembershipRole = standardRole,
                     Permission = Permission_AttachFiles,
                     IsTicked = true,
                 });
+
+                cprs.Add(new CategoryPermissionForRole()
+                {
+                    Category = Category_MeiRiXinqing,
+                    MembershipRole = standardRole,
+                    Permission = Permission_Global_InsertEditorImages,
+                    IsTicked = true,
+                });
+
+
+
+                cprs.Add(new CategoryPermissionForRole()
+                {
+                    Category = Category_MeiRiXinqing,
+                    MembershipRole = SupplierRole,
+                    Permission = Permission_CreateTopics,
+                    IsTicked = true,
+                });
+
+                cprs.Add(new CategoryPermissionForRole()
+                {
+                    Category = Category_MeiRiXinqing,
+                    MembershipRole = SupplierRole,
+                    Permission = Permission_AttachFiles,
+                    IsTicked = true,
+                });
+
+                cprs.Add(new CategoryPermissionForRole()
+                {
+                    Category = Category_MeiRiXinqing,
+                    MembershipRole = SupplierRole,
+                    Permission = Permission_Global_InsertEditorImages,
+                    IsTicked = true,
+                });
+
+
+
+
+
+
+
+                cprs.Add(new CategoryPermissionForRole()
+                {
+                    Category = Category_AiLvJiLu,
+                    MembershipRole = SupplierRole,
+                    Permission = Permission_CreateTopics,
+                    IsTicked = true,
+                });
+
+                cprs.Add(new CategoryPermissionForRole()
+                {
+                    Category = Category_AiLvJiLu,
+                    MembershipRole = SupplierRole,
+                    Permission = Permission_AttachFiles,
+                    IsTicked = true,
+                });
+
+                cprs.Add(new CategoryPermissionForRole()
+                {
+                    Category = Category_AiLvJiLu,
+                    MembershipRole = SupplierRole,
+                    Permission = Permission_Global_InsertEditorImages,
+                    IsTicked = true,
+                });
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                 cprs.Add(new CategoryPermissionForRole()
                 {
@@ -433,6 +511,14 @@ namespace MVCForum.Services.Migrations
                     Permission = Permission_Global_InsertEditorImages,
                     IsTicked = true,
                 });
+
+
+
+
+
+
+
+
 
                 context.SaveChanges();
 

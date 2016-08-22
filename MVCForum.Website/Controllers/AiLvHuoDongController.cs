@@ -15,6 +15,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using MVCForum.Website.ViewModels.Mapping;
+using MVCForum.Website.Application;
 
 namespace MVCForum.Website.Controllers
 {
@@ -438,7 +439,29 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-
+        [Authorize]
+        [HttpPost]
+        public ActionResult ExportHuoDongUsers(Guid id)
+        {
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                List<MembershipUser> customers = null;
+                var collection = _ActivityRegisterService.GetActivityRegisterListByHongDongId(id).ToList();
+                if (collection != null && collection.Count > 0)
+                {
+                    customers = new List<MembershipUser>();
+                    foreach (var item in collection)
+                    {
+                        MembershipUser user = _MembershipService.GetUser(item.UserId);
+                        if (!customers.Contains(user))
+                        {
+                            customers.Add(user);
+                        }
+                    }
+                }
+                return new CsvFileResult { FileDownloadName = "MVCForumUsers.csv", Body = MembershipService.ToCsv(customers, UserIsAdmin) };
+            }
+        }
 
 
         #endregion
@@ -521,6 +544,24 @@ namespace MVCForum.Website.Controllers
 
         #endregion
 
+
+
+        [Authorize]
+        public ActionResult DailyRecord()
+        {
+            var JiluList = new MeiRiXinQing_ListViewModel { Topics = new List<TopicViewModel>() };
+            var topics = _topicService.GetAllTopicsByCondition(EnumCategoryType.MeiRiXinqing, LoggedOnReadOnlyUser);
+            if (topics != null && topics.Count > 0)
+            {
+                var settings = SettingsService.GetSettings();
+                var allowedCategories = new List<Category>();
+                allowedCategories.Add(_categoryservice.GetCategoryByEnumCategoryType(EnumCategoryType.MeiRiXinqing));
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, settings);
+                JiluList.Topics.AddRange(topicViewModels);
+            }
+            return View(JiluList);
+        }
+
         #region 爱驴资讯模块
 
         public ActionResult ZuiXinZiXun()
@@ -594,15 +635,15 @@ namespace MVCForum.Website.Controllers
                 EditModel.GirlJoiner = new List<MembershipUser>();
                 foreach (ActivityRegister ar in userlist)
                 {
-                    if (ar.UserGender== Enum_Gender.boy)
+                    if (ar.UserGender == Enum_Gender.boy)
                     {
-                       if(!BoyUserId.Contains(ar.UserId))
+                        if (!BoyUserId.Contains(ar.UserId))
                         {
                             BoyUserId.Add(ar.UserId);
-                            var user = _MembershipService.GetUser(ar.UserId);
-                            if(user!=null)
+                            MembershipUser user1 = _MembershipService.GetUser(ar.UserId);
+                            if (user1 != null)
                             {
-                                EditModel.BoyJoinner.Add(ar.User);
+                                EditModel.BoyJoinner.Add(user1);
                             }
                         }
                     }
@@ -611,10 +652,10 @@ namespace MVCForum.Website.Controllers
                         if (!GirlUserId.Contains(ar.UserId))
                         {
                             GirlUserId.Add(ar.UserId);
-                            var user = _MembershipService.GetUser(ar.UserId);
-                            if (user != null)
+                            MembershipUser user1 = _MembershipService.GetUser(ar.UserId);
+                            if (user1 != null)
                             {
-                                EditModel.GirlJoiner.Add(ar.User);
+                                EditModel.GirlJoiner.Add(user1);
                             }
                         }
 

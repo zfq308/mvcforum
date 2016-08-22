@@ -85,7 +85,7 @@ namespace MVCForum.Website.Controllers
             decimal t = MyStopWatch.ElapsedMilliseconds;
             logger.Debug(string.Format("生成5个供应商测试账号执行完毕.Timecost:{0} seconds.", t / 1000));
 
-            return RedirectToAction("Register", "Members");
+            return RedirectToAction("Index", "DebugBoard");
             //return Content("生成5个供应商测试账号执行完毕");
         }
 
@@ -121,7 +121,7 @@ namespace MVCForum.Website.Controllers
             MyStopWatch.Stop();
             decimal t = MyStopWatch.ElapsedMilliseconds;
             logger.Debug(string.Format("生成50个测试账号执行完毕.Timecost:{0} seconds.", t / 1000));
-            return RedirectToAction("Register", "Members");
+            return RedirectToAction("Index", "DebugBoard");
             //return Content("生成50个测试账号执行完毕");
         }
 

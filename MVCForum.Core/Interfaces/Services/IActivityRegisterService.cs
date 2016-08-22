@@ -7,6 +7,8 @@ using MVCForum.Domain.Interfaces.UnitOfWork;
 namespace MVCForum.Domain.Interfaces.Services
 {
 
+
+
     public partial interface IActivityRegisterService
     {
         ActivityRegister Add(ActivityRegister newRegister);

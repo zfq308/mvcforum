@@ -284,6 +284,7 @@ namespace MVCForum.Services
             ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.Interest).SetStringTypeEnum(EnumStringType.Language_ChineseFourWord);
             ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.MobilePhone).SetStringTypeEnum(EnumStringType.HumanData_ChineseMobileNumber);
             ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.IsApproved);
+            ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.Job).SetStringTypeEnum(EnumStringType.HumanData_ChineseJob);
 
             int count = 50;
             var items = ReflectionDataGenerate.Items<MembershipUser>(count).ToList();
@@ -343,60 +344,70 @@ namespace MVCForum.Services
         /// </summary>
         public void Create5SupplierAccount()
         {
-            for (int i = 100; i < 105; i++)
+            ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.UserName).SetStringTypeEnum(EnumStringType.RandomString, 6, 6);
+            ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.RealName).SetStringTypeEnum(EnumStringType.HumanData_ChineseName);
+            ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.Email).SetStringTypeEnum(EnumStringType.HumanData_EmailAddress);
+            ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.Birthday).Range(new DateTime(1980, 1, 1), new DateTime(2003, 1, 1));
+            ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.Height).UseMin(150).UseMax(200);
+            ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.Weight).UseMin(45).UseMax(110);
+            ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.HomeTown).SetStringTypeEnum(EnumStringType.GEOData_ChineseHomeTown);
+            ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.SchoolName).SetStringTypeEnum(EnumStringType.HumanData_ChineseSchoolName);
+            ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.Interest).SetStringTypeEnum(EnumStringType.Language_ChineseFourWord);
+            ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.MobilePhone).SetStringTypeEnum(EnumStringType.HumanData_ChineseMobileNumber);
+            ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.IsApproved);
+            ReflectionDataGenerate.ForClass<MembershipUser>().Property(f => f.Job).SetStringTypeEnum(EnumStringType.HumanData_ChineseJob);
+
+            int count = 5;
+            var items = ReflectionDataGenerate.Items<MembershipUser>(count).ToList();
+            var EducationList = new List<string>();
+            EducationList.AddRange(TEducation.LoadAllEducationList().Select(x =>
             {
-                var user = new MembershipUser
-                {
-                    #region 基本信息
-                    UserName = "Supplier" + i.ToString().Substring(1),
-                    RealName = "供应商账号_" + i.ToString().Substring(1),
-                    AliasName = "供应商账号_" + i.ToString().Substring(1),
-                    Email = "Test@email.com",
-                    Gender = (i % 2 == 0) ? Enum_Gender.boy : Enum_Gender.girl,
-                    Birthday = new DateTime(2000, 1, 1),
-                    IsLunarCalendar = Enum_Calendar.PublicCalendar,
-                    IsMarried = (i % 2 == 0) ? Enum_MarriedStatus.Married : Enum_MarriedStatus.Single,
-                    Height = i + 50,
-                    Weight = 50,
-                    Education = "硕士",
-                    HomeTown = "深圳市龙华新区",
-                    SchoolProvince = "110000",
-                    SchoolCity = "110100",
-                    SchoolName = "我的大学",
-                    LocationProvince = "110000",
-                    LocationCity = "110100",
-                    LocationCounty = "110108",
-                    Job = "BigBoss",
-                    IncomeRange = (i % 2 == 0) ? Enum_IncomeRange.R_5WMore : Enum_IncomeRange.R_Lowthan1W,
-                    Interest = "发呆",
-                    MobilePhone = "13686886937",
-                    Avatar = "",
-                    #endregion
+                return x.EducationName;
+            }));
+            var CountryList = TCountry.LoadAllCountry();
 
-                    Password = "password",
-                    IsApproved = true,  //默认为已审核状态
-                    CreateDate = DateTime.Now,
-                    LastLoginDate = DateTime.Now,
-                    LastUpdateTime = DateTime.Now,
-                    UserType = Enum_UserType.A,
-                    Slug = ServiceHelpers.CreateUrl("Supplier" + i.ToString().Substring(1)),
-                    DisablePosting = false,
-                    DisablePrivateMessages = false,
-                    DisableFileUploads = false,
-                    Comment = "Supplier" + i.ToString().Substring(1)
+            for (int i = 0; i < count; i++)
+            {
+                var item = items[i];
+                item.RealName = "Supplier" + item.UserName;
+                item.AliasName = item.RealName ;
+                item.Gender = RandomHelper.GetEnum<Enum_Gender>();
+                item.IsLunarCalendar = RandomHelper.GetEnum<Enum_Calendar>();
 
-                };
+                item.IsMarried = RandomHelper.GetEnum<Enum_MarriedStatus>();
+                item.Education = RandomHelper.GetListElement<string>(EducationList);
+
+                var schoolInfo = RandomHelper.GetListElement<TCountry>(CountryList);
+                item.SchoolProvince = schoolInfo.ProvinceId.ToString();
+                item.SchoolCity = schoolInfo.CityId.ToString();
+
+                var locationInfo = RandomHelper.GetListElement<TCountry>(CountryList);
+                item.LocationProvince = locationInfo.ProvinceId.ToString();
+                item.LocationCity = locationInfo.CityId.ToString();
+                item.LocationCounty = locationInfo.CountryId.ToString();
+                item.IncomeRange = RandomHelper.GetEnum<Enum_IncomeRange>();
+                item.Avatar = "";
+                item.UserType = RandomHelper.GetEnum<Enum_UserType>();
+                item.Password = "password";
+                item.CreateDate = DateTime.Now;
+                item.LastLoginDate = DateTime.Now;
+                item.LastUpdateTime = DateTime.Now;
+                item.Slug = ServiceHelpers.CreateUrl("Test_Supplier" + i.ToString());
+                item.DisablePosting = false;
+                item.DisablePrivateMessages = false;
+                item.DisableFileUploads = false;
+                item.Comment = "Test" + i.ToString();
+
                 // Hash the password
                 var salt = StringUtils.CreateSalt(AppConstants.SaltSize);
-                var hash = StringUtils.GenerateSaltedHash(user.Password, salt);
-                user.Password = hash;
-                user.PasswordSalt = salt;
+                var hash = StringUtils.GenerateSaltedHash(item.Password, salt);
+                item.Password = hash;
+                item.PasswordSalt = salt;
 
-                var SupplierRole = _context.MembershipRole.FirstOrDefault(x => x.RoleName == AppConstants.SupplierRoleName);
-                // Put the admin in the admin role
-                user.Roles = new List<MembershipRole> { SupplierRole };
+                var SupplierRoleName = _context.MembershipRole.FirstOrDefault(x => x.RoleName == AppConstants.SupplierRoleName);
+                item.Roles = new List<MembershipRole> { SupplierRoleName };
 
-                _context.MembershipUser.Add(user);
+                _context.MembershipUser.Add(item);
             }
         }
 

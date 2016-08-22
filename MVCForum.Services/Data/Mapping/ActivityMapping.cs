@@ -1,5 +1,6 @@
 ﻿using System.Data.Entity.ModelConfiguration;
 using MVCForum.Domain.DomainModel.Activity;
+using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Services.Data.Mapping
 {
@@ -17,4 +18,7 @@ namespace MVCForum.Services.Data.Mapping
             Property(x => x.Type).IsRequired().HasMaxLength(50);
         }
     }
+
+
+
 }

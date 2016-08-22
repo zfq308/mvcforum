@@ -304,8 +304,6 @@ namespace MVCForum.Services
         /// <returns></returns>
         public PagedList<Topic> GetPagedTopicsByCategory(int pageIndex, int pageSize, int amountToTake, Guid categoryId)
         {
-            // We might only want to display the top 100
-            // but there might not be 100 topics
             var total = _context.Topic.Count(x => x.Category.Id == categoryId);
             if (amountToTake < total)
             {
@@ -327,8 +325,57 @@ namespace MVCForum.Services
                                 .Take(pageSize)
                                 .ToList();
 
+
+
             // Return a paged list
             return new PagedList<Topic>(results, pageIndex, pageSize, total);
+        }
+
+        public PagedList<Topic> GetPagedTopicsByCategory(int pageIndex, int pageSize, int amountToTake, Guid categoryId, Guid FilterUserId)
+        {
+            var total = _context.Topic.Count(x => x.Category.Id == categoryId);
+            if (amountToTake < total)
+            {
+                total = amountToTake;
+            }
+
+            if (FilterUserId == Guid.Empty)
+            {
+                var results = _context.Topic
+                                    .Include(x => x.Category)
+                                    .Include(x => x.LastPost.User)
+                                    .Include(x => x.User)
+                                    .Include(x => x.Poll)
+                                    .AsNoTracking()
+                                    .Where(x => x.Category.Id == categoryId)
+                                    .Where(x => x.Pending != true)
+                                    .OrderByDescending(x => x.IsSticky)
+                                    .ThenByDescending(x => x.LastPost.DateCreated)
+                                    .Skip((pageIndex - 1) * pageSize)
+                                    .Take(pageSize)
+                                    .ToList();
+
+                return new PagedList<Topic>(results, pageIndex, pageSize, total);
+            }
+            else
+            {
+                var results = _context.Topic
+                                   .Include(x => x.Category)
+                                   .Include(x => x.LastPost.User)
+                                   .Include(x => x.User)
+                                   .Include(x => x.Poll)
+                                   .AsNoTracking()
+                                   .Where(x => x.Category.Id == categoryId)
+                                   .Where(x => x.Pending != true)
+                                   .Where(x => x.User.Id == FilterUserId)
+                                   .OrderByDescending(x => x.IsSticky)
+                                   .ThenByDescending(x => x.LastPost.DateCreated)
+                                   .Skip((pageIndex - 1) * pageSize)
+                                   .Take(pageSize)
+                                   .ToList();
+
+                return new PagedList<Topic>(results, pageIndex, pageSize, total);
+            }
         }
 
         /// <summary>
@@ -844,6 +891,22 @@ namespace MVCForum.Services
             }
         }
 
+        public IList<Topic> GetAllTopicsByCondition(EnumCategoryType mCategoryType, MembershipUser TopicOwner)
+        {
+            var cat = _categoryService.GetCategoryByEnumCategoryType(mCategoryType);
+            var results = _context.Topic
+                                .Include(x => x.Category)
+                                .Include(x => x.LastPost.User)
+                                .Include(x => x.User)
+                                .Include(x => x.Poll)
+                                .AsNoTracking()
+                                .Where(x => x.Category.Id == cat.Id && x.Pending != true && x.User.Id == TopicOwner.Id)
+                                .ToList();
+
+            return results;
+        }
+
+
         public PagedList<Topic> GetPagedTopicsAll(int pageIndex, int pageSize, int amountToTake, List<Category> allowedCategories)
         {
             // get the category ids
@@ -971,8 +1034,6 @@ namespace MVCForum.Services
                 .ToList();
         }
 
-       
 
-      
     }
 }

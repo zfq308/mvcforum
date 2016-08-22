@@ -20,6 +20,7 @@ using MVCForum.Utilities;
 namespace MVCForum.Services
 {
 
+
     public partial class ActivityRegisterService : IActivityRegisterService
     {
 
@@ -270,5 +271,6 @@ namespace MVCForum.Services
             return 0;
         }
     }
+
 
 }

@@ -39,5 +39,8 @@ namespace MVCForum.Domain.DomainModel
         public DateTime CreateTime { get; set; }
 
     }
-    
+
+
+  
+
 }

@@ -185,8 +185,6 @@ namespace MVCForum.Website.Controllers
 
         #endregion
 
-
-
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
@@ -563,16 +561,15 @@ namespace MVCForum.Website.Controllers
 
                     #endregion
                 }
-
                 #endregion
-
-                return RedirectToAction("ZuiXinJilu", "AiLvHuoDong");
+                return RedirectToAction("Index", "Home");
             }
             else
             {
                 var errors = ModelState.Values.SelectMany(v => v.Errors);
                 return View(topicViewModel);
             }
+
         }
 
         [AcceptVerbs(HttpVerbs.Get)]
@@ -581,9 +578,6 @@ namespace MVCForum.Website.Controllers
             // Benjamin, 主动POST方式，通过Tempdata中转
             return CreateNewTopicRecord(TempData["model"] as CreateEditTopicViewModel);
         }
-
-
-
 
         private CreateEditTopicViewModel PrePareCreateEditTopicViewModel(List<Category> allowedCategories)
         {
@@ -626,15 +620,15 @@ namespace MVCForum.Website.Controllers
         }
 
 
-        
 
 
 
 
 
 
-        
-        
+
+
+
         #region 创建帖子
 
         public PartialViewResult CreateTopicButton()

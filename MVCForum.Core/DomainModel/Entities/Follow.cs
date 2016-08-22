@@ -8,30 +8,30 @@ using System.Data.SqlTypes;
 namespace MVCForum.Domain.DomainModel
 {
 
-    public partial class AiLvJiLu : Entity
+    /// <summary>
+    /// 好友关注
+    /// </summary>
+    public partial class Follow : Entity
     {
-        public AiLvJiLu()
+
+        public Follow()
         {
             Id = GuidComb.GenerateComb();
         }
 
         #region 属性
-        /// <summary>
-        /// 爱驴记录流水号
-        /// </summary>
+      
         public Guid Id { get; set; }
 
+        public Guid UserId { get; set; }
 
-        public Guid AiLvHuodongId { get; set; }
-
-        public string JiluContent { get; set; }
+        public Guid FriendUserId { get; set; }
 
         public DateTime CreateTime { get; set; }
 
         public DateTime UpdateTime { get; set; }
 
-        public string UpdateOperate { get; set; }
-
+        public string OpsFlag { get; set; }
 
 
         #endregion

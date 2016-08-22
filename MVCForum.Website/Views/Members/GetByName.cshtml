@@ -10,38 +10,6 @@
     ViewBag.Title = string.Concat(Model.User.UserName, " ", Html.LanguageString("Members.ProfileTitle"));
 }
 
-@section Header
-{
-    @*<script type="text/javascript">
-            $(function () {
-                $.post(app_base + "Members/GetMemberDiscussions",
-                    { "Id": '@Model.User.Id' },
-                    function (data) {
-                        $(".memberdiscussions").html(data);
-                    });
-                TimeBadges();
-            });
-            function TimeBadges() {
-                var timeBadgeViewModel = new Object();
-                timeBadgeViewModel.Id = '@Model.User.Id';
-                var strung = JSON.stringify(timeBadgeViewModel);
-                $.ajax({
-                    url: app_base + 'Badge/Time',
-                    type: 'POST',
-                    dataType: 'html',
-                    data: strung,
-                    contentType: 'application/json; charset=utf-8',
-                    success: function (data) {
-
-                    },
-                    error: function (xhr, ajaxOptions, thrownError) {
-                        ShowUserMessage("Error: " + xhr.status + " " + thrownError);
-                    }
-                });
-            }
-        </script>*@
-}
-
 @section side
 {
     @Html.Partial("_CommonSideNav")
@@ -55,10 +23,7 @@
             <p class="memberavatar">
                 <img src="@Model.User.MemberImage(SiteConstants.Instance.GravatarProfileSize)" alt="@Model.User.UserName">
             </p>
-            @if (User.Identity.IsAuthenticated &&
-                Model.User.UserName != User.Identity.Name &&
-                Html.CurrentMember().DisablePrivateMessages != true &&
-                Html.Settings().EnablePrivateMessages)
+            @if (User.Identity.IsAuthenticated && Model.User.UserName != User.Identity.Name && Html.CurrentMember().DisablePrivateMessages != true && Html.Settings().EnablePrivateMessages)
             {
                 <p>
                     <a href="@Url.Action("View", "PrivateMessage", new { from = Model.User.Id }, null)"
@@ -69,6 +34,12 @@
                 </p>
             }
 
+            @if (User.Identity.IsAuthenticated && Model.User.UserName != User.Identity.Name)
+            {
+                <p><a href="@Url.Action("Report", "Members", new { id = Model.User.Id }, null)" class="btn-mvc">加为好友</a></p>
+            }
+
+
             @if (User.Identity.IsAuthenticated && Html.Settings().EnableMemberReporting && Model.User.Id != Model.LoggedOnUserId)
             {
                 <p><a href="@Url.Action("Report", "Members", new { id = Model.User.Id }, null)" class="btn-mvc">@Html.LanguageString("Buttons.Report")</a></p>
@@ -76,7 +47,6 @@
 
             @if (Model.Permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
             {
-                // If this is an admins profile then do not show
                 if (!Model.User.Roles.Any(x => x.RoleName.Contains(AppConstants.AdminRoleName)))
                 {
                     <div class="memberprofileadminsection">
@@ -97,13 +67,13 @@
                         <p>
                             @if (User.IsInRole(AppConstants.AdminRoleName))
                             {
-                                <b>真实姓名:</b> @Model.User.RealName
+                            <b>真实姓名:</b> @Model.User.RealName
                             }
                         </p>
                         <p>
                             @if (User.IsInRole(AppConstants.AdminRoleName))
                             {
-                                <b>联系方式：</b>@Model.User.MobilePhone
+                            <b>联系方式：</b>@Model.User.MobilePhone
 
                             }
                         </p>
@@ -113,8 +83,11 @@
                         <p><b>身高(cm):</b> @Model.User.Height</p>
                         <p><b>体重(kg):</b> @Model.User.Weight</p>
                         <p>
-                            <b>学历:</b> @Model.User.Education
-                            @*@Html.ConvertEducationName(Model.User.Education)*@
+                            <b>学历:</b>
+                            @*@{
+                                    var EducationName = TEducation.LoadEducationByEducationId(Model.User.Education).EducationName;
+                                }*@
+                            @Model.User.Education
                         </p>
                         <p><b>毕业院校:</b> @Model.User.SchoolName</p>
                     </div>
@@ -137,13 +110,13 @@
 
                         @if (Model.User.LastActivityDate != null)
                         {
-                            <p><b>最后上线时间:</b> @DatesUI.GetPrettyDate(Model.User.LastActivityDate.ToString())</p>
+                        <p><b>最后上线时间:</b> @DatesUI.GetPrettyDate(Model.User.LastActivityDate.ToString())</p>
                         }
 
                         <p>
                             @if (User.IsInRole(AppConstants.AdminRoleName))
                             {
-                                <b>用户类型:</b> @Model.User.UserType
+                            <b>用户类型:</b> @Model.User.UserType
                             }
                         </p>
 
@@ -153,59 +126,16 @@
             </div>
 
             <div class="form-group">
-               <h3>个人相册</h3>
+                <h3>个人相册</h3>
                 @{
                     var model2 = new MemberFrontEndEditViewModel();
                     model2.UserName = Model.User.UserName;
                     model2.Id = Model.LoggedOnUserId;
                     model2.MembershipUserPictures = Model.MembershipUserPictures;
                 }
-                @Html.Partial("PrivatePictureList", model2);
+                @Html.Partial("PrivatePictureList", model2)
             </div>
-            @*@if (User.IsInRole(AppConstants.AdminRoleName))
-            {
-                <div class="membersection adminpublicomments">
-                    @Html.Raw(Model.User.Comment)
-                </div>
-            }*@
 
-            @*<div class="membersection memberlatesttopics">
-                    <h3>@Html.LanguageString("Members.Profile.DiscussionActivity")</h3>
-                    <div class="memberdiscussions">
-                        <span class="ajaxspinner" title="@Html.LanguageString(" Ajax.PleaseWait")">@Html.LanguageString("Ajax.PleaseWait")</span>
-                    </div>
-                </div>
-            <div class="membersection memberlatesttopics">
-                <h3></h3>
-                <div class="memberdiscussions">
-                    <span class="ajaxspinner" title="@Html.LanguageString(" Ajax.PleaseWait")"></span>
-                </div>
-            </div><div class="membersection memberlatesttopics">
-                <h3></h3>
-                <div class="memberdiscussions">
-                    <span class="ajaxspinner" title="@Html.LanguageString(" Ajax.PleaseWait")"></span>
-                </div>
-            </div>
-            @if (Model.User.Badges != null && Model.User.Badges.Any())
-                {
-                    <div class="membersection badgeactivity">
-                        <h3>@Html.LanguageString("Members.Profile.Badges")</h3>
-                        @foreach (var badge in Model.User.Badges)
-                        {
-                            @Html.Partial("_Badge", badge)
-                        }
-                    </div>
-                }
-            <div class="membersection badgeactivity">
-                <h3></h3>
-            </div>
-            <div class="membersection badgeactivity">
-                <h3></h3>
-            </div>*@
-
-
-
-         
         </div>
 
     </div>

@@ -159,11 +159,15 @@ namespace MVCForum.Website.Controllers
 
                 if (!permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked)
                 {
-
-                    var topics = _topicService.GetPagedTopicsByCategory(pageIndex,
-                                                                        SettingsService.GetSettings().TopicsPerPage,
-                                                                        int.MaxValue, category.Category.Id);
-
+                    PagedList<Topic> topics = null;
+                    if (category.Category.Name == Category.CategoryName_DailyRecord)
+                    {
+                        topics = _topicService.GetPagedTopicsByCategory(pageIndex, SettingsService.GetSettings().TopicsPerPage, int.MaxValue, category.Category.Id, LoggedOnReadOnlyUser.Id);
+                    }
+                    else
+                    {
+                        topics = _topicService.GetPagedTopicsByCategory(pageIndex, SettingsService.GetSettings().TopicsPerPage, int.MaxValue, category.Category.Id);
+                    }
                     var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings());
 
                     // Create the main view model for the category

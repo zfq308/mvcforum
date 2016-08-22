@@ -5,7 +5,7 @@
 <div class="row">
     <div class="col-md-12">
         <table class="table">
-            @if (Model.MembershipUserPictures != null)
+            @if (Model.MembershipUserPictures != null && Model.MembershipUserPictures.Count>0)
             {
                 foreach (MembershipUserPicture ad in Model.MembershipUserPictures)
                 {
@@ -38,6 +38,14 @@
                         </td>
                     </tr>
                 }
+            }
+            else
+            {
+                <tr>
+                    <td align="left">
+                       暂未发布照片
+                    </td>
+                </tr>
             }
             <tr>
                 <td>

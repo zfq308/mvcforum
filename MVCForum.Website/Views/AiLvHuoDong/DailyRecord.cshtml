@@ -1,0 +1,36 @@
+﻿@using MVCForum.Website.Application
+@using MVCForum.Website.ViewModels
+@model MeiRiXinQing_ListViewModel
+
+@{
+    Layout = "~/Views/AiLvHuoDong/DailyRecordLayout.cshtml";
+    ViewBag.Title = "每日心情";
+    var totalCount = Convert.ToInt32(Model.TotalCount);
+    ViewBag.Canonical = Html.Raw(AppHelpers.CanonicalPagingTag(totalCount, Html.Settings().TopicsPerPage, Html));
+}
+
+@*@section side
+    {
+        @Html.Partial("_CommonSideNav")
+    }*@
+
+<div class="zuixinjilu">
+    <div class="mainheading clearfix">
+        <h1>@ViewBag.Title</h1>
+    </div>
+
+    @foreach (var topic in Model.Topics)
+    {
+        Html.RenderPartial("_Topic", topic);
+    }
+
+    @if (Model.TotalPages > 1)
+    {
+        //TODO: Benjamin 07-05,此处还没有指定Action的名字
+        @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().TopicsPerPage, totalCount, null, "DailyRecord", "AiLvHuoDong")
+    }
+
+
+</div>
+
+

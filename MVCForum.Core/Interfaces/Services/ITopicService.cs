@@ -22,6 +22,7 @@ namespace MVCForum.Domain.Interfaces.Services
         IList<Topic> GetTopicsByUser(Guid memberId, List<Category> allowedCategories);
         IList<Topic> GetTopicsByLastPost(List<Guid> postIds, List<Category> allowedCategories);
         PagedList<Topic> GetPagedTopicsByCategory(int pageIndex, int pageSize, int amountToTake, Guid categoryId);
+        PagedList<Topic> GetPagedTopicsByCategory(int pageIndex, int pageSize, int amountToTake, Guid categoryId, Guid FilterUserId);
         PagedList<Topic> GetPagedPendingTopics(int pageIndex, int pageSize, List<Category> allowedCategories);
         IList<Topic> GetPendingTopics(List<Category> allowedCategories, MembershipRole usersRole);
         int GetPendingTopicsCount(List<Category> allowedCategories);
@@ -50,6 +51,7 @@ namespace MVCForum.Domain.Interfaces.Services
         bool SolveTopic(Topic topic, Post post, MembershipUser marker, MembershipUser solutionWriter);
         IList<Topic> GetAllTopicsByCategory(Guid categoryId);
         IList<Topic> GetAllTopicsByCategory(EnumCategoryType mCategoryType);
+        IList<Topic> GetAllTopicsByCondition(EnumCategoryType mCategoryType, MembershipUser TopicOwner);
         PagedList<Topic> GetPagedTopicsAll(int pageIndex, int pageSize, int amountToTake, List<Category> allowedCategories);
         IList<Topic> GetTopicBySlugLike(string slug);
     }
