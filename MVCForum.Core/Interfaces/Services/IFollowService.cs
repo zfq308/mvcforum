@@ -15,6 +15,10 @@ namespace MVCForum.Domain.Interfaces.Services
         /// <param name="FollowId"></param>
         /// <returns></returns>
         Follow Get(Guid FollowId);
+
+
+        Follow Get(Guid userId, Guid FriendId);
+
         /// <summary>
         /// 删除关注记录的实例
         /// </summary>

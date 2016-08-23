@@ -193,21 +193,25 @@ namespace MVCForum.Services
 
         /// <summary>
         /// 自动更新活动状态
-        /// TODO: Benjamin 此方法的实现需要客户确认
         /// </summary>
         /// <returns></returns>
         public bool Update_ZhuangTai()
         {
-
             var list = _context.AiLvHuoDong.Where(x => x.ZhuangTai == Enum_HuoDongZhuangTai.Registing ||
                                                        x.ZhuangTai == Enum_HuoDongZhuangTai.StopRegister).AsNoTracking().ToList();
             foreach (AiLvHuoDong item in list)
             {
-                //Do nothing
+                // TODO: Benjamin 此方法的实现需要客户确认
             }
             return true;
         }
 
+        /// <summary>
+        /// 审核活动
+        /// </summary>
+        /// <param name="ailvhuodongInstance"></param>
+        /// <param name="auditresult"></param>
+        /// <returns></returns>
         public bool AuditAiLvHuodong(AiLvHuoDong ailvhuodongInstance, bool auditresult)
         {
             if (ailvhuodongInstance != null && !string.IsNullOrEmpty(ailvhuodongInstance.GongYingShangUserId))

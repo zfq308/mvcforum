@@ -100,6 +100,7 @@ namespace MVCForum.IOC
             container.BindInRequestScope<IActivityRegisterService, ActivityRegisterService>();
             container.BindInRequestScope<IMembershipUserPictureService, MembershipUserPictureService>();
 
+            container.BindInRequestScope<IFollowService, FollowService>();
             CustomBindings(container);
 
             return container;

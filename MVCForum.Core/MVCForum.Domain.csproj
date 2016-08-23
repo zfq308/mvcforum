@@ -103,7 +103,10 @@
     <Compile Include="DomainModel\Entities\Block.cs" />
     <Compile Include="DomainModel\Entities\CategoryNotification.cs" />
     <Compile Include="DomainModel\Entities\Follow.cs" />
+    <Compile Include="DomainModel\Entities\MembershipPropertyChange.cs" />
+    <Compile Include="DomainModel\Entities\MembershipTodayStar.cs" />
     <Compile Include="DomainModel\Entities\MembershipUserPicture.cs" />
+    <Compile Include="DomainModel\Entities\MembershipUserSearchModel.cs" />
     <Compile Include="DomainModel\Entities\VerifyCode.cs" />
     <Compile Include="DomainModel\Enums\CacheTimes.cs" />
     <Compile Include="DomainModel\General\CategoryWithSubCategories.cs" />

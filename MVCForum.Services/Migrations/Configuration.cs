@@ -227,10 +227,9 @@ namespace MVCForum.Services.Migrations
                     #region 创建默认的系统设置参数
                     var settings = new Settings
                     {
-                        //TODO: 【重要】每次上线测试前需要修改这个参数
                         ForumName = "爱驴网，爱驴户外",
-                        ForumUrl = "http://localhost:9666/",
-                        ForumKeepAliveURL = "http://localhost:9666/home",
+                        ForumUrl = "http://www.ailvlove.com/",
+                        ForumKeepAliveURL = "http://www.ailvlove.com/",
                         IsClosed = false,
                         DisplayEditedBy = true,
                         EnablePostFileAttachments = false,
@@ -250,10 +249,10 @@ namespace MVCForum.Services.Migrations
                         DefaultLanguage = language,
                         ActivitiesPerPage = 10,
 
-                        UCPaasConfig_Account= "4c890bb2b861ac9eac78d381efea6cb2",
-                        UCPaasConfig_Token= "29755cc149863eced52be76f3f6bcebf",
-                        UCPaasConfig_AppId= "3b77d120b23c4d5bb3d38e5e01868550",
-                        UCPaasConfig_TemplatedId= "26343",
+                        UCPaasConfig_Account = "4c890bb2b861ac9eac78d381efea6cb2",
+                        UCPaasConfig_Token = "29755cc149863eced52be76f3f6bcebf",
+                        UCPaasConfig_AppId = "3b77d120b23c4d5bb3d38e5e01868550",
+                        UCPaasConfig_TemplatedId = "26343",
 
 
                         #region 非关键设置项
@@ -263,7 +262,7 @@ namespace MVCForum.Services.Migrations
                         EmailAdminOnNewMemberSignUp = false,
                         EnableSignatures = false,
                         EnablePoints = false,
-                        
+
                         EnableSocialLogins = false,
                         EnablePolls = false,
                         PointsAllowedToVoteAmount = 1,
@@ -283,7 +282,6 @@ namespace MVCForum.Services.Migrations
                         #endregion
 
                     };
-
 
                     context.Setting.Add(settings);
                     context.SaveChanges();
@@ -409,8 +407,9 @@ namespace MVCForum.Services.Migrations
                 #region 建立Category，Permission，Role映射关联关系
 
                 CategoryPermissionForRoleService cprs = new CategoryPermissionForRoleService(context);
-                //TODO: 重要！！！权限系统，需要为不同的角色，Category分配权限
-            
+
+
+                #region 普通用户在每日心情模块的权限设定
                 cprs.Add(new CategoryPermissionForRole()
                 {
                     Category = Category_MeiRiXinqing,
@@ -434,8 +433,9 @@ namespace MVCForum.Services.Migrations
                     Permission = Permission_Global_InsertEditorImages,
                     IsTicked = true,
                 });
+                #endregion
 
-
+                #region 供 应 商 在每日心情模块的权限设定
 
                 cprs.Add(new CategoryPermissionForRole()
                 {
@@ -461,11 +461,9 @@ namespace MVCForum.Services.Migrations
                     IsTicked = true,
                 });
 
+                #endregion
 
-
-
-
-
+                #region 供应商在爱驴记录模块的权限设定
 
                 cprs.Add(new CategoryPermissionForRole()
                 {
@@ -491,34 +489,15 @@ namespace MVCForum.Services.Migrations
                     IsTicked = true,
                 });
 
+                #endregion
 
-
-
-
-
-
-
-
-
-
-
-
-
-                cprs.Add(new CategoryPermissionForRole()
-                {
-                    Category = Category_AiLvZiXun,
-                    MembershipRole = adminRole,
-                    Permission = Permission_Global_InsertEditorImages,
-                    IsTicked = true,
-                });
-
-
-
-
-
-
-
-
+                //cprs.Add(new CategoryPermissionForRole()
+                //{
+                //    Category = Category_AiLvZiXun,
+                //    MembershipRole = adminRole,
+                //    Permission = Permission_Global_InsertEditorImages,
+                //    IsTicked = true,
+                //});
 
                 context.SaveChanges();
 
@@ -553,7 +532,7 @@ namespace MVCForum.Services.Migrations
                         LocationCity = "110100",
                         LocationCounty = "110108",
                         Job = "BigBoss",
-                        IncomeRange =  Enum_IncomeRange.R_1WTo5W,
+                        IncomeRange = Enum_IncomeRange.R_1WTo5W,
                         Interest = "发呆",
                         MobilePhone = "13686886937",
                         Avatar = "",

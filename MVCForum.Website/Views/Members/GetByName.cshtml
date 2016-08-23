@@ -36,7 +36,52 @@
 
             @if (User.Identity.IsAuthenticated && Model.User.UserName != User.Identity.Name)
             {
-                <p><a href="@Url.Action("Report", "Members", new { id = Model.User.Id }, null)" class="btn-mvc">加为好友</a></p>
+                if (Model.FollowStatus == 0) // 未关注，可关注
+                {
+                    using (Html.BeginForm("AddFollow", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        @Html.HiddenFor(x => x.LoggedOnUserId)
+                        <p>
+                            <button type="submit" name="btn_AddFollow" class="btn-mvc">
+                                关注此人
+                            </button>
+                        </p>
+                    }
+                }
+                if (Model.FollowStatus == 1) //已关注
+                {
+                    using (Html.BeginForm("CancelFollow", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        @Html.HiddenFor(x => x.LoggedOnUserId)
+                        <p>
+                            <button type="submit" name="btn_CancelFollow" class="btn-mvc">
+                               取消关注
+                            </button>
+                        </p>
+                    }
+
+                    using (Html.BeginForm("AddBlackList", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        @Html.HiddenFor(x => x.LoggedOnUserId)
+                        <p>
+                            <button type="submit" name="btn_AddBlackList" class="btn-mvc">
+                                加到黑名单
+                            </button>
+                        </p>
+                    }
+                }
+                if (Model.FollowStatus == -1) //已加入黑名单
+                {
+                    using (Html.BeginForm("CancelBlackList", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        @Html.HiddenFor(x => x.LoggedOnUserId)
+                        <p>
+                            <button type="submit" name="btn_CancelBlackList" class="btn-mvc">
+                                从黑名单中去除
+                            </button>
+                        </p>
+                    }
+                }
             }
 
 
@@ -130,10 +175,10 @@
             {
                 <div class="form-group">
                     <h3>每日之星</h3>
-                    @using (Html.BeginForm("SubmitMeiRiZhiXing", "Members", FormMethod.Post, new { enctype = "multipart/form-data"}))
+                    @using (Html.BeginForm("SubmitMeiRiZhiXing", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
                     {
-                        @Html.HiddenFor(x=>x.MeiRiZhiXing.UserId)
-                        <div class="form-group" >
+                        @Html.HiddenFor(x => x.MeiRiZhiXing.UserId)
+                        <div class="form-group">
                             <span>开始时间</span>
                             @Html.TextBoxFor(model => model.MeiRiZhiXing.StartTime, new { @class = "form-control" })
                             @Html.ValidationMessageFor(model => model.MeiRiZhiXing.StartTime)
@@ -143,14 +188,9 @@
                             @Html.TextBoxFor(model => model.MeiRiZhiXing.StopTime, new { @class = "form-control" })
                             @Html.ValidationMessageFor(model => model.MeiRiZhiXing.StopTime)
                         </div>
-                        @*<div class="form-group">
-                            <span>生效标志</span>
-                            @Html.TextBoxFor(model => model.MeiRiZhiXing.Status, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(model => model.MeiRiZhiXing.Status)
-                        </div>*@
                         <div class="form-group">
                             <span>激活每日之星</span>
-                            @Html.CheckBoxFor(model => model.MeiRiZhiXing.Status , new { @class = "form-control" })
+                            @Html.CheckBoxFor(model => model.MeiRiZhiXing.Status, new { @class = "form-control" })
                             @Html.ValidationMessageFor(model => model.MeiRiZhiXing.Status)
                         </div>
                         if (Model.User.Id != Guid.Empty)
@@ -161,7 +201,21 @@
                         }
                     }
                 </div>
-
+                <div class="form-group">
+                    <h3>变更权限</h3>
+                    @using (Html.BeginForm("ChangeUserRoles", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        @Html.HiddenFor(x => x.LoggedOnUserId)
+                        <div class="form-group">
+                            <span>角色列表</span>
+                            @Html.DropDownListFor(x => x.RoleId, ViewData["RoleList"] as List<SelectListItem>, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.RoleId)
+                        </div>
+                        <button type="submit" name="btn_SubmitChangeUserRoles" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
+                            变更用户角色
+                        </button><br />
+                    }
+                </div>
             }
 
         </div>

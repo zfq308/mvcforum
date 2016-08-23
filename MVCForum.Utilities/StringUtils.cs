@@ -13,8 +13,6 @@ using Microsoft.Security.Application;
 
 namespace MVCForum.Utilities
 {
-
-
     public static class StringUtils
     {
 
@@ -408,7 +406,7 @@ namespace MVCForum.Utilities
 
         /// <summary>
         /// Returns a list of the most common english words
-        /// TODO: Need to put this in something so people can add other language lists of common words
+        /// Need to put this in something so people can add other language lists of common words
         /// </summary>
         /// <returns></returns>
         public static IList<string> CommonWords()

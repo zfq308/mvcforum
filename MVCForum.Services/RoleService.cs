@@ -134,10 +134,7 @@ namespace MVCForum.Services
 
         #endregion
 
-
-
-
-        #region Methods
+        #region 其他方法
 
         /// <summary>
         /// Returns permission set based on category and role
@@ -337,8 +334,6 @@ namespace MVCForum.Services
 
 
         #endregion
-
-
 
     }
 }

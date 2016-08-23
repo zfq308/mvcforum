@@ -125,6 +125,18 @@ namespace MVCForum.Services
         }
 
         /// <summary>
+        /// 取得关注记录的实例
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="FriendId"></param>
+        /// <returns></returns>
+        public Follow Get(Guid userId, Guid FriendId)
+        {
+            return _context.Follow.AsNoTracking().FirstOrDefault(x => x.UserId == userId && x.FriendUserId== FriendId);
+        }
+
+
+        /// <summary>
         /// 取得关注特定用户的用户列表
         /// </summary>
         /// <param name="UserId"></param>

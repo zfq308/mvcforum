@@ -914,14 +914,12 @@ namespace MVCForum.Services
         }
 
         /// <summary>
-        /// 删除所有用户数据
+        /// 删除所有用户数据,有空时需要重构这个方法
         /// </summary>
         /// <param name="user"></param>
         /// <param name="unitOfWork"></param>
         public void ScrubUsers(MembershipUser user, IUnitOfWork unitOfWork)
         {
-            // TODO - This REALLY needs to be refactored
-
             #region 基本信息的擦除
 
             user.IsApproved = false;
@@ -1630,7 +1628,6 @@ namespace MVCForum.Services
 
             //        if (values.Length >= 4)
             //        {
-            //            //TODO: Benjamin Check again and fix the issue.
             //            // userToImport.Age = Int32.Parse(values[3]);
             //        }
             //        if (values.Length >= 5)

@@ -341,6 +341,8 @@ namespace MVCForum.Website.ViewModels
         public PermissionSet Permissions { get; set; }
         public IList<MembershipUserPicture> MembershipUserPictures { get; set; }
         public MembershipTodayStar MeiRiZhiXing { get; set; }
+        public string RoleId { get; set; }
+        public int FollowStatus { get; set; }
 
     }
 

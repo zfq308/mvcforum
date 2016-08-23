@@ -37,8 +37,6 @@ namespace MVCForum.Website.Controllers
     {
         log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        #region 建构式
-
         #region Private defination
         private readonly IPostService _postService;
         private readonly ITopicService _topicService;
@@ -51,8 +49,11 @@ namespace MVCForum.Website.Controllers
         private readonly MVCForumContext _context;
         private readonly IMembershipUserPictureService _MembershipUserPictureService;
         private readonly IMembershipTodayStarService _MembershipTodayStarService;
+        private readonly IFollowService _FollowService;
+
         #endregion
 
+        #region 建构式
         public MembersController(IMVCForumContext context,
             //基类Service
             ILoggingService loggingService,
@@ -74,6 +75,7 @@ namespace MVCForum.Website.Controllers
             IVoteService voteService,
             ICategoryService categoryService,
             ITopicService topicService,
+            IFollowService followService,
             IMembershipUserPictureService MembershipUserPictureService,
             IMembershipTodayStarService MembershipTodayStarService
             )
@@ -88,7 +90,7 @@ namespace MVCForum.Website.Controllers
             _categoryService = categoryService;
             _topicService = topicService;
             _verifyCodeService = verifyCodeService;
-
+            _FollowService = followService;
             _MembershipUserPictureService = MembershipUserPictureService;
             _MembershipTodayStarService = MembershipTodayStarService;
 
@@ -1846,39 +1848,7 @@ namespace MVCForum.Website.Controllers
 
         #endregion
 
-        #region 省市县三级联动
-
-        public JsonResult GetHometownProvince()
-        {
-            List<TProvince> queryResult = TProvince.LoadAllProvinceList();
-            return Json(queryResult.ToList(), JsonRequestBehavior.AllowGet);
-        }
-
-        public JsonResult GetHometownCity(int id)
-        {
-            List<TCity> allCity = TCity.LoadAllCityList();
-            var a = allCity.Where(P => P.ProvinceId.Equals(id)).ToList();
-            return Json(allCity.Where(P => P.ProvinceId == id).ToList(), JsonRequestBehavior.AllowGet);
-        }
-
-        public JsonResult GetEducationCity(int id)
-        {
-            List<TCity> allCity = TCity.LoadAllCityList();
-            var a = allCity.Where(P => P.ProvinceId.Equals(id)).ToList();
-            return Json(allCity.Where(P => P.ProvinceId == id).ToList(), JsonRequestBehavior.AllowGet);
-        }
-
-        public JsonResult GetHometownCountry(string id)
-        {
-            List<int> result = new List<string>(id.Split(',')).ConvertAll(i => int.Parse(i));
-            int ProvinceId = result[0];
-            int CityId = result[1];
-            return Json(TCountry.LoadAllCountry().Where(E => E.ProvinceId == ProvinceId && E.CityId == CityId).ToList(), JsonRequestBehavior.AllowGet);
-        }
-
-        #endregion
-
-        #region Search Members
+        #region 找朋友
 
 
         public ActionResult Search(int? p, string search)
@@ -2123,80 +2093,21 @@ namespace MVCForum.Website.Controllers
         }
         #endregion
 
-
-        [ChildActionOnly]
-        public PartialViewResult LatestMembersJoined()
-        {
-            var viewModel = new ListLatestMembersViewModel();
-            var users = MembershipService.GetLatestUsers(10).ToDictionary(o => o.UserName, o => o.NiceUrl);
-            viewModel.Users = users;
-            return PartialView(viewModel);
-        }
-
-        [ChildActionOnly]
-        public PartialViewResult GetCurrentActiveMembers()
-        {
-            using (UnitOfWorkManager.NewUnitOfWork())
-            {
-                var viewModel = new ActiveMembersViewModel
-                {
-                    ActiveMembers = MembershipService.GetActiveMembers()
-                };
-                return PartialView(viewModel);
-            }
-        }
-
+        #region 用户名片页
 
         /// <summary>
-        /// 最新活动用户检查
+        /// 设定每日之星
         /// </summary>
+        /// <param name="model"></param>
         /// <returns></returns>
-        public JsonResult LastActiveCheck()
-        {
-            if (UserIsAuthenticated)
-            {
-                var rightNow = DateTime.Now;
-                var usersDate = LoggedOnReadOnlyUser.LastActivityDate ?? DateTime.Now.AddDays(-1);
-
-                var span = rightNow.Subtract(usersDate);
-                var totalMins = span.TotalMinutes;
-
-                if (totalMins > AppConstants.TimeSpanInMinutesToDoCheck)
-                {
-                    using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
-                    {
-                        // Actually get the user, LoggedOnUser has no tracking
-                        var loggedOnUser = MembershipService.GetUser(Username);
-
-                        // Update users last activity date so we can show the latest users online
-                        loggedOnUser.LastActivityDate = DateTime.Now;
-
-                        // Update
-                        try
-                        {
-                            unitOfWork.Commit();
-                        }
-                        catch (Exception ex)
-                        {
-                            unitOfWork.Rollback();
-                            LoggingService.Error(ex);
-                        }
-                    }
-                }
-            }
-
-            // You can return anything to reset the timer.
-            return Json(new { Timer = "reset" }, JsonRequestBehavior.AllowGet);
-        }
-
         [HttpPost]
         [Authorize(Roles = AppConstants.AdminRoleName)]
         public ActionResult SubmitMeiRiZhiXing(ViewMemberViewModel model)
         {
             if (model != null && model.MeiRiZhiXing != null)
             {
-                MembershipTodayStar info= _MembershipTodayStarService.Get(model.MeiRiZhiXing.UserId);
-                if (info!=null && info.UserId!=Guid.Empty)
+                MembershipTodayStar info = _MembershipTodayStarService.Get(model.MeiRiZhiXing.UserId);
+                if (info != null && info.UserId != Guid.Empty)
                 {
                     info.JobId = model.MeiRiZhiXing.JobId;
                     info.Operator = LoggedOnReadOnlyUser.UserName;
@@ -2232,7 +2143,11 @@ namespace MVCForum.Website.Controllers
 
         }
 
-
+        /// <summary>
+        /// 载入用户名片页
+        /// </summary>
+        /// <param name="slug"></param>
+        /// <returns></returns>
         public ActionResult GetByName(string slug)
         {
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -2244,6 +2159,9 @@ namespace MVCForum.Website.Controllers
                     var loggedonId = member.Id;
                     var permissions = RoleService.GetPermissions(null, UsersRole);
                     var picturelist = _MembershipUserPictureService.GetMembershipUserPictureListByUserId(loggedonId);
+
+                    #region 每日之星
+
                     var meiRiZhiXing = _MembershipTodayStarService.Get(member);
                     string Operator = LoggedOnReadOnlyUser == null ? "" : LoggedOnReadOnlyUser.UserName;
                     if (meiRiZhiXing == null)
@@ -2259,13 +2177,63 @@ namespace MVCForum.Website.Controllers
                             UserId = loggedonId
                         };
                     }
+
+                    #endregion
+
+                    #region 绑定Role信息
+
+                    IList<MembershipRole> rolelist = RoleService.AllRoles();
+
+                    if (rolelist != null && rolelist.Count > 0)
+                    {
+                        var Items_Role = new List<SelectListItem>();
+                        foreach (var item in rolelist)
+                        {
+                            Items_Role.Add(new SelectListItem { Text = item.RoleName, Value = item.Id.ToString() });
+                        }
+                        //foreach (SelectListItem item in Items_Role)
+                        //{
+                        //    if (item.Value == member.Roles..Gender.ToString())
+                        //    {
+                        //        item.Selected = true;
+                        //    }
+                        //}
+                        ViewData["RoleList"] = Items_Role;
+                    }
+
+                    #endregion
+
+                    Follow followInfo = null;
+                    if (LoggedOnReadOnlyUser != null)
+                    {
+                        followInfo = _FollowService.Get(LoggedOnReadOnlyUser.Id, member.Id);
+                    }
+                    int followFlag = 0;
+                    if (followInfo != null)
+                    {
+                        if (followInfo.OpsFlag == "")
+                        {
+                            followFlag = 1;  //已关注
+                        }
+                        else
+                        {
+                            followFlag = -1;  //黑名单
+                        }
+                    }
+                    else
+                    {
+                        followFlag = 0;   // 未关注，可关注
+                    }
+
                     return View(new ViewMemberViewModel
                     {
                         User = member,
                         LoggedOnUserId = loggedonId,
                         Permissions = permissions,
                         MembershipUserPictures = picturelist,
-                        MeiRiZhiXing = meiRiZhiXing
+                        MeiRiZhiXing = meiRiZhiXing,
+                        RoleId = member.Roles.FirstOrDefault().Id.ToString(),
+                        FollowStatus = followFlag
                     });
                 }
                 else
@@ -2274,6 +2242,196 @@ namespace MVCForum.Website.Controllers
                 }
             }
         }
+
+        /// <summary>
+        /// 根据用户的Id,查找并更新用户的角色
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="role"></param>
+        /// <returns></returns>
+        [Authorize(Roles = AppConstants.AdminRoleName)]
+        public ActionResult UpdateUserRole(Guid id, MembershipRole role)
+        {
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            {
+                try
+                {
+                    MembershipService.UpdateUserRole(id, role);
+                    unitOfWork.Commit();
+                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel { Message = "已切换用户权限。", MessageType = GenericMessages.success };
+                }
+                catch (Exception ex)
+                {
+                    unitOfWork.Rollback();
+                    LoggingService.Error(ex);
+                    ModelState.AddModelError("", "更新用户的角色信息失败。");
+                }
+                return View();
+            }
+        }
+
+        /// <summary>
+        /// 切换用户角色
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Authorize(Roles = AppConstants.AdminRoleName)]
+        public ActionResult ChangeUserRoles(ViewMemberViewModel model)
+        {
+            if (model != null && model.LoggedOnUserId != null && model.RoleId != null)
+            {
+                MembershipRole role = RoleService.GetRole(Guid.Parse(model.RoleId));
+                var result = UpdateUserRole(model.LoggedOnUserId, role);
+            }
+            return RedirectToAction("Index", "Home");
+        }
+
+        #region 用户关注
+
+
+        public ActionResult Follow()
+        {
+            return View();
+        }
+
+       [HttpPost]
+        [Authorize]
+        public ActionResult AddFollow(ViewMemberViewModel model)
+        {
+            if (model != null && model.LoggedOnUserId != null)
+            {
+                var followInfo = new Follow();
+                followInfo.UserId = LoggedOnReadOnlyUser.Id;
+                followInfo.FriendUserId = model.LoggedOnUserId;
+                followInfo.CreateTime = DateTime.Now;
+                followInfo.OpsFlag = "";
+                followInfo.UpdateTime = DateTime.Now;
+                _FollowService.Add(followInfo);
+
+
+                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                {
+                    try
+                    {
+                        unitOfWork.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        unitOfWork.Rollback();
+                        LoggingService.Error(ex);
+                        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
+                    }
+                }
+            }
+            return RedirectToAction("Follow", "Members");
+        }
+
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult CancelFollow(ViewMemberViewModel model)
+        {
+            if (model != null && model.LoggedOnUserId != null)
+            {
+                var info = _FollowService.Get(LoggedOnReadOnlyUser.Id, model.LoggedOnUserId);
+                _FollowService.Delete(info);
+                _context.Entry<Follow>(info).State = EntityState.Deleted;
+
+                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                {
+                    try
+                    {
+                        unitOfWork.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        unitOfWork.Rollback();
+                        LoggingService.Error(ex);
+                        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
+                    }
+                }
+            }
+            return RedirectToAction("Follow", "Members");
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult AddBlackList(ViewMemberViewModel model)
+        {
+            if (model != null && model.LoggedOnUserId != null)
+            {
+                var info = _FollowService.Get(LoggedOnReadOnlyUser.Id, model.LoggedOnUserId);
+
+                if (info != null)
+                {
+                    info.OpsFlag = "Black";
+                    _context.Entry<Follow>(info).State = EntityState.Modified;
+                }
+                else
+                {
+                    var followInfo = new Follow();
+                    followInfo.UserId = LoggedOnReadOnlyUser.Id;
+                    followInfo.FriendUserId = model.LoggedOnUserId;
+                    followInfo.CreateTime = DateTime.Now;
+                    followInfo.OpsFlag = "";
+                    followInfo.UpdateTime = DateTime.Now;
+                    _FollowService.Add(followInfo);
+                }
+
+                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                {
+                    try
+                    {
+                        unitOfWork.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        unitOfWork.Rollback();
+                        LoggingService.Error(ex);
+                        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
+                    }
+                }
+            }
+            return RedirectToAction("Follow", "Members");
+        }
+
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult CancelBlackList(ViewMemberViewModel model)
+        {
+            if (model != null && model.LoggedOnUserId != null)
+            {
+                var info = _FollowService.Get(LoggedOnReadOnlyUser.Id, model.LoggedOnUserId);
+
+                if (info != null && info.OpsFlag == "Black")
+                {
+                    _FollowService.Delete(info);
+                    _context.Entry<Follow>(info).State = EntityState.Deleted;
+                }
+
+                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                {
+                    try
+                    {
+                        unitOfWork.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        unitOfWork.Rollback();
+                        LoggingService.Error(ex);
+                        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
+                    }
+                }
+            }
+            return RedirectToAction("Follow", "Members");
+        }
+        #endregion
+
+        #endregion
+
+        #region 其他
 
         [HttpPost]
         public PartialViewResult GetMemberDiscussions(Guid id)
@@ -2417,38 +2575,103 @@ namespace MVCForum.Website.Controllers
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
         }
 
-
-
-
-
-
-        /// <summary>
-        /// 根据用户的Id,查找并更新用户的角色
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="role"></param>
-        /// <returns></returns>
-        [Authorize(Roles = AppConstants.AdminRoleName)]
-        public ActionResult UpdateUserRole(Guid id, MembershipRole role)
+        [ChildActionOnly]
+        public PartialViewResult LatestMembersJoined()
         {
-            //TODO: 此方法待测试
-            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            var viewModel = new ListLatestMembersViewModel();
+            var users = MembershipService.GetLatestUsers(10).ToDictionary(o => o.UserName, o => o.NiceUrl);
+            viewModel.Users = users;
+            return PartialView(viewModel);
+        }
+
+        [ChildActionOnly]
+        public PartialViewResult GetCurrentActiveMembers()
+        {
+            using (UnitOfWorkManager.NewUnitOfWork())
             {
-                try
+                var viewModel = new ActiveMembersViewModel
                 {
-                    MembershipService.UpdateUserRole(id, role);
-                    unitOfWork.Commit();
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel { Message = "", MessageType = GenericMessages.success };
-                }
-                catch (Exception ex)
-                {
-                    unitOfWork.Rollback();
-                    LoggingService.Error(ex);
-                    ModelState.AddModelError("", "更新用户的角色信息失败。");
-                }
-                return View();
+                    ActiveMembers = MembershipService.GetActiveMembers()
+                };
+                return PartialView(viewModel);
             }
         }
+
+        /// <summary>
+        /// 最新活动用户检查
+        /// </summary>
+        /// <returns></returns>
+        public JsonResult LastActiveCheck()
+        {
+            if (UserIsAuthenticated)
+            {
+                var rightNow = DateTime.Now;
+                var usersDate = LoggedOnReadOnlyUser.LastActivityDate ?? DateTime.Now.AddDays(-1);
+
+                var span = rightNow.Subtract(usersDate);
+                var totalMins = span.TotalMinutes;
+
+                if (totalMins > AppConstants.TimeSpanInMinutesToDoCheck)
+                {
+                    using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                    {
+                        // Actually get the user, LoggedOnUser has no tracking
+                        var loggedOnUser = MembershipService.GetUser(Username);
+
+                        // Update users last activity date so we can show the latest users online
+                        loggedOnUser.LastActivityDate = DateTime.Now;
+
+                        // Update
+                        try
+                        {
+                            unitOfWork.Commit();
+                        }
+                        catch (Exception ex)
+                        {
+                            unitOfWork.Rollback();
+                            LoggingService.Error(ex);
+                        }
+                    }
+                }
+            }
+
+            // You can return anything to reset the timer.
+            return Json(new { Timer = "reset" }, JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion
+
+        #region 省市县三级联动
+
+        public JsonResult GetHometownProvince()
+        {
+            List<TProvince> queryResult = TProvince.LoadAllProvinceList();
+            return Json(queryResult.ToList(), JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetHometownCity(int id)
+        {
+            List<TCity> allCity = TCity.LoadAllCityList();
+            var a = allCity.Where(P => P.ProvinceId.Equals(id)).ToList();
+            return Json(allCity.Where(P => P.ProvinceId == id).ToList(), JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetEducationCity(int id)
+        {
+            List<TCity> allCity = TCity.LoadAllCityList();
+            var a = allCity.Where(P => P.ProvinceId.Equals(id)).ToList();
+            return Json(allCity.Where(P => P.ProvinceId == id).ToList(), JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetHometownCountry(string id)
+        {
+            List<int> result = new List<string>(id.Split(',')).ConvertAll(i => int.Parse(i));
+            int ProvinceId = result[0];
+            int CityId = result[1];
+            return Json(TCountry.LoadAllCountry().Where(E => E.ProvinceId == ProvinceId && E.CityId == CityId).ToList(), JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion
 
         #region EmailConfirm 相关动作
 

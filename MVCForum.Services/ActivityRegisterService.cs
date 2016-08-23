@@ -1,30 +1,18 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
-using System.Data.Entity;
-using System.Text;
-using System.Web;
-using System.Web.Hosting;
-using System.Web.Security;
-using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.DomainModel.Entities;
-using MVCForum.Domain.Events;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Services.Data.Context;
-using MVCForum.Utilities;
 
 namespace MVCForum.Services
 {
-
-
     public partial class ActivityRegisterService : IActivityRegisterService
     {
+        log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        #region 定义只读变量
+        #region 成员变量
 
         private readonly MVCForumContext _context;
         private readonly ISettingsService _settingsService;
