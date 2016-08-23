@@ -16,6 +16,8 @@ namespace MVCForum.Website.Controllers
 {
     public partial class HomeController : BaseController
     {
+        log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         private readonly ITopicService _topicService;
         private readonly ICategoryService _categoryService;
         private readonly IActivityService _activityService;

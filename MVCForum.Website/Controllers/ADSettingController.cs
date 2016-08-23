@@ -22,6 +22,7 @@ namespace MVCForum.Website.Controllers
 {
     public class ADSettingController : BaseController
     {
+        log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private readonly IADSettingService _adSettingService;
         private readonly MVCForumContext _context;
 

@@ -22,7 +22,7 @@ namespace MVCForum.Website.Controllers
     public class AiLvHuoDongController : BaseController
     {
         #region 成员变量
-
+        log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private readonly IAiLvHuoDongService _aiLvHuoDongService;
         private readonly ITopicService _topicService;
         private readonly ICategoryService _categoryservice;

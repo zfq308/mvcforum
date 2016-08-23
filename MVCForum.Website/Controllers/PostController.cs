@@ -19,8 +19,10 @@ namespace MVCForum.Website.Controllers
     [Authorize]
     public partial class PostController : BaseController
     {
+        log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         #region 定义成员变量
-   
+
         private readonly ITopicService _topicService;
         private readonly ITopicNotificationService _topicNotificationService;
         private readonly ICategoryService _categoryService;

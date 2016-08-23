@@ -9,6 +9,9 @@ namespace MVCForum.Website.Controllers
 {
     public class FileController : BaseController
     {
+
+        log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         private readonly IUploadedFileService _uploadedFileService;
         private readonly ICategoryService _categoryService;
 
@@ -44,7 +47,6 @@ namespace MVCForum.Website.Controllers
 
         public PartialViewResult ImageUploadTinyMce()
         {
-            // Testing
             return PartialView();
         }
     }

@@ -14,16 +14,15 @@ namespace MVCForum.Website.Controllers
 {
     public partial class CategoryController : BaseController
     {
-        #region 建构式
+        log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private readonly ICategoryService _categoryService;
         private readonly ITopicService _topicService;
         private readonly IPollAnswerService _pollAnswerService;
-        //private readonly ITopicNotificationService _topicNotificationService;
         private readonly IVoteService _voteService;
-        //private readonly IRoleService _roleService;
         private readonly ICategoryNotificationService _categoryNotificationService;
 
+        #region 建构式
         public CategoryController(
             ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
@@ -87,9 +86,6 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-
-
-
         [Authorize]
         [ChildActionOnly]
         public PartialViewResult GetSubscribedCategories()
@@ -120,7 +116,6 @@ namespace MVCForum.Website.Controllers
             return PartialView(viewModel);
         }
 
-
         [ChildActionOnly]
         public PartialViewResult GetCategoryBreadcrumb(Category category)
         {
@@ -136,8 +131,6 @@ namespace MVCForum.Website.Controllers
                 return PartialView("GetCategoryBreadcrumb", viewModel);
             }
         }
-
-
 
         #region RouteConfig.cs文件中有定义路由，暂未Review
 

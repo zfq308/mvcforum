@@ -16,6 +16,8 @@ namespace MVCForum.Website.Controllers
     [Authorize]
     public partial class PrivateMessageController : BaseController
     {
+        log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         #region 定义成员变量
 
         private readonly IPrivateMessageService _privateMessageService;

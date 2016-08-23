@@ -14,6 +14,9 @@ namespace MVCForum.Website.Controllers
 {
     public partial class SearchController : BaseController
     {
+
+        log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         private readonly IPostService _postService;
         private readonly ITopicService _topicsService;
         private readonly ICategoryService _categoryService;

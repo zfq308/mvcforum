@@ -13,6 +13,8 @@ namespace MVCForum.Website.Controllers
 {
     public partial class TagController : BaseController
     {
+        log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         private readonly ITopicTagService _topicTagService;
         private readonly ICategoryService _categoryService;
         private readonly ICacheService _cacheService;

@@ -8,6 +8,9 @@ namespace MVCForum.Website.Controllers
 {
     public partial class StatsController : BaseController
     {
+        log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+
         private readonly ITopicService _topicService;
         private readonly IPostService _postService;
         private readonly ICategoryService _categoryService;

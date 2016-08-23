@@ -24,6 +24,9 @@ namespace MVCForum.Website.Controllers
 {
     public partial class TopicController : BaseController
     {
+
+        log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         #region 建构式
 
         private readonly IFavouriteService _favouriteService;

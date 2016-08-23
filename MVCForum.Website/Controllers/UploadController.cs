@@ -17,6 +17,8 @@ namespace MVCForum.Website.Controllers
     [Authorize]
     public partial class UploadController : BaseController
     {
+        log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         private readonly IPostService _postService;
         private readonly IUploadedFileService _uploadedFileService;
 
