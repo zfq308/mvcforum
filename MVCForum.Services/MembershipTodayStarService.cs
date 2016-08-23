@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
@@ -22,22 +22,28 @@ namespace MVCForum.Services
 
     public partial class MembershipTodayStarService : IMembershipTodayStarService
     {
+        #region 成员变量
 
         log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private readonly IMembershipService _membershipService;
         private readonly MVCForumContext _context;
+
+        #endregion
+
+        #region 建构式
+
         public MembershipTodayStarService(IMembershipService membershipService, IMVCForumContext context)
         {
             _context = context as MVCForumContext;
             _membershipService = membershipService;
         }
 
-        public MembershipTodayStar Add(MembershipTodayStar info)
-        {
-            return _context.MembershipTodayStar.Add(info);
-        }
+        #endregion
 
+        /// <summary>
+        /// 移除过期的每日之星
+        /// </summary>
         public void BatchRemove()
         {
             try
@@ -57,6 +63,11 @@ namespace MVCForum.Services
             }
         }
 
+        public MembershipTodayStar Add(MembershipTodayStar info)
+        {
+            return _context.MembershipTodayStar.Add(info);
+        }
+
         public bool Delete(MembershipUser user, IUnitOfWork unitOfWork)
         {
             try
@@ -73,6 +84,9 @@ namespace MVCForum.Services
 
         }
 
+
+
+
         public MembershipTodayStar Get(MembershipUser user)
         {
             if (user != null && !string.IsNullOrEmpty(user.Id.ToString()))
@@ -85,15 +99,42 @@ namespace MVCForum.Services
             }
         }
 
-        public MembershipTodayStar Get(Guid id)
+        public MembershipTodayStar Get(Guid UserId)
         {
-            return _context.MembershipTodayStar.Where(x => x.UserId == id).FirstOrDefault();
+            return _context.MembershipTodayStar.Where(x => x.UserId == UserId).FirstOrDefault();
         }
 
         public List<MembershipTodayStar> LoadAllAvailidUsers()
         {
             return _context.MembershipTodayStar.Where(x => x.Status == true).ToList();
         }
-    }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public List<MembershipUser> LoadNewestTodayStars(int count)
+        {
+            if (count <= 0) count = 5;
+            var UserIdList = _context.MembershipTodayStar.Where(x => x.Status == true).OrderByDescending(x => x.CreateDate).Take(count).Select(x => x.UserId).ToList();
+            List<MembershipUser> returnlist = null;
+            if (UserIdList != null && UserIdList.Count > 0)
+            {
+                returnlist = new List<MembershipUser>();
+                foreach (var userId in UserIdList)
+                {
+                    var user = _membershipService.GetUser(userId);
+                    if (!returnlist.Contains(user))
+                    {
+                        returnlist.Add(user);
+                    }
+                }
+                return returnlist;
+            }
+            else
+            {
+                return null;
+            }
+        }
+    }
 }

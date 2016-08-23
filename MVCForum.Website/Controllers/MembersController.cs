@@ -2193,7 +2193,40 @@ namespace MVCForum.Website.Controllers
         [Authorize(Roles = AppConstants.AdminRoleName)]
         public ActionResult SubmitMeiRiZhiXing(ViewMemberViewModel model)
         {
-            //Guid Id, DateTime starttime, DateTime stoptime
+            if (model != null && model.MeiRiZhiXing != null)
+            {
+                MembershipTodayStar info= _MembershipTodayStarService.Get(model.MeiRiZhiXing.UserId);
+                if (info!=null && info.UserId!=Guid.Empty)
+                {
+                    info.JobId = model.MeiRiZhiXing.JobId;
+                    info.Operator = LoggedOnReadOnlyUser.UserName;
+                    info.StartTime = model.MeiRiZhiXing.StartTime;
+                    info.StopTime = model.MeiRiZhiXing.StopTime;
+                    info.Status = model.MeiRiZhiXing.Status;
+                    _context.Entry<MembershipTodayStar>(info).State = System.Data.Entity.EntityState.Modified;
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    MembershipTodayStar newMembershipTodayStar = new MembershipTodayStar();
+                    newMembershipTodayStar.UserId = model.MeiRiZhiXing.UserId;
+                    newMembershipTodayStar.CreateDate = DateTime.Now;
+                    newMembershipTodayStar.JobId = model.MeiRiZhiXing.JobId;
+                    newMembershipTodayStar.Operator = LoggedOnReadOnlyUser.UserName;
+                    newMembershipTodayStar.StartTime = model.MeiRiZhiXing.StartTime;
+                    newMembershipTodayStar.StopTime = model.MeiRiZhiXing.StopTime;
+                    newMembershipTodayStar.Status = model.MeiRiZhiXing.Status;
+                    _MembershipTodayStarService.Add(newMembershipTodayStar);
+                    _context.Entry<MembershipTodayStar>(newMembershipTodayStar).State = System.Data.Entity.EntityState.Added;
+                    _context.SaveChanges();
+                }
+
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = "已更新每日之星数据。",
+                    MessageType = GenericMessages.info
+                };
+            }
 
             return RedirectToAction("Index", "Home");
 
@@ -2212,6 +2245,7 @@ namespace MVCForum.Website.Controllers
                     var permissions = RoleService.GetPermissions(null, UsersRole);
                     var picturelist = _MembershipUserPictureService.GetMembershipUserPictureListByUserId(loggedonId);
                     var meiRiZhiXing = _MembershipTodayStarService.Get(member);
+                    string Operator = LoggedOnReadOnlyUser == null ? "" : LoggedOnReadOnlyUser.UserName;
                     if (meiRiZhiXing == null)
                     {
                         meiRiZhiXing = new MembershipTodayStar()
@@ -2220,8 +2254,8 @@ namespace MVCForum.Website.Controllers
                             CreateDate = DateTime.Now,
                             StartTime = DateTime.Now,
                             StopTime = DateTime.Now.AddDays(7),
-                            Operator = LoggedOnReadOnlyUser.UserName,
-                            Status =  false,
+                            Operator = Operator,
+                            Status = false,
                             UserId = loggedonId
                         };
                     }

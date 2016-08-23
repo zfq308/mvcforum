@@ -21,8 +21,7 @@ namespace MVCForum.Website.Controllers
 {
     public class AiLvHuoDongController : BaseController
     {
-
-
+        #region 成员变量
 
         private readonly IAiLvHuoDongService _aiLvHuoDongService;
         private readonly ITopicService _topicService;
@@ -30,6 +29,8 @@ namespace MVCForum.Website.Controllers
         private readonly MVCForumContext _context;
         private readonly IActivityRegisterService _ActivityRegisterService;
         private readonly IMembershipService _MembershipService;
+
+        #endregion
 
         #region 建构式  
         public AiLvHuoDongController(
@@ -59,34 +60,6 @@ namespace MVCForum.Website.Controllers
 
         #region 爱驴活动模块
 
-        /// <summary>
-        /// 活动List清单
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult ZuiXinHuoDong()
-        {
-            var HuoDongList = new AiLvHuoDong_ListViewModel
-            {
-                AiLvHuoDongList = _aiLvHuoDongService.GetAll().OrderByDescending(x => x.CreatedTime).ToList()
-            };
-            return View(HuoDongList);
-        }
-
-        private void BindControlData()
-        {
-            var Items_LeiBieList = new List<SelectListItem>();
-            Items_LeiBieList.Add(new SelectListItem { Text = "自由报名", Value = "1" });
-            Items_LeiBieList.Add(new SelectListItem { Text = "特殊邀请", Value = "2" });
-            ViewData["LeiBieList"] = Items_LeiBieList;
-
-
-            var Items_YaoQiuList = new List<SelectListItem>();
-            Items_YaoQiuList.Add(new SelectListItem { Text = "单身人士", Value = "1" });
-            Items_YaoQiuList.Add(new SelectListItem { Text = "邀请人员", Value = "2" });
-            Items_YaoQiuList.Add(new SelectListItem { Text = "无要求", Value = "3" });
-            ViewData["YaoQiuList"] = Items_YaoQiuList;
-        }
-
         #region 创建活动
 
         [Authorize]
@@ -96,12 +69,12 @@ namespace MVCForum.Website.Controllers
             {
                 var loggedOnUserId = LoggedOnReadOnlyUser?.Id ?? Guid.Empty;
                 var permissions = RoleService.GetPermissions(null, UsersRole);
-                // Check is has permissions
-                if (UserIsAdmin)
-                {
-                    var user = MembershipService.GetUser(loggedOnUserId);
-                    BindControlData();
 
+                if (UserIsAdmin || User.IsInRole(AppConstants.SupplierRoleName))
+                {
+                    //绑定页面控件
+                    BindControlData();
+                    //给出部分默认值
                     var model = new AiLvHuoDong_CreateEdit_ViewModel();
                     model.StartTime = DateTime.Today.AddDays(14).AddHours(8);
                     model.StopTime = DateTime.Today.AddDays(15);
@@ -110,7 +83,6 @@ namespace MVCForum.Website.Controllers
 
                     return View(model);
                 }
-
                 return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
             }
         }
@@ -124,7 +96,10 @@ namespace MVCForum.Website.Controllers
             {
                 using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
+
                     var item = new AiLvHuoDong();
+
+                    #region 属性赋值
                     item.MingCheng = ViewModel.MingCheng;
                     item.LeiBie = ViewModel.LeiBie;
                     item.YaoQiu = ViewModel.YaoQiu;
@@ -152,6 +127,7 @@ namespace MVCForum.Website.Controllers
                         item.AuditComments = "";
                     }
                     item.CreatedTime = DateTime.Now;
+                    #endregion
 
                     try
                     {
@@ -179,10 +155,6 @@ namespace MVCForum.Website.Controllers
                 return View(ViewModel);
             }
         }
-
-
-
-
 
         #endregion
 
@@ -351,8 +323,102 @@ namespace MVCForum.Website.Controllers
         }
         #endregion
 
+        #region 查看/载入活动
+        /// <summary>
+        /// 活动List清单
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ZuiXinHuoDong()
+        {
+            var HuoDongList = new AiLvHuoDong_ListViewModel
+            {
+                AiLvHuoDongList = _aiLvHuoDongService.GetAll().OrderByDescending(x => x.CreatedTime).ToList()
+            };
+            return View(HuoDongList);
+        }
+
+        public ActionResult ViewActivity(Guid Id)
+        {
+            var item = _aiLvHuoDongService.Get(Id);
+            var EditModel = new AiLvHuoDong_CreateEdit_ViewModel
+            {
+                Id = item.Id,
+                MingCheng = item.MingCheng,
+                LeiBie = item.LeiBie,
+                YaoQiu = item.YaoQiu,
+                StartTime = item.StartTime,
+                StopTime = item.StopTime,
+                BaoMingJieZhiTime = item.BaoMingJieZhiTime,
+                DiDian = item.DiDian,
+                LiuCheng = item.LiuCheng,
+                Feiyong = item.Feiyong,
+                FeiyongShuoMing = item.FeiyongShuoMing,
+                ZhuYiShiXiang = item.ZhuYiShiXiang,
+                YuGuRenShu = item.YuGuRenShu,
+                XingBieBiLi = item.XingBieBiLi,
+                YaoQingMa = "", //item.YaoQingMa,
+                ZhuangTai = item.ZhuangTai,
+                ShenHeBiaoZhi = item.ShenHeBiaoZhi,
+                GongYingShangUserId = item.GongYingShangUserId,
+            };
+            var userlist = _ActivityRegisterService.GetActivityRegisterListByHongDong(item);
+            if (userlist != null && userlist.Count > 0)
+            {
+                List<Guid> BoyUserId = new List<Guid>();
+                List<Guid> GirlUserId = new List<Guid>();
+                EditModel.BoyJoinner = new List<MembershipUser>();
+                EditModel.GirlJoiner = new List<MembershipUser>();
+                foreach (ActivityRegister ar in userlist)
+                {
+                    if (ar.UserGender == Enum_Gender.boy)
+                    {
+                        if (!BoyUserId.Contains(ar.UserId))
+                        {
+                            BoyUserId.Add(ar.UserId);
+                            MembershipUser user1 = _MembershipService.GetUser(ar.UserId);
+                            if (user1 != null)
+                            {
+                                EditModel.BoyJoinner.Add(user1);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (!GirlUserId.Contains(ar.UserId))
+                        {
+                            GirlUserId.Add(ar.UserId);
+                            MembershipUser user1 = _MembershipService.GetUser(ar.UserId);
+                            if (user1 != null)
+                            {
+                                EditModel.GirlJoiner.Add(user1);
+                            }
+                        }
+
+                    }
+                }
+            }
+
+            return View(EditModel);
+        }
+
         #endregion
 
+        private void BindControlData()
+        {
+            var Items_LeiBieList = new List<SelectListItem>();
+            Items_LeiBieList.Add(new SelectListItem { Text = "自由报名", Value = "1" });
+            Items_LeiBieList.Add(new SelectListItem { Text = "特殊邀请", Value = "2" });
+            ViewData["LeiBieList"] = Items_LeiBieList;
+
+
+            var Items_YaoQiuList = new List<SelectListItem>();
+            Items_YaoQiuList.Add(new SelectListItem { Text = "单身人士", Value = "1" });
+            Items_YaoQiuList.Add(new SelectListItem { Text = "邀请人员", Value = "2" });
+            Items_YaoQiuList.Add(new SelectListItem { Text = "无要求", Value = "3" });
+            ViewData["YaoQiuList"] = Items_YaoQiuList;
+        }
+
+        #endregion
 
         #region 活动报名
         /// <summary>
@@ -544,7 +610,7 @@ namespace MVCForum.Website.Controllers
 
         #endregion
 
-
+        #region 每日心情
 
         [Authorize]
         public ActionResult DailyRecord()
@@ -561,6 +627,8 @@ namespace MVCForum.Website.Controllers
             }
             return View(JiluList);
         }
+
+        #endregion
 
         #region 爱驴资讯模块
 
@@ -600,79 +668,13 @@ namespace MVCForum.Website.Controllers
 
         #endregion
 
-
-
-        public ActionResult ViewActivity(Guid Id)
-        {
-            var item = _aiLvHuoDongService.Get(Id);
-            var EditModel = new AiLvHuoDong_CreateEdit_ViewModel
-            {
-                Id = item.Id,
-                MingCheng = item.MingCheng,
-                LeiBie = item.LeiBie,
-                YaoQiu = item.YaoQiu,
-                StartTime = item.StartTime,
-                StopTime = item.StopTime,
-                BaoMingJieZhiTime = item.BaoMingJieZhiTime,
-                DiDian = item.DiDian,
-                LiuCheng = item.LiuCheng,
-                Feiyong = item.Feiyong,
-                FeiyongShuoMing = item.FeiyongShuoMing,
-                ZhuYiShiXiang = item.ZhuYiShiXiang,
-                YuGuRenShu = item.YuGuRenShu,
-                XingBieBiLi = item.XingBieBiLi,
-                YaoQingMa = "", //item.YaoQingMa,
-                ZhuangTai = item.ZhuangTai,
-                ShenHeBiaoZhi = item.ShenHeBiaoZhi,
-                GongYingShangUserId = item.GongYingShangUserId,
-            };
-            var userlist = _ActivityRegisterService.GetActivityRegisterListByHongDong(item);
-            if (userlist != null && userlist.Count > 0)
-            {
-                List<Guid> BoyUserId = new List<Guid>();
-                List<Guid> GirlUserId = new List<Guid>();
-                EditModel.BoyJoinner = new List<MembershipUser>();
-                EditModel.GirlJoiner = new List<MembershipUser>();
-                foreach (ActivityRegister ar in userlist)
-                {
-                    if (ar.UserGender == Enum_Gender.boy)
-                    {
-                        if (!BoyUserId.Contains(ar.UserId))
-                        {
-                            BoyUserId.Add(ar.UserId);
-                            MembershipUser user1 = _MembershipService.GetUser(ar.UserId);
-                            if (user1 != null)
-                            {
-                                EditModel.BoyJoinner.Add(user1);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (!GirlUserId.Contains(ar.UserId))
-                        {
-                            GirlUserId.Add(ar.UserId);
-                            MembershipUser user1 = _MembershipService.GetUser(ar.UserId);
-                            if (user1 != null)
-                            {
-                                EditModel.GirlJoiner.Add(user1);
-                            }
-                        }
-
-                    }
-                }
-            }
-
-            return View(EditModel);
-        }
-
-        #region 其他View视图
         /// <summary>
         /// 每日之星
         /// </summary>
         /// <returns></returns>
         public ActionResult MeiRiZhiXing()
         {
+
             return View();
         }
 
@@ -698,6 +700,6 @@ namespace MVCForum.Website.Controllers
             return View(model);
         }
 
-        #endregion
+
     }
 }

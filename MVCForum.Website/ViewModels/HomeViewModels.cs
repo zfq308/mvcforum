@@ -37,11 +37,11 @@ namespace MVCForum.Website.ViewModels
     {
         public List<AiLvHuoDong> AiLv_ZuiXinHuoDongTop5 { get; set; }
 
-        //public List<AiLvHuoDongJiLu> AiLv_ZuiXiJiLuTop5 { get; set; }
+        public List<Topic> AiLv_ZuiXiJiLuTop5 { get; set; }
 
         public List<MembershipUser> AiLv_ZuiXinHuiYuanTop5 { get; set; }
 
-        public List<MembershipTodayStar> AiLv_MeiRiZhiXingTop5 { get; set; }
+        public List<MembershipUser> AiLv_MeiRiZhiXingTop5 { get; set; }
 
         public List<Topic> AiLv_ZuiXinFuWuTop5 { get; set; }
 

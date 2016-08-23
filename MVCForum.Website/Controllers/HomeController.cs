@@ -16,14 +16,16 @@ namespace MVCForum.Website.Controllers
 {
     public partial class HomeController : BaseController
     {
-        #region 建构式
-
         private readonly ITopicService _topicService;
         private readonly ICategoryService _categoryService;
         private readonly IActivityService _activityService;
         private readonly IAiLvHuoDongService _aiLvHuoDongService;
         private readonly IADSettingService _adSettingService;
         private readonly IMembershipService _membershipService;
+        private readonly IMembershipTodayStarService _membershipTodayStarService;
+
+        #region 建构式
+
         public HomeController(ILoggingService loggingService,
             IUnitOfWorkManager unitOfWorkManager,
             IActivityService activityService,
@@ -34,6 +36,7 @@ namespace MVCForum.Website.Controllers
             ISettingsService settingsService,
             ICategoryService categoryService,
             IAiLvHuoDongService ailvhuodongService,
+            IMembershipTodayStarService membershipTodayStarService,
             IADSettingService adSettingService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
@@ -43,6 +46,7 @@ namespace MVCForum.Website.Controllers
             _aiLvHuoDongService = ailvhuodongService;
             _adSettingService = adSettingService;
             _membershipService = membershipService;
+            _membershipTodayStarService = membershipTodayStarService;
         }
 
         #endregion
@@ -55,11 +59,13 @@ namespace MVCForum.Website.Controllers
         public ActionResult Index()
         {
             var returnView = new AiLvHomeViewModel();
+            returnView.AiLv_ZuiXiJiLuTop5 = (List<Topic>)_topicService.GetRecentTopics(5, _categoryService.GetCategoryByEnumCategoryType(EnumCategoryType.AiLvJiLu));
             returnView.AiLv_ZuiXinHuoDongTop5 = (List<AiLvHuoDong>)_aiLvHuoDongService.GetRecentAiLvHuodong(5);
             returnView.AiLv_ADCollectionTop5 = (List<ADSetting>)_adSettingService.GetRecentTop5();
             returnView.AiLv_ZuiXinZiXunTop5 = (List<Topic>)_topicService.GetRecentTopics(5, _categoryService.GetCategoryByEnumCategoryType(EnumCategoryType.AiLvZiXun));
             returnView.AiLv_ZuiXinFuWuTop5 = (List<Topic>)_topicService.GetRecentTopics(5, _categoryService.GetCategoryByEnumCategoryType(EnumCategoryType.AiLvFuWu));
             returnView.AiLv_ZuiXinHuiYuanTop5 = (List<MembershipUser>)_membershipService.GetLatestUsers(10, true, true);
+            returnView.AiLv_MeiRiZhiXingTop5 = _membershipTodayStarService.LoadNewestTodayStars(10);
             return View(returnView);
         }
 

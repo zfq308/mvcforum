@@ -49,7 +49,7 @@
                                     <table class="pad">
                                         <tr>
                                             <td valign="top">
-                                                <img src="/Content/Images/bar1.jpg" alt="" style="margin-bottom:0px;width:100%;height:80px"  />
+                                                <img src="/Content/Images/bar1.jpg" alt="" style="margin-bottom:0px;width:100%;height:80px" />
                                             </td>
                                         </tr>
                                         <tr>
@@ -114,9 +114,26 @@
         <div class="panel panel-mvc">
             <div class="panel-heading">最新记录</div>
             <div class="panel-body">
-                <p>
-                    最新活动记录清单
-                </p>
+                @if (Model.AiLv_ZuiXiJiLuTop5 != null && Model.AiLv_ZuiXiJiLuTop5.Count > 0)
+                {
+                    <table>
+                        @foreach (var JiLu in Model.AiLv_ZuiXiJiLuTop5)
+                        {
+                            <tr>
+                                <td>
+                                    <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span>
+                                    <a href="@JiLu.NiceUrl">@JiLu.Name</a>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                }
+                else
+                {
+                    <p>
+                        暂无活动记录信息
+                    </p>
+                }
             </div>
         </div>
 
@@ -126,9 +143,49 @@
         <div class="panel panel-mvc">
             <div class="panel-heading">每日之星</div>
             <div class="panel-body">
-                <p>
-                    此处为每日之星滚动播出
-                </p>
+                @if (Model.AiLv_MeiRiZhiXingTop5 != null)
+                {
+                    <div id="myCarousel2" class="carousel sp-slider" data-ride="carousel" data-wrap="true" data-interval="3000">
+                        <ol class="carousel-indicators">
+                            @{ int idx_Star2 = 0;}
+                            @foreach (var star in Model.AiLv_MeiRiZhiXingTop5)
+                            {
+                                <li data-target="#myCarousel2" data-slide-to="@Html.Raw(idx_Star2.ToString())" class="@if (idx_Star2 == 0) { @Html.Raw("active"); }"></li>
+                                idx_Star2 = idx_Star2 + 1;
+                            }
+                        </ol>
+                        <div class="carousel-inner">
+                            @{ int idx_Star = 0;}
+                            @foreach (var obj in Model.AiLv_MeiRiZhiXingTop5)
+                            {
+                                <div class="item @if (idx_Star == 0) { @Html.Raw("active"); }">
+                                    <table>
+                                        <tr>
+
+                                            <td>
+                                                @{
+                                                    var Gender = obj.Gender == MVCForum.Domain.DomainModel.Enum_Gender.boy ? "男生" : "女生";
+                                                }
+                                                <span style="padding-left:40px">@obj.AliasName , @obj.Age 岁，@Gender</span>
+
+                                            </td>
+                                            <td>
+                                                <a href="@obj.NiceUrl">
+                                                    <img src="@AppHelpers.MemberImage(obj.Avatar, "", obj.Id, 48)" alt="@obj.UserName">
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                                        idx_Star = idx_Star + 1;
+                                                    }
+                        </div>
+                    </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <p>暂无每日之星数据</p>
+                                                    }
             </div>
         </div>
 
@@ -220,13 +277,3 @@
     </div>
 
 </div>
-
-
-
-@*@Html.Action("LatestTopics", "Topic")*@
-@*@Html.Partial("_DocumentationBlock")*@
-@*
-    If you want to show categories on the home page instead of topics
-    Just uncomment this action out and delete this text (And comment out the above action)
-    @Html.Action("ListMainCategories", "Category")
-*@
