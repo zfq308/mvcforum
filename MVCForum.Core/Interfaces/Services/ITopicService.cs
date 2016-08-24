@@ -52,6 +52,8 @@ namespace MVCForum.Domain.Interfaces.Services
         IList<Topic> GetAllTopicsByCategory(Guid categoryId);
         IList<Topic> GetAllTopicsByCategory(EnumCategoryType mCategoryType);
         IList<Topic> GetAllTopicsByCondition(EnumCategoryType mCategoryType, MembershipUser TopicOwner);
+        IList<Topic> GetAllTopicsByCondition(EnumCategoryType mCategoryType, Guid TopicOwnerUserId);
+
         PagedList<Topic> GetPagedTopicsAll(int pageIndex, int pageSize, int amountToTake, List<Category> allowedCategories);
         IList<Topic> GetTopicBySlugLike(string slug);
     }

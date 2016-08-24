@@ -222,18 +222,18 @@ Notification.UnSubscribe,取消关注
 Notifications.NoActiveMembers,当前无人在线
 PM.AboutToExceedInboxSizeBody,You are about to exceed your private message inbox allowance
 PM.AboutToExceedInboxSizeSubject,Private Message Inbox Allowance
-PM.BackToInbox,Back To Inbox
-PM.Block,Block
-PM.Blocked,Blocked
-PM.BlockedMessage,Unable to send message
+PM.BackToInbox,返回信箱
+PM.Block,屏蔽
+PM.Blocked,已屏蔽
+PM.BlockedMessage,无法发出您的信息。您似乎被对方屏蔽了！
 PM.Create,Create
 PM.CreatePrivateMessage,Create Private Message
 PM.Date,Date
 PM.Delete,删除
-PM.From,From: 
-PM.LastActivity,Last Activity
+PM.From,发送者: 
+PM.LastActivity,发送时间
 PM.MemberIsOnline,在线
-PM.MessageSent,Message Sent
+PM.MessageSent,信息已发出
 PM.MessageSubject,主题
 PM.NewPrivateMessage,New Private Message
 PM.NewPrivateMessageBody,{0} has just sent you a private message.
@@ -242,8 +242,8 @@ PM.NoMessages,您当前没有收到任何私信
 PM.OriginalMessage,Original Message
 PM.PrivateMessages,私信
 PM.Read,Read
-PM.ReceivedItemsOverCapcity,{0} has exceeded their inbox size - unable to send message
-PM.ReceivedPrivateMessages,接收的私信信息
+PM.ReceivedItemsOverCapcity,{0} 的信箱容量已满 - 无法发送信息
+PM.ReceivedPrivateMessages,我的信箱
 PM.RecipientUsername,收信人
 PM.Reply,回复
 PM.Send,发出

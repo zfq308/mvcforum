@@ -1163,6 +1163,7 @@
     <Content Include="Views\AiLvHuoDong\DailyRecord.cshtml" />
     <Content Include="Views\AiLvHuoDong\DailyRecordLayout.cshtml" />
     <Content Include="Views\Members\Follow.cshtml" />
+    <Content Include="Views\Members\FriendMessage.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />

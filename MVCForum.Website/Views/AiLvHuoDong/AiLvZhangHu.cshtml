@@ -29,15 +29,15 @@
                 </div>
                 <div class="form-group">
                     <img src="~/Content/Images/t4.png" title="好友列表" />
-                    <a style="margin-left:15px" href="@Url.Action("Edit", "Members", new { id = Model.User.Id })">好友列表</a>
+                    <a style="margin-left:15px" href="@Url.Action("Follow", "Members", new { id = Model.User.Id })">好友列表</a>
                 </div>
                 <div class="form-group">
                     <img src="~/Content/Images/t5.png" title="好友动态" />
-                    <a style="margin-left:15px" href="@Url.Action("Edit", "Members", new { id = Model.User.Id })">好友动态</a>
+                    <a style="margin-left:15px" href="@Url.Action("FriendMessage", "Members", new { id = Model.User.Id })">好友动态</a>
                 </div>
                 <div class="form-group">
                     <img src="~/Content/Images/t6.jpg" title="私信" />
-                    <a style="margin-left:15px" href="@Url.Action("View", "PrivateMessage", new { id = Model.User.Id })">私信</a>
+                    <a style="margin-left:15px" href="@Url.Action("Index", "PrivateMessage", new { id = Model.User.Id })">私信</a>
                 </div>
             </fieldset>
         </div>

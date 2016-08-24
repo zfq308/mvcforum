@@ -1,0 +1,32 @@
+﻿@using MVCForum.Website.Application
+@using MVCForum.Website.ViewModels
+@model FriendMessage_ListViewModel
+
+@{
+    ViewBag.Title = "好友动态";
+    ViewBag.RecordsPerPage = 20;
+    var totalCount = Convert.ToInt32(Model.TotalCount);
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="row">
+    <div class="col-xs-12 col-md-offset col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading c-list">
+                <span class="title">好友动态</span>
+            </div>
+            @foreach (var topic in Model.Topics)
+            {
+                Html.RenderPartial("_Topic", topic);
+            }
+
+            @if (Model.TotalPages > 1)
+            {
+                //TODO: Benjamin 07-05,此处还没有指定Action的名字
+                @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().TopicsPerPage, totalCount, null, "FriendMessage", "Members")
+            }
+        </div>
+    </div>
+</div>
+

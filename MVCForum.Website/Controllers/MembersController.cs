@@ -2287,15 +2287,133 @@ namespace MVCForum.Website.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        #region 用户关注
-
-
-        public ActionResult Follow()
+        [Authorize]
+        public ActionResult FriendMessage()
         {
-            return View();
+            var _friendlist = _FollowService.GetFriendList(LoggedOnReadOnlyUser.Id);
+            List<Topic> Topiclist = new List<Topic>();
+            if (_friendlist != null && _friendlist.Count > 0)
+            {
+                List<Guid> friendIDs = new List<Guid>();
+
+                foreach (Follow friendInstance in _friendlist)
+                {
+                    if (!friendIDs.Contains(friendInstance.FriendUserId))
+                    {
+                        friendIDs.Add(friendInstance.FriendUserId);
+                        Topiclist.AddRange(_topicService.GetAllTopicsByCondition(EnumCategoryType.MeiRiXinqing, friendInstance.FriendUserId));
+                    }
+                }
+
+            }
+            FriendMessage_ListViewModel model = new FriendMessage_ListViewModel();
+            model.Topics = Topiclist.OrderByDescending(x => x.CreateDate).ToList();
+            model.PageIndex = 1;
+
+            return View(model);
         }
 
-       [HttpPost]
+
+        #region 用户关注
+
+        [Authorize]
+        public ActionResult Follow()
+        {
+            Guid UserId = LoggedOnReadOnlyUser.Id;
+            Follow_ListViewModel model = new Follow_ListViewModel();
+
+            #region 我的好友
+
+            List<FollowEx> FriendList = null;
+            var _friendlist = _FollowService.GetFriendList(UserId);
+            if (_friendlist != null && _friendlist.Count > 0)
+            {
+                FriendList = new List<FollowEx>();
+                MembershipUser my_MembershipUserInstance = MembershipService.GetUser(UserId);
+                foreach (var item in _friendlist)
+                {
+                    FollowEx newFollowEx = new FollowEx();
+                    newFollowEx.FollowId = item.Id;
+                    newFollowEx.FollowInstance = item;
+                    newFollowEx.MyUserInstance = my_MembershipUserInstance;
+                    newFollowEx.OtherPeopleInstance = MembershipService.GetUser(item.FriendUserId);
+                    FriendList.Add(newFollowEx);
+                }
+            }
+            model.FriendList = FriendList;
+
+            #endregion
+
+            #region 我关注的
+
+            List<FollowEx> MyFollowedList = null;
+            var _MyFollowedList = _FollowService.Get_SpecificUser_Followed_Poeple_List(UserId);
+            if (_MyFollowedList != null && _MyFollowedList.Count > 0)
+            {
+                MyFollowedList = new List<FollowEx>();
+                MembershipUser my_MembershipUserInstance = MembershipService.GetUser(UserId);
+                foreach (var item in _MyFollowedList)
+                {
+                    FollowEx newFollowEx = new FollowEx();
+                    newFollowEx.FollowId = item.Id;
+                    newFollowEx.FollowInstance = item;
+                    newFollowEx.MyUserInstance = my_MembershipUserInstance;
+                    newFollowEx.OtherPeopleInstance = MembershipService.GetUser(item.FriendUserId);
+                    MyFollowedList.Add(newFollowEx);
+                }
+            }
+            model.MyFollowedList = MyFollowedList;
+
+            #endregion
+
+            #region 关注我的
+
+            List<FollowEx> FollowMeList = null;
+            var _FollowMeList = _FollowService.Get_People_Followed_SpecificUser_List(UserId);
+            if (_FollowMeList != null && _FollowMeList.Count > 0)
+            {
+                FollowMeList = new List<FollowEx>();
+                MembershipUser my_MembershipUserInstance = MembershipService.GetUser(UserId);
+                foreach (var item in _FollowMeList)
+                {
+                    FollowEx newFollowEx = new FollowEx();
+                    newFollowEx.FollowId = item.Id;
+                    newFollowEx.FollowInstance = item;
+                    newFollowEx.MyUserInstance = my_MembershipUserInstance;
+                    newFollowEx.OtherPeopleInstance = MembershipService.GetUser(item.UserId);
+                    FollowMeList.Add(newFollowEx);
+                }
+            }
+            model.FollowMeList = FollowMeList;
+
+            #endregion
+
+            #region 黑名单
+
+            List<FollowEx> BlackList = null;
+            var _BlackList = _FollowService.GetBlackList(UserId);
+            if (_BlackList != null && _BlackList.Count > 0)
+            {
+                BlackList = new List<FollowEx>();
+                MembershipUser my_MembershipUserInstance = MembershipService.GetUser(UserId);
+                foreach (var item in _BlackList)
+                {
+                    FollowEx newFollowEx = new FollowEx();
+                    newFollowEx.FollowId = item.Id;
+                    newFollowEx.FollowInstance = item;
+                    newFollowEx.MyUserInstance = my_MembershipUserInstance;
+                    newFollowEx.OtherPeopleInstance = MembershipService.GetUser(item.FriendUserId);
+                    BlackList.Add(newFollowEx);
+                }
+            }
+            model.BlackList = BlackList;
+
+            #endregion
+
+            return View(model);
+        }
+
+        [HttpPost]
         [Authorize]
         public ActionResult AddFollow(ViewMemberViewModel model)
         {
@@ -2401,9 +2519,24 @@ namespace MVCForum.Website.Controllers
         [Authorize]
         public ActionResult CancelBlackList(ViewMemberViewModel model)
         {
-            if (model != null && model.LoggedOnUserId != null)
+            FollowAction_CancelBlackList(model.LoggedOnUserId);
+            return RedirectToAction("Follow", "Members");
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult CancelBlackList2(FollowEx model)
+        {
+            string BlackUserId = Request.Form["item.FollowInstance.FriendUserId"];
+            FollowAction_CancelBlackList(Guid.Parse(BlackUserId));
+            return RedirectToAction("Follow", "Members");
+        }
+
+        private void FollowAction_CancelBlackList(Guid BlackListUserId)
+        {
+            if (BlackListUserId != Guid.Empty)
             {
-                var info = _FollowService.Get(LoggedOnReadOnlyUser.Id, model.LoggedOnUserId);
+                var info = _FollowService.Get(LoggedOnReadOnlyUser.Id, BlackListUserId);
 
                 if (info != null && info.OpsFlag == "Black")
                 {
@@ -2425,7 +2558,6 @@ namespace MVCForum.Website.Controllers
                     }
                 }
             }
-            return RedirectToAction("Follow", "Members");
         }
         #endregion
 

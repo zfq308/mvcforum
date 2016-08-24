@@ -102,7 +102,7 @@ namespace MVCForum.Services
         /// <returns></returns>
         public Follow CancelBlackList(Guid UserId, Guid BlacklistUserId)
         {
-            var query = _context.Follow.AsNoTracking().Where(x => x.UserId == UserId && x.FriendUserId == BlacklistUserId && x.OpsFlag== "Black");
+            var query = _context.Follow.AsNoTracking().Where(x => x.UserId == UserId && x.FriendUserId == BlacklistUserId && x.OpsFlag == "Black");
             if (query != null && query.Count() >= 1)
             {
                 Follow item = query.FirstOrDefault();
@@ -132,7 +132,7 @@ namespace MVCForum.Services
         /// <returns></returns>
         public Follow Get(Guid userId, Guid FriendId)
         {
-            return _context.Follow.AsNoTracking().FirstOrDefault(x => x.UserId == userId && x.FriendUserId== FriendId);
+            return _context.Follow.AsNoTracking().FirstOrDefault(x => x.UserId == userId && x.FriendUserId == FriendId);
         }
 
 
@@ -143,7 +143,13 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IList<Follow> Get_People_Followed_SpecificUser_List(Guid UserId)
         {
-            return _context.Follow.AsNoTracking().Where(x => x.FriendUserId == UserId).ToList();
+            var query =
+              from a in _context.Follow
+              where a.FriendUserId == UserId &&
+                    !_context.Follow.Any(e => (e.UserId == a.FriendUserId) && (e.FriendUserId == a.UserId)) &&
+                    a.OpsFlag==""
+              select a;
+            return query.ToList();
         }
 
         /// <summary>
@@ -153,26 +159,47 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IList<Follow> Get_SpecificUser_Followed_Poeple_List(Guid UserId)
         {
-            return _context.Follow.AsNoTracking().Where(x => x.UserId == UserId).ToList();
+            var query =
+                from a in _context.Follow
+                where a.UserId == UserId && 
+                      !_context.Follow.Any(e => (e.UserId == a.FriendUserId) && (e.FriendUserId == a.UserId)) &&
+                      a.OpsFlag==""
+                select a;
+            return query.ToList();
         }
 
         public IList<Follow> GetFriendList(Guid userId)
         {
             var query =
-                from p in _context.Follow
+               (from p in _context.Follow
                 join q in _context.Follow
                 on p.UserId equals q.FriendUserId
                 where p.UserId == userId && p.OpsFlag == "" && q.OpsFlag == ""
-                select new Follow() { Id = p.Id, UserId = p.UserId, FriendUserId = p.FriendUserId, CreateTime = p.CreateTime, UpdateTime = p.UpdateTime, OpsFlag = p.OpsFlag };
-            return query.ToList<Follow>();
+                select new {
+                    Id = p.Id,
+                    UserId = p.UserId,
+                    FriendUserId = p.FriendUserId,
+                    CreateTime = p.CreateTime,
+                    UpdateTime = p.UpdateTime,
+                    OpsFlag = p.OpsFlag }
+               ).AsEnumerable().Select(x => new Follow
+               {
+                   Id = x.Id,
+                   UserId = x.UserId,
+                   FriendUserId = x.FriendUserId,
+                   CreateTime = x.CreateTime,
+                   UpdateTime = x.UpdateTime,
+                   OpsFlag = x.OpsFlag
+               });
+            return query.ToList();
         }
 
         public IList<Follow> GetBlackList(Guid userId)
         {
-            return _context.Follow.AsNoTracking().Where(x => x.UserId == userId && x.OpsFlag== "Black").ToList();
+            return _context.Follow.AsNoTracking().Where(x => x.UserId == userId && x.OpsFlag == "Black").ToList();
         }
 
-      
+
     }
 
 }

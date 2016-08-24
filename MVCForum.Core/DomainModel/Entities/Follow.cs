@@ -20,7 +20,7 @@ namespace MVCForum.Domain.DomainModel
         }
 
         #region 属性
-      
+
         public Guid Id { get; set; }
 
         public Guid UserId { get; set; }
@@ -35,6 +35,15 @@ namespace MVCForum.Domain.DomainModel
 
 
         #endregion
+    }
+
+    public class FollowEx
+    {
+        public Guid FollowId { get; set; }
+        public Follow FollowInstance { get; set; }
+        public MembershipUser MyUserInstance { get; set; }
+        public MembershipUser OtherPeopleInstance { get; set; }
+
     }
 
 }

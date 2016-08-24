@@ -171,4 +171,15 @@ namespace MVCForum.Website.ViewModels
         public MembershipUser User { get; set; }
     }
 
+
+    public class Follow_ListViewModel
+    {
+        public List<FollowEx> FriendList { get; set; }
+        public List<FollowEx> MyFollowedList { get; set; }
+        public List<FollowEx> FollowMeList { get; set; }
+        public List<FollowEx> BlackList { get; set; }
+        public Guid MyUserId { get; set; }
+    }
+
+
 }

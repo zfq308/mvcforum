@@ -1,8 +1,125 @@
-﻿
+﻿@using MVCForum.Website.Application
+@using MVCForum.Domain.DomainModel
+@model MVCForum.Website.ViewModels.Follow_ListViewModel
 @{
-    ViewBag.Title = "Follow";
-    Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
+    //Layout = "~/Views/AiLvHuoDong/ZuiXinHuoDongLayout.cshtml";
+    ViewBag.Title = "关注列表";
 }
 
-<h2>Follow</h2>
+<div class="panel" style="padding-top:2px">
+    <div class="panel-heading">
+        <h2>@ViewBag.Title</h2>
+    </div>
+    <div class="col-md-12 col-md-offset-1">
+        <div class="panel-title"><h6>我的好友</h6></div>
+        <div class="panel-content col-md-offset-1">
+            <table style="border:none; width:auto">
+                @if (Model.FriendList != null && Model.FriendList.Count > 0)
+                {
+                    foreach (FollowEx item in Model.FriendList)
+                    {
+                        <tr>
+                            <td valign="top" style="width:10%">
+                                <img src="@AppHelpers.MemberImage(item.OtherPeopleInstance.Avatar, "", item.OtherPeopleInstance.Id, 48)" alt="@item.OtherPeopleInstance.UserName">
+                            </td>
+                            <td style="width:70%">
+                                <a href="@item.OtherPeopleInstance.NiceUrl" style="padding-left:20px">@item.OtherPeopleInstance.AliasName</a>
+                            </td>
+                            <td style="width:20%">
+                                <a href="@Url.Action("View", "PrivateMessage", new { from = item.OtherPeopleInstance.Id}, null)"
+                                   class="btn-mvc-green"
+                                   data-name="@string.Concat(Html.LanguageString("PM.Title"), item.MyUserInstance.UserName)">
+                                    发信给TA
+                                </a>
+                            </td>
+                        </tr>
+                        <tr><td colspan="3"><hr style="height:1px;border:none;border-top:1px dashed #0066CC;" /></td></tr>
+                    }
+                }
+            </table>
+        </div>
+        <br />
 
+        <div class="panel-title"><h6>我的关注</h6></div>
+        <div class="panel-content col-md-offset-1">
+            <table style="border:none; width:auto">
+                @if (Model.MyFollowedList != null && Model.MyFollowedList.Count > 0)
+                {
+                    foreach (var item in Model.MyFollowedList)
+                    {
+                        <tr>
+                            <td valign="top" style="width:10%">
+                                <img src="@AppHelpers.MemberImage(item.OtherPeopleInstance.Avatar, "", item.OtherPeopleInstance.Id, 48)" alt="@item.OtherPeopleInstance.UserName">
+                            </td>
+                            <td style="width:70%">
+                                <a href="@item.OtherPeopleInstance.NiceUrl" style="padding-left:20px">@item.OtherPeopleInstance.AliasName</a>
+                            </td>
+                            <td style="width:20%">
+                              
+                            </td>
+                        </tr>
+                        <tr><td colspan="3"><hr style="height:1px;border:none;border-top:1px dashed #0066CC;" /></td></tr>
+                    }
+                }
+            </table>
+        </div>
+        <br />
+
+        <div class="panel-title"><h6>关注我的</h6></div>
+        <div class="panel-content col-md-offset-1">
+            <table style="border:none; width:auto">
+                @if (Model.FollowMeList != null && Model.FollowMeList.Count > 0)
+                {
+                    foreach (var item in Model.FollowMeList)
+                    {
+                        <tr>
+                            <td valign="top" style="width:10%">
+                                <img src="@AppHelpers.MemberImage(item.OtherPeopleInstance.Avatar, "", item.OtherPeopleInstance.Id, 48)" alt="@item.OtherPeopleInstance.UserName">
+                            </td>
+                            <td style="width:70%">
+                                <a href="@item.OtherPeopleInstance.NiceUrl" style="padding-left:20px">@item.OtherPeopleInstance.AliasName</a>
+                            </td>
+                            <td style="width:20%">
+                          
+                            </td>
+                        </tr>
+                        <tr><td colspan="3"><hr style="height:1px;border:none;border-top:1px dashed #0066CC;" /></td></tr>
+                    }
+                }
+            </table>
+        </div>
+        <br />
+
+        <div class="panel-title"><h6>黑名单</h6></div>
+        <div class="panel-content  col-md-offset-1">
+            <table style="border:none; width:auto">
+                @if (Model.BlackList != null && Model.BlackList.Count > 0)
+                {
+                    foreach (FollowEx item in Model.BlackList)
+                    {
+                        <tr>
+                            <td valign="top" style="width:10%">
+                                <img src="@AppHelpers.MemberImage(item.OtherPeopleInstance.Avatar, "", item.OtherPeopleInstance.Id, 48)" alt="@item.OtherPeopleInstance.UserName">
+                            </td>
+                            <td style="width:70%">
+                                <a href="@item.OtherPeopleInstance.NiceUrl" style="padding-left:20px">@item.OtherPeopleInstance.AliasName</a>
+                            </td>
+                            <td style="width:20%">
+                                @using (Html.BeginForm("CancelBlackList2", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                {
+                                    @Html.HiddenFor(x => item.FollowInstance.FriendUserId)
+                                    <p>
+                                        <button type="submit" name="btn_CancelBlackList" class="btn-mvc-red">
+                                           移除黑名单
+                                        </button>
+                                    </p>
+                                }
+                            </td>
+                        </tr>
+                        <tr><td colspan="3"><hr style="height:1px;border:none;border-top:1px dashed #0066CC;" /></td></tr>
+                    }
+                }
+            </table>
+        </div>
+    </div>
+</div>

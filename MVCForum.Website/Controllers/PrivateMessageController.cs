@@ -186,17 +186,17 @@ namespace MVCForum.Website.Controllers
                             // If the receiver is about to go over the allowance them let then know too
                             if (receiverCount > (settings.MaxPrivateMessagesPerMember - SiteConstants.Instance.PrivateMessageWarningAmountLessThanAllowedSize))
                             {
-                                // Send user a warning they are about to exceed 
-                                var sb = new StringBuilder();
-                                sb.AppendFormat("<p>{0}</p>", LocalizationService.GetResourceString("PM.AboutToExceedInboxSizeBody"));
-                                var email = new Email
-                                {
-                                    EmailTo = memberTo.Email,
-                                    NameTo = memberTo.UserName,
-                                    Subject = LocalizationService.GetResourceString("PM.AboutToExceedInboxSizeSubject")
-                                };
-                                email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
-                                _emailService.SendMail(email);
+                                //// Send user a warning they are about to exceed 
+                                //var sb = new StringBuilder();
+                                //sb.AppendFormat("<p>{0}</p>", LocalizationService.GetResourceString("PM.AboutToExceedInboxSizeBody"));
+                                //var email = new Email
+                                //{
+                                //    EmailTo = memberTo.Email,
+                                //    NameTo = memberTo.UserName,
+                                //    Subject = LocalizationService.GetResourceString("PM.AboutToExceedInboxSizeSubject")
+                                //};
+                                //email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
+                                //_emailService.SendMail(email);
                             }
 
                             // Good to go send the message!
