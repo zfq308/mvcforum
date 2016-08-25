@@ -172,6 +172,11 @@ namespace MVCForum.Website.ViewModels
     }
 
 
+    public class MeiRiZhiXing_ListViewModel
+    {
+        public IList<MembershipUser> MeiRiZhiXingUserList { get; set; }
+    }
+
     public class Follow_ListViewModel
     {
         public List<FollowEx> FriendList { get; set; }

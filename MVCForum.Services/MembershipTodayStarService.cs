@@ -104,9 +104,27 @@ namespace MVCForum.Services
             return _context.MembershipTodayStar.Where(x => x.UserId == UserId).FirstOrDefault();
         }
 
-        public List<MembershipTodayStar> LoadAllAvailidUsers()
+        public List<MembershipUser> LoadAllAvailidUsers()
         {
-            return _context.MembershipTodayStar.Where(x => x.Status == true).ToList();
+            var UserIdList = _context.MembershipTodayStar.Where(x => x.Status == true).OrderByDescending(x => x.CreateDate).Select(x => x.UserId).ToList();
+            List<MembershipUser> returnlist = null;
+            if (UserIdList != null && UserIdList.Count > 0)
+            {
+                returnlist = new List<MembershipUser>();
+                foreach (var userId in UserIdList)
+                {
+                    var user = _membershipService.GetUser(userId);
+                    if (!returnlist.Contains(user))
+                    {
+                        returnlist.Add(user);
+                    }
+                }
+                return returnlist;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         /// <summary>

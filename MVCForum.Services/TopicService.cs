@@ -921,6 +921,21 @@ namespace MVCForum.Services
             return results;
         }
 
+        public IList<Topic> GetAllTopicsByCondition(EnumCategoryType mCategoryType, List<Guid> TopicOwnerUserIdList)
+        {
+            var cat = _categoryService.GetCategoryByEnumCategoryType(mCategoryType);
+            var results = _context.Topic
+                                .Include(x => x.Category)
+                                .Include(x => x.LastPost.User)
+                                .Include(x => x.User)
+                                .Include(x => x.Poll)
+                                .AsNoTracking()
+                                .Where(x => x.Category.Id == cat.Id && x.Pending != true && TopicOwnerUserIdList.Contains(x.User.Id))
+                                .ToList();
+
+            return results;
+        }
+
 
         public PagedList<Topic> GetPagedTopicsAll(int pageIndex, int pageSize, int amountToTake, List<Category> allowedCategories)
         {

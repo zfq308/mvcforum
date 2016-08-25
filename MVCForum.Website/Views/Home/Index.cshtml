@@ -12,7 +12,7 @@
 }
 @*广告窗区*@
 <div id="myCarousel" class="carousel sp-slider" data-ride="carousel" data-wrap="true" data-interval="3000">
-    <ol class="carousel-indicators">
+    <ol class="carousel-indicators hidden">
         @{ int idx2 = 0;}
         @foreach (var ad in Model.AiLv_ADCollectionTop5)
         {
@@ -57,7 +57,7 @@
                                                 <span>【@item.MingCheng】</span>,<label class="bg-success">@item.YuGuRenShu 人团</label>
                                                 @if (item.LeiBie == MVCForum.Domain.DomainModel.Enum_HuoDongLeiBie.SpecicalRegister)
                                                 {
-                                                    <label class="glyphicon glyphicon-lock" title="特定人群组团，需要输入邀请码。"></label>
+                                                <label class="glyphicon glyphicon-lock" title="特定人群组团，需要输入邀请码。"></label>
                                                 }
                                             </td>
                                         </tr>
@@ -78,11 +78,11 @@
                                         </tr>
                                         @if (item.XingBieBiLi != "/")
                                         {
-                                            <tr>
-                                                <td>
-                                                    <small>参与人数性别比例：<span>@item.XingBieBiLi</span></small>
-                                                </td>
-                                            </tr>
+                                        <tr>
+                                            <td>
+                                                <small>参与人数性别比例：<span>@item.XingBieBiLi</span></small>
+                                            </td>
+                                        </tr>
                                         }
                                         <tr><td><small>活动地点：<span>@item.DiDian</span></small></td></tr>
                                         <tr><td><small>报名截止至：@item.BaoMingJieZhiTime.ToString("MM-dd HH:mm")</small></td></tr>
@@ -146,7 +146,7 @@
                 @if (Model.AiLv_MeiRiZhiXingTop5 != null)
                 {
                     <div id="myCarousel2" class="carousel sp-slider" data-ride="carousel" data-wrap="true" data-interval="3000">
-                        <ol class="carousel-indicators">
+                        <ol class="carousel-indicators hidden">
                             @{ int idx_Star2 = 0;}
                             @foreach (var star in Model.AiLv_MeiRiZhiXingTop5)
                             {
@@ -161,19 +161,19 @@
                                 <div class="item @if (idx_Star == 0) { @Html.Raw("active"); }">
                                     <table>
                                         <tr>
-
-                                            <td>
-                                                @{
-                                                    var Gender = obj.Gender == MVCForum.Domain.DomainModel.Enum_Gender.boy ? "男生" : "女生";
-                                                }
-                                                <span style="padding-left:40px">@obj.AliasName , @obj.Age 岁，@Gender</span>
-
-                                            </td>
                                             <td>
                                                 <a href="@obj.NiceUrl">
                                                     <img src="@AppHelpers.MemberImage(obj.Avatar, "", obj.Id, 48)" alt="@obj.UserName">
                                                 </a>
                                             </td>
+                                            <td style="padding-left:20px">
+                                                @{
+                                                    var Gender = obj.Gender == MVCForum.Domain.DomainModel.Enum_Gender.boy ? "男生" : "女生";
+                                                }
+                                                <span>@obj.AliasName , @obj.Age 岁，@Gender</span>
+
+                                            </td>
+
                                         </tr>
                                     </table>
                                 </div>

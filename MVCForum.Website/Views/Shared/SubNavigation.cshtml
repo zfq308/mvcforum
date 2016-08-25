@@ -23,6 +23,12 @@
     </a>
 </li>
 <li>
+    <a href="@Url.Action("MeiRiZhiXing", "ailvhuodong")"
+       class="@(TempData[AppConstants.CurrentController].ToString() == "ailvhuodong" && TempData[AppConstants.CurrentAction].ToString() == "meirizhixing" ? "active" : "")">
+        每日之星
+    </a>
+</li>
+<li>
     <a href="@Url.Action("ZuiXinFuWu", "AiLvHuoDong")"
        class="@(TempData[AppConstants.CurrentController].ToString() == "ailvhuodong" && TempData[AppConstants.CurrentAction].ToString() == "zuixinfuwu" ? "active" : "")">
         最新服务

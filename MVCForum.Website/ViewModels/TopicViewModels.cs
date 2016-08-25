@@ -43,7 +43,9 @@ namespace MVCForum.Website.ViewModels
         public int? TotalPages { get; set; }
     }
 
-
+    /// <summary>
+    /// 每日心情ListViewModel
+    /// </summary>
     public class MeiRiXinQing_ListViewModel
     {
         public List<TopicViewModel> Topics { get; set; }
@@ -52,26 +54,17 @@ namespace MVCForum.Website.ViewModels
         public int? TotalPages { get; set; }
     }
 
-
+    /// <summary>
+    /// 好友动态ListViewModel(数据从每日心情中来)
+    /// </summary>
     public class FriendMessage_ListViewModel
     {
-        public List<Topic> Topics { get; set; }
+        public List<TopicViewModel> Topics { get; set; }
         public int? PageIndex { get; set; }
         public int? TotalCount { get; set; }
         public int? TotalPages { get; set; }
     }
-
-
-
-
-
-
-
-
-
-
-
-
+    
     public class CreateTopicButtonViewModel
     {
         public MembershipUser LoggedOnUser { get; set; }

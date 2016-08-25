@@ -50,6 +50,7 @@ namespace MVCForum.Website.Controllers
         private readonly IMembershipUserPictureService _MembershipUserPictureService;
         private readonly IMembershipTodayStarService _MembershipTodayStarService;
         private readonly IFollowService _FollowService;
+  
 
         #endregion
 
@@ -2287,6 +2288,10 @@ namespace MVCForum.Website.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        /// <summary>
+        /// 好友动态
+        /// </summary>
+        /// <returns></returns>
         [Authorize]
         public ActionResult FriendMessage()
         {
@@ -2301,15 +2306,18 @@ namespace MVCForum.Website.Controllers
                     if (!friendIDs.Contains(friendInstance.FriendUserId))
                     {
                         friendIDs.Add(friendInstance.FriendUserId);
-                        Topiclist.AddRange(_topicService.GetAllTopicsByCondition(EnumCategoryType.MeiRiXinqing, friendInstance.FriendUserId));
                     }
                 }
-
+                Topiclist.AddRange(_topicService.GetAllTopicsByCondition(EnumCategoryType.MeiRiXinqing, friendIDs));
             }
-            FriendMessage_ListViewModel model = new FriendMessage_ListViewModel();
-            model.Topics = Topiclist.OrderByDescending(x => x.CreateDate).ToList();
-            model.PageIndex = 1;
 
+            FriendMessage_ListViewModel model = new FriendMessage_ListViewModel();
+            var settings = SettingsService.GetSettings();
+            var allowedCategories = new List<Category>();
+            allowedCategories.Add(_categoryService.GetCategoryByEnumCategoryType(EnumCategoryType.MeiRiXinqing));
+            var topicViewModels = ViewModelMapping.CreateTopicViewModels(Topiclist, RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, settings);
+            model.Topics = topicViewModels.OrderByDescending(x => x.Topic.CreateDate).ToList();
+          
             return View(model);
         }
 

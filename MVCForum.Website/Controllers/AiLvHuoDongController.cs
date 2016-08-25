@@ -29,6 +29,7 @@ namespace MVCForum.Website.Controllers
         private readonly MVCForumContext _context;
         private readonly IActivityRegisterService _ActivityRegisterService;
         private readonly IMembershipService _MembershipService;
+        private readonly IMembershipTodayStarService _membershipTodayStarService;
 
         #endregion
 
@@ -45,6 +46,7 @@ namespace MVCForum.Website.Controllers
             IMembershipService membershipService,
             ILocalizationService localizationService,
             IRoleService roleService,
+            IMembershipTodayStarService membershipTodayStarService,
             ISettingsService settingsService)
              : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
@@ -53,6 +55,7 @@ namespace MVCForum.Website.Controllers
             _topicService = TopicService;
             _categoryservice = Categoryservice;
             _MembershipService = membershipService;
+            _membershipTodayStarService = membershipTodayStarService;
             _context = context as MVCForumContext;
         }
 
@@ -674,8 +677,9 @@ namespace MVCForum.Website.Controllers
         /// <returns></returns>
         public ActionResult MeiRiZhiXing()
         {
-
-            return View();
+            MeiRiZhiXing_ListViewModel model = new MeiRiZhiXing_ListViewModel();
+            model.MeiRiZhiXingUserList=_membershipTodayStarService.LoadAllAvailidUsers();
+            return View(model);
         }
 
         /// <summary>

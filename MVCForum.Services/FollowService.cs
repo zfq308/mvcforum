@@ -149,7 +149,7 @@ namespace MVCForum.Services
                     !_context.Follow.Any(e => (e.UserId == a.FriendUserId) && (e.FriendUserId == a.UserId)) &&
                     a.OpsFlag==""
               select a;
-            return query.ToList();
+            return query.Distinct().ToList();
         }
 
         /// <summary>
@@ -165,7 +165,7 @@ namespace MVCForum.Services
                       !_context.Follow.Any(e => (e.UserId == a.FriendUserId) && (e.FriendUserId == a.UserId)) &&
                       a.OpsFlag==""
                 select a;
-            return query.ToList();
+            return query.Distinct().ToList();
         }
 
         public IList<Follow> GetFriendList(Guid userId)
@@ -182,7 +182,7 @@ namespace MVCForum.Services
                     CreateTime = p.CreateTime,
                     UpdateTime = p.UpdateTime,
                     OpsFlag = p.OpsFlag }
-               ).AsEnumerable().Select(x => new Follow
+               ).Distinct().AsEnumerable().Select(x => new Follow
                {
                    Id = x.Id,
                    UserId = x.UserId,

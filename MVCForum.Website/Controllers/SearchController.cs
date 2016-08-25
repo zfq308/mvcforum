@@ -52,7 +52,10 @@ namespace MVCForum.Website.Controllers
                     var settings = SettingsService.GetSettings();
 
                     // Get allowed categories
-                    var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+                    var allowedCategories = new List<Category>();
+                    allowedCategories.Add(_categoryService.GetCategoryByEnumCategoryType(EnumCategoryType.AiLvFuWu));
+                    allowedCategories.Add(_categoryService.GetCategoryByEnumCategoryType(EnumCategoryType.AiLvZiXun));
+                    //var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
 
 
                     // Set the page index

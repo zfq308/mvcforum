@@ -13,7 +13,7 @@ namespace MVCForum.Domain.Interfaces.Services
        
         MembershipTodayStar Get(Guid UserId);
         MembershipTodayStar Get(MembershipUser userInstance);
-        List<MembershipTodayStar> LoadAllAvailidUsers();
+        List<MembershipUser> LoadAllAvailidUsers();
         List<MembershipUser> LoadNewestTodayStars(int count);
         void BatchRemove();
         bool Delete(MembershipUser user, IUnitOfWork unitOfWork);

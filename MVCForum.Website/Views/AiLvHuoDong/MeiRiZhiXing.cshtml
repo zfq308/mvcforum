@@ -1,15 +1,39 @@
-﻿@{
+﻿@using MVCForum.Website.Application
+@model MVCForum.Website.ViewModels.MeiRiZhiXing_ListViewModel
+
+@{
     Layout = "~/Views/AiLvHuoDong/MeiRiZhiXingLayout.cshtml";
     ViewBag.Title = "每日之星";
 }
 
 @*@section side
-{
-    @Html.Partial("_CommonSideNav")
-}*@
+    {
+        @Html.Partial("_CommonSideNav")
+    }*@
 
 <div class="meirizhixing">
     <h1>每日之星</h1>
 
-   
+    @if (Model.MeiRiZhiXingUserList != null && Model.MeiRiZhiXingUserList.Count > 0)
+    {
+        foreach (var obj in Model.MeiRiZhiXingUserList)
+        {
+            <table>
+                <tr>
+                    <td>
+                        <a href="@obj.NiceUrl">
+                            <img src="@AppHelpers.MemberImage(obj.Avatar, "", obj.Id, 48)" alt="@obj.UserName">
+                        </a>
+                    </td>
+                    <td>
+                        @{
+                            var Gender = obj.Gender == MVCForum.Domain.DomainModel.Enum_Gender.boy ? "男生" : "女生";
+                        }
+                        <span style="padding-left:40px">@obj.AliasName , @obj.Age 岁，@Gender</span>
+                    </td>
+
+                </tr>
+            </table>
+                                }
+                            }
 </div>
