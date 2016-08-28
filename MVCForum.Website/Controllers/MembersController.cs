@@ -99,6 +99,11 @@ namespace MVCForum.Website.Controllers
 
         #endregion
 
+        public ActionResult Index()
+        {
+            return View();
+        }
+
         #region 用户设置操作
         [Authorize(Roles = AppConstants.AdminRoleName)]
         public ActionResult SrubAndBanUser(Guid id)

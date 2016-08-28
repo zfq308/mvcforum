@@ -32,6 +32,11 @@ namespace MVCForum.Website.Controllers
             _context = context as MVCForumContext;
         }
 
+        public ActionResult Index()
+        {
+            return View();
+        }
+
         [Authorize]
         public ActionResult Create()
         {

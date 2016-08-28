@@ -40,5 +40,10 @@ namespace MVCForum.Website.Controllers
             return PartialView(viewModel);
         }
 
+
+        public ActionResult Index()
+        {
+            return View();
+        }
     }
 }

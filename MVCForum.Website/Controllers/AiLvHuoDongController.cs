@@ -61,6 +61,12 @@ namespace MVCForum.Website.Controllers
 
         #endregion
 
+
+        public ActionResult Index()
+        {
+            return View();
+        }
+
         #region 爱驴活动模块
 
         #region 创建活动

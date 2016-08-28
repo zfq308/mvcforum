@@ -31,6 +31,13 @@ namespace MVCForum.Website.Controllers
             return null;  
         }
 
+
+
+        public ActionResult Index()
+        {
+            return View();
+        }
+
         public PartialViewResult GetThisYearsTopEarners()
         {
             if (Request.IsAjaxRequest())

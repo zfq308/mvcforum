@@ -70,5 +70,10 @@ namespace MVCForum.Website.Controllers
             }
         }
 
+
+        public ActionResult Index()
+        {
+            return View();
+        }
     }
 }

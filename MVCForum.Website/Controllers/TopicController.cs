@@ -74,6 +74,11 @@ namespace MVCForum.Website.Controllers
 
         #endregion
 
+        public ActionResult Index()
+        {
+            return View();
+        }
+
         #region 最新服务部分
 
         public PartialViewResult CreateTopicButtonForZuiXinFuwu()

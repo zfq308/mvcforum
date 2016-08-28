@@ -45,7 +45,6 @@ namespace MVCForum.Website.Controllers
 
         #endregion
 
-        // GET: DebugBoard
         public ActionResult Index()
         {
             return View();

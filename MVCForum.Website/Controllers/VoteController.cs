@@ -45,6 +45,12 @@ namespace MVCForum.Website.Controllers
         }
         #endregion
 
+
+        public ActionResult Index()
+        {
+            return View();
+        }
+
         #region 点赞和批评
 
         /// <summary>

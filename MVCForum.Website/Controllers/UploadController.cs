@@ -22,6 +22,11 @@ namespace MVCForum.Website.Controllers
         private readonly IPostService _postService;
         private readonly IUploadedFileService _uploadedFileService;
 
+        public ActionResult Index()
+        {
+            return View();
+        }
+
         public UploadController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
             IMembershipService membershipService, ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
             IPostService postService, IUploadedFileService uploadedFileService)

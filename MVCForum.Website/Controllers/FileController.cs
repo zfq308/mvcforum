@@ -22,6 +22,13 @@ namespace MVCForum.Website.Controllers
             _categoryService = categoryService;
         }
 
+
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+
         public FileResult Download(Guid id)
         {
             var uploadedFileById = _uploadedFileService.Get(id);
