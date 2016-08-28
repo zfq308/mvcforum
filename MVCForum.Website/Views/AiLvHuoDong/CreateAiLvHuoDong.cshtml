@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "发布活动";
+    ViewBag.ImageUploadType = (User.IsInRole(AppConstants.AdminRoleName) ||User.IsInRole(AppConstants.SupplierRoleName)) ? "forumimageinsert" : "image";
     Layout = "~/Views/Shared/_LayoutFullWidth.cshtml";
 }
 
