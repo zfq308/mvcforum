@@ -436,10 +436,36 @@ namespace MVCForum.Website.Controllers
             string YaoQingMa = Request.Form["YaoQingMa"];
             string Idstr = Request.Form["Id"];
 
+
+
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
                 Guid Id = Guid.Parse(Idstr);
                 var huodong = _aiLvHuoDongService.Get(Id);
+
+                if (huodong==null)
+                {
+                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    {
+                        Message = "参数错误，请联系管理员。",
+                        MessageType = GenericMessages.danger
+                    };
+                    return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
+                }
+
+
+                if (huodong.LeiBie== Enum_HuoDongLeiBie.SpecicalRegister)
+                {
+                   if( huodong.YaoQingMa!= YaoQingMa)
+                    {
+                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        {
+                            Message = "邀请码不正确。",
+                            MessageType = GenericMessages.danger
+                        };
+                        return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
+                    }
+                }
                 var ar = new ActivityRegister(Id, LoggedOnReadOnlyUser);
 
                 ar.UserTelphone = LoggedOnReadOnlyUser.MobilePhone;

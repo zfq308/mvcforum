@@ -1979,14 +1979,16 @@ namespace MVCForum.Website.Controllers
 
             foreach (var item in HomeTownProvincelst)
             {
-                if (item.ProvinceId.ToString() == "440000") //广东省
-                {
-                    Items_HomeTownProvince.Add(new SelectListItem { Text = item.ProvinceName, Value = item.ProvinceId.ToString(), Selected = true });
-                }
-                else
-                {
-                    Items_HomeTownProvince.Add(new SelectListItem { Text = item.ProvinceName, Value = item.ProvinceId.ToString() });
-                }
+                //if (item.ProvinceId.ToString() == "440000") //广东省
+                //{
+                //    Items_HomeTownProvince.Add(new SelectListItem { Text = item.ProvinceName, Value = item.ProvinceId.ToString(), Selected = true });
+                //}
+                //else
+                //{
+                //    Items_HomeTownProvince.Add(new SelectListItem { Text = item.ProvinceName, Value = item.ProvinceId.ToString() });
+                //}
+
+                Items_HomeTownProvince.Add(new SelectListItem { Text = item.ProvinceName, Value = item.ProvinceId.ToString() });
             }
 
             ViewData["HomeTownProvinceList"] = Items_HomeTownProvince;
@@ -1996,19 +1998,24 @@ namespace MVCForum.Website.Controllers
             #region 绑定居住地所属市信息
 
             var Items_HomeTownCity = new List<SelectListItem>();
-            List<TCity> HomeTownCitylst = TCity.LoadCityListByProvince(Convert.ToInt32("440300")); //深圳市
+
+            List<TCity> HomeTownCitylst = TCity.LoadAllCityList();
+
+            //List<TCity> HomeTownCitylst = TCity.LoadCityListByProvince(Convert.ToInt32("440300")); //深圳市
 
 
             foreach (var item in HomeTownCitylst)
             {
-                if (item.CityId.ToString() == "440300")
-                {
-                    Items_HomeTownCity.Add(new SelectListItem { Text = item.CityName, Value = item.CityId.ToString(), Selected = true });
-                }
-                else
-                {
-                    Items_HomeTownCity.Add(new SelectListItem { Text = item.CityName, Value = item.CityId.ToString() });
-                }
+                //if (item.CityId.ToString() == "440300")
+                //{
+                //    Items_HomeTownCity.Add(new SelectListItem { Text = item.CityName, Value = item.CityId.ToString(), Selected = true });
+                //}
+                //else
+                //{
+                //    Items_HomeTownCity.Add(new SelectListItem { Text = item.CityName, Value = item.CityId.ToString() });
+                //}
+
+                Items_HomeTownCity.Add(new SelectListItem { Text = item.CityName, Value = item.CityId.ToString() });
             }
 
             ViewData["HomeTownCityList"] = Items_HomeTownCity;
@@ -2019,7 +2026,10 @@ namespace MVCForum.Website.Controllers
 
 
             var Items_HomeTownCounty = new List<SelectListItem>();
-            List<TCountry> HomeTownCountylst = TCountry.LoadCountryByProvinceAndCity(Convert.ToInt32("440000"), Convert.ToInt32("440300"));
+
+            List<TCountry> HomeTownCountylst = TCountry.LoadAllCountry();
+
+            //List<TCountry> HomeTownCountylst = TCountry.LoadCountryByProvinceAndCity(Convert.ToInt32("440000"), Convert.ToInt32("440300"));
 
             foreach (var item in HomeTownCountylst)
             {

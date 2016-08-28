@@ -37,7 +37,7 @@ namespace MVCForum.Services
         {
             // If we have no http context current then assume testing mode i.e. log file in run folder
             //_logFileFolder = HttpContext.Current != null ? HttpContext.Current.Server.MapPath(LogFileDirectory) : @".";
-            _logFileFolder = System.Web.Hosting.HostingEnvironment.MapPath(LogFileDirectory);            
+            _logFileFolder = System.Web.Hosting.HostingEnvironment.MapPath(LogFileDirectory);
             _logFileName = MakeLogFileName(false);
         }
 
@@ -95,7 +95,7 @@ namespace MVCForum.Services
                 catch
                 {
                     // Not much to do if logging failed...
-                } 
+                }
             }
         }
 
@@ -141,14 +141,14 @@ namespace MVCForum.Services
                 var lineSplit = line.Split('|');
 
                 return new LogEntry
-                              {
-                                  Date = DateTime.ParseExact(lineSplit[0].Trim(), DateTimeFormat, CultureInfo.InvariantCulture),
-                                  Module = lineSplit[1].Trim(),
-                                  Method = lineSplit[2].Trim(),
-                                  DeclaringType = lineSplit[3].Trim(),
-                                  LineNumber = lineSplit[4].Trim(),
-                                  ErrorMessage = lineSplit[5].Trim(),
-                              };                
+                {
+                    Date = DateTime.ParseExact(lineSplit[0].Trim(), DateTimeFormat, CultureInfo.InvariantCulture),
+                    Module = lineSplit[1].Trim(),
+                    Method = lineSplit[2].Trim(),
+                    DeclaringType = lineSplit[3].Trim(),
+                    LineNumber = lineSplit[4].Trim(),
+                    ErrorMessage = lineSplit[5].Trim(),
+                };
             }
             catch (Exception)
             {
@@ -229,14 +229,14 @@ namespace MVCForum.Services
                 return;
             }
 
-            var message = new StringBuilder(ex.Message);
+            var message = new StringBuilder(ex.Message + "======StackTrace======" + ex.StackTrace);
 
             var inner = ex.InnerException;
             var depthCounter = 0;
             while (inner != null && depthCounter++ < maxExceptionDepth)
             {
                 message.Append(" INNER EXCEPTION: ");
-                message.Append(inner.Message);
+                message.Append(inner.Message + "======StackTrace======" + ex.StackTrace);
                 inner = inner.InnerException;
             }
 
@@ -252,6 +252,6 @@ namespace MVCForum.Services
             return ReadLogFile();
         }
 
-     
+
     }
 }

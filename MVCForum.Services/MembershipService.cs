@@ -1301,13 +1301,13 @@ namespace MVCForum.Services
                     total = total.Where(p => p.SchoolName.Contains(searchusermodel.SchoolName)).ToList();
                 }
                 //居住地
-                //if (!String.IsNullOrEmpty(searchusermodel.LocationProvince) && !String.IsNullOrEmpty(searchusermodel.LocationCity) && !String.IsNullOrEmpty(searchusermodel.LocationCounty))
-                //{
-                //    total = total.Where(p => p.LocationProvince == searchusermodel.LocationProvince &&
-                //    p.LocationCity == searchusermodel.LocationCity &&
-                //    p.LocationCounty == searchusermodel.LocationCounty
-                //    ).ToList();
-                //}
+                if (!String.IsNullOrEmpty(searchusermodel.LocationProvince) && !String.IsNullOrEmpty(searchusermodel.LocationCity) && !String.IsNullOrEmpty(searchusermodel.LocationCounty))
+                {
+                    total = total.Where(p => p.LocationProvince == searchusermodel.LocationProvince &&
+                    p.LocationCity == searchusermodel.LocationCity &&
+                    p.LocationCounty == searchusermodel.LocationCounty
+                    ).ToList();
+                }
                 //职业
                 if (!String.IsNullOrEmpty(searchusermodel.Job))
                 {
