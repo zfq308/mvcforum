@@ -68,7 +68,7 @@
         <nav class="navbar navbar-default" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <button type="button" class="navbar-toggle menu-btn">
+                    <button id="navbarbutton" type="button" class="navbar-toggle menu-btn">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
@@ -161,5 +161,16 @@
     }
 
     @MiniProfiler.RenderIncludes()     @*由于MiniProfiler生成的js需要依赖于Jquery，所以记得添加对于Jquery的引用。*@
+
+    <script type="text/javascript">
+        jQuery(function ($) {
+            $(document).ready(function () {
+                $('#navbarbutton').stickUp({
+                    scrollHide: false
+                });
+            });
+        });
+    </script>
+
 </body>
 </html>
