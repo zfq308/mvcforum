@@ -63,7 +63,7 @@ namespace MVCForum.Domain.Interfaces.Services
         #endregion
 
         #region 报表导入导出
-
+        string RemoveHTMLToCSV(string source);
         string ToCsv();
         string ToCsv(List<MembershipUser> userlist, bool isAdmin);
         CsvReport FromCsv(List<string> allLines);

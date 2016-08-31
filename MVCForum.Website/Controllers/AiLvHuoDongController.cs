@@ -16,6 +16,7 @@ using System.Web;
 using System.Web.Mvc;
 using MVCForum.Website.ViewModels.Mapping;
 using MVCForum.Website.Application;
+using System.Text;
 
 namespace MVCForum.Website.Controllers
 {
@@ -449,7 +450,7 @@ namespace MVCForum.Website.Controllers
                 Guid Id = Guid.Parse(Idstr);
                 var huodong = _aiLvHuoDongService.Get(Id);
 
-                if (huodong==null)
+                if (huodong == null)
                 {
                     TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                     {
@@ -460,9 +461,9 @@ namespace MVCForum.Website.Controllers
                 }
 
 
-                if (huodong.LeiBie== Enum_HuoDongLeiBie.SpecicalRegister)
+                if (huodong.LeiBie == Enum_HuoDongLeiBie.SpecicalRegister)
                 {
-                   if( huodong.YaoQingMa!= YaoQingMa)
+                    if (huodong.YaoQingMa != YaoQingMa)
                     {
                         TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                         {
@@ -560,7 +561,18 @@ namespace MVCForum.Website.Controllers
                         }
                     }
                 }
-                return new CsvFileResult { FileDownloadName = "MVCForumUsers.csv", Body = MembershipService.ToCsv(customers, UserIsAdmin) };
+
+                if (this.HttpContext.IsMobileDevice())
+                {
+                    var csvcontent = MembershipService.ToCsv(customers, UserIsAdmin);
+                    return Content(csvcontent);
+                }
+                else
+                {
+                    var csvcontent = MembershipService.ToCsv(customers, UserIsAdmin);
+                    byte[] fileContents = Encoding.UTF8.GetBytes(MembershipService.RemoveHTMLToCSV(csvcontent));
+                    return File(fileContents, "application/vnd.ms-excel", "MVCForumUsers.csv");
+                }
             }
         }
 
@@ -710,7 +722,7 @@ namespace MVCForum.Website.Controllers
         public ActionResult MeiRiZhiXing()
         {
             MeiRiZhiXing_ListViewModel model = new MeiRiZhiXing_ListViewModel();
-            model.MeiRiZhiXingUserList=_membershipTodayStarService.LoadAllAvailidUsers();
+            model.MeiRiZhiXingUserList = _membershipTodayStarService.LoadAllAvailidUsers();
             return View(model);
         }
 

@@ -50,7 +50,8 @@ namespace MVCForum.Website.Controllers
         private readonly IMembershipUserPictureService _MembershipUserPictureService;
         private readonly IMembershipTodayStarService _MembershipTodayStarService;
         private readonly IFollowService _FollowService;
-  
+        private readonly ILoggingService _loggingService;
+
 
         #endregion
 
@@ -82,6 +83,7 @@ namespace MVCForum.Website.Controllers
             )
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
+            _loggingService = loggingService;
             _context = context as MVCForumContext;
             _postService = postService;
             _reportService = reportService;
@@ -900,7 +902,7 @@ namespace MVCForum.Website.Controllers
         {
             if (ModelState.IsValid)
             {
-                if(userModel.LocationProvince=="0" || userModel.LocationCity=="0" || userModel.LocationCounty=="0" )
+                if (userModel.LocationProvince == "0" || userModel.LocationCity == "0" || userModel.LocationCounty == "0")
                 {
                     ShowMessage(new GenericMessageViewModel
                     {
@@ -2124,9 +2126,35 @@ namespace MVCForum.Website.Controllers
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
+                if (Session["searchconfigurationmodel"] == null)
+                {
+                    _loggingService.Error("Session_searchconfigurationmodel为空。");
+                    return Content("无法转换查询条件,请重新查询。");
+                }
+                else
+                {
+
+                }
                 MembershipUserSearchModel ConfigModel = Session["searchconfigurationmodel"] as MembershipUserSearchModel;
                 var customers = MembershipService.SearchMembers(ConfigModel, 1000).ToList();
-                return new CsvFileResult { FileDownloadName = "MVCForumUsers.csv", Body = MembershipService.ToCsv(customers, UserIsAdmin) };
+                if (customers != null && customers.Count > 0)
+                {
+                    if (this.HttpContext.IsMobileDevice())
+                    {
+                        var csvcontent = MembershipService.ToCsv(customers, UserIsAdmin);
+                        return Content(csvcontent);
+                    }
+                    else
+                    {
+                        var csvcontent = MembershipService.ToCsv(customers, UserIsAdmin);
+                        byte[] fileContents = Encoding.UTF8.GetBytes(MembershipService.RemoveHTMLToCSV(csvcontent));
+                        return File(fileContents, "application/vnd.ms-excel", "MVCForumUsers.csv");
+                    }
+                }
+                else
+                {
+                    return Content("customers.Count=0");
+                }
             }
         }
         #endregion
@@ -2354,7 +2382,7 @@ namespace MVCForum.Website.Controllers
             allowedCategories.Add(_categoryService.GetCategoryByEnumCategoryType(EnumCategoryType.MeiRiXinqing));
             var topicViewModels = ViewModelMapping.CreateTopicViewModels(Topiclist, RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, settings);
             model.Topics = topicViewModels.OrderByDescending(x => x.Topic.CreateDate).ToList();
-          
+
             return View(model);
         }
 

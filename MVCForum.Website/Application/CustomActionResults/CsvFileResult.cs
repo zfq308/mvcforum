@@ -8,7 +8,7 @@ namespace MVCForum.Website.Application
     public class CsvFileResult : FileResult
     {
         public CsvFileResult()
-            : base("text/csv")
+            : base("application/octet-stream")
         {
         }
 
