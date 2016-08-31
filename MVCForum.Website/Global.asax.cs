@@ -125,15 +125,15 @@ namespace MVCForum.Website
         protected void Application_BeginRequest()
         {
             //TODO: 待项目全部完成后执行Minoprofiler
-            //if (Request.IsLocal)
-            //{
-            //    MiniProfiler.Start();
-            //}
+            if (Request.IsLocal)
+            {
+                MiniProfiler.Start();
+            }
         }
         protected void Application_EndRequest()
         {
             //TODO: 待项目全部完成后执行Minoprofiler
-            //MiniProfiler.Stop();
+            MiniProfiler.Stop();
         }
     }
 }
