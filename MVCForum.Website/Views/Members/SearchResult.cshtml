@@ -18,22 +18,25 @@
         </div>
         @Html.Partial("_Loading")
         <div>
-            @using (Html.BeginForm("ExportUsers", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            @if (User.Identity.IsAuthenticated)
             {
-                <div class="submit-holder">
-                    <button type="submit" class="btn-mvc-green" name="btn_Export">导出</button>
-                </div>
+                using (Html.BeginForm("ExportUsers", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <div class="submit-holder">
+                        <button type="submit" class="btn-mvc-green" name="btn_Export">导出</button>
+                    </div>
+                }
             }
         </div>
     </div>
 </div>
 
 
-    <script src="~/Scripts/infiniteScroll.js"></script>
-    <script type="text/javascript">
-        $(function () {
-            $("div#loading").hide();
-        });
-        var moreRowsUrl = '@Url.Action("SearchResult", "Members")';
-        $(window).scroll(ulScrollHandler);
-    </script>
+<script src="~/Scripts/infiniteScroll.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $("div#loading").hide();
+    });
+    var moreRowsUrl = '@Url.Action("SearchResult", "Members")';
+    $(window).scroll(ulScrollHandler);
+</script>

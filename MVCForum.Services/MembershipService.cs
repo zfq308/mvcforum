@@ -370,7 +370,7 @@ namespace MVCForum.Services
             {
                 var item = items[i];
                 item.RealName = "Supplier" + item.UserName;
-                item.AliasName = item.RealName ;
+                item.AliasName = item.RealName;
                 item.Gender = RandomHelper.GetEnum<Enum_Gender>();
                 item.IsLunarCalendar = RandomHelper.GetEnum<Enum_Calendar>();
 
@@ -1301,12 +1301,12 @@ namespace MVCForum.Services
                     total = total.Where(p => p.SchoolName.Contains(searchusermodel.SchoolName)).ToList();
                 }
                 //居住地
-                if (!String.IsNullOrEmpty(searchusermodel.LocationProvince) && 
-                    !String.IsNullOrEmpty(searchusermodel.LocationCity) && 
+                if (!String.IsNullOrEmpty(searchusermodel.LocationProvince) &&
+                    !String.IsNullOrEmpty(searchusermodel.LocationCity) &&
                     !String.IsNullOrEmpty(searchusermodel.LocationCounty) &&
-                    searchusermodel.LocationProvince!="0" &&
-                    searchusermodel.LocationCity!="0" &&
-                    searchusermodel.LocationCounty!="0"
+                    searchusermodel.LocationProvince != "0" &&
+                    searchusermodel.LocationCity != "0" &&
+                    searchusermodel.LocationCounty != "0"
                     )
                 {
                     total = total.Where(p => p.LocationProvince == searchusermodel.LocationProvince &&
@@ -1456,60 +1456,65 @@ namespace MVCForum.Services
         {
 
             var csv = new StringBuilder();
-
-
-            if (isAdmin)
+            if (userlist != null && userlist.Count > 0)
             {
-                csv.AppendLine("账号,昵称,真实姓名,联系方式,性别,年龄,婚否,身高,体重,现居地,最后登录时间,审核标志位,会员状态,会员类别");
-                foreach (var user in userlist)
+                if (isAdmin)
                 {
-                    csv.AppendFormat("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13}",
-                        user.UserName,
-                        user.AliasName,
-                        user.RealName,
-                        user.MobilePhone,
-                        user.Gender == Enum_Gender.boy ? "男" : "女",
-                        user.Age,
-                        user.IsMarried == Enum_MarriedStatus.Married ? "已婚" : "单身",
-                        user.Height,
-                        user.Weight,
-                        string.Concat(TProvince.LoadProvinceByProvincedId(Convert.ToInt32(user.LocationProvince)).ProvinceName,
-                                      TCity.LoadCityByCityId(Convert.ToInt32(user.LocationCity)).CityName,
-                                      TCountry.LoadCountryByCountryId(Convert.ToInt32(user.LocationCounty)).CountryName),
-                        user.LastLoginDate.ToString("yyyy-MM-dd HH:mm:ss"),
-                        user.IsApproved ? "已审核" : "待审核",
-                        user.IsBanned ? "用户已隐藏" : "正常状态",
-                        user.UserType.ToString()
-                        );
-                    csv.AppendLine();
+                    csv.AppendLine("账号,昵称,真实姓名,联系方式,性别,年龄,婚否,身高,体重,现居地,最后登录时间,审核标志位,会员状态,会员类别");
+                    foreach (var user in userlist)
+                    {
+                        if (user == null) continue;
+                        csv.AppendFormat("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13}",
+                            user.UserName,
+                            user.AliasName,
+                            user.RealName,
+                            user.MobilePhone,
+                            user.Gender == Enum_Gender.boy ? "男" : "女",
+                            user.Age,
+                            user.IsMarried == Enum_MarriedStatus.Married ? "已婚" : "单身",
+                            user.Height,
+                            user.Weight,
+                            string.Concat(TProvince.LoadProvinceByProvincedId(Convert.ToInt32(user.LocationProvince)).ProvinceName,
+                                          TCity.LoadCityByCityId(Convert.ToInt32(user.LocationCity)).CityName,
+                                          TCountry.LoadCountryByCountryId(Convert.ToInt32(user.LocationCounty)).CountryName),
+                            user.LastLoginDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                            user.IsApproved ? "已审核" : "待审核",
+                            user.IsBanned ? "用户已隐藏" : "正常状态",
+                            user.UserType.ToString()
+                            );
+                        csv.AppendLine();
+                    }
+                }
+                else
+                {
+                    csv.AppendLine("账号,昵称,性别,年龄,婚否,身高,体重,现居地,最后登录时间,审核标志位,会员状态,会员类别");
+                    foreach (var user in userlist)
+                    {
+                        if (user == null) continue;
+                        csv.AppendFormat("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11}",
+                            user.UserName,
+                            user.AliasName,
+                            user.RealName,
+                            user.MobilePhone,
+                            user.Gender == Enum_Gender.boy ? "男" : "女",
+                            user.Age,
+                            user.IsMarried == Enum_MarriedStatus.Married ? "已婚" : "单身",
+                            user.Height,
+                            user.Weight,
+                            string.Concat(TProvince.LoadProvinceByProvincedId(Convert.ToInt32(user.LocationProvince)).ProvinceName,
+                                          TCity.LoadCityByCityId(Convert.ToInt32(user.LocationCity)).CityName,
+                                          TCountry.LoadCountryByCountryId(Convert.ToInt32(user.LocationCounty)).CountryName),
+                            user.LastLoginDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                            user.IsApproved ? "已审核" : "待审核",
+                            user.IsBanned ? "用户已隐藏" : "正常状态",
+                            user.UserType.ToString()
+                            );
+                        csv.AppendLine();
+                    }
                 }
             }
-            else
-            {
-                csv.AppendLine("账号,昵称,性别,年龄,婚否,身高,体重,现居地,最后登录时间,审核标志位,会员状态,会员类别");
-                foreach (var user in userlist)
-                {
-                    csv.AppendFormat("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11}",
-                        user.UserName,
-                        user.AliasName,
-                        user.RealName,
-                        user.MobilePhone,
-                        user.Gender == Enum_Gender.boy ? "男" : "女",
-                        user.Age,
-                        user.IsMarried == Enum_MarriedStatus.Married ? "已婚" : "单身",
-                        user.Height,
-                        user.Weight,
-                        string.Concat(TProvince.LoadProvinceByProvincedId(Convert.ToInt32(user.LocationProvince)).ProvinceName,
-                                      TCity.LoadCityByCityId(Convert.ToInt32(user.LocationCity)).CityName,
-                                      TCountry.LoadCountryByCountryId(Convert.ToInt32(user.LocationCounty)).CountryName),
-                        user.LastLoginDate.ToString("yyyy-MM-dd HH:mm:ss"),
-                        user.IsApproved ? "已审核" : "待审核",
-                        user.IsBanned ? "用户已隐藏" : "正常状态",
-                        user.UserType.ToString()
-                        );
-                    csv.AppendLine();
-                }
-            }
+
+
             return csv.ToString();
         }
 
@@ -1520,7 +1525,7 @@ namespace MVCForum.Services
         public string ToCsv()
         {
             var userlist = GetAll().ToList();
-            return ToCsv(userlist,false);
+            return ToCsv(userlist, false);
         }
 
         /// <summary>
