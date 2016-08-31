@@ -900,6 +900,28 @@ namespace MVCForum.Website.Controllers
         {
             if (ModelState.IsValid)
             {
+                if(userModel.LocationProvince=="0" || userModel.LocationCity=="0" || userModel.LocationCounty=="0" )
+                {
+                    ShowMessage(new GenericMessageViewModel
+                    {
+                        //Message = LocalizationService.GetResourceString("Member.ProfileUpdated"),
+                        Message = "请选择您的居住地信息。",
+                        MessageType = GenericMessages.danger
+                    });
+                    return Edit(userModel.Id);
+                }
+                if (userModel.SchoolProvince == "0" || userModel.SchoolCity == "0")
+                {
+                    ShowMessage(new GenericMessageViewModel
+                    {
+                        //Message = LocalizationService.GetResourceString("Member.ProfileUpdated"),
+                        Message = "请选择您的学校所在地信息。",
+                        MessageType = GenericMessages.danger
+                    });
+                    return Edit(userModel.Id);
+                }
+
+
                 using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
                     var loggedOnUserId = LoggedOnReadOnlyUser?.Id ?? Guid.Empty;

@@ -89,7 +89,7 @@ namespace MVCForum.Website.ViewModels
         /// 活动费用（RMB/人）
         /// </summary>
         [Display(Name = "活动报名费用")]
-        [Range(1, 100000)]
+        [Range(0, 100000)]
         public int Feiyong { get; set; }
 
         /// <summary>
@@ -120,8 +120,8 @@ namespace MVCForum.Website.ViewModels
         /// <summary>
         /// 男女生参加的性别比例
         /// </summary>
-        [Required(ErrorMessage = "你是不是忘记填写参与人员的性别比例？")]
-        [Display(Name = "参与人员的性别比例")]
+        [Required(ErrorMessage = "你是不是忘记填写男女比例？")]
+        [Display(Name = "男女比例")]
         [StringLength(20)]
         public string XingBieBiLi { get; set; }
 

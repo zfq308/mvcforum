@@ -1,4 +1,5 @@
-﻿@if (!Context.IsMobileDevice())
+﻿@*@if (!Context.IsMobileDevice())*@
+@if ((User.IsInRole(AppConstants.AdminRoleName)|| User.IsInRole(AppConstants.SupplierRoleName)) && Context.Request.Url.AbsoluteUri.ToLower().Contains("ailvhuodong"))
 {
 <script src="@Url.Content("~/scripts/tinymce/tinymce.js")" type="text/javascript"></script>
 <script src="@Url.Content("~/Scripts/tinymceplugins/ImageUpload/imageupload.js")" type="text/javascript"></script>

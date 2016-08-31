@@ -99,7 +99,5 @@
 }
 else
 {
-    <p>@Html.LanguageString("Members.AlreadyRegistered")</p>
-
- 
+    <p>您当前已经注册成功，请勿重复注册。如当前账号非你本人，请 @Html.ActionLink(Html.LanguageString("LogOn.LogOff"), "LogOff", "Members") 后重新注册或登录。</p>
 }

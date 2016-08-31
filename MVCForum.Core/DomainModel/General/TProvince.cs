@@ -21,7 +21,7 @@ namespace MVCForum.Domain.DomainModel.General
         public static List<TProvince> LoadAllProvinceList()
         {
             var ProvinceList = new List<TProvince>();
-
+            ProvinceList.Add(new TProvince() { ProvinceId = 000000, ProvinceName = "==请选择==" });
             ProvinceList.Add(new TProvince() { ProvinceId = 110000, ProvinceName = "北京市" });
             ProvinceList.Add(new TProvince() { ProvinceId = 120000, ProvinceName = "天津市" });
             ProvinceList.Add(new TProvince() { ProvinceId = 130000, ProvinceName = "河北省" });

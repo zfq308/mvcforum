@@ -24,7 +24,7 @@ namespace MVCForum.Domain.DomainModel.General
         public static List<TCity> LoadAllCityList()
         {
             var Citylist = new List<TCity>();
-
+            Citylist.Add(new TCity() { ProvinceId = 000000, ProvinceName = "==请选择==", CityId = 000000, CityName = "==请选择==" });
             Citylist.Add(new TCity() { ProvinceId = 110000, ProvinceName = "北京市", CityId = 110100, CityName = "市辖区" });
             Citylist.Add(new TCity() { ProvinceId = 110000, ProvinceName = "北京市", CityId = 110200, CityName = "县" });
             Citylist.Add(new TCity() { ProvinceId = 120000, ProvinceName = "天津市", CityId = 120100, CityName = "市辖区" });

@@ -1301,7 +1301,13 @@ namespace MVCForum.Services
                     total = total.Where(p => p.SchoolName.Contains(searchusermodel.SchoolName)).ToList();
                 }
                 //居住地
-                if (!String.IsNullOrEmpty(searchusermodel.LocationProvince) && !String.IsNullOrEmpty(searchusermodel.LocationCity) && !String.IsNullOrEmpty(searchusermodel.LocationCounty))
+                if (!String.IsNullOrEmpty(searchusermodel.LocationProvince) && 
+                    !String.IsNullOrEmpty(searchusermodel.LocationCity) && 
+                    !String.IsNullOrEmpty(searchusermodel.LocationCounty) &&
+                    searchusermodel.LocationProvince!="0" &&
+                    searchusermodel.LocationCity!="0" &&
+                    searchusermodel.LocationCounty!="0"
+                    )
                 {
                     total = total.Where(p => p.LocationProvince == searchusermodel.LocationProvince &&
                     p.LocationCity == searchusermodel.LocationCity &&

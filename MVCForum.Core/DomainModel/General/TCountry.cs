@@ -28,7 +28,7 @@ namespace MVCForum.Domain.DomainModel.General
         public static List<TCountry> LoadAllCountry()
         {
             var Countrylist = new List<TCountry>();
-
+            Countrylist.Add(new TCountry() { ProvinceId = 000000, ProvinceName = "==请选择==", CityId = 000000, CityName = "==请选择==", CountryId = 000000, CountryName = "==请选择==" });
             Countrylist.Add(new TCountry() { ProvinceId = 110000, ProvinceName = "北京市", CityId = 110100, CityName = "市辖区", CountryId = 110100, CountryName = "市辖区" });
             Countrylist.Add(new TCountry() { ProvinceId = 110000, ProvinceName = "北京市", CityId = 110100, CityName = "市辖区", CountryId = 110101, CountryName = "东城区" });
             Countrylist.Add(new TCountry() { ProvinceId = 110000, ProvinceName = "北京市", CityId = 110100, CityName = "市辖区", CountryId = 110102, CountryName = "西城区" });
