@@ -200,7 +200,7 @@ Members.ProfileTitle, 个人信息
 Members.Register,会员注册
 Members.ResetPassword.EmailText,A request has been made to reset your password on {0}. To reset your password follow the link below. If you did not make this request then please ignore this email. No further action is required and your password will not be changed.
 Members.ResetPassword.Error,There was an error resetting your password. Please try again.
-Members.ResetPassword.InvalidToken,This request is either invalid or has expired. Please make a password reset request again.
+Members.ResetPassword.InvalidToken,您的请求已过期或无效，请重新进行重置密码的操作。
 Members.ResetPassword.SuccessText,你的密码已成功修改.
 Members.ResetPassword.Text,An email has been sent with details on how to reset your password. 
 Members.ResetPassword.Title,密码重置请求已发出

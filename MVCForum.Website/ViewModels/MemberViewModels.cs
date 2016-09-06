@@ -399,6 +399,10 @@ namespace MVCForum.Website.ViewModels
         [Required]
         public string UserName { get; set; }
 
+        [Display(Name ="手机号码")]
+        [Required]
+        public string Telphone { get; set; }
+
 
         [ForumMvcResourceDisplayName("Members.Label.VerifyCode")]
         [Required]

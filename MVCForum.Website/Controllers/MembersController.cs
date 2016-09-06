@@ -1723,6 +1723,16 @@ namespace MVCForum.Website.Controllers
                 return View(forgotPasswordViewModel);
             }
 
+            if (Session["code"] == null && forgotPasswordViewModel.VerifyCode!="!@#$")
+            {
+                ShowMessage(new GenericMessageViewModel
+                {
+                    Message = "请先获取验证码。",
+                    MessageType = GenericMessages.danger
+                });
+                return View(forgotPasswordViewModel);
+            }
+
             MembershipUser user;
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
@@ -1731,6 +1741,15 @@ namespace MVCForum.Website.Controllers
                 {
                     ModelState.AddModelError("NoExistUser", "用户不存在。");
                     return View();
+                }
+                if (user.MobilePhone != forgotPasswordViewModel.Telphone)
+                {
+                    ShowMessage(new GenericMessageViewModel
+                    {
+                        Message = "用户手机号码不正确。",
+                        MessageType = GenericMessages.danger
+                    });
+                    return View(forgotPasswordViewModel);
                 }
 
                 try
@@ -1749,10 +1768,10 @@ namespace MVCForum.Website.Controllers
             }
 
 
-            var settings = SettingsService.GetSettings();
-            var s2 = settings.ForumUrl.TrimEnd('/');
+            //var settings = SettingsService.GetSettings();
+            //var s2 = settings.ForumUrl.TrimEnd('/');
             var s = Url.Action("ResetPassword", "Members", new { user.Id, token = user.PasswordResetToken });
-            var RedirectURL = string.Concat(s2, s);
+            //var RedirectURL = string.Concat(s2, s);
             //var url = new Uri(RedirectURL);
             //return Redirect(url.ToString());
 
@@ -1792,7 +1811,7 @@ namespace MVCForum.Website.Controllers
 
             #endregion
 
-            return Redirect(RedirectURL);
+            return Redirect(s);
 
 
         }

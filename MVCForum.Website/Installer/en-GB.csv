@@ -200,7 +200,7 @@ Members.ProfileTitle, Profile
 Members.Register,Register
 Members.ResetPassword.EmailText,A request has been made to reset your password on {0}. To reset your password follow the link below. If you did not make this request then please ignore this email. No further action is required and your password will not be changed.
 Members.ResetPassword.Error,There was an error resetting your password. Please try again.
-Members.ResetPassword.InvalidToken,This request is either invalid or has expired. Please make a password reset request again.
+Members.ResetPassword.InvalidToken,55555555-This request is either invalid or has expired. Please make a password reset request again.
 Members.ResetPassword.SuccessText,Your password has been changed.
 Members.ResetPassword.Text,An email has been sent with details on how to reset your password. 
 Members.ResetPassword.Title,Password reset request sent
