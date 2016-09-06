@@ -1,5 +1,18 @@
 ﻿@using MVCForum.Website.Application.ExtensionMethods
 @model MVCForum.Website.ViewModels.AiLvHuoDong_CreateEdit_ViewModel
+@{
+    const string displayNone = "style=\"display: none;\"";
+
+    if (User.Identity.IsAuthenticated && (User.IsInRole(AppConstants.AdminRoleName) || User.IsInRole(AppConstants.SupplierRoleName)))
+    {
+        ViewBag.ImageUploadType = "forumimageinsert";
+    }
+    else
+    {
+        ViewBag.ImageUploadType = "image";
+    }
+ 
+}
 <div class="row">
     <div class="col-md-12 col-md-offset">
 
@@ -75,7 +88,7 @@
 
             <div class="editor-field editorholder">
                 @Html.LabelFor(x => x.LiuCheng)
-                @Html.EditorFor(model => model.LiuCheng, new { @class = "form-control" })
+                @Html.EditorFor(model => model.LiuCheng, new { @class = "form-control postcontent" })
                 @Html.ValidationMessageFor(model => model.LiuCheng)
             </div>
 
@@ -159,7 +172,7 @@
                 <button type="submit" name="btn_Save" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
                     保存
                 </button><br />
-        
+
             </div>
         </fieldset>
     </div>
