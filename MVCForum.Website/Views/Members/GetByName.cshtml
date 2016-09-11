@@ -7,7 +7,14 @@
 @model MVCForum.Website.ViewModels.ViewMemberViewModel
 @{
     Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
-    ViewBag.Title = string.Concat(Model.User.UserName, " ", Html.LanguageString("Members.ProfileTitle"));
+    if (Model != null && Model.User != null)
+    {
+        ViewBag.Title = string.Concat(Model.User.UserName, " ", Html.LanguageString("Members.ProfileTitle"));
+    }
+    else
+    {
+        ViewBag.Title = "";
+    }
 }
 
 @section side
@@ -16,209 +23,234 @@
 }
 
 <div class="memberprofilepublic">
-
-    <div class="row">
-
-        <div class="col-md-3 memberavatardetails">
-            <p class="memberavatar">
-                <img src="@Model.User.MemberImage(SiteConstants.Instance.GravatarProfileSize)" alt="@Model.User.UserName">
-            </p>
-            @if (User.Identity.IsAuthenticated && Model.User.UserName != User.Identity.Name && Html.CurrentMember().DisablePrivateMessages != true && Html.Settings().EnablePrivateMessages)
+    @if (Model != null && Model.User != null)
+    {
+        <div class="row">
+            @if (Model.User.IsApproved || User.IsInRole(AppConstants.AdminRoleName))
             {
-                <p>
-                    <a href="@Url.Action("View", "PrivateMessage", new { from = Model.User.Id }, null)"
-                       class="btn-mvc pm-panel"
-                       data-name="@string.Concat(Html.LanguageString("PM.Title"), Model.User.UserName)">
-                        @Html.LanguageString("Members.MessageMe")
-                    </a>
-                </p>
-            }
+                <div class="col-md-3 memberavatardetails">
 
-            @if (User.Identity.IsAuthenticated && Model.User.UserName != User.Identity.Name)
-            {
-                if (Model.FollowStatus == 0) // 未关注，可关注
-                {
-                    using (Html.BeginForm("AddFollow", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    <p class="memberavatar">
+                        <img src="@Model.User.MemberImage(SiteConstants.Instance.GravatarProfileSize)" alt="@Model.User.UserName">
+                    </p>
+
+                    @if (User.Identity.IsAuthenticated && //当前用户已登录
+                Model.User.UserName != User.Identity.Name && //当前用户不是要展示的用户
+                Html.CurrentMember().DisablePrivateMessages != true && Html.Settings().EnablePrivateMessages  //允许私信操作
+                )
                     {
-                        @Html.HiddenFor(x => x.LoggedOnUserId)
                         <p>
-                            <button type="submit" name="btn_AddFollow" class="btn-mvc">
-                                关注此人
-                            </button>
-                        </p>
-                    }
-                }
-                if (Model.FollowStatus == 1) //已关注
-                {
-                    using (Html.BeginForm("CancelFollow", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
-                    {
-                        @Html.HiddenFor(x => x.LoggedOnUserId)
-                        <p>
-                            <button type="submit" name="btn_CancelFollow" class="btn-mvc">
-                               取消关注
-                            </button>
+                            <a href="@Url.Action("View", "PrivateMessage", new { from = Model.User.Id }, null)"
+                               class="btn-mvc pm-panel"
+                               data-name="@string.Concat(Html.LanguageString("PM.Title"), Model.User.UserName)">
+                                @Html.LanguageString("Members.MessageMe")
+                            </a>
                         </p>
                     }
 
-                    using (Html.BeginForm("AddBlackList", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    @if (User.Identity.IsAuthenticated && Model.User.UserName != User.Identity.Name)
                     {
-                        @Html.HiddenFor(x => x.LoggedOnUserId)
-                        <p>
-                            <button type="submit" name="btn_AddBlackList" class="btn-mvc">
-                                加到黑名单
-                            </button>
-                        </p>
-                    }
-                }
-                if (Model.FollowStatus == -1) //已加入黑名单
-                {
-                    using (Html.BeginForm("CancelBlackList", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
-                    {
-                        @Html.HiddenFor(x => x.LoggedOnUserId)
-                        <p>
-                            <button type="submit" name="btn_CancelBlackList" class="btn-mvc">
-                                从黑名单中去除
-                            </button>
-                        </p>
-                    }
-                }
-            }
-
-
-            @if (User.Identity.IsAuthenticated && Html.Settings().EnableMemberReporting && Model.User.Id != Model.LoggedOnUserId)
-            {
-                <p><a href="@Url.Action("Report", "Members", new { id = Model.User.Id }, null)" class="btn-mvc">@Html.LanguageString("Buttons.Report")</a></p>
-            }
-
-            @if (Model.Permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
-            {
-                if (!Model.User.Roles.Any(x => x.RoleName.Contains(AppConstants.AdminRoleName)))
-                {
-                    <div class="memberprofileadminsection">
-                        @Html.Partial("AdminMemberProfileTools")
-                    </div>
-                }
-            }
-        </div>
-
-        <div class="col-md-9 membermaindetails">
-            <div class="membersection memberbio">
-                <div class="row">
-                    <div class="col-md-12">
-                        <h3>@Model.User.UserName</h3>
-                    </div>
-                    <div class="col-md-6">
-                        <p><b>昵称:</b> @Model.User.AliasName</p>
-                        <p>
-                            @if (User.IsInRole(AppConstants.AdminRoleName))
-                            {
-                                <b>真实姓名:</b> @Model.User.RealName
-                            }
-                        </p>
-                        <p>
-                            @if (User.IsInRole(AppConstants.AdminRoleName))
-                            {
-                                <b>联系方式：</b>@Model.User.MobilePhone
-                            }
-                        </p>
-                        <p><b>性别:</b> @Html.Raw(Model.User.Gender == MVCForum.Domain.DomainModel.Enum_Gender.boy ? "男生" : "女生")</p>
-                        <p><b>年龄:</b> @Html.Raw(Model.User.Age > 0 ? Model.User.Age.ToString() : "")</p>
-                        <p><b>婚姻状态:</b> @Html.Raw(Model.User.IsMarried == MVCForum.Domain.DomainModel.Enum_MarriedStatus.Single ? "未婚" : "已婚")</p>
-                        <p><b>身高(cm):</b> @Model.User.Height</p>
-                        <p><b>体重(kg):</b> @Model.User.Weight</p>
-                        <p>
-                            <b>学历:</b>
-                            @Model.User.Education
-                        </p>
-                        <p><b>毕业院校:</b> @Model.User.SchoolName</p>
-                    </div>
-                    <div class="col-md-6">
-                        <p><b>家乡:</b> @Model.User.HomeTown</p>
-                        <p>
-                            <b>现居住地:</b> @Html.Raw(TProvince.LoadProvinceByProvincedId(Convert.ToInt32(Model.User.LocationProvince)).ProvinceName),
-                            @Html.Raw(TCity.LoadCityByCityId(Convert.ToInt32(Model.User.LocationCity)).CityName),
-                            @Html.Raw(TCountry.LoadCountryByCountryId(Convert.ToInt32(Model.User.LocationCounty)).CountryName)
-                        </p>
-                        <p><b>职业:</b> @Model.User.Job</p>
-                        <p>
-                            <b>月收入:</b>
-                            @Html.ConvertIncomeRange((int)Model.User.IncomeRange);
-                        </p>
-                        <p><b>账号创建时间:</b> @DatesUI.GetPrettyDate(Model.User.CreateDate.ToString())</p>
-                        <p><b>账号状态:</b> @Html.Raw(Model.User.IsApproved ? "已审核" : "待审核")</p>
-                        @if (Model.User.LastActivityDate != null)
+                        if (Model.FollowStatus == 0) // 未关注，可关注
                         {
-                            <p><b>最后上线时间:</b> @DatesUI.GetPrettyDate(Model.User.LastActivityDate.ToString())</p>
-                        }
-                        <p>
-                            @if (User.IsInRole(AppConstants.AdminRoleName))
+                            using (Html.BeginForm("AddFollow", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
                             {
-                                <b>用户类型:</b> @Model.User.UserType
+                                @Html.HiddenFor(x => x.LoggedOnUserId)
+                                <p>
+                                    <button type="submit" name="btn_AddFollow" class="btn-mvc">
+                                        关注此人
+                                    </button>
+                                </p>
                             }
-                        </p>
+                        }
+                        if (Model.FollowStatus == 1) //已关注
+                        {
+                            using (Html.BeginForm("CancelFollow", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                            {
+                                @Html.HiddenFor(x => x.LoggedOnUserId)
+                                <p>
+                                    <button type="submit" name="btn_CancelFollow" class="btn-mvc">
+                                        取消关注
+                                    </button>
+                                </p>
+                            }
+
+                            using (Html.BeginForm("AddBlackList", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                            {
+                                @Html.HiddenFor(x => x.LoggedOnUserId)
+                                <p>
+                                    <button type="submit" name="btn_AddBlackList" class="btn-mvc">
+                                        加到黑名单
+                                    </button>
+                                </p>
+                            }
+                        }
+                        if (Model.FollowStatus == -1) //已加入黑名单
+                        {
+                            using (Html.BeginForm("CancelBlackList", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                            {
+                                @Html.HiddenFor(x => x.LoggedOnUserId)
+                                <p>
+                                    <button type="submit" name="btn_CancelBlackList" class="btn-mvc">
+                                        从黑名单中去除
+                                    </button>
+                                </p>
+                            }
+                        }
+                    }
+
+
+                    @if (User.Identity.IsAuthenticated && Html.Settings().EnableMemberReporting && Model.User.Id != Model.LoggedOnUserId)
+                    {
+                        <p><a href="@Url.Action("Report", "Members", new { id = Model.User.Id }, null)" class="btn-mvc">@Html.LanguageString("Buttons.Report")</a></p>
+                    }
+
+                    @if (Model.Permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
+                    {
+                        if (!Model.User.Roles.Any(x => x.RoleName.Contains(AppConstants.AdminRoleName)))
+                        {
+                            <div class="memberprofileadminsection">
+                                @Html.Partial("AdminMemberProfileTools")
+                            </div>
+                        }
+                    }
+                </div>
+            }
+
+            <div class="col-md-9 membermaindetails">
+                <div class="membersection memberbio">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h2>@Model.User.UserName</h2>
+                        </div>
+                        @if (User.IsInRole(AppConstants.AdminRoleName) || Model.User.IsApproved)
+                        {
+                            <div class="col-md-6">
+                                <p><b>昵称:</b> @Model.User.AliasName</p>
+                                @if (User.IsInRole(AppConstants.AdminRoleName))
+                                {
+                                    <p>
+                                        <b>真实姓名:</b> @Model.User.RealName
+                                    </p>
+                                }
+                                @if (User.IsInRole(AppConstants.AdminRoleName))
+                                {
+                                    <p>
+                                        <b>联系方式：</b>@Model.User.MobilePhone
+                                    </p>
+                                }
+                                <p><b>性别:</b> @Html.Raw(Model.User.Gender == MVCForum.Domain.DomainModel.Enum_Gender.boy ? "男生" : "女生")</p>
+                                <p><b>年龄:</b> @Html.Raw(Model.User.Age > 0 ? Model.User.Age.ToString() : "")</p>
+                                <p><b>婚姻状态:</b> @Html.Raw(Model.User.IsMarried == MVCForum.Domain.DomainModel.Enum_MarriedStatus.Single ? "未婚" : "已婚")</p>
+                                <p><b>身高(cm):</b> @Model.User.Height</p>
+                                <p><b>体重(kg):</b> @Model.User.Weight</p>
+                                <p>
+                                    <b>学历:</b>
+                                    @{
+                                        var educationstr = TEducation.LoadEducationByEducationId(Model.User.Education).EducationName;
+                                    }
+                                    @educationstr
+                                </p>
+                                <p><b>毕业院校:</b> @Model.User.SchoolName</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><b>家乡:</b> @Model.User.HomeTown</p>
+                                <p>
+                                    <b>现居住地:</b> @Html.Raw(TProvince.LoadProvinceByProvincedId(Convert.ToInt32(Model.User.LocationProvince)).ProvinceName),
+                                    @Html.Raw(TCity.LoadCityByCityId(Convert.ToInt32(Model.User.LocationCity)).CityName),
+                                    @Html.Raw(TCountry.LoadCountryByCountryId(Convert.ToInt32(Model.User.LocationCounty)).CountryName)
+                                </p>
+                                <p><b>职业:</b> @Model.User.Job</p>
+                                <p>
+                                    <b>月收入:</b>
+                                    @Html.ConvertIncomeRange((int)Model.User.IncomeRange);
+                                </p>
+                                <p><b>账号创建时间:</b> @DatesUI.GetPrettyDate(Model.User.CreateDate.ToString())</p>
+                                <p><b>账号状态:</b> @Html.Raw(Model.User.IsApproved ? "已审核" : "待审核")</p>
+                                @if (Model.User.LastActivityDate != null)
+                                {
+                                    <p><b>最后上线时间:</b> @DatesUI.GetPrettyDate(Model.User.LastActivityDate.ToString())</p>
+                                }
+                                <p>
+                                    @if (User.IsInRole(AppConstants.AdminRoleName))
+                                    {
+                                        <b>用户类型:</b> @Model.User.UserType
+                                    }
+                                </p>
+                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div>当前用户的信息还未通过管理员审核，暂时无法显示。</div>
+                                        }
+
                     </div>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <h3>个人相册</h3>
-                @{
+                <div class="form-group">
+                    <h3>个人相册</h3>
+                    @if (Model.User.IsApproved || User.IsInRole(AppConstants.AdminRoleName))
+                {
                     var model2 = new MemberFrontEndEditViewModel();
                     model2.UserName = Model.User.UserName;
                     model2.Id = Model.LoggedOnUserId;
                     model2.MembershipUserPictures = Model.MembershipUserPictures;
-                }
-                @Html.Partial("PrivatePictureList", model2)
-            </div>
-
-            @if (User.IsInRole(AppConstants.AdminRoleName))
-            {
-                <div class="form-group">
-                    <h3>每日之星</h3>
-                    @using (Html.BeginForm("SubmitMeiRiZhiXing", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        @Html.Partial("PrivatePictureList", model2)
+                    }
+                    else
                     {
-                        @Html.HiddenFor(x => x.MeiRiZhiXing.UserId)
-                        <div class="form-group">
-                            <span>开始时间</span>
-                            @Html.TextBoxFor(model => model.MeiRiZhiXing.StartTime, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(model => model.MeiRiZhiXing.StartTime)
-                        </div>
-                        <div class="form-group">
-                            <span>结束时间</span>
-                            @Html.TextBoxFor(model => model.MeiRiZhiXing.StopTime, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(model => model.MeiRiZhiXing.StopTime)
-                        </div>
-                        <div class="form-group">
-                            <span>激活每日之星</span>
-                            @Html.CheckBoxFor(model => model.MeiRiZhiXing.Status, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(model => model.MeiRiZhiXing.Status)
-                        </div>
-                        if (Model.User.Id != Guid.Empty)
-                        {
-                            <button type="submit" name="btn_SubmitMeiRiZhiXing" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
-                                设定每日之星
+                        <div>当前用户的信息还未通过管理员审核，暂时无法显示。</div>
+                    }
+                </div>
+
+                @if (User.IsInRole(AppConstants.AdminRoleName))
+                {
+                    <div class="form-group">
+                        <h3>每日之星</h3>
+                        @using (Html.BeginForm("SubmitMeiRiZhiXing", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                            @Html.HiddenFor(x => x.MeiRiZhiXing.UserId)
+                            <div class="form-group">
+                                <span>开始时间</span>
+                                @Html.TextBoxFor(model => model.MeiRiZhiXing.StartTime, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.MeiRiZhiXing.StartTime)
+                            </div>
+                            <div class="form-group">
+                                <span>结束时间</span>
+                                @Html.TextBoxFor(model => model.MeiRiZhiXing.StopTime, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.MeiRiZhiXing.StopTime)
+                            </div>
+                            <div class="form-group">
+                                <span>激活每日之星</span>
+                                @Html.CheckBoxFor(model => model.MeiRiZhiXing.Status, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.MeiRiZhiXing.Status)
+                            </div>
+                            if (Model.User.Id != Guid.Empty)
+                            {
+                                <button type="submit" name="btn_SubmitMeiRiZhiXing" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
+                                    设定每日之星
+                                </button><br />
+                            }
+                        }
+                    </div>
+                    <div class="form-group">
+                        <h3>变更权限</h3>
+                        @using (Html.BeginForm("ChangeUserRoles", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                            @Html.HiddenFor(x => x.LoggedOnUserId)
+                            <div class="form-group">
+                                <span>角色列表</span>
+                                @Html.DropDownListFor(x => x.RoleId, ViewData["RoleList"] as List<SelectListItem>, new { @class = "form-control" })<SelectListItem>
+                                    @Html.ValidationMessageFor(x => x.RoleId)
+                            </div>
+                            <button type="submit" name="btn_SubmitChangeUserRoles" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
+                                变更用户角色
                             </button><br />
                         }
-                    }
-                </div>
-                <div class="form-group">
-                    <h3>变更权限</h3>
-                    @using (Html.BeginForm("ChangeUserRoles", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
-                    {
-                        @Html.HiddenFor(x => x.LoggedOnUserId)
-                        <div class="form-group">
-                            <span>角色列表</span>
-                            @Html.DropDownListFor(x => x.RoleId, ViewData["RoleList"] as List<SelectListItem>, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(x => x.RoleId)
-                        </div>
-                        <button type="submit" name="btn_SubmitChangeUserRoles" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
-                            变更用户角色
-                        </button><br />
-                    }
-                </div>
-            }
+                    </div>
+                }
+
+            </div>
 
         </div>
-
-    </div>
+                                        }
 </div>

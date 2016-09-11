@@ -243,17 +243,17 @@
                     @Html.ValidationMessageFor(x => x.Education)
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(x => x.SchoolProvince)
+                    @Html.LabelFor(x => x.SchoolProvince)<span><Font color='red'>(*)</Font></span>
                     @Html.DropDownListFor(x => x.SchoolProvince, ViewData["SchoolProvinceList"] as List<SelectListItem>, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.SchoolProvince)
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(x => x.SchoolCity)
+                    @Html.LabelFor(x => x.SchoolCity)<span><Font color='red'>(*)</Font></span>
                     @Html.DropDownListFor(x => x.SchoolCity, ViewData["SchoolCityList"] as List<SelectListItem>, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.SchoolCity)
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(x => x.SchoolName)
+                    @Html.LabelFor(x => x.SchoolName)<span><Font color='red'>(*)</Font></span>
                     @Html.TextBoxFor(x => x.SchoolName, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.SchoolName)
                 </div>

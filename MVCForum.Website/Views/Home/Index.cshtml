@@ -41,31 +41,47 @@
             <div class="panel-body">
                 @if (Model.AiLv_ZuiXinHuoDongTop5 != null && Model.AiLv_ZuiXinHuoDongTop5.Count > 0)
                 {
-                    <table style="border:none">
+                    <table style="border:none" width="100%">
                         @foreach (var item in Model.AiLv_ZuiXinHuoDongTop5)
                         {
                             <tr>
                                 <td style="padding-left:5px; width:100%;">
-                                    <table class="pad">
+                                    <table class="pad" width="100%">
                                         <tr>
                                             <td valign="top">
-                                                <img src="/Content/Images/bar1.jpg" alt="" style="margin-bottom:0px;width:100%;height:80px" />
+                                                <a href="@Url.Action("ViewActivity","AiLvHuoDong", new { item.Id })">
+                                                    <img src="/Content/Images/bar1.jpg" alt="" style="margin-bottom:0px;width:100%;height:80px" title="点击查看活动" />
+                                                </a>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>
-                                                <span>【@item.MingCheng】</span>,<label class="bg-success">@item.YuGuRenShu 人团</label>
+                                                <a href="@Url.Action("ViewActivity","AiLvHuoDong", new { item.Id })">
+                                                    <span>【@item.MingCheng】</span>
+                                                </a>
+                                                ,<label class="bg-success">@item.YuGuRenShu 人团</label>
                                                 @if (item.LeiBie == MVCForum.Domain.DomainModel.Enum_HuoDongLeiBie.SpecicalRegister)
                                                 {
-                                                <label class="glyphicon glyphicon-lock" title="特定人群组团，需要输入邀请码。"></label>
+                                                   <label class="glyphicon glyphicon-lock" title="特定人群组团，需要输入邀请码。"></label>
                                                 }
-                                            </td>
+                                           </td>
                                         </tr>
                                         <tr>
                                             <td>
                                                 <small>
-                                                    ￥@item.Feiyong /人 &nbsp;
-                                                    <img src="~/Content/Images/t.jpg" title="发布时间" /> @item.CreatedTime.ToString("MM-dd HH:mm")
+                                                    @{
+                                                        var FeiYongStr = "";
+                                                        if (item.Feiyong == 0)
+                                                        {
+                                                            FeiYongStr = "￥免费";
+                                                        }
+                                                        else
+                                                        {
+                                                            FeiYongStr = "￥" + item.Feiyong.ToString() + " /人";
+                                                        }
+                                                    }
+                                                    活动费用： @FeiYongStr &nbsp;
+                                                    @*发布时间: @item.CreatedTime.ToString("MM-dd HH:mm")*@
                                                 </small>
                                             </td>
                                         </tr>
@@ -78,14 +94,49 @@
                                         </tr>
                                         @if (item.XingBieBiLi != "/")
                                         {
-                                        <tr>
-                                            <td>
-                                                <small>参与人数性别比例：<span>@item.XingBieBiLi</span></small>
-                                            </td>
-                                        </tr>
+                                            <tr>
+                                                <td>
+                                                    <small>男女比例：<span>@item.XingBieBiLi</span></small>
+                                                </td>
+                                            </tr>
                                         }
                                         <tr><td><small>活动地点：<span>@item.DiDian</span></small></td></tr>
-                                        <tr><td><small>报名截止至：@item.BaoMingJieZhiTime.ToString("MM-dd HH:mm")</small></td></tr>
+                                        <tr>
+                                            <td>
+                                                <small>
+                                                    @{
+                                                        var zhuangtaistr = "";
+                                                        switch (item.ZhuangTai)
+                                                        {
+                                                            case MVCForum.Domain.DomainModel.Enum_HuoDongZhuangTai.Registing:
+                                                                zhuangtaistr = "活动报名中";
+                                                                break;
+                                                            case MVCForum.Domain.DomainModel.Enum_HuoDongZhuangTai.StopRegister:
+                                                                zhuangtaistr = "停止报名";
+                                                                break;
+                                                            case MVCForum.Domain.DomainModel.Enum_HuoDongZhuangTai.Finished:
+                                                                zhuangtaistr = "活动已结束";
+                                                                break;
+                                                            default:
+                                                                break;
+                                                        }
+                                                    }
+                                                    活动状态：@zhuangtaistr
+                                                </small>
+                                            </td>
+                                        </tr>
+                                        <tr><td>
+                                            <small>
+                                            报名截止至：@item.BaoMingJieZhiTime.ToString("MM-dd HH:mm")
+                                            @{
+                                                var Timelimit = "";
+                                                if (item.BaoMingJieZhiTime>DateTime.Now)
+                                                {
+                                                    var ts = item.BaoMingJieZhiTime.Subtract(DateTime.Now);
+                                                    Timelimit="还剩：" +ts.Days.ToString()+"天"+ts.Hours.ToString()+"小时"+ts.Minutes.ToString()+"分钟";
+                                                }
+                                            }
+                                            @Timelimit</small></td></tr>
                                     </table>
                                 </td>
                             </tr>
@@ -97,6 +148,7 @@
                                 </td>
                             </tr>
                             <tr><td><hr style="height:1px;border:none;border-top:1px dashed #0066CC;" /></td></tr>
+                            <tr><td align="right"><a href="@Url.Action("ZuiXinHuoDong","AiLvHuoDong")">更多...</a></td></tr>
                         }
                     </table>
                 }
@@ -126,6 +178,7 @@
                                 </td>
                             </tr>
                         }
+                        <tr><td align="right"><a href="@Url.Action("ZuiXinJiLu","AiLvHuoDong")">更多...</a></td></tr>
                     </table>
                 }
                 else
@@ -197,7 +250,7 @@
             <div class="panel-body">
                 @if (Model.AiLv_ZuiXinHuiYuanTop5 != null && Model.AiLv_ZuiXinHuiYuanTop5.Count > 0)
                 {
-                    <table>
+                    <table width="100%">
                         @foreach (var huiyuan in Model.AiLv_ZuiXinHuiYuanTop5)
                         {
                             <tr>
@@ -207,6 +260,7 @@
                                 </td>
                             </tr>
                         }
+                        <tr><td align="right"><a href="@Url.Action("SearchEx","Members")">更多...</a></td></tr>
                     </table>
                 }
                 else
@@ -225,7 +279,7 @@
             <div class="panel-body">
                 @if (Model.AiLv_ZuiXinFuWuTop5 != null && Model.AiLv_ZuiXinFuWuTop5.Count > 0)
                 {
-                    <table>
+                    <table width="100%">
                         @foreach (var fuwu in Model.AiLv_ZuiXinFuWuTop5)
                         {
                             <tr>
@@ -235,6 +289,7 @@
                                 </td>
                             </tr>
                         }
+                        <tr><td align="right"><a href="@Url.Action("ZuiXinFuWu","AiLvHuoDong")">更多...</a></td></tr>
                     </table>
                 }
                 else
@@ -254,7 +309,7 @@
             <div class="panel-body">
                 @if (Model.AiLv_ZuiXinZiXunTop5 != null && Model.AiLv_ZuiXinZiXunTop5.Count > 0)
                 {
-                    <table>
+                    <table width="100%">
                         @foreach (var zixun in Model.AiLv_ZuiXinZiXunTop5)
                         {
                             <tr>
@@ -264,6 +319,7 @@
                                 </td>
                             </tr>
                         }
+                        <tr><td align="right"><a href="@Url.Action("ZuiXinZiXun","AiLvHuoDong")">更多...</a></td></tr>
                     </table>
                 }
                 else

@@ -3188,7 +3188,18 @@ namespace MVCForum.Domain.DomainModel.General
 
         public static List<TCountry> LoadCountryByProvinceAndCity(int ProvinceId, int CityId)
         {
-            return LoadAllCountry().Where(x => x.ProvinceId == ProvinceId && x.CityId == CityId).ToList();
+            var list = LoadAllCountry().Where(x => x.ProvinceId == ProvinceId && x.CityId == CityId).ToList();
+
+            var blankentity = new TCountry();
+            blankentity.ProvinceId = ProvinceId;
+            blankentity.ProvinceName = TProvince.LoadProvinceByProvincedId(ProvinceId).ProvinceName;
+            blankentity.CityId = CityId;
+            blankentity.CityName = TCity.LoadCityByCityId(CityId).CityName;
+            blankentity.CountryId = 0;
+            blankentity.CountryName = "==请选择==";
+            list.Insert(0, blankentity);
+            return list;
+           
         }
     }
 

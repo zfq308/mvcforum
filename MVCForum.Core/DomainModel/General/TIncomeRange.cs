@@ -22,6 +22,15 @@ namespace MVCForum.Domain.DomainModel.General
             return list;
         }
 
+        public static List<TIncomeRange> LoadForSearchIncomeList()
+        {
+            var list = new List<TIncomeRange>();
+            list.Add(new TIncomeRange() { IncomeRangeId = "1", IncomeRangeName = "1万以下" });
+            list.Add(new TIncomeRange() { IncomeRangeId = "2", IncomeRangeName = "1万以上" });
+            list.Add(new TIncomeRange() { IncomeRangeId = "3", IncomeRangeName = "5万以上" });
+            return list;
+        }
+
         public static TIncomeRange LoadIncomeRangeByIncomeRangeId(string IncomeRangeId)
         {
             return LoadAllIncomeList().Where(x => x.IncomeRangeId == IncomeRangeId).FirstOrDefault();

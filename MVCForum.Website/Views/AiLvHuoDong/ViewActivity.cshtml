@@ -10,257 +10,261 @@
 <h2>@ViewBag.Title</h2>
 
 <div class="row">
-    <div class="col-md-3 memberavatardetails">
-        @if (User.IsInRole(AppConstants.AdminRoleName))
-        {
-            using (Html.BeginForm("AuditAiLvHuodong_Success", "AiLvHuoDong", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    @if (Model != null && Model.Id != null && Model.Id!=Guid.Empty)
+    {
+        <div class="col-md-3 memberavatardetails">
+            @if (User.IsInRole(AppConstants.AdminRoleName))
             {
-                @Html.HiddenFor(x => x.Id)
-                if (Model.Id != Guid.Empty && Model.ShenHeBiaoZhi == MVCForum.Domain.DomainModel.Enum_ShenHeBiaoZhi.WaitingAudit)
+                using (Html.BeginForm("AuditAiLvHuodong_Success", "AiLvHuoDong", FormMethod.Post, new { enctype = "multipart/form-data" }))
                 {
-                    <button type="submit" name="btn_AuditSuccess" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
-                        审核同意
-                    </button><br />
-                }
-            }
-
-            using (Html.BeginForm("AuditAiLvHuodong_Fail", "AiLvHuoDong", FormMethod.Post, new { enctype = "multipart/form-data" }))
-            {
-                @Html.HiddenFor(x => x.Id)
-                if (Model.Id != Guid.Empty && Model.ShenHeBiaoZhi == MVCForum.Domain.DomainModel.Enum_ShenHeBiaoZhi.WaitingAudit)
-                {
-                    <button type="submit" name="btn_AuditFail" class="btn-mvc-red btn-mvc-large btn-mvc-fullwidth">
-                        审核驳回
-                    </button><br />
-                }
-            }
-
-            using (Html.BeginForm("CreateAiLvHuodongJilu", "AiLvHuoDong", FormMethod.Post, new { enctype = "multipart/form-data" }))
-            {
-                @Html.HiddenFor(x => x.Id)
-                if (Model.Id != Guid.Empty && Model.ShenHeBiaoZhi == MVCForum.Domain.DomainModel.Enum_ShenHeBiaoZhi.AuditSuccess)
-                {
-                    <button type="submit" name="btn_GenerateHuoDong" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
-                        生成活动记录
-                    </button><br />
-                }
-            }
-        }
-
-        @if (User.IsInRole(AppConstants.AdminRoleName) || Model.GongYingShangUserId == User.Identity.Name)
-        {
-            <a href="@Url.Action("EditAiLvHuoDong", "AiLvHuoDong", new { id = Model.Id }, null)" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">编辑活动</a>
-            <br />
-        }
-
-        @if (Model.ShenHeBiaoZhi == MVCForum.Domain.DomainModel.Enum_ShenHeBiaoZhi.AuditSuccess)
-        {
-            using (Html.BeginForm("CreateActivityRegister", "AiLvHuoDong", FormMethod.Post, new { enctype = "multipart/form-data" }))
-            {
-                @Html.HiddenFor(x => x.Id)
-                if (Model.Id != Guid.Empty && Model.ShenHeBiaoZhi == MVCForum.Domain.DomainModel.Enum_ShenHeBiaoZhi.AuditSuccess)
-                {
-                    if (Model.LeiBie == MVCForum.Domain.DomainModel.Enum_HuoDongLeiBie.SpecicalRegister)
+                    @Html.HiddenFor(x => x.Id)
+                    if (Model.Id != Guid.Empty && Model.ShenHeBiaoZhi == MVCForum.Domain.DomainModel.Enum_ShenHeBiaoZhi.WaitingAudit)
                     {
-                        <div class="form-group" id="divyaoqingma">
-                            @Html.LabelFor(x => x.YaoQingMa)
-                            @Html.TextBoxFor(model => model.YaoQingMa, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(model => model.YaoQingMa)
+                        <button type="submit" name="btn_AuditSuccess" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
+                            审核同意
+                        </button><br />
+                    }
+                }
+
+                using (Html.BeginForm("AuditAiLvHuodong_Fail", "AiLvHuoDong", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    @Html.HiddenFor(x => x.Id)
+                    if (Model.Id != Guid.Empty && Model.ShenHeBiaoZhi == MVCForum.Domain.DomainModel.Enum_ShenHeBiaoZhi.WaitingAudit)
+                    {
+                        <button type="submit" name="btn_AuditFail" class="btn-mvc-red btn-mvc-large btn-mvc-fullwidth">
+                            审核驳回
+                        </button><br />
+                    }
+                }
+
+                using (Html.BeginForm("CreateAiLvHuodongJilu", "AiLvHuoDong", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    @Html.HiddenFor(x => x.Id)
+                    if (Model.Id != Guid.Empty && Model.ShenHeBiaoZhi == MVCForum.Domain.DomainModel.Enum_ShenHeBiaoZhi.AuditSuccess)
+                    {
+                        <button type="submit" name="btn_GenerateHuoDong" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
+                            生成活动记录
+                        </button><br />
+                    }
+                }
+            }
+
+            @if (User.IsInRole(AppConstants.AdminRoleName) || Model.GongYingShangUserId == User.Identity.Name)
+            {
+                <a href="@Url.Action("EditAiLvHuoDong", "AiLvHuoDong", new { id = Model.Id }, null)" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">编辑活动</a>
+                <br />
+            }
+
+            @if (Model.ShenHeBiaoZhi == MVCForum.Domain.DomainModel.Enum_ShenHeBiaoZhi.AuditSuccess)
+            {
+                using (Html.BeginForm("CreateActivityRegister", "AiLvHuoDong", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    @Html.HiddenFor(x => x.Id)
+                    if (Model.Id != Guid.Empty && Model.ShenHeBiaoZhi == MVCForum.Domain.DomainModel.Enum_ShenHeBiaoZhi.AuditSuccess)
+                    {
+                        if (Model.LeiBie == MVCForum.Domain.DomainModel.Enum_HuoDongLeiBie.SpecicalRegister)
+                        {
+                            <div class="form-group" id="divyaoqingma">
+                                @Html.LabelFor(x => x.YaoQingMa)
+                                @Html.TextBoxFor(model => model.YaoQingMa, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.YaoQingMa)
+                            </div>
+                        }
+                        <div class="submit-holder">
+                            <button type="submit" name="btn_GenerateHuoDong" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
+                                我要报名
+                            </button><br />
                         </div>
                     }
-                    <div class="submit-holder">
-                        <button type="submit" name="btn_GenerateHuoDong" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
-                            我要报名
-                        </button><br />
-                    </div>
                 }
             }
-        }
-        </p>
-    </div>
+           
+        </div>
 
-    <div class="col-md-9">
-        <fieldset>
-            @if (Model.Id != Guid.Empty && Model.ShenHeBiaoZhi == MVCForum.Domain.DomainModel.Enum_ShenHeBiaoZhi.AuditReject)
-            {
-                <div class="form-group">
-                    <span class="bg-danger form-control">您所需要发布的活动被管理员审核后驳回，请重新填写后再行审核</span>
-                </div>
-            }
-
-            <div class="form-group">
-                @Html.LabelFor(x => x.MingCheng)
-                @Html.DisplayTextFor(x => x.MingCheng)
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(x => x.LeiBie)
-
-                @if (Model.LeiBie == MVCForum.Domain.DomainModel.Enum_HuoDongLeiBie.FreeRegister)
+        <div class="col-md-9">
+            <fieldset>
+                @if (Model.Id != Guid.Empty && Model.ShenHeBiaoZhi == MVCForum.Domain.DomainModel.Enum_ShenHeBiaoZhi.AuditReject)
                 {
-                    @Html.Label("FreeRegister", "自由报名");
+                    <div class="form-group">
+                        <span class="bg-danger form-control">您所需要发布的活动被管理员审核后驳回，请重新填写后再行审核</span>
+                    </div>
+                }
+
+                <div class="form-group">
+                    @Html.LabelFor(x => x.MingCheng):
+                    @Html.DisplayTextFor(x => x.MingCheng)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.LeiBie):
+
+                    @if (Model.LeiBie == MVCForum.Domain.DomainModel.Enum_HuoDongLeiBie.FreeRegister)
+                {
+                        @Html.Label("FreeRegister", "自由报名");
                 }
                 else
                 {
-                    @Html.Label("SpecicalRegister", "特殊邀请");
+                        @Html.Label("SpecicalRegister", "特殊邀请");
                 }
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(x => x.YaoQiu)
-                @switch (Model.YaoQiu)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.YaoQiu):
+                    @switch (Model.YaoQiu)
                 {
                     case MVCForum.Domain.DomainModel.Enum_HuoDongYaoQiu.Single:
-                        @Html.Raw("单身");
+                            @Html.Raw("单身");
                         break;
                     case MVCForum.Domain.DomainModel.Enum_HuoDongYaoQiu.Specific:
-                        @Html.Raw("特别邀请");
+                            @Html.Raw("特别邀请");
                         break;
                     case MVCForum.Domain.DomainModel.Enum_HuoDongYaoQiu.None:
-                        @Html.Raw("人人可参加");
+                            @Html.Raw("人人可参加");
                         break;
                     default:
                         break;
                 }
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(x => x.StartTime)
-                @Html.DisplayTextFor(model => model.StartTime)
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(x => x.StopTime)
-                @Html.DisplayTextFor(model => model.StopTime)
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(x => x.BaoMingJieZhiTime)
-                @Html.DisplayTextFor(model => model.BaoMingJieZhiTime)
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(x => x.DiDian)
-                @Html.DisplayTextFor(model => model.DiDian)
-            </div>
-            <div class="editor-field editorholder">
-                @Html.LabelFor(x => x.LiuCheng)
-                @Html.EditorFor(model => model.LiuCheng, new { @class = "form-control" })
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(x => x.Feiyong)
-                ￥@Html.DisplayTextFor(model => model.Feiyong) /人
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(x => x.FeiyongShuoMing)
-                @Html.DisplayTextFor(model => model.FeiyongShuoMing)
-            </div>
-            <div class="editor-field editorholder">
-                @Html.LabelFor(x => x.ZhuYiShiXiang)
-                @Html.EditorFor(model => model.ZhuYiShiXiang, new { @class = "form-control" })
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(x => x.YuGuRenShu)
-                @Html.DisplayTextFor(model => model.YuGuRenShu)
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(x => x.XingBieBiLi)
-                @Html.DisplayTextFor(model => model.XingBieBiLi)
-            </div>
-
-            @if (Model.Id != Guid.Empty)
-            {
+                </div>
                 <div class="form-group">
-                    @Html.LabelFor(x => x.ZhuangTai)
-                    @switch (Model.ZhuangTai)
+                    @Html.LabelFor(x => x.StartTime):
+                    @Html.DisplayTextFor(model => model.StartTime)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.StopTime):
+                    @Html.DisplayTextFor(model => model.StopTime)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.BaoMingJieZhiTime):
+                    @Html.DisplayTextFor(model => model.BaoMingJieZhiTime)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.DiDian):
+                    @Html.DisplayTextFor(model => model.DiDian)
+                </div>
+                <div class="editor-field editorholder">
+                    @Html.LabelFor(x => x.LiuCheng):
+                    @Html.EditorFor(model => model.LiuCheng, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Feiyong):
+                    ￥@Html.DisplayTextFor(model => model.Feiyong) /人
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.FeiyongShuoMing):
+                    @Html.DisplayTextFor(model => model.FeiyongShuoMing)
+                </div>
+                <div class="editor-field editorholder">
+                    @Html.LabelFor(x => x.ZhuYiShiXiang):
+                    @Html.EditorFor(model => model.ZhuYiShiXiang, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.YuGuRenShu):
+                    @Html.DisplayTextFor(model => model.YuGuRenShu)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.XingBieBiLi):
+                    @Html.DisplayTextFor(model => model.XingBieBiLi)
+                </div>
+
+                @if (Model.Id != Guid.Empty)
+                {
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.ZhuangTai):
+                        @switch (Model.ZhuangTai)
                     {
                         case MVCForum.Domain.DomainModel.Enum_HuoDongZhuangTai.Registing:
-                            <span class="form-control">本活动正在火热报名中</span>
-                            break;
-                        case MVCForum.Domain.DomainModel.Enum_HuoDongZhuangTai.StopRegister:
-                            <span class="form-control">本活动已停止报名，请关注其他的活动</span>
-                            break;
-                        case MVCForum.Domain.DomainModel.Enum_HuoDongZhuangTai.Finished:
-                            <span class="form-control">本活动已结束</span>
-                            break;
-                        default:
-                            break;
-                    }
-                </div>
+                                <span class="form-control">本活动正在火热报名中</span>
+                                break;
+                            case MVCForum.Domain.DomainModel.Enum_HuoDongZhuangTai.StopRegister:
+                                <span class="form-control">本活动已停止报名，请关注其他的活动</span>
+                                break;
+                            case MVCForum.Domain.DomainModel.Enum_HuoDongZhuangTai.Finished:
+                                <span class="form-control">本活动已结束</span>
+                                break;
+                            default:
+                                break;
+                        }
+                    </div>
 
-                <div class="form-group">
-                    @Html.LabelFor(x => x.ShenHeBiaoZhi)
-                    @switch (Model.ShenHeBiaoZhi)
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.ShenHeBiaoZhi):
+                        @switch (Model.ShenHeBiaoZhi)
                     {
                         case MVCForum.Domain.DomainModel.Enum_ShenHeBiaoZhi.WaitingAudit:
-                            <span class="form-control">本活动需审核后才能发布</span>
-                            break;
-                        case MVCForum.Domain.DomainModel.Enum_ShenHeBiaoZhi.AuditSuccess:
-                            <span class="form-control">本活动已发布</span>
-                            break;
-                        case MVCForum.Domain.DomainModel.Enum_ShenHeBiaoZhi.AuditReject:
-                            <span class="form-control">本活动审核被驳回</span>
-                            break;
-                        default:
-                            break;
-                    }
-                </div>
-            }
-
-
-            <div class="form-group">
-                <div class="panel-heading c-list">
-                    <span class="title">参加活动的帅哥清单</span>
-                </div>
-                <ul class="list-group infinite-scroll">
-                    @if (Model.BoyJoinner != null && Model.BoyJoinner.Count > 0)
-                    {
-                        foreach (var user in Model.BoyJoinner)
-                        {
-                            <li class="list-group-item">
-                                <div class="col-xs-6 col-sm-2 col-md-2">
-                                    <img src="@AppHelpers.MemberImage(user.Avatar, "", user.Id, 48)" alt="@user.UserName">
-
-                                </div>
-                                <div class="col-xs-6 col-sm-10 col-md-8 col-lg-2">
-                                    <span class="text-muted">@user.UserName</span><br />
-                                    <a href="@user.NiceUrl">@user.AliasName</a><br />
-                                </div>
-                                <div class="clearfix"></div>
-                            </li>
+                                <span class="form-control">本活动需审核后才能发布</span>
+                                break;
+                            case MVCForum.Domain.DomainModel.Enum_ShenHeBiaoZhi.AuditSuccess:
+                                <span class="form-control">本活动已发布</span>
+                                break;
+                            case MVCForum.Domain.DomainModel.Enum_ShenHeBiaoZhi.AuditReject:
+                                <span class="form-control">本活动审核被驳回</span>
+                                break;
+                            default:
+                                break;
                         }
-                    }
-                </ul>
-            </div>
-            <div class="form-group">
-                <div class="panel-heading c-list">
-                    <span class="title">参加活动的美女清单</span>
-                </div>
-                <ul class="list-group infinite-scroll">
-                    @if (Model.GirlJoiner != null && Model.GirlJoiner.Count > 0)
-                    {
-                        foreach (var user in Model.GirlJoiner)
-                        {
-                            <li class="list-group-item">
-                                <div class="col-xs-6 col-sm-2 col-md-2">
-                                    <img src="@AppHelpers.MemberImage(user.Avatar, "", user.Id, 48)" alt="@user.UserName">
-                                </div>
-                                <div class="col-xs-6 col-sm-10 col-md-8 col-lg-2">
-                                    <span class="text-muted">@user.UserName</span><br />
-                                    <a href="@user.NiceUrl">@user.AliasName</a><br />
-                                </div>
-                                <div class="clearfix"></div>
-                            </li>
-                        }
-                    }
-                </ul>
-            </div>
-            @if (User.IsInRole(AppConstants.AdminRoleName) || User.IsInRole(AppConstants.SupplierRoleName))
-            {
+                    </div>
+                }
+
+
                 <div class="form-group">
-                    @using (Html.BeginForm("ExportHuoDongUsers", "AiLvHuoDong", FormMethod.Post, new { enctype = "multipart/form-data", id = Model.Id }))
-                    {
-                        @Html.HiddenFor(x => x.Id)
-                        <div class="submit-holder">
-                            <button type="submit" class="btn-mvc-green" name="btn_Export">导出参加活动人员清单</button>
-                        </div>
-                    }
+                    <div class="panel-heading c-list">
+                        <span class="title">参加活动的帅哥清单</span>
+                    </div>
+                    <ul class="list-group infinite-scroll">
+                        @if (Model.BoyJoinner != null && Model.BoyJoinner.Count > 0)
+                        {
+                            foreach (var user in Model.BoyJoinner)
+                            {
+                                <li class="list-group-item">
+                                    <div class="col-xs-6 col-sm-2 col-md-2">
+                                        <img src="@AppHelpers.MemberImage(user.Avatar, "", user.Id, 48)" alt="@user.UserName">
+
+                                    </div>
+                                    <div class="col-xs-6 col-sm-10 col-md-8 col-lg-2">
+                                        <span class="text-muted">@user.UserName</span><br />
+                                        <a href="@user.NiceUrl">@user.AliasName</a><br />
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </li>
+                            }
+                        }
+                    </ul>
                 </div>
-            }
-        </fieldset>
-    </div>
+                <div class="form-group">
+                    <div class="panel-heading c-list">
+                        <span class="title">参加活动的美女清单</span>
+                    </div>
+                    <ul class="list-group infinite-scroll">
+                        @if (Model.GirlJoiner != null && Model.GirlJoiner.Count > 0)
+                        {
+                            foreach (var user in Model.GirlJoiner)
+                            {
+                                <li class="list-group-item">
+                                    <div class="col-xs-6 col-sm-2 col-md-2">
+                                        <img src="@AppHelpers.MemberImage(user.Avatar, "", user.Id, 48)" alt="@user.UserName">
+                                    </div>
+                                    <div class="col-xs-6 col-sm-10 col-md-8 col-lg-2">
+                                        <span class="text-muted">@user.UserName</span><br />
+                                        <a href="@user.NiceUrl">@user.AliasName</a><br />
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+                @if (User.IsInRole(AppConstants.AdminRoleName) || User.IsInRole(AppConstants.SupplierRoleName))
+                {
+                    <div class="form-group">
+                        @using (Html.BeginForm("ExportHuoDongUsers", "AiLvHuoDong", FormMethod.Post, new { enctype = "multipart/form-data", id = Model.Id }))
+                    {
+                            @Html.HiddenFor(x => x.Id)
+                            <div class="submit-holder">
+                                <button type="submit" class="btn-mvc-green" name="btn_Export">导出参加活动人员清单</button>
+                            </div>
+                        }
+                    </div>
+                }
+            </fieldset>
+        </div>
+
+    }
 </div>

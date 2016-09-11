@@ -377,7 +377,14 @@ namespace MVCForum.Domain.DomainModel.General
 
         public static List<TCity> LoadCityListByProvince(int ProvinceId)
         {
-            return LoadAllCityList().Where(x => x.ProvinceId == ProvinceId).ToList();
+            var list = LoadAllCityList().Where(x => x.ProvinceId == ProvinceId).ToList();
+            var blankentity = new TCity();
+            blankentity.ProvinceId = ProvinceId;
+            blankentity.ProvinceName = list[0].ProvinceName;
+            blankentity.CityId = 0;
+            blankentity.CityName = "==请选择==";
+            list.Insert(0, blankentity);
+            return list;
         }
 
     }

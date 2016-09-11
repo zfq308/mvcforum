@@ -28,6 +28,17 @@ namespace MVCForum.Domain.DomainModel.General
 
             return list;
         }
+
+        public static List<TEducation> LoadSearchEducationList()
+        {
+            var list = new List<TEducation>();
+            list.Add(new TEducation() { EducationId = "1", EducationName = "高中及以上" });
+            list.Add(new TEducation() { EducationId = "2", EducationName = "大专及以上" });
+            list.Add(new TEducation() { EducationId = "3", EducationName = "本科及以上" });
+            list.Add(new TEducation() { EducationId = "4", EducationName = "硕士及以上" });
+            list.Add(new TEducation() { EducationId = "5", EducationName = "博士" });
+            return list;
+        }
     }
 
 

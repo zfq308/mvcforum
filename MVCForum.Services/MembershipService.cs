@@ -201,6 +201,8 @@ namespace MVCForum.Services
             {
                 if (string.IsNullOrEmpty(newUser.UserName)) { status = MembershipCreateStatus.InvalidUserName; }
                 if (GetUser(newUser.UserName, true) != null) { status = MembershipCreateStatus.DuplicateUserName; }
+                if (GetUserByMobilePhone(newUser.MobilePhone, true) != null) { status = MembershipCreateStatus.DuplicateTelphone; }
+
                 //if (GetUserByEmail(newUser.Email, true) != null) { status = MembershipCreateStatus.DuplicateEmail; }
                 if (string.IsNullOrEmpty(newUser.Password)) { status = MembershipCreateStatus.InvalidPassword; }
 
@@ -291,7 +293,7 @@ namespace MVCForum.Services
             var EducationList = new List<string>();
             EducationList.AddRange(TEducation.LoadAllEducationList().Select(x =>
             {
-                return x.EducationName;
+                return x.EducationId;
             }));
             var CountryList = TCountry.LoadAllCountry();
 
@@ -1258,6 +1260,7 @@ namespace MVCForum.Services
                         total = total.Where(p => p.Gender == Enum_Gender.girl).ToList();
                     }
                 }
+
                 #region 年龄段
                 if (!string.IsNullOrEmpty(searchusermodel.AgeRange))
                 {
@@ -1290,17 +1293,60 @@ namespace MVCForum.Services
 
                 #endregion
 
-                //学历
+                #region 学历
                 if (!String.IsNullOrEmpty(searchusermodel.Education))
                 {
-                    total = total.Where(p => p.Education == searchusermodel.Education).ToList();
+                    switch (searchusermodel.Education)
+                    {
+                        case "1":   //高中及以上
+                            total = total.Where(p => p.Education == "2" || p.Education == "3" || p.Education == "4" || p.Education == "5" || p.Education == "6").ToList();
+                            break;
+                        case "2":   //大专及以上
+                            total = total.Where(p => p.Education == "3" || p.Education == "4" || p.Education == "5" || p.Education == "6").ToList();
+                            break;
+                        case "3":   //本科及以上
+                            total = total.Where(p => p.Education == "4" || p.Education == "5" || p.Education == "6").ToList();
+                            break;
+                        case "4":   //硕士及以上
+                            total = total.Where(p => p.Education == "5" || p.Education == "6").ToList();
+                            break;
+                        case "5":   //博士
+                            total = total.Where(p => p.Education == "6").ToList();
+                            break;
+                        default:
+                            break;
+                    }
                 }
-                //毕业院校
-                if (!String.IsNullOrEmpty(searchusermodel.SchoolName))
+                #endregion
+
+                #region 居住地
+
+
+                if (!String.IsNullOrEmpty(searchusermodel.LocationProvince) &&
+                   !String.IsNullOrEmpty(searchusermodel.LocationCity) &&
+                   !String.IsNullOrEmpty(searchusermodel.LocationCounty) &&
+                   searchusermodel.LocationProvince != "0" &&
+                   searchusermodel.LocationCity == "0" &&
+                   searchusermodel.LocationCounty == "0"
+                   )
                 {
-                    total = total.Where(p => p.SchoolName.Contains(searchusermodel.SchoolName)).ToList();
+                    total = total.Where(p => p.LocationProvince == searchusermodel.LocationProvince 
+                    ).ToList();
                 }
-                //居住地
+
+                if (!String.IsNullOrEmpty(searchusermodel.LocationProvince) &&
+                 !String.IsNullOrEmpty(searchusermodel.LocationCity) &&
+                 !String.IsNullOrEmpty(searchusermodel.LocationCounty) &&
+                 searchusermodel.LocationProvince != "0" &&
+                 searchusermodel.LocationCity != "0" &&
+                 searchusermodel.LocationCounty == "0"
+                 )
+                {
+                    total = total.Where(p => p.LocationProvince == searchusermodel.LocationProvince &&
+                                             p.LocationCity == searchusermodel.LocationCity
+                    ).ToList();
+                }
+
                 if (!String.IsNullOrEmpty(searchusermodel.LocationProvince) &&
                     !String.IsNullOrEmpty(searchusermodel.LocationCity) &&
                     !String.IsNullOrEmpty(searchusermodel.LocationCounty) &&
@@ -1310,16 +1356,14 @@ namespace MVCForum.Services
                     )
                 {
                     total = total.Where(p => p.LocationProvince == searchusermodel.LocationProvince &&
-                    p.LocationCity == searchusermodel.LocationCity &&
-                    p.LocationCounty == searchusermodel.LocationCounty
+                                             p.LocationCity == searchusermodel.LocationCity &&
+                                             p.LocationCounty == searchusermodel.LocationCounty
                     ).ToList();
                 }
-                //职业
-                if (!String.IsNullOrEmpty(searchusermodel.Job))
-                {
-                    total = total.Where(p => p.Job.Contains(searchusermodel.Job)).ToList();
-                }
-                //月收入
+
+                #endregion
+
+                #region 月收入
                 if (!String.IsNullOrEmpty(searchusermodel.IncomeRange))
                 {
                     switch (searchusermodel.IncomeRange)
@@ -1328,18 +1372,29 @@ namespace MVCForum.Services
                             total = total.Where(p => p.IncomeRange == Enum_IncomeRange.R_Lowthan1W).ToList();
                             break;
                         case "2":
-                            total = total.Where(p => p.IncomeRange == Enum_IncomeRange.R_1WTo5W).ToList();
+                            total = total.Where(p => p.IncomeRange == Enum_IncomeRange.R_1WTo5W || p.IncomeRange == Enum_IncomeRange.R_5WMore).ToList();
                             break;
                         case "3":
                             total = total.Where(p => p.IncomeRange == Enum_IncomeRange.R_5WMore).ToList();
-                            break;
-                        case "4":
-                            total = total.Where(p => p.IncomeRange == Enum_IncomeRange.R_NOClass).ToList();
                             break;
                         default:
                             break;
                     }
                 }
+                #endregion
+
+                //职业
+                if (!String.IsNullOrEmpty(searchusermodel.Job))
+                {
+                    total = total.Where(p => p.Job.Contains(searchusermodel.Job)).ToList();
+                }
+
+                //毕业院校
+                if (!String.IsNullOrEmpty(searchusermodel.SchoolName))
+                {
+                    total = total.Where(p => p.SchoolName.Contains(searchusermodel.SchoolName)).ToList();
+                }
+
                 //最近未登录天数
                 if (searchusermodel.NoLoginDays > 0)
                 {
@@ -1827,6 +1882,9 @@ namespace MVCForum.Services
 
                 case MembershipCreateStatus.DuplicateEmail:  //电子邮件地址已存在于应用程序的数据库中。
                     return _localizationService.GetResourceString("Members.Errors.DuplicateEmail");
+
+                case MembershipCreateStatus.DuplicateTelphone:
+                    return "您填写的手机号码已经注册。";
 
                 case MembershipCreateStatus.InvalidPassword:   //密码的格式设置不正确。
                     return _localizationService.GetResourceString("Members.Errors.InvalidPassword");

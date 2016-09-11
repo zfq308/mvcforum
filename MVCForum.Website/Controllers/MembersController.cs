@@ -1723,7 +1723,7 @@ namespace MVCForum.Website.Controllers
                 return View(forgotPasswordViewModel);
             }
 
-            if (Session["code"] == null && forgotPasswordViewModel.VerifyCode!="!@#$")
+            if (Session["code"] == null && forgotPasswordViewModel.VerifyCode != "!@#$")
             {
                 ShowMessage(new GenericMessageViewModel
                 {
@@ -1899,7 +1899,6 @@ namespace MVCForum.Website.Controllers
 
         #region 找朋友
 
-
         public ActionResult Search(int? p, string search)
         {
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -1975,7 +1974,7 @@ namespace MVCForum.Website.Controllers
 
             #region 绑定学历信息
             var Items_Education = new List<SelectListItem>();
-            Items_Education.AddRange(TEducation.LoadAllEducationList().Select(x =>
+            Items_Education.AddRange(TEducation.LoadSearchEducationList().Select(x =>
             {
                 return new SelectListItem { Text = x.EducationName, Value = x.EducationId };
             }));
@@ -1988,7 +1987,7 @@ namespace MVCForum.Website.Controllers
             #region 绑定收入信息
 
             var Items_IncomeRange = new List<SelectListItem>();
-            Items_IncomeRange.AddRange(TIncomeRange.LoadAllIncomeList().Select(x =>
+            Items_IncomeRange.AddRange(TIncomeRange.LoadForSearchIncomeList().Select(x =>
             {
                 return new SelectListItem { Text = x.IncomeRangeName, Value = x.IncomeRangeId };
             }));
@@ -2098,6 +2097,7 @@ namespace MVCForum.Website.Controllers
             return RedirectToAction("SearchResult", "Members");
         }
 
+        [HttpGet]
         public ActionResult SearchResult(int? pageNum)
         {
             pageNum = pageNum ?? 0;
@@ -2875,16 +2875,14 @@ namespace MVCForum.Website.Controllers
 
         public JsonResult GetHometownCity(int id)
         {
-            List<TCity> allCity = TCity.LoadAllCityList();
-            var a = allCity.Where(P => P.ProvinceId.Equals(id)).ToList();
-            return Json(allCity.Where(P => P.ProvinceId == id).ToList(), JsonRequestBehavior.AllowGet);
+            List<TCity> FilterCitys = TCity.LoadCityListByProvince(id);
+            return Json(FilterCitys, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult GetEducationCity(int id)
         {
-            List<TCity> allCity = TCity.LoadAllCityList();
-            var a = allCity.Where(P => P.ProvinceId.Equals(id)).ToList();
-            return Json(allCity.Where(P => P.ProvinceId == id).ToList(), JsonRequestBehavior.AllowGet);
+            List<TCity> FilterCitys = TCity.LoadCityListByProvince(id);
+            return Json(FilterCitys, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult GetHometownCountry(string id)
@@ -2892,7 +2890,7 @@ namespace MVCForum.Website.Controllers
             List<int> result = new List<string>(id.Split(',')).ConvertAll(i => int.Parse(i));
             int ProvinceId = result[0];
             int CityId = result[1];
-            return Json(TCountry.LoadAllCountry().Where(E => E.ProvinceId == ProvinceId && E.CityId == CityId).ToList(), JsonRequestBehavior.AllowGet);
+            return Json(TCountry.LoadCountryByProvinceAndCity(ProvinceId, CityId).ToList(), JsonRequestBehavior.AllowGet);
         }
 
         #endregion

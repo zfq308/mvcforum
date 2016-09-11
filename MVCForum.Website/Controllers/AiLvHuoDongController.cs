@@ -349,66 +349,77 @@ namespace MVCForum.Website.Controllers
 
         public ActionResult ViewActivity(Guid Id)
         {
+            if (Id == null || Id == Guid.Empty)
+            {
+                return View();
+            }
             var item = _aiLvHuoDongService.Get(Id);
-            var EditModel = new AiLvHuoDong_CreateEdit_ViewModel
-            {
-                Id = item.Id,
-                MingCheng = item.MingCheng,
-                LeiBie = item.LeiBie,
-                YaoQiu = item.YaoQiu,
-                StartTime = item.StartTime,
-                StopTime = item.StopTime,
-                BaoMingJieZhiTime = item.BaoMingJieZhiTime,
-                DiDian = item.DiDian,
-                LiuCheng = item.LiuCheng,
-                Feiyong = item.Feiyong,
-                FeiyongShuoMing = item.FeiyongShuoMing,
-                ZhuYiShiXiang = item.ZhuYiShiXiang,
-                YuGuRenShu = item.YuGuRenShu,
-                XingBieBiLi = item.XingBieBiLi,
-                YaoQingMa = "", //item.YaoQingMa,
-                ZhuangTai = item.ZhuangTai,
-                ShenHeBiaoZhi = item.ShenHeBiaoZhi,
-                GongYingShangUserId = item.GongYingShangUserId,
-            };
-            var userlist = _ActivityRegisterService.GetActivityRegisterListByHongDong(item);
-            if (userlist != null && userlist.Count > 0)
-            {
-                List<Guid> BoyUserId = new List<Guid>();
-                List<Guid> GirlUserId = new List<Guid>();
-                EditModel.BoyJoinner = new List<MembershipUser>();
-                EditModel.GirlJoiner = new List<MembershipUser>();
-                foreach (ActivityRegister ar in userlist)
-                {
-                    if (ar.UserGender == Enum_Gender.boy)
-                    {
-                        if (!BoyUserId.Contains(ar.UserId))
-                        {
-                            BoyUserId.Add(ar.UserId);
-                            MembershipUser user1 = _MembershipService.GetUser(ar.UserId);
-                            if (user1 != null)
-                            {
-                                EditModel.BoyJoinner.Add(user1);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (!GirlUserId.Contains(ar.UserId))
-                        {
-                            GirlUserId.Add(ar.UserId);
-                            MembershipUser user1 = _MembershipService.GetUser(ar.UserId);
-                            if (user1 != null)
-                            {
-                                EditModel.GirlJoiner.Add(user1);
-                            }
-                        }
 
+            if (item != null)
+            {
+                var EditModel = new AiLvHuoDong_CreateEdit_ViewModel
+                {
+                    Id = item.Id,
+                    MingCheng = item.MingCheng,
+                    LeiBie = item.LeiBie,
+                    YaoQiu = item.YaoQiu,
+                    StartTime = item.StartTime,
+                    StopTime = item.StopTime,
+                    BaoMingJieZhiTime = item.BaoMingJieZhiTime,
+                    DiDian = item.DiDian,
+                    LiuCheng = item.LiuCheng,
+                    Feiyong = item.Feiyong,
+                    FeiyongShuoMing = item.FeiyongShuoMing,
+                    ZhuYiShiXiang = item.ZhuYiShiXiang,
+                    YuGuRenShu = item.YuGuRenShu,
+                    XingBieBiLi = item.XingBieBiLi,
+                    YaoQingMa = "", //item.YaoQingMa,
+                    ZhuangTai = item.ZhuangTai,
+                    ShenHeBiaoZhi = item.ShenHeBiaoZhi,
+                    GongYingShangUserId = item.GongYingShangUserId,
+                };
+                var userlist = _ActivityRegisterService.GetActivityRegisterListByHongDong(item);
+                if (userlist != null && userlist.Count > 0)
+                {
+                    List<Guid> BoyUserId = new List<Guid>();
+                    List<Guid> GirlUserId = new List<Guid>();
+                    EditModel.BoyJoinner = new List<MembershipUser>();
+                    EditModel.GirlJoiner = new List<MembershipUser>();
+                    foreach (ActivityRegister ar in userlist)
+                    {
+                        if (ar.UserGender == Enum_Gender.boy)
+                        {
+                            if (!BoyUserId.Contains(ar.UserId))
+                            {
+                                BoyUserId.Add(ar.UserId);
+                                MembershipUser user1 = _MembershipService.GetUser(ar.UserId);
+                                if (user1 != null)
+                                {
+                                    EditModel.BoyJoinner.Add(user1);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (!GirlUserId.Contains(ar.UserId))
+                            {
+                                GirlUserId.Add(ar.UserId);
+                                MembershipUser user1 = _MembershipService.GetUser(ar.UserId);
+                                if (user1 != null)
+                                {
+                                    EditModel.GirlJoiner.Add(user1);
+                                }
+                            }
+
+                        }
                     }
                 }
+                return View(EditModel);
             }
-
-            return View(EditModel);
+            else
+            {
+                return View();
+            }
         }
 
         #endregion
@@ -512,7 +523,7 @@ namespace MVCForum.Website.Controllers
                     case Enum_VerifyActivityRegisterStatus.Fail_VerifyUserApproveStatus:
                         TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                         {
-                            Message = "您的账号还未通过管理员审核，请等待管理员审核后再注册精彩的爱驴活动。",
+                            Message = "您的账号还未通过管理员审核，请等待管理员审核后再参加精彩的爱驴活动。",
                             MessageType = GenericMessages.danger
                         };
                         return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");

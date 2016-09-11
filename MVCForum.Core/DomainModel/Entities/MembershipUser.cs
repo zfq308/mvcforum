@@ -18,6 +18,7 @@ namespace MVCForum.Domain.DomainModel
         Success,
         DuplicateUserName,
         DuplicateEmail,
+        DuplicateTelphone,
         InvalidPassword,
         InvalidEmail,
         InvalidAnswer,
@@ -170,12 +171,12 @@ namespace MVCForum.Domain.DomainModel
             Weight = 0;
             Education = "";
             HomeTown = "";
-            SchoolProvince = "110000";
-            SchoolCity = "110100";
+            SchoolProvince = "000000";
+            SchoolCity = "000000";
             SchoolName = "";
-            LocationProvince = "110000";
-            LocationCity = "110100";
-            LocationCounty = "110108";
+            LocationProvince = "000000";
+            LocationCity = "000000";
+            LocationCounty = "000000";
             Job = "";
             IncomeRange = Enum_IncomeRange.R_NOClass;
             Interest = "";
