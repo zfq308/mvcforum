@@ -31,7 +31,7 @@
             HttpMethod = "POST",
             LoadingElementId = "createpostwait",
             OnSuccess = "AjaxPostSuccess()",
-            OnFailure = "AjaxPostError('Error creating post')",
+            OnFailure = "AjaxPostError('禁止进行此项操作。请与管理员联系确认此项操作是否正确。')",
             UpdateTargetId = "newpostmarker",
             OnBegin = "AjaxPostBegin()"
         }, new { @id = "postcodeform" }))

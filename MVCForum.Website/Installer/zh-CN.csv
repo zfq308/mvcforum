@@ -1,6 +1,6 @@
 ﻿Activity.ActivityTitle,Activity
 Activity.Badge,徽章 
-Activity.ProfileUpdated,更新了个人信息has an updated profile
+Activity.ProfileUpdated,更新了个人信息
 Activity.UserAwardedBadge,has been awarded the
 Activity.UserJoined,is a new member in the forum
 Admin,Admin
@@ -299,8 +299,8 @@ Post.Posts,Posts
 Post.Quote,引用
 Post.Reply,回复
 Post.ReplyingTo,Replying To:
-Post.Report,Report
-Post.Updated,Post Updated
+Post.Report,举报
+Post.Updated,内容已更新
 Post.Upload,附加文件
 Post.UploadBannedFileExtension,文件类型不被支持
 Post.UploadFileTooBig,上传的文件体积太大
@@ -323,11 +323,11 @@ Report.MemberReport,Member Report
 Report.MemberReported,Member Reported
 Report.PostReport,Post Report
 Report.PostReported,Post Reported In
-Report.Reason,原因
-Report.Report,Report 
+Report.Reason,举报原因
+Report.Report,举报 
 Report.Reporter,Reporter
-Report.ReportPostBy,Report Post By: 
-Report.ReportSent,Report Sent
+Report.ReportPostBy,举报这个帖子。创建人为: 
+Report.ReportSent,内容已发送
 Rss.Category.Description,Latest discussions happening in the {0} category
 Rss.Category.Title,{0} Discussions
 Rss.LatestActivity.Description,Recent discussions

@@ -36,11 +36,11 @@ namespace MVCForum.Website.Controllers
         #endregion
 
         #region 建构式
-       
+
         public PostController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService, ITopicService topicService, IPostService postService,
             ISettingsService settingsService, ICategoryService categoryService,
-            ITopicNotificationService topicNotificationService, IEmailService emailService, IReportService reportService, 
+            ITopicNotificationService topicNotificationService, IEmailService emailService, IReportService reportService,
             IBannedWordService bannedWordService, IVoteService voteService, IPostEditService postEditService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
@@ -60,78 +60,70 @@ namespace MVCForum.Website.Controllers
         [HttpPost]
         public ActionResult CreatePost(CreateAjaxPostViewModel post)
         {
-            PermissionSet permissions;
-            Post newPost;
-            Topic topic;
-
-            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+            if (loggedOnUser.IsLockedOut || !loggedOnUser.IsApproved)
             {
-                var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+                throw new Exception(LocalizationService.GetResourceString("Errors.NoAccess"));
+            }
+            else
+            {
+                PermissionSet permissions;
+                Post newPost;
+                Topic topic;
 
-                // Check stop words
-                var stopWords = _bannedWordService.GetAll(true);
-                foreach (var stopWord in stopWords)
+                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
-                    if (post.PostContent.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0)
+                    // Check stop words
+                    var stopWords = _bannedWordService.GetAll(true);
+                    foreach (var stopWord in stopWords)
                     {
-                        throw new Exception(LocalizationService.GetResourceString("StopWord.Error"));
+                        if (post.PostContent.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0)
+                        {
+                            return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoAccess"));
+                        }
+                    }
+
+                    topic = _topicService.Get(post.Topic);
+
+                    var postContent = _bannedWordService.SanitiseBannedWords(post.PostContent);
+
+                    var akismetHelper = new AkismetHelper(SettingsService);
+
+                    newPost = _postService.AddNewPost(postContent, topic, loggedOnUser, out permissions);
+
+                    // Set the reply to
+                    newPost.InReplyTo = post.InReplyTo;
+
+
+                    if (akismetHelper.IsSpam(newPost))
+                    {
+                        newPost.Pending = true;
+                    }
+
+                    try
+                    {
+                        unitOfWork.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        unitOfWork.Rollback();
+                        LoggingService.Error(ex);
+                        throw new Exception(LocalizationService.GetResourceString("Errors.GenericMessage"));
                     }
                 }
 
-                // Quick check to see if user is locked out, when logged in
-                if (loggedOnUser.IsLockedOut || !loggedOnUser.IsApproved)
+                //Check for moderation
+                if (newPost.Pending == true)
                 {
-                    FormsAuthentication.SignOut();
-                    throw new Exception(LocalizationService.GetResourceString("Errors.NoAccess"));
+                    return PartialView("_PostModeration");
                 }
 
-                topic = _topicService.Get(post.Topic);
-
-                var postContent = _bannedWordService.SanitiseBannedWords(post.PostContent);
-
-                var akismetHelper = new AkismetHelper(SettingsService);
-
-                newPost = _postService.AddNewPost(postContent, topic, loggedOnUser, out permissions);
-
-                // Set the reply to
-                newPost.InReplyTo = post.InReplyTo;
-            
-
-                if (akismetHelper.IsSpam(newPost))
+                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
-                    newPost.Pending = true;
+                    var viewModel = ViewModelMapping.CreatePostViewModel(newPost, new List<Vote>(), permissions, topic, LoggedOnReadOnlyUser, SettingsService.GetSettings(), new List<Favourite>());
+                    NotifyNewTopics(topic, unitOfWork);
+                    return PartialView("_Post", viewModel);
                 }
-
-                try
-                {
-                    unitOfWork.Commit();
-                }
-                catch (Exception ex)
-                {
-                    unitOfWork.Rollback();
-                    LoggingService.Error(ex);
-                    throw new Exception(LocalizationService.GetResourceString("Errors.GenericMessage"));
-                }
-            }
-
-            //Check for moderation
-            if (newPost.Pending == true)
-            {
-                return PartialView("_PostModeration");
-            }
-
-            // All good send the notifications and send the post back
-
-            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
-            {
-                // Create the view model
-                var viewModel = ViewModelMapping.CreatePostViewModel(newPost, new List<Vote>(), permissions, topic, LoggedOnReadOnlyUser, SettingsService.GetSettings(), new List<Favourite>());
-
-                // Success send any notifications
-                NotifyNewTopics(topic, unitOfWork);
-
-                // Return view
-                return PartialView("_Post", viewModel);
             }
         }
 
@@ -161,8 +153,8 @@ namespace MVCForum.Website.Controllers
                     // Delete post / topic
                     if (post.IsTopicStarter)
                     {
-                       // Delete entire topic
-                       _topicService.Delete(topic, unitOfWork);
+                        // Delete entire topic
+                        _topicService.Delete(topic, unitOfWork);
                     }
                     else
                     {
@@ -176,7 +168,7 @@ namespace MVCForum.Website.Controllers
                             relatedPost.InReplyTo = null;
                         }
                     }
-    
+
                     try
                     {
                         unitOfWork.Commit();
@@ -338,11 +330,11 @@ namespace MVCForum.Website.Controllers
             {
                 var post = _postService.Get(id);
                 var permissions = RoleService.GetPermissions(post.Topic.Category, UsersRole);
-                var votes = _voteService.GetVotesByPosts(new List<Guid>{id});
+                var votes = _voteService.GetVotesByPosts(new List<Guid> { id });
                 var viewModel = ViewModelMapping.CreatePostViewModel(post, votes, permissions, post.Topic, LoggedOnReadOnlyUser, SettingsService.GetSettings(), new List<Favourite>());
                 var upVotes = viewModel.Votes.Where(x => x.Amount > 0).ToList();
                 return View(upVotes);
-            }         
+            }
         }
 
 
@@ -353,7 +345,7 @@ namespace MVCForum.Website.Controllers
             }
 
             // Firstly check if this is a post and they are allowed to move it
-                var post = _postService.Get(id);
+            var post = _postService.Get(id);
             if (post == null)
             {
                 return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
@@ -433,9 +425,9 @@ namespace MVCForum.Website.Controllers
                 if (viewModel.TopicId != null)
                 {
                     // Get the selected topic
-                    topic = _topicService.Get((Guid) viewModel.TopicId);
+                    topic = _topicService.Get((Guid)viewModel.TopicId);
                 }
-                else if(!string.IsNullOrEmpty(viewModel.TopicTitle))
+                else if (!string.IsNullOrEmpty(viewModel.TopicTitle))
                 {
                     // We get the banned words here and pass them in, so its just one call
                     // instead of calling it several times and each call getting all the words back
@@ -471,9 +463,10 @@ namespace MVCForum.Website.Controllers
                         cancelledByEvent = true;
                         ShowMessage(new GenericMessageViewModel
                         {
-                            MessageType = GenericMessages.warning, Message = LocalizationService.GetResourceString("Errors.GenericMessage")
+                            MessageType = GenericMessages.warning,
+                            Message = LocalizationService.GetResourceString("Errors.GenericMessage")
                         });
-                    }                    
+                    }
                 }
                 else
                 {

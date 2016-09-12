@@ -59,7 +59,7 @@ namespace MVCForum.Website.ViewModels
         public string PostCreatorUsername { get; set; }
         
         [Required]
-        [Display(Description ="原因")]
+        [Display(Name ="举报原因")]
         public string Reason { get; set; }
     }
 

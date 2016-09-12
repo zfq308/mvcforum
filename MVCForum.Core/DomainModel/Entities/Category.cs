@@ -17,10 +17,10 @@ namespace MVCForum.Domain.DomainModel
             Id = GuidComb.GenerateComb();
         }
 
-        public const string CategoryName_Zuixinzixun = "Sys_ZuiXinZiXun";
-        public const string CategoryName_ZuiXinFuWu = "Sys_ZuiXinFuWu";
-        public const string CategoryName_AiLvJilu = "Sys_AiLvJilu";
-        public const string CategoryName_DailyRecord = "Sys_DailyRecord";
+        public const string CategoryName_Zuixinzixun = "最新资讯";
+        public const string CategoryName_ZuiXinFuWu = "最新服务";
+        public const string CategoryName_AiLvJilu = "活动记录";
+        public const string CategoryName_DailyRecord = "每日心情";
         public const string CategoryName_ExampleCategory = "Example Category";
 
 

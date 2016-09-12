@@ -523,7 +523,7 @@ namespace MVCForum.Services.Migrations
                         IsMarried = Enum_MarriedStatus.Married,
                         Height = 180,
                         Weight = 100,
-                        Education = "硕士",
+                        Education = "5",
                         HomeTown = "深圳市龙华新区",
                         SchoolProvince = "110000",
                         SchoolCity = "110100",

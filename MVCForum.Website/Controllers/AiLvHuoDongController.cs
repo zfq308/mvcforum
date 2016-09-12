@@ -599,7 +599,7 @@ namespace MVCForum.Website.Controllers
         public ActionResult ZuiXinJilu()
         {
             var JiluList = new AiLvJiLu_ListViewModel { Topics = new List<TopicViewModel>() };
-            var topics = _topicService.GetAllTopicsByCategory(EnumCategoryType.AiLvJiLu);
+            var topics = _topicService.GetAllTopicsByCategory(EnumCategoryType.AiLvJiLu).OrderByDescending(x=>x.CreateDate).ToList();
             if (topics != null && topics.Count > 0)
             {
                 var settings = SettingsService.GetSettings();
