@@ -299,6 +299,24 @@ namespace MVCForum.Website.Controllers
             }
         }
 
+        [HttpPost]
+        public ActionResult CheckTelphoneExistWhenRegister(string Telphone)
+        {
+            try
+            {
+                bool result;
+                var user = MembershipService.GetUserByMobilePhone(Telphone);
+                result = user == null ? true : false;
+                return Json(result, JsonRequestBehavior.AllowGet);
+
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex.Message);
+                throw;
+            }
+        }
+
         /// <summary>
         /// 返回json到界面
         /// </summary>
