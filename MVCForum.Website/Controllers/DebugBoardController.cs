@@ -158,8 +158,6 @@ namespace MVCForum.Website.Controllers
                     LoggingService.Error(ex);
                     ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
                 }
-                return View();
-
             }
             return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
         }

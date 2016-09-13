@@ -18,8 +18,8 @@
     {
         foreach (var obj in Model.MeiRiZhiXingUserList)
         {
-            <table>
-                <tr>
+            <table style="width:100%">
+                <tr style="margin-bottom:30px">
                     <td>
                         <a href="@obj.NiceUrl">
                             <img src="@AppHelpers.MemberImage(obj.Avatar, "", obj.Id, 48)" alt="@obj.UserName">
@@ -29,11 +29,14 @@
                         @{
                             var Gender = obj.Gender == MVCForum.Domain.DomainModel.Enum_Gender.boy ? "男生" : "女生";
                         }
-                        <span style="padding-left:40px">@obj.AliasName , @obj.Age 岁，@Gender</span>
+
+                        <a href="@obj.NiceUrl" style="padding-left:40px">
+                            @obj.AliasName , @obj.Age 岁，@Gender
+                        </a>
                     </td>
 
                 </tr>
             </table>
-                                }
-                            }
+       }
+   }
 </div>

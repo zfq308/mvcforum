@@ -212,7 +212,7 @@
                             @foreach (var obj in Model.AiLv_MeiRiZhiXingTop5)
                             {
                                 <div class="item @if (idx_Star == 0) { @Html.Raw("active"); }">
-                                    <table>
+                                    <table style="width:100%">
                                         <tr>
                                             <td>
                                                 <a href="@obj.NiceUrl">
@@ -223,10 +223,11 @@
                                                 @{
                                                     var Gender = obj.Gender == MVCForum.Domain.DomainModel.Enum_Gender.boy ? "男生" : "女生";
                                                 }
-                                                <span>@obj.AliasName , @obj.Age 岁，@Gender</span>
-
+                                              
+                                                <a href="@obj.NiceUrl">
+                                                   @obj.AliasName , @obj.Age 岁，@Gender
+                                                </a> 
                                             </td>
-
                                         </tr>
                                     </table>
                                 </div>
