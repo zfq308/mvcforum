@@ -37,11 +37,18 @@
                 </div>
                 <div class="form-group">
                     <img src="~/Content/Images/t6.jpg" title="私信" />
-                    <a style="margin-left:15px" href="@Url.Action("Index", "PrivateMessage", new { id = Model.User.Id })">私信</a>
-                </div>
-            </fieldset>
+                    @{
+                        var privatemessage = "";
+                        if (Model.UnReadPrivateMessageGroupCount > 0)
+                        {
+                            privatemessage = "（有" + Model.UnReadPrivateMessageGroupCount.ToString() + "位爱驴伙伴给您发了私信）";
+                        }
+                    }
+                        <a style="margin-left:15px" href="@Url.Action("Index", "PrivateMessage", new { id = Model.User.Id })">私信 @privatemessage</a>
+                    </div>
+                </fieldset>
+            </div>
         </div>
     </div>
-</div>
 
 

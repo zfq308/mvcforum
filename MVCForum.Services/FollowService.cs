@@ -170,27 +170,35 @@ namespace MVCForum.Services
 
         public IList<Follow> GetFriendList(Guid userId)
         {
+            //var query =
+            //   (from p in _context.Follow
+            //    join q in _context.Follow
+            //    on p.UserId equals q.FriendUserId
+            //    where p.UserId == userId && p.OpsFlag == "" && q.OpsFlag == ""
+            //    select new {
+            //        Id = p.Id,
+            //        UserId = p.UserId,
+            //        FriendUserId = p.FriendUserId,
+            //        CreateTime = p.CreateTime,
+            //        UpdateTime = p.UpdateTime,
+            //        OpsFlag = p.OpsFlag }
+            //   ).Distinct().AsEnumerable().Select(x => new Follow
+            //   {
+            //       Id = x.Id,
+            //       UserId = x.UserId,
+            //       FriendUserId = x.FriendUserId,
+            //       CreateTime = x.CreateTime,
+            //       UpdateTime = x.UpdateTime,
+            //       OpsFlag = x.OpsFlag
+            //   });
+
+
             var query =
-               (from p in _context.Follow
-                join q in _context.Follow
-                on p.UserId equals q.FriendUserId
-                where p.UserId == userId && p.OpsFlag == "" && q.OpsFlag == ""
-                select new {
-                    Id = p.Id,
-                    UserId = p.UserId,
-                    FriendUserId = p.FriendUserId,
-                    CreateTime = p.CreateTime,
-                    UpdateTime = p.UpdateTime,
-                    OpsFlag = p.OpsFlag }
-               ).Distinct().AsEnumerable().Select(x => new Follow
-               {
-                   Id = x.Id,
-                   UserId = x.UserId,
-                   FriendUserId = x.FriendUserId,
-                   CreateTime = x.CreateTime,
-                   UpdateTime = x.UpdateTime,
-                   OpsFlag = x.OpsFlag
-               });
+               from a in _context.Follow
+               where a.UserId == userId &&
+                     _context.Follow.Any(e => (e.UserId == a.FriendUserId) && (e.FriendUserId == a.UserId)) &&
+                     a.OpsFlag == ""
+               select a;
             return query.ToList();
         }
 

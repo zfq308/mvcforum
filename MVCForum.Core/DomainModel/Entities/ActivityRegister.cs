@@ -49,6 +49,10 @@ namespace MVCForum.Domain.DomainModel
         /// 报名校验失败--用户还未通过审核
         /// </summary>
         Fail_VerifyUserApproveStatus = 5,
+        /// <summary>
+        /// 报名校验失败--已参加这个活动，不能重复参加
+        /// </summary>
+        Fail_VerifyRegisteredTheActivity = 6,
     }
 
 

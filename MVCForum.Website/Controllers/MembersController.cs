@@ -2469,7 +2469,24 @@ namespace MVCForum.Website.Controllers
                     newFollowEx.FollowInstance = item;
                     newFollowEx.MyUserInstance = my_MembershipUserInstance;
                     newFollowEx.OtherPeopleInstance = MembershipService.GetUser(item.FriendUserId);
-                    MyFollowedList.Add(newFollowEx);
+
+                    bool IsFriendFlag = false;
+                    if (FriendList != null)
+                    {
+                        foreach (var item1 in FriendList)
+                        {
+                            if (item1.OtherPeopleInstance.Id == item.FriendUserId)
+                            {
+                                IsFriendFlag = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!IsFriendFlag)
+                    {
+                        MyFollowedList.Add(newFollowEx);
+                    }
                 }
             }
             model.MyFollowedList = MyFollowedList;

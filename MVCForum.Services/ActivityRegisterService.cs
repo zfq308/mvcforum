@@ -72,6 +72,11 @@ namespace MVCForum.Services
                 return Enum_VerifyActivityRegisterStatus.Fail_VerifyUserApproveStatus;
             }
 
+            if(CheckDuplicationRegister(huodong, user))
+            {
+                return Enum_VerifyActivityRegisterStatus.Fail_VerifyRegisteredTheActivity;
+            }
+
             if (!CheckHuoDongJieZhiShijian(huodong))
             {
                 return Enum_VerifyActivityRegisterStatus.Fail_BeyondDeadlineTime;
@@ -87,6 +92,22 @@ namespace MVCForum.Services
                 return Enum_VerifyActivityRegisterStatus.Fail_VerifyUserGender;
             }
             return Enum_VerifyActivityRegisterStatus.Success;
+        }
+
+        /// <summary>
+        /// 检查用户是否已经注册参加这个活动
+        /// </summary>
+        /// <param name="huodong">活动实例</param>
+        /// <param name="user">用户实例</param>
+        /// <returns></returns>
+        private bool CheckDuplicationRegister(AiLvHuoDong huodong, MembershipUser user)
+        {
+            var item = _context.ActivityRegister.AsNoTracking().Where(x => x.Id == huodong.Id && x.UserId == user.Id);
+            if(item!=null && item.Count()>0)
+            {
+                return true;   //已存在注册信息
+            }
+            return false; //无注册此活动
         }
 
         /// <summary>

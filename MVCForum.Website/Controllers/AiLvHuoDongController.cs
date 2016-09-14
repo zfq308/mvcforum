@@ -31,6 +31,7 @@ namespace MVCForum.Website.Controllers
         private readonly IActivityRegisterService _ActivityRegisterService;
         private readonly IMembershipService _MembershipService;
         private readonly IMembershipTodayStarService _membershipTodayStarService;
+        private readonly IPrivateMessageService _PrivatemessageService;
 
         #endregion
 
@@ -41,6 +42,7 @@ namespace MVCForum.Website.Controllers
             ITopicService TopicService,
             IAiLvHuoDongService aiLvHuoDongService,
             IActivityRegisterService ActivityRegisterService,
+            IPrivateMessageService PrivateMessageService,
 
             ILoggingService loggingService,
             IUnitOfWorkManager unitOfWorkManager,
@@ -57,6 +59,7 @@ namespace MVCForum.Website.Controllers
             _categoryservice = Categoryservice;
             _MembershipService = membershipService;
             _membershipTodayStarService = membershipTodayStarService;
+            _PrivatemessageService = PrivateMessageService;
             _context = context as MVCForumContext;
         }
 
@@ -498,6 +501,13 @@ namespace MVCForum.Website.Controllers
                         //_ActivityRegisterService.Add(ar);
                         EntityOperationUtils.InsertObject(ar);
                         break;
+                    case Enum_VerifyActivityRegisterStatus.Fail_VerifyRegisteredTheActivity:
+                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        {
+                            Message = "您已提交了这个活动，请勿重复报名。",
+                            MessageType = GenericMessages.danger
+                        };
+                        return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
                     case Enum_VerifyActivityRegisterStatus.Fail_BeyondDeadlineTime:
                         TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                         {
@@ -755,6 +765,7 @@ namespace MVCForum.Website.Controllers
         {
             AiLvZhangHu_ViewModel model = new AiLvZhangHu_ViewModel();
             model.User = LoggedOnReadOnlyUser;
+            model.UnReadPrivateMessageGroupCount = _PrivatemessageService.NewPrivateMessageCount(LoggedOnReadOnlyUser.Id);
 
             return View(model);
         }

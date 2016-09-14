@@ -73,17 +73,18 @@
                                     </button>
                                 </p>
                             }
-
-                            using (Html.BeginForm("AddBlackList", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
-                            {
-                                @Html.HiddenFor(x => x.LoggedOnUserId)
-                                <p>
-                                    <button type="submit" name="btn_AddBlackList" class="btn-mvc">
-                                        加到黑名单
-                                    </button>
-                                </p>
-                            }
                         }
+
+                        using (Html.BeginForm("AddBlackList", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            @Html.HiddenFor(x => x.LoggedOnUserId)
+                            <p>
+                                <button type="submit" name="btn_AddBlackList" class="btn-mvc">
+                                    加到黑名单
+                                </button>
+                            </p>
+                        }
+
                         if (Model.FollowStatus == -1) //已加入黑名单
                         {
                             using (Html.BeginForm("CancelBlackList", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
