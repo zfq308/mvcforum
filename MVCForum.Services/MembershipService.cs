@@ -364,7 +364,7 @@ namespace MVCForum.Services
             var EducationList = new List<string>();
             EducationList.AddRange(TEducation.LoadAllEducationList().Select(x =>
             {
-                return x.EducationName;
+                return x.EducationId;
             }));
             var CountryList = TCountry.LoadAllCountry();
 
