@@ -17,6 +17,12 @@
     </a>
 </li>
 <li>
+    <a href="@Url.Action("MemberList", "Members")"
+       class="@(TempData[AppConstants.CurrentController].ToString() == "members" && TempData[AppConstants.CurrentAction].ToString() == "memberlist" ? "active" : "")">
+        爱驴会员
+    </a>
+</li>
+<li>
     <a href="@Url.Action("SearchEx", "Members")"
        class="@(TempData[AppConstants.CurrentController].ToString() == "members" && TempData[AppConstants.CurrentAction].ToString() == "searchex" ? "active" : "")">
         找朋友

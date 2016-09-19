@@ -62,9 +62,9 @@
                                                 ,<label class="bg-success">@item.YuGuRenShu 人团</label>
                                                 @if (item.LeiBie == MVCForum.Domain.DomainModel.Enum_HuoDongLeiBie.SpecicalRegister)
                                                 {
-                                                   <label class="glyphicon glyphicon-lock" title="特定人群组团，需要输入邀请码。"></label>
+                                                <label class="glyphicon glyphicon-lock" title="特定人群组团，需要输入邀请码。"></label>
                                                 }
-                                           </td>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td>
@@ -94,11 +94,11 @@
                                         </tr>
                                         @if (item.XingBieBiLi != "/")
                                         {
-                                            <tr>
-                                                <td>
-                                                    <small>男女比例：<span>@item.XingBieBiLi</span></small>
-                                                </td>
-                                            </tr>
+                                        <tr>
+                                            <td>
+                                                <small>男女比例：<span>@item.XingBieBiLi</span></small>
+                                            </td>
+                                        </tr>
                                         }
                                         <tr><td><small>活动地点：<span>@item.DiDian</span></small></td></tr>
                                         <tr>
@@ -125,18 +125,22 @@
                                                 </small>
                                             </td>
                                         </tr>
-                                        <tr><td>
-                                            <small>
-                                            报名截止至：@item.BaoMingJieZhiTime.ToString("MM-dd HH:mm")
-                                            @{
+                                        <tr>
+                                            <td>
+                                                <small>
+                                                    报名截止至：@item.BaoMingJieZhiTime.ToString("MM-dd HH:mm")
+                                                    @{
                                                 var Timelimit = "";
                                                 if (item.BaoMingJieZhiTime>DateTime.Now)
                                                 {
                                                     var ts = item.BaoMingJieZhiTime.Subtract(DateTime.Now);
                                                     Timelimit="还剩：" +ts.Days.ToString()+"天"+ts.Hours.ToString()+"小时"+ts.Minutes.ToString()+"分钟";
                                                 }
-                                            }
-                                            @Timelimit</small></td></tr>
+                                                    }
+                                                    @Timelimit
+                                                </small>
+                                            </td>
+                                        </tr>
                                     </table>
                                 </td>
                             </tr>
@@ -148,16 +152,16 @@
                                 </td>
                             </tr>
                             <tr><td><hr style="height:1px;border:none;border-top:1px dashed #0066CC;" /></td></tr>
-                        }
+                                                        }
                         <tr><td align="right"><a href="@Url.Action("ZuiXinHuoDong","AiLvHuoDong")">更多...</a></td></tr>
                     </table>
-                }
-                else
-                {
-                    <p>
-                        暂无活动信息
-                    </p>
-                }
+                                                        }
+                                                        else
+                                                        {
+                                                            <p>
+                                                                暂无活动信息
+                                                            </p>
+                                                        }
             </div>
         </div>
     </div>
@@ -219,14 +223,22 @@
                                                     <img src="@AppHelpers.MemberImage(obj.Avatar, "", obj.Id, 48)" alt="@obj.UserName">
                                                 </a>
                                             </td>
-                                            <td style="padding-left:20px">
+                                            <td style="padding-left:5px;width:100%">
                                                 @{
-                                                    var Gender = obj.Gender == MVCForum.Domain.DomainModel.Enum_Gender.boy ? "男生" : "女生";
+                                                    var Gender = obj.Gender == MVCForum.Domain.DomainModel.Enum_Gender.boy ? "男" : "女";
+                                                    var location = obj.LocationProvince + "," + obj.LocationCity ;
                                                 }
-                                              
+
                                                 <a href="@obj.NiceUrl">
-                                                   @obj.AliasName , @obj.Age 岁，@Gender
-                                                </a> 
+                                                    @obj.AliasName
+                                                </a>
+
+                                                <div>
+                                                    <span style="display: inline-block;  font-size:8pt; background-color: gray; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@obj.Age 岁</span>
+                                                    <span style="display: inline-block;  font-size:8pt; background-color: #39f; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@Gender</span>
+                                                    <span style="display: inline-block;  font-size:8pt; background-color: #39f; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@location</span>
+      </div>
+                                              
                                             </td>
                                         </tr>
                                     </table>
@@ -252,16 +264,37 @@
                 @if (Model.AiLv_ZuiXinHuiYuanTop5 != null && Model.AiLv_ZuiXinHuiYuanTop5.Count > 0)
                 {
                     <table width="100%">
-                        @foreach (var huiyuan in Model.AiLv_ZuiXinHuiYuanTop5)
+                        @foreach (var obj in Model.AiLv_ZuiXinHuiYuanTop5)
                         {
-                            <tr>
+                            <tr style="height:60px">
                                 <td>
-                                    <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span>
-                                    <a href="@huiyuan.NiceUrl">@huiyuan.AliasName</a>
+                                    <a href="@obj.NiceUrl">
+                                        <img src="@AppHelpers.MemberImage(obj.Avatar, "", obj.Id, 48)" alt="@obj.UserName">
+                                    </a>
+                                </td>
+                                <td style="padding-left:5px;width:100%">
+                                    @{
+                                        var Gender = obj.Gender == MVCForum.Domain.DomainModel.Enum_Gender.boy ? "男" : "女";
+                                        var location = obj.LocationProvince + "," + obj.LocationCity;
+                                    }
+
+                                    <a href="@obj.NiceUrl">
+                                        @obj.AliasName
+                                    </a>
+
+                                    <div>
+                                        <span style="display: inline-block;  font-size:8pt; background-color: gray; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@obj.Age 岁</span>
+                                        <span style="display: inline-block;  font-size:8pt; background-color: #39f; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@Gender</span>
+                                        <span style="display: inline-block;  font-size:8pt; background-color: #39f; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@location</span>
+                                    </div>
                                 </td>
                             </tr>
                         }
-                        <tr><td align="right"><a href="@Url.Action("SearchEx","Members")">更多...</a></td></tr>
+                        <tr>
+                            <td align="right" colspan="2">
+                                <a href="@Url.Action("SearchEx","Members")">更多...</a>
+                            </td>
+                        </tr>
                     </table>
                 }
                 else

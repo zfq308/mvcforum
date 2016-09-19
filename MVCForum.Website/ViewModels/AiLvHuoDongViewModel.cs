@@ -172,6 +172,13 @@ namespace MVCForum.Website.ViewModels
         public int UnReadPrivateMessageGroupCount { get; set; }
     }
 
+    public class MembersList_ViewModel
+    {
+        public IList<MembershipUser> UserList { get; set; }
+    }
+
+
+
 
     public class MeiRiZhiXing_ListViewModel
     {

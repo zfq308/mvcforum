@@ -11,6 +11,7 @@ using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Website.Application;
 using MVCForum.Website.ViewModels;
 using RssItem = MVCForum.Domain.DomainModel.RssItem;
+using MVCForum.Domain.DomainModel.General;
 
 namespace MVCForum.Website.Controllers
 {
@@ -66,7 +67,18 @@ namespace MVCForum.Website.Controllers
             returnView.AiLv_ADCollectionTop5 = (List<ADSetting>)_adSettingService.GetRecentTop5();
             returnView.AiLv_ZuiXinZiXunTop5 = (List<Topic>)_topicService.GetRecentTopics(5, _categoryService.GetCategoryByEnumCategoryType(EnumCategoryType.AiLvZiXun));
             returnView.AiLv_ZuiXinFuWuTop5 = (List<Topic>)_topicService.GetRecentTopics(5, _categoryService.GetCategoryByEnumCategoryType(EnumCategoryType.AiLvFuWu));
-            returnView.AiLv_ZuiXinHuiYuanTop5 = (List<MembershipUser>)_membershipService.GetLatestUsers(10, true, true);
+
+            var userlist=(List<MembershipUser>)_membershipService.GetLatestUsers(10, true, true);
+            if(userlist!=null && userlist.Count>0)
+            {
+                foreach (var user in userlist)
+                {
+                    user.LocationProvince = TProvince.LoadProvinceByProvincedId(Convert.ToInt32(user.LocationProvince)).ProvinceName;
+                    user.LocationCity = TCity.LoadCityByCityId(Convert.ToInt32(user.LocationCity)).CityName;
+                    user.LocationCounty = TCountry.LoadCountryByCountryId(Convert.ToInt32(user.LocationCounty)).CountryName;
+                }
+            }
+            returnView.AiLv_ZuiXinHuiYuanTop5 = userlist;
             returnView.AiLv_MeiRiZhiXingTop5 = _membershipTodayStarService.LoadNewestTodayStars(10);
             return View(returnView);
         }

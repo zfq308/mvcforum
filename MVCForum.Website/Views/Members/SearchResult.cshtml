@@ -18,7 +18,7 @@
         </div>
         @Html.Partial("_Loading")
         <div>
-            @if (User.Identity.IsAuthenticated)
+            @if (User.IsInRole(AppConstants.AdminRoleName) || User.IsInRole(AppConstants.SupplierRoleName))
             {
                 using (Html.BeginForm("ExportUsers", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
                 {

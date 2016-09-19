@@ -1,0 +1,58 @@
+﻿@model MVCForum.Website.ViewModels.MembersList_ViewModel
+@{
+    Layout = "~/Views/AiLvHuoDong/AiLvZhangHuLayout.cshtml";
+    ViewBag.Title = "爱驴会员";
+}
+
+<div class="row documentation-message">
+
+    <div class="panel panel-mvc">
+        <div class="panel-heading">爱驴会员</div>
+        <div class="panel-body">
+            @if (Model.UserList != null && Model.UserList.Count > 0)
+            {
+                <table width="100%">
+                    @foreach (var obj in Model.UserList)
+                    {
+                        <tr style="height:60px">
+                            <td>
+                                <a href="@obj.NiceUrl">
+                                    <img src="@AppHelpers.MemberImage(obj.Avatar, "", obj.Id, 64)" alt="@obj.UserName">
+                                </a>
+                            </td>
+                            <td style="padding-left:5px;width:100%">
+                                @{
+                                    var Gender = obj.Gender == MVCForum.Domain.DomainModel.Enum_Gender.boy ? "男" : "女";
+                                    var location = obj.LocationProvince + "," + obj.LocationCity;
+                                }
+
+                                <a href="@obj.NiceUrl">
+                                    @obj.AliasName
+                                </a>
+
+                                <div>
+                                    <span style="display: inline-block;  background-color: gray; border-radius: 2px;   color: #fff;padding: 2px 2px 2px 4px;">@obj.Age 岁</span>
+                                    <span style="display: inline-block;  background-color: #39f; border-radius: 2px;   color: #fff;padding: 2px 2px 2px 4px;">@Gender</span>
+                                    <span style="display: inline-block;  background-color: #39f; border-radius: 2px;   color: #fff;padding: 2px 2px 2px 4px;">@location</span>
+                                </div>
+                            </td>
+                        </tr>
+                                    }
+                    <tr>
+                        <td align="right" colspan="2">
+                            <a href="@Url.Action("SearchEx","Members")">查找更多朋友...</a>
+                        </td>
+                    </tr>
+                </table>
+
+                                    }
+                                    else
+                                    {
+                                        <p>
+                                            暂无会员信息
+                                        </p>
+                                    }
+        </div>
+    </div>
+
+</div>

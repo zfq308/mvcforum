@@ -60,6 +60,7 @@ namespace MVCForum.Domain.Interfaces.Services
 
         IList<MembershipUser> SearchMembers(string username, int amount);
         IList<MembershipUser> SearchMembers(MembershipUserSearchModel searchusermodel, int amount);
+        IList<MembershipUser> SearchMembers(MembershipUserSearchModel searchusermodel, int amount, bool AdministratorMode);
         #endregion
 
         #region 报表导入导出
@@ -80,7 +81,7 @@ namespace MVCForum.Domain.Interfaces.Services
         MembershipUser GetUserBySlug(string slug);
         IList<MembershipUser> GetUserBySlugLike(string slug);
         IList<MembershipUser> GetUsersById(List<Guid> guids);
-        IList<MembershipUser> GetLatestUsers(int amountToTake, bool isApproved = false,bool RemoveMarriedFilter=false);
+        IList<MembershipUser> GetLatestUsers(int amountToTake, bool isApproved = false, bool RemoveMarriedFilter = false);
 
         int MemberCount(bool isApproved = false);
 

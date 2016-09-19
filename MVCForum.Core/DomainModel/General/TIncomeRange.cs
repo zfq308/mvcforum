@@ -17,7 +17,6 @@ namespace MVCForum.Domain.DomainModel.General
             list.Add(new TIncomeRange() { IncomeRangeId = "1", IncomeRangeName = "1万以下" });
             list.Add(new TIncomeRange() { IncomeRangeId = "2", IncomeRangeName = "1万至5万" });
             list.Add(new TIncomeRange() { IncomeRangeId = "3", IncomeRangeName = "5万以上" });
-            list.Add(new TIncomeRange() { IncomeRangeId = "4", IncomeRangeName = "不好说" });
 
             return list;
         }

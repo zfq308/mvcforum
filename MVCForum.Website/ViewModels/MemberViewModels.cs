@@ -72,7 +72,7 @@ namespace MVCForum.Website.ViewModels
         [Required(ErrorMessage = "不填电话，你让我怎么联系你？！")]
         [ForumMvcResourceDisplayName("Members.Label.MobilePhone")]
         [StringLength(11, MinimumLength = 11, ErrorMessage = "你开玩笑吧，手机号码是11位哦！")]
-        [RegularExpression(@"((\d{11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)", ErrorMessage = "格式不正确")]
+        //[RegularExpression(@"((\d{11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)", ErrorMessage = "格式不正确")]
         [Remote("CheckTelphoneExistWhenRegister", "Members", HttpMethod = "POST", ErrorMessage = "此手机号码已经注册。")]
         public string MobilePhone { get; set; }
 

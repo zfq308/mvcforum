@@ -9,6 +9,7 @@ using System.Web.Hosting;
 using System.Web.Security;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
+using MVCForum.Domain.DomainModel.General;
 using MVCForum.Domain.DomainModel.Entities;
 using MVCForum.Domain.Events;
 using MVCForum.Domain.Interfaces;
@@ -144,6 +145,12 @@ namespace MVCForum.Services
                     var user = _membershipService.GetUser(userId);
                     if (!returnlist.Contains(user))
                     {
+                        user.LocationProvince = TProvince.LoadProvinceByProvincedId(Convert.ToInt32(user.LocationProvince)).ProvinceName;
+
+                        user.LocationCity = TCity.LoadCityByCityId(Convert.ToInt32(user.LocationCity)).CityName;
+
+                        user.LocationCounty = TCountry.LoadCountryByCountryId(Convert.ToInt32(user.LocationCounty)).CountryName;
+
                         returnlist.Add(user);
                     }
                 }

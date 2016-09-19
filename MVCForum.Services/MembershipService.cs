@@ -1214,7 +1214,7 @@ namespace MVCForum.Services
         #endregion
 
         #region 用户搜索
-        private List<MembershipUser> SearchbyCondition(MembershipUserSearchModel searchusermodel)
+        private List<MembershipUser> SearchbyCondition(MembershipUserSearchModel searchusermodel, bool AdministratorMode = false)
         {
             var total = _context.MembershipUser.ToList();
 
@@ -1330,7 +1330,7 @@ namespace MVCForum.Services
                    searchusermodel.LocationCounty == "0"
                    )
                 {
-                    total = total.Where(p => p.LocationProvince == searchusermodel.LocationProvince 
+                    total = total.Where(p => p.LocationProvince == searchusermodel.LocationProvince
                     ).ToList();
                 }
 
@@ -1448,8 +1448,10 @@ namespace MVCForum.Services
                     }
                 }
 
-
-                //total = total.Where(p => p.IsLockedOut == searchusermodel.IsLockedOut).ToList();
+                if(!AdministratorMode)
+                {
+                    total = total.Where(p => p.IsApproved == true).ToList();
+                }
 
                 #endregion
             }
@@ -1459,6 +1461,13 @@ namespace MVCForum.Services
         public IList<MembershipUser> SearchMembers(MembershipUserSearchModel searchusermodel, int amount)
         {
             return SearchbyCondition(searchusermodel).OrderByDescending(x => x.LastLoginDate)
+              .Take(amount)
+              .ToList();
+        }
+
+        public IList<MembershipUser> SearchMembers(MembershipUserSearchModel searchusermodel, int amount, bool AdministratorMode)
+        {
+            return SearchbyCondition(searchusermodel, AdministratorMode).OrderByDescending(x => x.LastLoginDate)
               .Take(amount)
               .ToList();
         }
@@ -1912,7 +1921,7 @@ namespace MVCForum.Services
             }
         }
 
-    
+
 
         #endregion
 

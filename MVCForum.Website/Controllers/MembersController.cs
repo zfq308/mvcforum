@@ -300,12 +300,12 @@ namespace MVCForum.Website.Controllers
         }
 
         [HttpPost]
-        public ActionResult CheckTelphoneExistWhenRegister(string Telphone)
+        public ActionResult CheckTelphoneExistWhenRegister(string MobilePhone)
         {
             try
             {
                 bool result;
-                var user = MembershipService.GetUserByMobilePhone(Telphone);
+                var user = MembershipService.GetUserByMobilePhone(MobilePhone);
                 result = user == null ? true : false;
                 return Json(result, JsonRequestBehavior.AllowGet);
 
@@ -330,20 +330,28 @@ namespace MVCForum.Website.Controllers
                 string code = Request["Code"];
                 string MobilePhone = Request["MobilePhone"];
 
-                // 短信验证码存入session(session的默认失效时间30分钟) 
-                //也可存入Memcached缓存
-                Session.Add("code", code);
-                try
+                var user = MembershipService.GetUserByMobilePhone(MobilePhone);
+                if (user == null)
                 {
-                    _verifyCodeService.SendVerifyCode(new VerifyCode(MobilePhone, VerifyCodeStatus.Waiting, code));
-                    result = true;// 成功    
+                    // 短信验证码存入session(session的默认失效时间30分钟) 
+                    //也可存入Memcached缓存
+                    Session.Add("code", code);
+                    try
+                    {
+                        _verifyCodeService.SendVerifyCode(new VerifyCode(MobilePhone, VerifyCodeStatus.Waiting, code));
+                        result = true;// 成功    
+                    }
+                    catch (Exception ex)
+                    {
+                        result = false;// 失败    
+                        logger.Error(ex.Message);
+                    }
+                    return Json(result, JsonRequestBehavior.AllowGet);
                 }
-                catch (Exception ex)
+                else
                 {
-                    result = false;// 失败    
-                    logger.Error(ex.Message);
+                    return Json(false, JsonRequestBehavior.AllowGet);
                 }
-                return Json(result, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -1152,6 +1160,8 @@ namespace MVCForum.Website.Controllers
                                 FormsAuthentication.SetAuthCookie(user.UserName, false);
                             }
                             #endregion
+
+                            return RedirectToAction("Index", "Members");
                         }
                         catch (Exception ex)
                         {
@@ -1161,7 +1171,6 @@ namespace MVCForum.Website.Controllers
                         }
 
                         BindControlData(user);
-
                         return View(userModel);
                     }
 
@@ -1915,6 +1924,25 @@ namespace MVCForum.Website.Controllers
 
         #endregion
 
+        #region 爱驴会员
+
+        public ActionResult MemberList()
+        {
+            var viewModel = new MembersList_ViewModel();
+            if (LoggedOnReadOnlyUser != null)
+            {
+                Guid UserId = LoggedOnReadOnlyUser.Id;
+                viewModel.UserList = MembershipService.GetLatestUsers(200, true, true).Where(x => x.Gender == LoggedOnReadOnlyUser.Gender).Take(20).ToList();
+            }
+            else
+            {
+                viewModel.UserList = MembershipService.GetLatestUsers(20, true, true);
+            }
+            return View(viewModel);
+        }
+
+        #endregion
+
         #region 找朋友
 
         public ActionResult Search(int? p, string search)
@@ -1953,6 +1981,7 @@ namespace MVCForum.Website.Controllers
             BindSearchExControlData();
             return View(viewModel);
         }
+
         private void BindSearchExControlData()
         {
             #region 绑定性别信息
@@ -2138,7 +2167,19 @@ namespace MVCForum.Website.Controllers
         public void LoadAllCustomersToSession()
         {
             MembershipUserSearchModel ConfigModel = Session["searchconfigurationmodel"] as MembershipUserSearchModel;
-            var customers = MembershipService.SearchMembers(ConfigModel, 1000);
+            var customers = User.IsInRole(AppConstants.AdminRoleName) ?
+                MembershipService.SearchMembers(ConfigModel, 1000, true) :
+                MembershipService.SearchMembers(ConfigModel, 1000, false);
+
+            if (customers != null && customers.Count > 0)
+            {
+                foreach (var user in customers)
+                {
+                    user.LocationProvince = TProvince.LoadProvinceByProvincedId(Convert.ToInt32(user.LocationProvince)).ProvinceName;
+                    user.LocationCity = TCity.LoadCityByCityId(Convert.ToInt32(user.LocationCity)).CityName;
+                    user.LocationCounty = TCountry.LoadCountryByCountryId(Convert.ToInt32(user.LocationCounty)).CountryName;
+                }
+            }
             int custIndex = 1;
             Session["Customers"] = customers.ToDictionary(x => custIndex++, x => x);
             ViewBag.TotalNumberCustomers = customers.Count();
