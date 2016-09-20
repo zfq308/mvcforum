@@ -270,6 +270,7 @@ namespace MVCForum.Website.ViewModels.Mapping
                 TotalPages = totalPages,
                 LastPostPermaLink = string.Concat(topic.NiceUrl, "?", AppConstants.PostOrderBy, "=", AppConstants.AllPosts, "#comment-", topic.LastPost.Id),
                 MemberIsOnline = topic.User.LastActivityDate > date,
+                LastActivityDate = topic.User.LastActivityDate,
             };
           
             if (starterPost == null)

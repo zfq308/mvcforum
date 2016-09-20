@@ -78,13 +78,13 @@
         </div>
     }
 
-    <div class="form-group">
+    <div class="form-group" style="display: none">
         @Html.LabelFor(model => model.CategoryId)
         @Html.DropDownListFor(model => model.CategoryId, Model.Categories, new { @class = "form-control" })
         @Html.ValidationMessageFor(model => model.CategoryId)
     </div>
 
-    <div class="form-group">
+    <div class="form-group" style="display: none">
         <label>@Html.Lang("Topic.Label.Tags")</label>
         <div class="topictagholder">
             @Html.TextAreaFor(model => model.Tags, new { @class = "tagstextarea tags", title = Html.LanguageString("Topic.TagThisTopic") })

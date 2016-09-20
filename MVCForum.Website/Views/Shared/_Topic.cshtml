@@ -14,10 +14,10 @@
     <div class="topicrow topicsticky-@(Model.Topic.IsSticky.ToString().ToLower()) topiclocked-@(Model.Topic.IsLocked.ToString().ToLower()) topicsolved-@(Model.Topic.Solved.ToString().ToLower())">
 
         <div class="rowcreater hidden-xs">
-            @*<a href="@Model.Topic.User.NiceUrl">
+            <a href="@Model.Topic.User.NiceUrl">
                     <img src="@Model.Topic.User.MemberImage(SiteConstants.Instance.GravatarTopicSize)" alt="@Model.Topic.User.UserName">
                 </a>
-            *@
+            
             @if (Model.MemberIsOnline)
             {
                 <span class="label label-success">

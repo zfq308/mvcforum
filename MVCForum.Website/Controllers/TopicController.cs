@@ -158,6 +158,9 @@ namespace MVCForum.Website.Controllers
             {
                 var viewModel = PrePareCreateEditTopicViewModel(allowedAccessCategories);
                 viewModel.TopicType = Enum_TopicType.Announcement;
+                viewModel.OptionalPermissions.CanLockTopic = false;
+                viewModel.OptionalPermissions.CanStickyTopic = false;
+
                 return View(viewModel);
             }
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
