@@ -344,6 +344,7 @@ namespace MVCForum.Website.ViewModels
         public MembershipTodayStar MeiRiZhiXing { get; set; }
         public string RoleId { get; set; }
         public int FollowStatus { get; set; }
+        public int UserType { get; set; }
 
     }
 

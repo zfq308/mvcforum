@@ -2335,15 +2335,22 @@ namespace MVCForum.Website.Controllers
                         {
                             Items_Role.Add(new SelectListItem { Text = item.RoleName, Value = item.Id.ToString() });
                         }
-                        //foreach (SelectListItem item in Items_Role)
-                        //{
-                        //    if (item.Value == member.Roles..Gender.ToString())
-                        //    {
-                        //        item.Selected = true;
-                        //    }
-                        //}
                         ViewData["RoleList"] = Items_Role;
                     }
+
+                    #endregion
+
+                    #region 绑定用户类型
+
+                    var Items_UserType = new List<SelectListItem>();
+
+                    Items_UserType.Add(new SelectListItem { Text = Enum_UserType.A.ToString(), Value = Convert.ToString((int)Enum_UserType.A) });
+                    Items_UserType.Add(new SelectListItem { Text = Enum_UserType.B.ToString(), Value = Convert.ToString((int)Enum_UserType.B) });
+                    Items_UserType.Add(new SelectListItem { Text = Enum_UserType.C.ToString(), Value = Convert.ToString((int)Enum_UserType.C) });
+                    Items_UserType.Add(new SelectListItem { Text = Enum_UserType.D.ToString(), Value = Convert.ToString((int)Enum_UserType.D) });
+                    Items_UserType.Add(new SelectListItem { Text = Enum_UserType.E.ToString(), Value = Convert.ToString((int)Enum_UserType.E) });
+
+                    ViewData["UserTypeList"] = Items_UserType;
 
                     #endregion
 
@@ -2377,7 +2384,8 @@ namespace MVCForum.Website.Controllers
                         MembershipUserPictures = picturelist,
                         MeiRiZhiXing = meiRiZhiXing,
                         RoleId = member.Roles.FirstOrDefault().Id.ToString(),
-                        FollowStatus = followFlag
+                        FollowStatus = followFlag,
+                        UserType = (int)member.UserType,
                     });
                 }
                 else
@@ -2429,6 +2437,34 @@ namespace MVCForum.Website.Controllers
                 var result = UpdateUserRole(model.LoggedOnUserId, role);
             }
             return RedirectToAction("Index", "Home");
+        }
+
+
+        /// <summary>
+        /// 切换用户类型
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Authorize(Roles = AppConstants.AdminRoleName)]
+        public ActionResult ChangeUserType(ViewMemberViewModel model)
+        {
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            {
+                try
+                {
+                    MembershipService.UpdateUserType(model.LoggedOnUserId, model.UserType);
+                    unitOfWork.Commit();
+                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel { Message = "已切换用户类型。", MessageType = GenericMessages.success };
+                }
+                catch (Exception ex)
+                {
+                    unitOfWork.Rollback();
+                    LoggingService.Error(ex);
+                    ModelState.AddModelError("", "更新用户的类型信息失败。");
+                }
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         /// <summary>
@@ -2660,7 +2696,7 @@ namespace MVCForum.Website.Controllers
                     followInfo.UserId = LoggedOnReadOnlyUser.Id;
                     followInfo.FriendUserId = model.LoggedOnUserId;
                     followInfo.CreateTime = DateTime.Now;
-                    followInfo.OpsFlag = "";
+                    followInfo.OpsFlag = "Black";
                     followInfo.UpdateTime = DateTime.Now;
                     _FollowService.Add(followInfo);
                 }

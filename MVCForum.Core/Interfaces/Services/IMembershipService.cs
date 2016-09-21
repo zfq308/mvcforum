@@ -103,14 +103,16 @@ namespace MVCForum.Domain.Interfaces.Services
         #region 密码相关功能
         bool ChangePassword(MembershipUser user, string oldPassword, string newPassword);
         bool ResetPassword(MembershipUser user, string newPassword);
-        void UpdateUserRole(Guid id, MembershipRole role);
+
         bool UpdatePasswordResetToken(MembershipUser user);
         bool ClearPasswordResetToken(MembershipUser user);
         bool IsPasswordResetTokenValid(MembershipUser user, string token);
 
         #endregion
 
-        #region 其他辅助功能
+        #region 其他辅助功能 
+        void UpdateUserRole(Guid id, MembershipRole role);
+        void UpdateUserType(Guid id, int UserType);
         MembershipUser SanitizeUser(MembershipUser membershipUser);
         bool ValidateUser(string userName, string password, int maxInvalidPasswordAttempts);
         LoginAttemptStatus LastLoginStatus { get; }

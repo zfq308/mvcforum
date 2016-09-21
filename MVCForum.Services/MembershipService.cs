@@ -1448,7 +1448,7 @@ namespace MVCForum.Services
                     }
                 }
 
-                if(!AdministratorMode)
+                if (!AdministratorMode)
                 {
                     total = total.Where(p => p.IsApproved == true).ToList();
                 }
@@ -1921,9 +1921,16 @@ namespace MVCForum.Services
             }
         }
 
-
-
         #endregion
+
+        public void UpdateUserType(Guid id, int UserType)
+        {
+            var existingUser = GetUser(id);
+            existingUser.UserType = (Enum_UserType)UserType;
+            _context.Entry<MembershipUser>(existingUser).State = EntityState.Modified;
+            _context.SaveChanges();
+        }
+
 
     }
 }
