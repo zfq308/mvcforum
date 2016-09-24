@@ -57,7 +57,7 @@ namespace MVCForum.Services.Data.Mapping
             Property(x => x.UserTelphone).IsRequired().HasMaxLength(11);
             Property(x => x.JoinPeopleNumber).IsRequired();
             Property(x => x.CreateTime).IsRequired();
-            Property(x => x.FeeSource).IsRequired().HasMaxLength(20);
+            Property(x => x.FeeSource).IsRequired().HasMaxLength(40);
             Property(x => x.FeeId).IsRequired().HasMaxLength(20);
             Property(x => x.FeeNumber).IsRequired();
             Property(x => x.FeeStatus).IsRequired();

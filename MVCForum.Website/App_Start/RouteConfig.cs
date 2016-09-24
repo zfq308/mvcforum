@@ -41,6 +41,7 @@ namespace MVCForum.Website
                 new { controller = "Members", action = "GetByName", slug = UrlParameter.Optional } // Parameter defaults
             );
 
+
             routes.MapRoute(
                 "tagUrls", // Route name
                 string.Concat(SiteConstants.Instance.TagsUrlIdentifier, "/{tag}"), // URL with parameters

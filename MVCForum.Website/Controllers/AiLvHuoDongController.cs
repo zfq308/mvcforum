@@ -17,13 +17,17 @@ using System.Web.Mvc;
 using MVCForum.Website.ViewModels.Mapping;
 using MVCForum.Website.Application;
 using System.Text;
+using WxPayAPI;
 
 namespace MVCForum.Website.Controllers
 {
     public class AiLvHuoDongController : BaseController
     {
         #region 成员变量
+        JsApiPay jsApiPay = new JsApiPay();
+
         log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         private readonly IAiLvHuoDongService _aiLvHuoDongService;
         private readonly ITopicService _topicService;
         private readonly ICategoryService _categoryservice;
@@ -65,6 +69,177 @@ namespace MVCForum.Website.Controllers
 
         #endregion
 
+        #region 微信支付
+
+        /**
+ * 
+ * 网页授权获取用户基本信息的全部过程
+ * 详情请参看网页授权获取用户基本信息：http://mp.weixin.qq.com/wiki/17/c0f37d5704f0b64713d5d2c37b468d75.html
+ * 第一步：利用url跳转获取code
+ * 第二步：利用code去获取openid和access_token
+ * 
+ */
+        public void GetOpenidAndAccessToken()
+        {
+            if (Session["code"] != null)
+            {
+                //获取code码，以获取openid和access_token
+                string code = Session["code"].ToString();
+                jsApiPay.GetOpenidAndAccessTokenFromCode(code);
+            }
+            else
+            {
+                //构造网页授权获取code的URL
+                string host = Request.Url.Host;
+                string path = Request.Path;
+                string redirect_uri = HttpUtility.UrlEncode("http://" + host + path);
+
+                //string redirect_uri = HttpUtility.UrlEncode("http://gzh.lmx.ren");
+                WxPayData data = new WxPayData();
+                data.SetValue("appid", WxPayConfig.APPID);
+                data.SetValue("redirect_uri", redirect_uri);
+
+                data.SetValue("response_type", "code");
+                data.SetValue("scope", "snsapi_base");
+                data.SetValue("state", "STATE" + "#wechat_redirect");
+                string url = "https://open.weixin.qq.com/connect/oauth2/authorize?" + data.ToUrl();
+                Log.Debug(this.GetType().ToString(), "Will Redirect to URL : " + url);
+                Session["url"] = url;
+            }
+        }
+
+        /// <summary>
+        /// 获取code
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult getCode()
+        {
+            object objResult = "";
+            if (Session["url"] != null)
+            {
+                objResult = Session["url"].ToString();
+            }
+            else
+            {
+                objResult = "url为空。";
+            }
+            return Json(objResult);
+        }
+
+        /// <summary>
+        /// 通过code换取网页授权access_token和openid的返回数据
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult getWxInfo()
+        {
+            object objResult = "";
+            string strCode = Request.Form["code"];
+
+            if (Session["access_token"] == null || Session["openid"] == null)
+            {
+                jsApiPay.GetOpenidAndAccessTokenFromCode(strCode);
+            }
+
+            string strAccess_Token = Session["access_token"].ToString();
+            string strOpenid = Session["openid"].ToString();
+            objResult = new { openid = strOpenid, access_token = strAccess_Token };
+            return Json(objResult);
+        }
+
+        /// <summary>
+        /// 支付
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult MeterRecharge()
+        {
+            object objResult = "";
+            string strTotal_fee = Request.Form["totalfee"];
+            string DetailsIdstr = Request.Form["DetailsId"];
+            Guid detailsId = Guid.Parse(DetailsIdstr);
+
+            ActivityRegister ar = _ActivityRegisterService.Get(detailsId);
+            if (ar != null)
+            {
+                string strFee = (double.Parse(strTotal_fee) * 100).ToString();
+                jsApiPay.total_fee = int.Parse(strFee);
+
+                if (jsApiPay.total_fee != ar.FeeNumber)
+                {
+                    base.LoggingService.Error("钱不相等。" + jsApiPay.total_fee.ToString() + ":" + ar.FeeNumber.ToString());
+                    var aOrder = new ActivityRegisterForOrder()
+                    {
+                        appId = "",
+                        nonceStr = "",
+                        packageValue = "",
+                        paySign = "",
+                        timeStamp = "",
+                        msg = "支付信息不匹配,请联系管理员."
+                    };
+                    objResult = aOrder;
+                    return Json(objResult);
+                }
+
+                //若传递了相关参数，则调统一下单接口，获得后续相关接口的入口参数
+                jsApiPay.openid = Session["openid"].ToString();
+
+                try
+                {
+                    #region JSAPI支付预处理
+
+                    string strBody = "爱驴网微信支付:" + _aiLvHuoDongService.Get(ar.Id).MingCheng + ":" +
+                        _MembershipService.GetUser(ar.UserId).UserName;//商品描述
+
+                    WxPayData unifiedOrderResult = jsApiPay.GetUnifiedOrderResult(strBody);
+                    WxPayData wxJsApiParam = jsApiPay.GetJsApiParameters();//获取H5调起JS API参数
+                    var aOrder = new ActivityRegisterForOrder()
+                    {
+                        appId = wxJsApiParam.GetValue("appId").ToString(),
+                        nonceStr = wxJsApiParam.GetValue("nonceStr").ToString(),
+                        packageValue = wxJsApiParam.GetValue("package").ToString(),
+                        paySign = wxJsApiParam.GetValue("paySign").ToString(),
+                        timeStamp = wxJsApiParam.GetValue("timeStamp").ToString(),
+                        msg = "成功下单,正在接入微信支付."
+                    };
+                    objResult = aOrder;
+             
+                    #endregion
+                }
+                catch (Exception ex)
+                {
+                    var aOrder = new ActivityRegisterForOrder()
+                    {
+                        appId = "",
+                        nonceStr = "",
+                        packageValue = "",
+                        paySign = "",
+                        timeStamp = "",
+                        msg = "下单失败，请重试,多次失败,请联系管理员.具体错误信息：" + ex.Message
+                    };
+                    objResult = aOrder;
+                }
+               
+                return Json(objResult); 
+            }
+            else
+            {
+                var aOrder = new ActivityRegisterForOrder()
+                {
+                    appId = "",
+                    nonceStr = "",
+                    packageValue = "",
+                    paySign = "",
+                    timeStamp = "",
+                    msg = "支付信息不匹配,请联系管理员."
+                };
+                objResult = aOrder;
+                return Json(objResult);
+            }
+        }
+
+        #endregion
 
         public ActionResult Index()
         {
@@ -199,7 +374,7 @@ namespace MVCForum.Website.Controllers
                         item.ZhuYiShiXiang = ViewModel.ZhuYiShiXiang;
                         item.YuGuRenShu = ViewModel.YuGuRenShu;
                         item.XingBieBiLi = ViewModel.XingBieBiLi;
-                        item.YaoQingMa = ViewModel.YaoQingMa;
+                        item.YaoQingMa = (ViewModel.YaoQingMa == null ? "" : ViewModel.YaoQingMa);
                         item.ZhuangTai = ViewModel.ZhuangTai;
                         item.GongYingShangUserId = LoggedOnReadOnlyUser.Id.ToString();
                         if (UserIsAdmin)
@@ -212,7 +387,9 @@ namespace MVCForum.Website.Controllers
                             item.ShenHeBiaoZhi = Enum_ShenHeBiaoZhi.WaitingAudit;
                             item.AuditComments = "";
                         }
-                        EntityOperationUtils.ModifyObject(item);
+                        //EntityOperationUtils.ModifyObject(item);
+
+                        _context.Entry(item).State = EntityState.Modified;
                     }
 
                     try
@@ -243,7 +420,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        //[Authorize(Roles = "Admin,Supplier")]
+        [Authorize(Roles = "Admin,Supplier")]
         public ActionResult EditAiLvHuoDong(Guid Id)
         {
             var item = _aiLvHuoDongService.Get(Id);
@@ -457,43 +634,45 @@ namespace MVCForum.Website.Controllers
             string YaoQingMa = Request.Form["YaoQingMa"];
             string Idstr = Request.Form["Id"];
 
+            #region 输入参数校验
 
+            Guid Id = Guid.Parse(Idstr);
+            var huodong = _aiLvHuoDongService.Get(Id);
 
-            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            if (huodong == null)
             {
-                Guid Id = Guid.Parse(Idstr);
-                var huodong = _aiLvHuoDongService.Get(Id);
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = "参数错误，请联系管理员。",
+                    MessageType = GenericMessages.danger
+                };
+                return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
+            }
 
-                if (huodong == null)
+            if (huodong.LeiBie == Enum_HuoDongLeiBie.SpecicalRegister)
+            {
+                if (huodong.YaoQingMa != YaoQingMa)
                 {
                     TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                     {
-                        Message = "参数错误，请联系管理员。",
+                        Message = "邀请码不正确。",
                         MessageType = GenericMessages.danger
                     };
                     return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
                 }
+            }
 
+            #endregion
 
-                if (huodong.LeiBie == Enum_HuoDongLeiBie.SpecicalRegister)
-                {
-                    if (huodong.YaoQingMa != YaoQingMa)
-                    {
-                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                        {
-                            Message = "邀请码不正确。",
-                            MessageType = GenericMessages.danger
-                        };
-                        return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
-                    }
-                }
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            {
                 var ar = new ActivityRegister(Id, LoggedOnReadOnlyUser);
-
                 ar.UserTelphone = LoggedOnReadOnlyUser.MobilePhone;
-                ar.FeeSource = "WeChat";
+                ar.FeeSource = huodong.Id.ToString();
                 ar.FeeId = "000000";
                 ar.FeeNumber = huodong.Feiyong;
 
+                #region 校验报名条件
 
                 switch (_ActivityRegisterService.CheckRegisterStatus(huodong, LoggedOnReadOnlyUser))
                 {
@@ -541,16 +720,33 @@ namespace MVCForum.Website.Controllers
                         break;
                 }
 
+                #endregion
 
                 try
                 {
                     unitOfWork.Commit();
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+
+                    if (ar.FeeNumber > 0)
                     {
-                        Message = "活动已报名。",
-                        MessageType = GenericMessages.info
-                    };
-                    return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
+                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        {
+                            Message = ar.FeeNumber > 0 ? "活动已报名。请支付报名费用" : "活动已报名。",
+                            MessageType = GenericMessages.info
+                        };
+
+                        //因微信校验目录的原因，此处不能在URL中传参，改用Session传值
+                        Session["WechatPayDetailsId"] = ar.DetailsId;
+                        return RedirectToAction("WechatPay", "AiLvHuoDong");
+                    }
+                    else
+                    {
+                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        {
+                            Message = "活动已报名。",
+                            MessageType = GenericMessages.info
+                        };
+                        return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -597,6 +793,54 @@ namespace MVCForum.Website.Controllers
             }
         }
 
+        [HttpGet]
+        public ActionResult WechatPay()
+        {
+            if (Session["WechatPayDetailsId"]==null)
+            {
+                return View();
+            }
+            var Idstr = Session["WechatPayDetailsId"].ToString();
+            Guid Id = Guid.Parse(Idstr);
+            var item = _ActivityRegisterService.Get(Id);
+            if (item != null)
+            {
+                if (item.FeeNumber > 0)
+                {
+                    #region 调用微信接口
+
+                    if (Session["openid"] == null)
+                    {
+                        try
+                        {
+                            //调用【网页授权获取用户信息】接口获取用户的openid和access_token
+                            GetOpenidAndAccessToken();
+                        }
+                        catch (Exception ex)
+                        {
+                            Response.Write(ex.ToString());
+                            throw;
+                        }
+                    }
+
+                    #endregion
+                }
+
+                var Model = new WechatPay_Model
+                {
+                    activityregister = item,
+                    User = _MembershipService.GetUser(item.UserId),
+                    PayNumber = item.FeeNumber,
+                    Huodong = _aiLvHuoDongService.Get(item.Id)
+                };
+                return View(Model);
+            }
+            else
+            {
+                base.LoggingService.Error("Enter  WechatPay5");
+                return View();
+            }
+        }
 
         #endregion
 
@@ -609,7 +853,7 @@ namespace MVCForum.Website.Controllers
         public ActionResult ZuiXinJilu()
         {
             var JiluList = new AiLvJiLu_ListViewModel { Topics = new List<TopicViewModel>() };
-            var topics = _topicService.GetAllTopicsByCategory(EnumCategoryType.AiLvJiLu).OrderByDescending(x=>x.CreateDate).ToList();
+            var topics = _topicService.GetAllTopicsByCategory(EnumCategoryType.AiLvJiLu).OrderByDescending(x => x.CreateDate).ToList();
             if (topics != null && topics.Count > 0)
             {
                 var settings = SettingsService.GetSettings();

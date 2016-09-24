@@ -1,0 +1,171 @@
+﻿@model MVCForum.Website.ViewModels.WechatPay_Model
+@{
+    ViewBag.Title = "微信支付";
+    Layout = "~/Views/Shared/_LayoutFullWidth.cshtml";
+}
+
+<h2>爱驴网活动报名费用支付</h2>
+
+<table width="100%">
+    <tr>
+        <td width="30%">支付ID</td>
+        <td>
+            <label id="DetailsId">@Model.activityregister.DetailsId</label>
+        </td>
+    </tr>
+    <tr>
+        <td width="30%">支付事项</td>
+        <td>@Model.Huodong.MingCheng </td>
+    </tr>
+    <tr>
+        <td width="30%">支付费用</td>
+        <td>
+            <label id="Feiyong">@Model.Huodong.Feiyong</label>
+        </td>
+    </tr>
+    <tr>
+        <td width="30%">支付用户</td>
+        <td>@Model.User.UserName</td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <input type="button" class="btn" value="立即支付" onclick="fCharge()" style="margin-top: 20px;" />
+        </td>
+    </tr>
+</table>
+
+
+<script type="text/javascript">
+    $(function () {
+
+        var vCode = getQueryString("code");
+        if (vCode != "" && vCode != null) {
+            //alert(vCode);
+            $.ajax({
+                type: 'post',
+                data: {
+                    code: vCode
+                },
+                url: '/AiLvHuoDong/getWxInfo',
+                success: function (sjson) {
+                    //alert("vCode is not null." + sjson);
+                    //var vData = JSON.stringify(sjson);
+                    //alert(vData);
+                    //$.messager.show({
+                    //    title: '提示',
+                    //    msg: '进入微信支付平台'
+                    //});
+                }
+            })
+        }
+        else {
+            $.ajax({
+                type: 'post',
+                url: '/AiLvHuoDong/getCode',
+                success: function (sjson) {
+                    //alert("vCode is null."+sjson);
+                    location.href = sjson;
+                }
+            })
+        }
+    })
+
+    //获取url的参数
+    function getQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    }
+
+    //初始化微信支付环境
+    function fCharge() {
+        if (typeof WeixinJSBridge == "undefined") {
+            if (document.addEventListener) {
+                document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+            } else if (document.attachEvent) {
+                document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+                document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+            }
+        } else {
+            fPostCharge();
+        }
+    }
+
+    //提交支付数据
+    function fPostCharge() {
+        var vChargeVal = $("#Feiyong").text();
+        var vId = $("#DetailsId").text();
+        vChargeVal = parseFloat(vChargeVal);
+        if (vChargeVal > 0) {
+            //alert("start call MeterRecharge.");
+            $.ajax({
+                type: "post",
+                data:
+                    {
+                        "totalfee": vChargeVal,
+                        "DetailsId": vId,
+                    },
+                url: "/AiLvHuoDong/MeterRecharge",
+                success: function (json) {
+                    //alert("调用微信支付模块成功.");
+                    //var json = eval("(" + msg + ")");//转换后的JSON对象
+                    //alert("flag3:"+json );
+                    onBridgeReady(json);
+                },
+                error: function () {
+                    alert("调用微信支付模块失败，请稍后再试。");
+                    //$.messager.progress('close');//记得关闭
+                    //$.messager.alert("提示", '调用微信支付模块失败，请稍后再试。', 'info')
+                }
+            })
+            //alert("completed call MeterRecharge.");
+        }
+        else {
+            alert("支付金额不可以为空或者为负数,请确认后再试.")
+        }
+    }
+
+    //调用微信支付模块
+    function onBridgeReady(json) {
+        //alert("enter onBridgeReady.appId:" + json.appId + ",timeStamp:" + json.timeStamp + ",nonceStr:" + json.nonceStr + ",package:" + json.packageValue + ",paySign:" + json.paySign);
+        WeixinJSBridge.invoke(
+       'getBrandWCPayRequest', {
+           "appId": json.appId,     //公众号名称，由商户传入
+           "timeStamp": json.timeStamp,         //时间戳，自1970年以来的秒数
+           "nonceStr": json.nonceStr, //随机串
+           "package": json.packageValue,
+           "signType": "MD5",         //微信签名方式:
+           "paySign": json.paySign //微信签名
+       },
+       function (res) {
+           //alert("onBridgeReady.function (res)");
+          
+           if (res.err_msg == "get_brand_wcpay_request:ok") {
+               alert("支付成功,请稍后查询余额,如有疑问,请联系管理员.");
+               @*//ajax
+               $.ajax({
+                   type: "POST",
+                   dataType: "text",
+                   url: '@Url.Action("EditPayStatus", "WeChatWeb")',
+                   data: {
+                       userID: '@Model.ID'
+                   },
+                   error: function (request) {
+
+                       layer.msg("服务器错误！", function () { });
+                       return false;
+                   },
+                   success: function (data) {
+                       window.location.href = "@Url.Action(MVC.Default.Index())"; //支付成功后跳转的页面
+                   }
+               }); //ajax end*@
+
+           }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+           else {
+               alert(res.err_msg);
+           }
+        }
+        );
+    }
+
+</script>

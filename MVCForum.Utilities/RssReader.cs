@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace MVCForum.Utilities
 {
-    [Obsolete("在爱驴网应用中无需要使用。")]
+
     public class RssReader
     {
         public List<RssItem> GetRssFeed(string url)
@@ -39,7 +39,7 @@ namespace MVCForum.Utilities
         }
     }
 
-    [Obsolete("在爱驴网应用中无需要使用。")]
+  
     [Serializable]
     public class RssItem
     {

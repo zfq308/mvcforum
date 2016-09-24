@@ -181,7 +181,7 @@ namespace MVCForum.Website.Controllers
                 item.BaoMingJieZhiTime = DateTime.Today.AddDays(1).AddHours(8);
                 item.DiDian = "火星基地";
                 item.LiuCheng = "先吃后睡，再吃再睡";
-                item.Feiyong = 100;
+                item.Feiyong = 1;
                 item.FeiyongShuoMing = "这是活动的费用说明。";
                 item.ZhuYiShiXiang = "这是活动的注意事项说明。";
                 item.YuGuRenShu = 3;
@@ -213,7 +213,7 @@ namespace MVCForum.Website.Controllers
                 item2.BaoMingJieZhiTime = DateTime.Today.AddDays(1).AddHours(8);
                 item2.DiDian = "火星基地";
                 item2.LiuCheng = "先吃后睡，再吃再睡";
-                item2.Feiyong = 100;
+                item2.Feiyong = 1;
                 item2.FeiyongShuoMing = "这是活动的费用说明。";
                 item2.ZhuYiShiXiang = "这是活动的注意事项说明。";
                 item2.YuGuRenShu = 3;
@@ -244,7 +244,7 @@ namespace MVCForum.Website.Controllers
                 item3.BaoMingJieZhiTime = DateTime.Today.AddDays(1).AddHours(8);
                 item3.DiDian = "火星基地";
                 item3.LiuCheng = "先吃后睡，再吃再睡";
-                item3.Feiyong = 100;
+                item3.Feiyong = 1;
                 item3.FeiyongShuoMing = "这是活动的费用说明。";
                 item3.ZhuYiShiXiang = "这是活动的注意事项说明。";
                 item3.YuGuRenShu = 3;
@@ -275,7 +275,7 @@ namespace MVCForum.Website.Controllers
                 item4.BaoMingJieZhiTime = DateTime.Today.AddDays(1).AddHours(8);
                 item4.DiDian = "火星基地";
                 item4.LiuCheng = "先吃后睡，再吃再睡";
-                item4.Feiyong = 100;
+                item4.Feiyong = 1;
                 item4.FeiyongShuoMing = "这是活动的费用说明。";
                 item4.ZhuYiShiXiang = "这是活动的注意事项说明。";
                 item4.YuGuRenShu = 3;
@@ -306,7 +306,7 @@ namespace MVCForum.Website.Controllers
                 item5.BaoMingJieZhiTime = DateTime.Today.AddDays(1).AddHours(8);
                 item5.DiDian = "火星基地";
                 item5.LiuCheng = "先吃后睡，再吃再睡";
-                item5.Feiyong = 100;
+                item5.Feiyong = 1;
                 item5.FeiyongShuoMing = "这是活动的费用说明。";
                 item5.ZhuYiShiXiang = "这是活动的注意事项说明。";
                 item5.YuGuRenShu = 3;
@@ -337,7 +337,7 @@ namespace MVCForum.Website.Controllers
                 item6.BaoMingJieZhiTime = DateTime.Today.AddDays(1).AddHours(8);
                 item6.DiDian = "火星基地";
                 item6.LiuCheng = "先吃后睡，再吃再睡";
-                item6.Feiyong = 100;
+                item6.Feiyong = 1;
                 item6.FeiyongShuoMing = "这是活动的费用说明。";
                 item6.ZhuYiShiXiang = "这是活动的注意事项说明。";
                 item6.YuGuRenShu = 3;
@@ -369,7 +369,7 @@ namespace MVCForum.Website.Controllers
                 item7.BaoMingJieZhiTime = DateTime.Today.AddDays(1).AddHours(8);
                 item7.DiDian = "火星基地";
                 item7.LiuCheng = "先吃后睡，再吃再睡";
-                item7.Feiyong = 100;
+                item7.Feiyong = 1;
                 item7.FeiyongShuoMing = "这是活动的费用说明。";
                 item7.ZhuYiShiXiang = "这是活动的注意事项说明。";
                 item7.YuGuRenShu = 3;
@@ -393,7 +393,7 @@ namespace MVCForum.Website.Controllers
                 item8.BaoMingJieZhiTime = DateTime.Today.AddDays(1).AddHours(8);
                 item8.DiDian = "火星基地";
                 item8.LiuCheng = "先吃后睡，再吃再睡";
-                item8.Feiyong = 100;
+                item8.Feiyong = 1;
                 item8.FeiyongShuoMing = "这是活动的费用说明。";
                 item8.ZhuYiShiXiang = "这是活动的注意事项说明。";
                 item8.YuGuRenShu = 3;
@@ -416,7 +416,7 @@ namespace MVCForum.Website.Controllers
                 item9.BaoMingJieZhiTime = DateTime.Today.AddDays(1).AddHours(8);
                 item9.DiDian = "火星基地";
                 item9.LiuCheng = "先吃后睡，再吃再睡";
-                item9.Feiyong = 100;
+                item9.Feiyong = 1;
                 item9.FeiyongShuoMing = "这是活动的费用说明。";
                 item9.ZhuYiShiXiang = "这是活动的注意事项说明。";
                 item9.YuGuRenShu = 3;
@@ -439,7 +439,7 @@ namespace MVCForum.Website.Controllers
                 item10.BaoMingJieZhiTime = DateTime.Today.AddDays(1).AddHours(8);
                 item10.DiDian = "火星基地";
                 item10.LiuCheng = "先吃后睡，再吃再睡";
-                item10.Feiyong = 100;
+                item10.Feiyong = 1;
                 item10.FeiyongShuoMing = "这是活动的费用说明。";
                 item10.ZhuYiShiXiang = "这是活动的注意事项说明。";
                 item10.YuGuRenShu = 3;
@@ -470,7 +470,7 @@ namespace MVCForum.Website.Controllers
                 item11.BaoMingJieZhiTime = DateTime.Today.AddDays(1).AddHours(8);
                 item11.DiDian = "火星基地";
                 item11.LiuCheng = "先吃后睡，再吃再睡";
-                item11.Feiyong = 100;
+                item11.Feiyong = 1;
                 item11.FeiyongShuoMing = "这是活动的费用说明。";
                 item11.ZhuYiShiXiang = "这是活动的注意事项说明。";
                 item11.YuGuRenShu = 3;
@@ -501,7 +501,7 @@ namespace MVCForum.Website.Controllers
                 item12.BaoMingJieZhiTime = DateTime.Today.AddDays(1).AddHours(8);
                 item12.DiDian = "火星基地";
                 item12.LiuCheng = "先吃后睡，再吃再睡";
-                item12.Feiyong = 100;
+                item12.Feiyong = 1;
                 item12.FeiyongShuoMing = "这是活动的费用说明。";
                 item12.ZhuYiShiXiang = "这是活动的注意事项说明。";
                 item12.YuGuRenShu = 3;

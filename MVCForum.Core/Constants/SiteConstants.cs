@@ -119,6 +119,7 @@ namespace MVCForum.Domain.Constants
         public string TagsUrlIdentifier => GetConfig("TagsUrlIdentifier");
         public string MemberUrlIdentifier => GetConfig("MemberUrlIdentifier");
 
+
         /// <summary>
         /// Which Editor the site should use
         /// </summary>

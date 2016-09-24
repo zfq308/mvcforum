@@ -233,7 +233,8 @@ namespace MVCForum.Services
         {
             string dllpath = System.Reflection.Assembly.GetExecutingAssembly().CodeBase;
             dllpath = dllpath.Substring(8, dllpath.Length - 8);    // 8是 file:// 的长度
-            return System.IO.Path.GetDirectoryName(dllpath) + "\\SMSlog.txt";
+
+            return new DirectoryInfo(Path.GetDirectoryName(dllpath)).Parent.FullName + "\\Logs\\SMSlog.txt";
         }
 
         /// <summary>

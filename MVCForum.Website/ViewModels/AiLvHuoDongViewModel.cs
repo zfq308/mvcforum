@@ -177,7 +177,14 @@ namespace MVCForum.Website.ViewModels
         public IList<MembershipUser> UserList { get; set; }
     }
 
+    public class WechatPay_Model
+    {
+        public ActivityRegister activityregister { get; set; }
+        public MembershipUser User { get; set; }
+        public int PayNumber { get; set; }
+        public AiLvHuoDong Huodong { get; set; }
 
+    }
 
 
     public class MeiRiZhiXing_ListViewModel

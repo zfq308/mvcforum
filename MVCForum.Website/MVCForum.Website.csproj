@@ -93,6 +93,10 @@
       <HintPath>..\packages\ImageProcessor.Web.4.6.3.0\lib\net45\ImageProcessor.Web.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="LitJson, Version=0.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>WxLib\lib\LitJson.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
@@ -381,6 +385,22 @@
     <Compile Include="ViewModels\TopicViewModels.cs" />
     <Compile Include="ViewModels\VoteViewModels.cs" />
     <Compile Include="Areas\Admin\ViewModels\SettingsViewModels.cs" />
+    <Compile Include="WxLib\business\DownloadBill.cs" />
+    <Compile Include="WxLib\business\JsApiPay.cs" />
+    <Compile Include="WxLib\business\MicroPay.cs" />
+    <Compile Include="WxLib\business\NativeNotify.cs" />
+    <Compile Include="WxLib\business\NativePay.cs" />
+    <Compile Include="WxLib\business\OrderQuery.cs" />
+    <Compile Include="WxLib\business\Refund.cs" />
+    <Compile Include="WxLib\business\RefundQuery.cs" />
+    <Compile Include="WxLib\business\ResultNotify.cs" />
+    <Compile Include="WxLib\lib\Config.cs" />
+    <Compile Include="WxLib\lib\Data.cs" />
+    <Compile Include="WxLib\lib\Exception.cs" />
+    <Compile Include="WxLib\lib\HttpService.cs" />
+    <Compile Include="WxLib\lib\Log.cs" />
+    <Compile Include="WxLib\lib\Notify.cs" />
+    <Compile Include="WxLib\lib\WxPayApi.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\NuGetBackup\Hello.txt" />
@@ -875,6 +895,13 @@
     <Content Include="Scripts\bbeditor\themes\square.min.css" />
     <Content Include="Content\bootstrap\js\bootstrap-prettify.js" />
     <Content Include="Scripts\cache\Cache.txt" />
+    <Content Include="WxLib\lib\LitJson.dll" />
+    <Content Include="WxLib\lib\NPOI.dll" />
+    <Content Include="WxLib\lib\QuickMark.dll" />
+    <Content Include="WxLib\lib\RestSharp.dll" />
+    <Content Include="WxLib\lib\ThoughtWorks.QRCode.dll" />
+    <Content Include="WxLib\lib\WxPayAPI.dll" />
+    <Content Include="cert\apiclient_cert.p12" />
     <None Include="Scripts\jquery-3.1.0.intellisense.js" />
     <Content Include="Scripts\infiniteScroll.js" />
     <Content Include="Scripts\JavaScript.js" />
@@ -1167,6 +1194,7 @@
     <Content Include="Views\Members\Follow.cshtml" />
     <Content Include="Views\Members\FriendMessage.cshtml" />
     <Content Include="Views\Members\MemberList.cshtml" />
+    <Content Include="Views\AiLvHuoDong\WechatPay.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />
