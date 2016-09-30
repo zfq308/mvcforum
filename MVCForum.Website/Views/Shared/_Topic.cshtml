@@ -15,22 +15,34 @@
 
         <div class="rowcreater hidden-xs">
             <a href="@Model.Topic.User.NiceUrl">
-                    <img src="@Model.Topic.User.MemberImage(SiteConstants.Instance.GravatarTopicSize)" alt="@Model.Topic.User.UserName">
-                </a>
-            
-            @if (Model.MemberIsOnline)
-            {
-                <span class="label label-success">
-                    @Html.Lang("Post.MemberIsOnline")
-                </span>
-            }
+                <img src="@Model.Topic.User.MemberImage(SiteConstants.Instance.GravatarTopicSize)" alt="@Model.Topic.User.UserName">
+            </a>
+
+            @*@if (Model.MemberIsOnline)
+                {
+                    <span class="label label-success">
+                        @Html.Lang("Post.MemberIsOnline")
+                    </span>
+                }*@
+
+            <span class="label label-success">
+                @{
+                    var LastActivityDate = "";
+                    if (Model.Topic.User.LastActivityDate != null)
+                    {
+                        LastActivityDate = Model.Topic.User.LastActivityDate.Value.ToString("MM-dd hh:mm");
+                    }
+                }
+                @LastActivityDate
+            </span>
         </div>
+
 
         <div class="rowdetails">
             @*<p class="category categorysolved@(Model.Topic.Solved.ToString().ToLower())"
-               style="border-color: @(string.IsNullOrEmpty(Model.Topic.Category.Colour) ? "#ced1d1" : Model.Topic.Category.Colour)">
-                @Html.LanguageString("Topic.Category"): <a href="@Model.Topic.Category.NiceUrl">@Model.Topic.Category.Name</a>
-            </p>*@
+                   style="border-color: @(string.IsNullOrEmpty(Model.Topic.Category.Colour) ? "#ced1d1" : Model.Topic.Category.Colour)">
+                    @Html.LanguageString("Topic.Category"): <a href="@Model.Topic.Category.NiceUrl">@Model.Topic.Category.Name</a>
+                </p>*@
             <h3>
                 <a title="@postToolTip" href="@Html.Raw(Model.Topic.NiceUrl)">
                     @if (Model.Topic.IsSticky)
@@ -71,13 +83,18 @@
                 <a href="@Html.Raw(Model.LastPostPermaLink)">
                     <img src="@Model.Topic.LastPost.User.MemberImage(SiteConstants.Instance.GravatarLatestBySize)" class="latestby" alt="@Model.Topic.LastPost.User.UserName">
                 </a>
-                <a href="@Html.Raw(Model.LastPostPermaLink)">
-                    @Html.LanguageString("Topic.LatestBy")
-                </a>
+                @*<a href="@Html.Raw(Model.LastPostPermaLink)">
+                        @Html.LanguageString("Topic.LatestBy")
+                    </a>*@
                 <a href="@Model.Topic.LastPost.User.NiceUrl">
                     @Model.Topic.LastPost.User.UserName
                 </a>
-                @DatesUI.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString()).
+
+
+                @*@DatesUI.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString())*@
+
+                提交于 @Model.Topic.LastPost.DateCreated.ToString("yyyy-MM-dd")
+
                 <span class="stats topicanswers"><span class="glyphicon glyphicon-comment" aria-hidden="true"></span> @Model.Answers.KiloFormat()</span>
                 <span class="stats topicviews"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> @Model.Views.KiloFormat()</span>
                 <span class="stats topicupvotes"><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> @Model.VotesUp.KiloFormat()</span>
@@ -90,4 +107,4 @@
 
         </div>
     </div>
-}
+                    }

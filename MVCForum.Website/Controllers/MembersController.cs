@@ -906,8 +906,17 @@ namespace MVCForum.Website.Controllers
 
             var Items_AuditComments = new List<SelectListItem>();
             Items_AuditComments.Add(new SelectListItem { Text = "", Value = "" });
-            Items_AuditComments.Add(new SelectListItem { Text = "审核通过", Value = "审核通过" });
-            Items_AuditComments.Add(new SelectListItem { Text = "驳回，内容不合规", Value = "驳回，内容不合规" });
+            Items_AuditComments.Add(new SelectListItem { Text = "审核通过", Value = "0" });
+            Items_AuditComments.Add(new SelectListItem { Text = "驳回，姓名信息不合规", Value = "1" });
+            Items_AuditComments.Add(new SelectListItem { Text = "驳回，出生日期不合规", Value = "2" });
+            Items_AuditComments.Add(new SelectListItem { Text = "驳回，身高信息不合规", Value = "3" });
+            Items_AuditComments.Add(new SelectListItem { Text = "驳回，体重信息不合规", Value = "4" });
+            Items_AuditComments.Add(new SelectListItem { Text = "驳回，学校名称不合规", Value = "5" });
+            Items_AuditComments.Add(new SelectListItem { Text = "驳回，家乡信息不合规", Value = "6" });
+            Items_AuditComments.Add(new SelectListItem { Text = "驳回，职业信息不合规", Value = "7" });
+            Items_AuditComments.Add(new SelectListItem { Text = "驳回，兴趣爱好不合规", Value = "8" });
+            Items_AuditComments.Add(new SelectListItem { Text = "驳回，头像内容不合规", Value = "9" });
+            Items_AuditComments.Add(new SelectListItem { Text = "驳回，个人图片内容不合规", Value = "10" });
 
             foreach (SelectListItem item in Items_AuditComments)
             {
@@ -1375,8 +1384,17 @@ namespace MVCForum.Website.Controllers
                     #region 绑定审核意见信息
 
                     var Items_AuditComments = new List<SelectListItem>();
-                    Items_AuditComments.Add(new SelectListItem { Text = "审核通过", Value = "1" });
-                    Items_AuditComments.Add(new SelectListItem { Text = "驳回，内容不合规", Value = "0" });
+                    Items_AuditComments.Add(new SelectListItem { Text = "审核通过", Value = "0" });
+                    Items_AuditComments.Add(new SelectListItem { Text = "驳回，姓名信息不合规", Value = "1" });
+                    Items_AuditComments.Add(new SelectListItem { Text = "驳回，出生日期不合规", Value = "2" });
+                    Items_AuditComments.Add(new SelectListItem { Text = "驳回，身高信息不合规", Value = "3" });
+                    Items_AuditComments.Add(new SelectListItem { Text = "驳回，体重信息不合规", Value = "4" });
+                    Items_AuditComments.Add(new SelectListItem { Text = "驳回，学校名称不合规", Value = "5" });
+                    Items_AuditComments.Add(new SelectListItem { Text = "驳回，家乡信息不合规", Value = "6" });
+                    Items_AuditComments.Add(new SelectListItem { Text = "驳回，职业信息不合规", Value = "7" });
+                    Items_AuditComments.Add(new SelectListItem { Text = "驳回，兴趣爱好不合规", Value = "8" });
+                    Items_AuditComments.Add(new SelectListItem { Text = "驳回，头像内容不合规", Value = "9" });
+                    Items_AuditComments.Add(new SelectListItem { Text = "驳回，个人图片内容不合规", Value = "10" });
 
                     foreach (SelectListItem item in Items_AuditComments)
                     {
@@ -2031,9 +2049,21 @@ namespace MVCForum.Website.Controllers
 
             #endregion
 
+            #region 绑定未登录天数信息
+            var Items_NoLogindays = new List<SelectListItem>();
+            var Items_NoLogindays_1 = new SelectListItem { Text = ">7天", Value = "1" };
+            Items_NoLogindays.Add(Items_NoLogindays_1);
+            var Items_NoLogindays_2 = new SelectListItem { Text = ">30天", Value = "2" };
+            Items_NoLogindays.Add(Items_NoLogindays_2);
+            var Items_NoLogindays_3 = new SelectListItem { Text = ">60天", Value = "3" };
+            Items_NoLogindays.Add(Items_NoLogindays_3);
+            ViewData["NoLoginDaysList"] = Items_NoLogindays;
+
+            #endregion
+
             #region 绑定收入信息
 
-            var Items_IncomeRange = new List<SelectListItem>();
+         var Items_IncomeRange = new List<SelectListItem>();
             Items_IncomeRange.AddRange(TIncomeRange.LoadForSearchIncomeList().Select(x =>
             {
                 return new SelectListItem { Text = x.IncomeRangeName, Value = x.IncomeRangeId };
@@ -2139,7 +2169,7 @@ namespace MVCForum.Website.Controllers
         [BasicMultiButton("btn_search")]
         public ActionResult SearchEx(MembershipUserSearchModel model)
         {
-            model.NoLoginDays = 0;
+            //model.NoLoginDays = 0;
             Session["searchconfigurationmodel"] = model;
             return RedirectToAction("SearchResult", "Members");
         }

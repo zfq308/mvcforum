@@ -27,6 +27,16 @@ namespace MVCForum.Website.Application.ScheduledJobs
                     .WithSimpleSchedule(x => x.WithIntervalInHours(1).RepeatForever())
                     .Build();
 
+            // 定义6小时长期定时器
+            var sixHourTriggerForever = (ISimpleTrigger)TriggerBuilder.Create()
+                    .WithIdentity("SixHourTriggerForever", AppConstants.DefaultTaskGroup)
+                    .StartNow()
+                    .WithSimpleSchedule(x => x
+                        .WithIntervalInHours(6)
+                        .RepeatForever())
+                    .Build();
+            #endregion
+
             #region 无效的定时器定义
             //// 定义2分钟长期定时器
             //var twoMinuteTriggerForever = (ISimpleTrigger)TriggerBuilder.Create()
@@ -46,15 +56,7 @@ namespace MVCForum.Website.Application.ScheduledJobs
             //            .RepeatForever())
             //        .Build();
 
-            //// 定义6小时长期定时器
-            //var sixHourTriggerForever = (ISimpleTrigger)TriggerBuilder.Create()
-            //        .WithIdentity("SixHourTriggerForever", AppConstants.DefaultTaskGroup)
-            //        .StartNow()
-            //        .WithSimpleSchedule(x => x
-            //            .WithIntervalInHours(6)
-            //            .RepeatForever())
-            //        .Build();
-            #endregion
+
 
             #endregion
 
@@ -63,7 +65,13 @@ namespace MVCForum.Website.Application.ScheduledJobs
                                                       .WithIdentity("CleanVerifyCodeJob", AppConstants.DefaultTaskGroup)
                                                       .Build();
             scheduler.ScheduleJob(CleanInvalidVerifyCodeJob, OneHourTriggerForever);
+            #endregion
 
+            #region ChangeHuoDongInvalidStatusJob every 1 hours
+            var changeHuoDongInvalidStatusJob = JobBuilder.Create<ChangeHuoDongInvalidStatusJob>()
+                                                      .WithIdentity("ChangeHuoDongInvalidStatusJob", AppConstants.DefaultTaskGroup)
+                                                      .Build();
+            scheduler.ScheduleJob(changeHuoDongInvalidStatusJob, sixHourTriggerForever);
             #endregion
 
             #region KeepAliveJob

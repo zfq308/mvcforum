@@ -1396,10 +1396,22 @@ namespace MVCForum.Services
                 }
 
                 //最近未登录天数
-                if (searchusermodel.NoLoginDays > 0)
+                switch (searchusermodel.NoLoginDays)
                 {
-                    var d = DateTime.Now - TimeSpan.FromDays(searchusermodel.NoLoginDays);
-                    total = total.Where(p => p.LastLoginDate <= d).ToList();
+                    case "1":
+                        var d1 = DateTime.Now - TimeSpan.FromDays(7);
+                        total = total.Where(p => p.LastLoginDate <= d1).ToList();
+                        break;
+                    case "2":
+                        var d2 = DateTime.Now - TimeSpan.FromDays(30);
+                        total = total.Where(p => p.LastLoginDate <= d2).ToList();
+                        break;
+                    case "3":
+                        var d3 = DateTime.Now - TimeSpan.FromDays(60);
+                        total = total.Where(p => p.LastLoginDate <= d3).ToList();
+                        break;
+                    default:
+                        break;
                 }
 
                 //会员类型

@@ -36,9 +36,7 @@ namespace MVCForum.Services.Data.Mapping
             Property(x => x.ZhuangTai).IsRequired();
 
             Property(x => x.CreatedTime).IsRequired();
-
-         
-
+            Property(x => x.Avatar).IsOptional();
         }
     }
 

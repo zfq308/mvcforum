@@ -161,10 +161,15 @@
 
             <fieldset>
                 <legend>@ViewBag.Title</legend>
-                <p class="changepasswordtext">
-                    <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span>
-                    @Html.Raw(string.Format(Html.LanguageString("Members.ChangePassword.Link"), string.Format("<a href=\"{0}\">{1}</a>", Url.Action("ChangePassword"), Html.LanguageString("Members.ChangePassword.Title"))))
-                </p>
+
+                @if (User.Identity.Name == Model.UserName)
+                {
+                    <p class="changepasswordtext">
+                        <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span>
+                        @Html.Raw(string.Format(Html.LanguageString("Members.ChangePassword.Link"), string.Format("<a href=\"{0}\">{1}</a>", Url.Action("ChangePassword"), Html.LanguageString("Members.ChangePassword.Title"))))
+                    </p>
+                }
+
                 @if (!Model.IsApproved)
                 {
                     <div class="panel panel-info">

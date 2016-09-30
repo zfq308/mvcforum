@@ -162,6 +162,13 @@ namespace MVCForum.Website.ViewModels
         /// 参加活动的女生集合
         /// </summary>
         public IList<MembershipUser> GirlJoiner { get; set; }
+
+
+
+        public string Avatar { get; set; }
+        [ForumMvcResourceDisplayName("Members.Label.UploadNewAvatar")]
+        public HttpPostedFileBase[] Files { get; set; }
+
     }
 
 

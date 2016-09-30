@@ -266,6 +266,7 @@
     <Compile Include="Application\CustomActionResults\RssResult.cs" />
     <Compile Include="Application\CustomActionResults\CsvFileResult.cs" />
     <Compile Include="Application\ExtensionMethods\Extensions.cs" />
+    <Compile Include="Application\ScheduledJobs\ChangeHuoDongInvalidStatusJob.cs" />
     <Compile Include="Application\ScheduledJobs\CleanVerifyCodeJob.cs" />
     <Compile Include="Application\ScheduledJobs\MarkAsSolutionReminderJob.cs" />
     <Compile Include="Application\StorageProviders\DiskStorageProvider.cs" />

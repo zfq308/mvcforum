@@ -18,6 +18,8 @@ using MVCForum.Website.ViewModels.Mapping;
 using MVCForum.Website.Application;
 using System.Text;
 using WxPayAPI;
+using System.Web.Hosting;
+using System.IO;
 
 namespace MVCForum.Website.Controllers
 {
@@ -315,6 +317,41 @@ namespace MVCForum.Website.Controllers
                         item.AuditComments = "";
                     }
                     item.CreatedTime = DateTime.Now;
+
+                    if (ViewModel.Files != null)
+                    {
+                        // Before we save anything, check the user already has an upload folder and if not create one
+                        var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath, "Huodong"));
+                        if (!Directory.Exists(uploadFolderPath))
+                        {
+                            Directory.CreateDirectory(uploadFolderPath);
+                        }
+
+                        // Loop through each file and get the file info and save to the users folder and Db
+                        var file = ViewModel.Files[0];
+                        if (file != null)
+                        {
+                            // If successful then upload the file
+                            var uploadResult = AppHelpers.UploadFile(file, uploadFolderPath, LocalizationService, true);
+
+                            if (!uploadResult.UploadSuccessful)
+                            {
+                                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                                {
+                                    Message = uploadResult.ErrorMessage,
+                                    MessageType = GenericMessages.danger
+                                };
+                                return View(ViewModel);
+                            }
+
+                            // Save avatar to user
+                            item.Avatar = uploadResult.UploadedFileName;
+                        }
+                    }
+
+                    // Set the users Avatar for the confirmation page
+                    ViewModel.Avatar = item.Avatar;
+
                     #endregion
 
                     try
@@ -375,7 +412,7 @@ namespace MVCForum.Website.Controllers
                         item.YuGuRenShu = ViewModel.YuGuRenShu;
                         item.XingBieBiLi = ViewModel.XingBieBiLi;
                         item.YaoQingMa = (ViewModel.YaoQingMa == null ? "" : ViewModel.YaoQingMa);
-                        item.ZhuangTai = ViewModel.ZhuangTai;
+                        //item.ZhuangTai = ViewModel.ZhuangTai;
                         item.GongYingShangUserId = LoggedOnReadOnlyUser.Id.ToString();
                         if (UserIsAdmin)
                         {
@@ -391,6 +428,43 @@ namespace MVCForum.Website.Controllers
 
                         _context.Entry(item).State = EntityState.Modified;
                     }
+
+
+
+                    if (ViewModel.Files != null)
+                    {
+                        // Before we save anything, check the user already has an upload folder and if not create one
+                        var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath, "Huodong"));
+                        if (!Directory.Exists(uploadFolderPath))
+                        {
+                            Directory.CreateDirectory(uploadFolderPath);
+                        }
+
+                        // Loop through each file and get the file info and save to the users folder and Db
+                        var file = ViewModel.Files[0];
+                        if (file != null)
+                        {
+                            // If successful then upload the file
+                            var uploadResult = AppHelpers.UploadFile(file, uploadFolderPath, LocalizationService, true);
+
+                            if (!uploadResult.UploadSuccessful)
+                            {
+                                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                                {
+                                    Message = uploadResult.ErrorMessage,
+                                    MessageType = GenericMessages.danger
+                                };
+                                return View(ViewModel);
+                            }
+
+                            // Save avatar to user
+                            item.Avatar = uploadResult.UploadedFileName;
+                        }
+                    }
+
+                    // Set the users Avatar for the confirmation page
+                    ViewModel.Avatar = item.Avatar;
+
 
                     try
                     {

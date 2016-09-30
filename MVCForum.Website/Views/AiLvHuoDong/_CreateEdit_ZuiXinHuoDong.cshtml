@@ -63,24 +63,22 @@
             <div class="form-group">
                 @Html.LabelFor(x => x.StartTime)
                 @Html.TextBoxFor(model => model.StartTime, //"{0:yyyy-MM-dd HH:mm}",
-                 new
-                 {
-                     @class = "form-control",
-                     //data_val_date = string.Format("您输入的活动开始时间必须是一个符合如此格式（2000-01-01 15:08）的日期数据")
-                 }
-                 )
+                                          new
+                                          {
+                                              @class = "form-control",
+                                              //data_val_date = string.Format("您输入的活动开始时间必须是一个符合如此格式（2000-01-01 15:08）的日期数据")
+                                          })
                 @Html.ValidationMessageFor(model => model.StartTime)
             </div>
 
             <div class="form-group">
                 @Html.LabelFor(x => x.StopTime)
                 @Html.TextBoxFor(model => model.StopTime, //"{0:yyyy-MM-dd HH:mm}",
-                 new
-                 {
-                     @class = "form-control",
-                     //data_val_date = string.Format("您输入的活动结束时间必须是一个符合如此格式（2000-01-01 15:08）的日期数据")
-                 }
-                 )
+                                  new
+                                  {
+                                      @class = "form-control",
+                                      //data_val_date = string.Format("您输入的活动结束时间必须是一个符合如此格式（2000-01-01 15:08）的日期数据")
+                                  })
                 @Html.ValidationMessageFor(model => model.StopTime)
             </div>
 
@@ -88,12 +86,11 @@
             <div class="form-group">
                 @Html.LabelFor(x => x.BaoMingJieZhiTime)
                 @Html.TextBoxFor(model => model.BaoMingJieZhiTime, //"{0:yyyy-MM-dd HH:mm}",
-                 new
-                 {
-                     @class = "form-control",
-                     //data_val_date = string.Format("您输入的报名截止日期必须是一个符合如此格式（2000-01-01 15:08）的日期数据")
-                 }
-                 )
+                                  new
+                                  {
+                                      @class = "form-control",
+                                      //data_val_date = string.Format("您输入的报名截止日期必须是一个符合如此格式（2000-01-01 15:08）的日期数据")
+                                  })
                 @Html.ValidationMessageFor(model => model.BaoMingJieZhiTime)
             </div>
 
@@ -146,6 +143,34 @@
                 @Html.LabelFor(x => x.YaoQingMa)
                 @Html.TextBoxFor(model => model.YaoQingMa, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.YaoQingMa)
+            </div>
+
+            <div class="row membereditavatar">
+                <div class="col-md-2">
+                    @{
+                        var filestr = "";
+                        if (!string.IsNullOrEmpty(Model.Avatar))
+                        {
+                            filestr = "/uploads/Huodong/" + Model.Avatar;
+                        }
+                        else
+                        {
+                            filestr = "/Content/Images/bar1.jpg";
+                        }
+                    }
+                    <img src="@filestr" alt="" style="margin-bottom:0px;width:100%;height:80px" />
+                </div>
+
+                <div class="col-md-10">
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                            <span class="btn btn-default btn-file">
+                                选择图片： <input type="file" name="files" id="files" value="">
+                            </span>
+                        </span>
+                        <input type="text" class="form-control" readonly="">
+                    </div>
+                </div>
             </div>
 
             @if (Model.Id != Guid.Empty)

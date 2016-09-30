@@ -124,6 +124,10 @@ namespace MVCForum.Website.Controllers
             return RedirectToAction("Index", "DebugBoard");
             //return Content("生成50个测试账号执行完毕");
         }
+        #endregion
+
+        #region 测试爱驴活动
+
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
@@ -556,6 +560,7 @@ namespace MVCForum.Website.Controllers
 
 
         }
+     
         #endregion
     }
 }

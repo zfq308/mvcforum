@@ -100,7 +100,7 @@ namespace MVCForum.Services
 
                 _context.SaveChanges();
 
-                if (postlist!=null && postlist.Count>0)
+                if (postlist != null && postlist.Count > 0)
                 {
                     foreach (var post in postlist)
                     {
@@ -201,7 +201,16 @@ namespace MVCForum.Services
                                                        x.ZhuangTai == Enum_HuoDongZhuangTai.StopRegister).AsNoTracking().ToList();
             foreach (AiLvHuoDong item in list)
             {
-                // TODO: Benjamin 此方法的实现需要客户确认
+                if (item.StopTime < DateTime.Now)
+                {
+                    item.ZhuangTai = Enum_HuoDongZhuangTai.Finished;
+                    continue;
+                }
+                if (item.ZhuangTai == Enum_HuoDongZhuangTai.Registing && item.BaoMingJieZhiTime < DateTime.Now)
+                {
+                    item.ZhuangTai = Enum_HuoDongZhuangTai.StopRegister;
+                    continue;
+                }
             }
             return true;
         }

@@ -59,7 +59,7 @@ namespace MVCForum.Domain.DomainModel
         public string IsMarried { get; set; }
 
         [Display(Name = "最近未登录天数")]
-        public int NoLoginDays { get; set; }
+        public string NoLoginDays { get; set; }
 
         [Display(Name = "会员类别")]
         public string UserType { get; set; }

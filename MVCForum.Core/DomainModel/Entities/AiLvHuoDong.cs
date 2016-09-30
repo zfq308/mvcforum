@@ -203,6 +203,11 @@ namespace MVCForum.Domain.DomainModel
         public DateTime CreatedTime { get; set; }
 
         /// <summary>
+        /// 活动标题图片
+        /// </summary>
+        public string Avatar { get; set; }
+
+        /// <summary>
         /// 活动报名明细
         /// </summary>
         public virtual IList<ActivityRegister> ActivityRegisters { get; set; }
