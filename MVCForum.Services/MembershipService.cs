@@ -1447,7 +1447,10 @@ namespace MVCForum.Services
                             total = total.Where(p => p.IsApproved == true).ToList();
                             break;
                         case "2":
-                            total = total.Where(p => p.IsApproved == false).ToList();
+                            total = total.Where(p => p.IsApproved == false && p.FinishedFirstAudit != "").ToList();
+                            break;
+                        case "22":
+                            total = total.Where(p => p.IsApproved == false && p.FinishedFirstAudit=="").ToList();
                             break;
                         case "3":
                             total = total.Where(p => p.IsLockedOut == true).ToList();

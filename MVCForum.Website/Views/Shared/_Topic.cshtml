@@ -25,14 +25,14 @@
                     </span>
                 }*@
 
-            <span class="label label-success">
-                @{
-                    var LastActivityDate = "";
-                    if (Model.Topic.User.LastActivityDate != null)
-                    {
-                        LastActivityDate = Model.Topic.User.LastActivityDate.Value.ToString("MM-dd hh:mm");
-                    }
+            @{
+                var LastActivityDate = "";
+                if (Model.Topic.User.LastActivityDate != null)
+                {
+                    LastActivityDate = Model.Topic.User.LastActivityDate.Value.ToString("MM-dd hh:mm");
                 }
+            }
+            <span class="label label-success" title="该用户最后一次登录的时间为： @LastActivityDate">
                 @LastActivityDate
             </span>
         </div>
@@ -95,10 +95,10 @@
 
                 提交于 @Model.Topic.LastPost.DateCreated.ToString("yyyy-MM-dd")
 
-                <span class="stats topicanswers"><span class="glyphicon glyphicon-comment" aria-hidden="true"></span> @Model.Answers.KiloFormat()</span>
-                <span class="stats topicviews"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> @Model.Views.KiloFormat()</span>
-                <span class="stats topicupvotes"><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> @Model.VotesUp.KiloFormat()</span>
-                <span class="stats topicdownvotes"><span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span> @Model.VotesDown.KiloFormat()</span>
+                <span class="stats topicanswers" title="回复数"><span class="glyphicon glyphicon-comment" aria-hidden="true"></span> @Model.Answers.KiloFormat()</span>
+                <span class="stats topicviews" title="阅读数"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> @Model.Views.KiloFormat()</span>
+                <span class="stats topicupvotes" title="点赞数"><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> @Model.VotesUp.KiloFormat()</span>
+                <span class="stats topicdownvotes" title="拍砖数"><span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span> @Model.VotesDown.KiloFormat()</span>
                 @if (Model.Topic.Solved)
                 {
                     <span class="stats topicsolved"><span class="glyphicon glyphicon-ok green-colour" aria-hidden="true"></span></span>

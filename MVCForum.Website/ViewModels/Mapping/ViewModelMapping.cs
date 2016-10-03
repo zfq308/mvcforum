@@ -143,7 +143,7 @@ namespace MVCForum.Website.ViewModels.Mapping
                 Id = currentSettings.Id,
                 ForumName = currentSettings.ForumName,
                 ForumUrl = currentSettings.ForumUrl,
-                ForumKeepAliveURL=currentSettings.ForumKeepAliveURL,
+                ForumKeepAliveURL = currentSettings.ForumKeepAliveURL,
                 IsClosed = currentSettings.IsClosed,
                 EnableRSSFeeds = currentSettings.EnableRSSFeeds,
                 DisplayEditedBy = currentSettings.DisplayEditedBy,
@@ -195,7 +195,7 @@ namespace MVCForum.Website.ViewModels.Mapping
             };
 
             return settingViewModel;
-        }        
+        }
         #endregion
 
         #region Topics
@@ -207,11 +207,11 @@ namespace MVCForum.Website.ViewModels.Mapping
             return GetPermissionsForCategories(categories, roleService, usersRole);
         }
 
-        public static List<TopicViewModel> CreateTopicViewModels(List<Topic> topics, 
-                                                                IRoleService roleService, 
+        public static List<TopicViewModel> CreateTopicViewModels(List<Topic> topics,
+                                                                IRoleService roleService,
                                                                 MembershipRole usersRole,
                                                                 MembershipUser loggedOnUser,
-                                                                List<Category> allowedCategories, 
+                                                                List<Category> allowedCategories,
                                                                 Settings settings)
         {
             // Get all topic Ids
@@ -227,7 +227,7 @@ namespace MVCForum.Website.ViewModels.Mapping
 
             // Create the view models
             var viewModels = new List<TopicViewModel>();
-            foreach (var topic in topics)
+            foreach (var topic in topics.OrderByDescending(x => x.CreateDate).ToList())
             {
                 var id = topic.Id;
                 var permission = permissions[topic.Category];
@@ -272,7 +272,7 @@ namespace MVCForum.Website.ViewModels.Mapping
                 MemberIsOnline = topic.User.LastActivityDate > date,
                 LastActivityDate = topic.User.LastActivityDate,
             };
-          
+
             if (starterPost == null)
             {
                 starterPost = posts.FirstOrDefault(x => x.IsTopicStarter);
@@ -365,7 +365,11 @@ namespace MVCForum.Website.ViewModels.Mapping
 
             // Check for online status
             var date = DateTime.Now.AddMinutes(-AppConstants.TimeSpanInMinutesToShowMembers);
-
+            var MinimalPostFlag = true;
+            if (topic.Category.Name=="活动记录")
+            {
+                MinimalPostFlag = false;
+            }
             return new PostViewModel
             {
                 Permissions = permission,
@@ -377,8 +381,10 @@ namespace MVCForum.Website.ViewModels.Mapping
                 Favourites = favourites,
                 PermaLink = string.Concat(topic.NiceUrl, "?", AppConstants.PostOrderBy, "=", AppConstants.AllPosts, "#comment-", post.Id),
                 MemberIsOnline = post.User.LastActivityDate > date,
+                LastActivityDate = post.User.LastActivityDate,
                 HasVotedDown = hasVotedDown,
-                HasVotedUp = hasVotedUp
+                HasVotedUp = hasVotedUp,
+                MinimalPost = MinimalPostFlag,
             };
         }
 

@@ -4,6 +4,7 @@
 
 @{
     ViewBag.Title = "查看活动";
+    ViewBag.EditorReadOnly = "readonly";
     Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
 }
 
@@ -266,14 +267,7 @@
             </fieldset>
         </div>
 
-        <script type="text/javascript">
-            $(document).ready(function () {
-                $('#LiuCheng').attr('readOnly', 'readonly'); $('#LiuCheng').attr('disabled', true);
-                $('#ZhuYiShiXiang').attr('readOnly', 'readonly'); $('#ZhuYiShiXiang').attr('disabled', true);
-
-            });
-        </script>
+      
 
     }
 </div>
-

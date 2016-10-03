@@ -3,7 +3,7 @@
 @{
     var count = 0;
     const string displayNone = "style=\"display: none;\"";
-    ViewBag.ImageUploadType = Model.OptionalPermissions.CanInsertImages ? "forumimageinsert" : "image";    
+    ViewBag.ImageUploadType = Model.OptionalPermissions.CanInsertImages ? "forumimageinsert" : "image";
 }
 
 @Html.HiddenFor(x => x.TopicId)
@@ -13,6 +13,8 @@
         <div class="col-md-8 topictitleholder">
             <h2>@ViewBag.Title</h2>
         </div>
+
+
         @if (Html.Settings().EnablePolls == true)
         {
             <div class="col-md-4 pollcreatebuttonholder" @Html.Raw(Model.OptionalPermissions.CanCreatePolls ? "" : displayNone)>
@@ -22,7 +24,8 @@
         }
     </div>
 
-    <div class="paddedrow topicname">
+    <!--输入标题-->
+    <div class="paddedrow topicname" @Html.Raw(Model.IsShowTitle ? "" : displayNone)>
         <div class="form-group">
             @Html.LabelFor(model => model.Name)
             @Html.TextBoxFor(model => model.Name, new { @class = "createtopicname form-control" })
@@ -99,8 +102,6 @@ else
     @Html.HiddenFor(x => x.Name)
 }
 
-
-
 <div class="row">
     <div class="col-md-12 topiccontent">
         <div class="editor-field editorholder">
@@ -111,49 +112,9 @@ else
 </div>
 
 <div class="row">
-    <div class="col-md-6 createtopicbuttonholder">
-        <div class="submit-holder">
-            <button type="submit" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
-                @if (Model.Id == Guid.Empty)
-                {
-                   // @Html.LanguageString("Topic.CreateDiscussion")
-                   @Html.Raw("发布")
-                }
-                else
-                {
-                    @Html.LanguageString("Post.Edit")
-                }
-            </button>
-        </div>
-        @if (Model.IsTopicStarter)
-        {
-            @*<div class="checkbox createsubscribe">
-                @using (Html.BeginLabelFor(m => m.SubscribeToTopic, new { @class = "checkbox" }))
-                {
-                    @Html.CheckBoxFor(m => m.SubscribeToTopic)
-                }
-                @Html.ValidationMessageFor(m => m.SubscribeToTopic)
-            </div>*@
-            <div class="checkbox createsticky" @Html.Raw(Model.OptionalPermissions.CanStickyTopic ? "" : displayNone)>
-                @using (Html.BeginLabelFor(m => m.IsSticky, new { @class = "checkbox" }))
-                {
-                    @Html.CheckBoxFor(m => m.IsSticky)
-                }
-                @Html.ValidationMessageFor(m => m.IsSticky)
-            </div>
-            <div class="checkbox createlocked" @Html.Raw(Model.OptionalPermissions.CanLockTopic ? "" : displayNone)>
-                @using (Html.BeginLabelFor(m => m.IsLocked, new { @class = "checkbox" }))
-                {
-                    @Html.CheckBoxFor(m => m.IsLocked)
-                }
-                @Html.ValidationMessageFor(m => m.IsLocked)
-            </div>
-        }
-    </div>
-
     @if (Model.IsTopicStarter)
     {
-        <div class="col-md-5 col-md-offset-1 topiccategory">
+        <div class="col-md-10 topiccategory">
 
             @if (Model.Id == Guid.Empty)
             {
@@ -172,5 +133,45 @@ else
             }
         </div>
     }
+    <div class="col-md-2 createtopicbuttonholder" style="display: none">
+        @if (Model.IsTopicStarter)
+        {
+            @*<div class="checkbox createsubscribe">
+                    @using (Html.BeginLabelFor(m => m.SubscribeToTopic, new { @class = "checkbox" }))
+                    {
+                        @Html.CheckBoxFor(m => m.SubscribeToTopic)
+                    }
+                    @Html.ValidationMessageFor(m => m.SubscribeToTopic)
+                </div>*@
+            <div class="checkbox createsticky" @Html.Raw(Model.OptionalPermissions.CanStickyTopic ? "" : displayNone)>
+                @using (Html.BeginLabelFor(m => m.IsSticky, new { @class = "checkbox" }))
+                {
+                    @Html.CheckBoxFor(m => m.IsSticky)
+                }
+                @Html.ValidationMessageFor(m => m.IsSticky)
+            </div>
+            <div class="checkbox createlocked" @Html.Raw(Model.OptionalPermissions.CanLockTopic ? "" : displayNone)>
+                @using (Html.BeginLabelFor(m => m.IsLocked, new { @class = "checkbox" }))
+                {
+                    @Html.CheckBoxFor(m => m.IsLocked)
+                }
+                @Html.ValidationMessageFor(m => m.IsLocked)
+            </div>
+        }
+    </div>
+
+    <div class="submit-holder">
+        <button type="submit" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
+            @if (Model.Id == Guid.Empty)
+            {
+                // @Html.LanguageString("Topic.CreateDiscussion")
+                @Html.Raw("发布")
+            }
+            else
+            {
+                @Html.LanguageString("Post.Edit")
+            }
+        </button>
+    </div>
 
 </div>

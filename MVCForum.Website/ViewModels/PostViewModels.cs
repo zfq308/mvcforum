@@ -51,6 +51,10 @@ namespace MVCForum.Website.ViewModels
         public bool MemberIsOnline { get; set; }
         public bool ShowTopicName { get; set; }
         public bool MinimalPost { get; set; }
+        /// <summary>
+        /// 最新活跃时间（用来判断用户在线状态）
+        /// </summary>
+        public DateTime? LastActivityDate { get; set; }
     }
 
     public class ReportPostViewModel

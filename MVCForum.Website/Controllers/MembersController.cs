@@ -906,17 +906,17 @@ namespace MVCForum.Website.Controllers
 
             var Items_AuditComments = new List<SelectListItem>();
             Items_AuditComments.Add(new SelectListItem { Text = "", Value = "" });
-            Items_AuditComments.Add(new SelectListItem { Text = "审核通过", Value = "0" });
-            Items_AuditComments.Add(new SelectListItem { Text = "驳回，姓名信息不合规", Value = "1" });
-            Items_AuditComments.Add(new SelectListItem { Text = "驳回，出生日期不合规", Value = "2" });
-            Items_AuditComments.Add(new SelectListItem { Text = "驳回，身高信息不合规", Value = "3" });
-            Items_AuditComments.Add(new SelectListItem { Text = "驳回，体重信息不合规", Value = "4" });
-            Items_AuditComments.Add(new SelectListItem { Text = "驳回，学校名称不合规", Value = "5" });
-            Items_AuditComments.Add(new SelectListItem { Text = "驳回，家乡信息不合规", Value = "6" });
-            Items_AuditComments.Add(new SelectListItem { Text = "驳回，职业信息不合规", Value = "7" });
-            Items_AuditComments.Add(new SelectListItem { Text = "驳回，兴趣爱好不合规", Value = "8" });
-            Items_AuditComments.Add(new SelectListItem { Text = "驳回，头像内容不合规", Value = "9" });
-            Items_AuditComments.Add(new SelectListItem { Text = "驳回，个人图片内容不合规", Value = "10" });
+            Items_AuditComments.Add(new SelectListItem { Text = "审核通过", Value = "审核通过" });
+            Items_AuditComments.Add(new SelectListItem { Text = "驳回，姓名信息不合规", Value = "驳回，姓名信息不合规" });
+            Items_AuditComments.Add(new SelectListItem { Text = "驳回，出生日期不合规", Value = "驳回，出生日期不合规" });
+            Items_AuditComments.Add(new SelectListItem { Text = "驳回，身高信息不合规", Value = "驳回，身高信息不合规" });
+            Items_AuditComments.Add(new SelectListItem { Text = "驳回，体重信息不合规", Value = "驳回，体重信息不合规" });
+            Items_AuditComments.Add(new SelectListItem { Text = "驳回，学校名称不合规", Value = "驳回，学校名称不合规" });
+            Items_AuditComments.Add(new SelectListItem { Text = "驳回，家乡信息不合规", Value = "驳回，家乡信息不合规" });
+            Items_AuditComments.Add(new SelectListItem { Text = "驳回，职业信息不合规", Value = "驳回，职业信息不合规" });
+            Items_AuditComments.Add(new SelectListItem { Text = "驳回，兴趣爱好不合规", Value = "驳回，兴趣爱好不合规" });
+            Items_AuditComments.Add(new SelectListItem { Text = "驳回，头像内容不合规", Value = "驳回，头像内容不合规" });
+            Items_AuditComments.Add(new SelectListItem { Text = "驳回，个人图片内容不合规", Value = "驳回，个人图片内容不合规" });
 
             foreach (SelectListItem item in Items_AuditComments)
             {
@@ -937,6 +937,28 @@ namespace MVCForum.Website.Controllers
         {
             if (ModelState.IsValid)
             {
+                #region 基本信息验证
+               
+                if (userModel.Height == 0)
+                {
+                    ShowMessage(new GenericMessageViewModel
+                    {
+                        Message = "请填写您的身高信息。",
+                        MessageType = GenericMessages.danger
+                    });
+                    return Edit(userModel.Id);
+                }
+
+                if (userModel.Weight == 0)
+                {
+                    ShowMessage(new GenericMessageViewModel
+                    {
+                        Message = "请填写您的体重信息。",
+                        MessageType = GenericMessages.danger
+                    });
+                    return Edit(userModel.Id);
+                }
+
                 if (userModel.LocationProvince == "0" || userModel.LocationCity == "0" || userModel.LocationCounty == "0")
                 {
                     ShowMessage(new GenericMessageViewModel
@@ -947,6 +969,7 @@ namespace MVCForum.Website.Controllers
                     });
                     return Edit(userModel.Id);
                 }
+
                 if (userModel.SchoolProvince == "0" || userModel.SchoolCity == "0")
                 {
                     ShowMessage(new GenericMessageViewModel
@@ -958,6 +981,7 @@ namespace MVCForum.Website.Controllers
                     return Edit(userModel.Id);
                 }
 
+                #endregion
 
                 using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
@@ -1109,11 +1133,13 @@ namespace MVCForum.Website.Controllers
                         {
                             // 按设计需求的规定，注册会员的每次改动都将审核标志位置false, 再由管理员手动审核
                             user.IsApproved = false;
+                            user.AuditComments = "";
                             messagestr = "用户信息已更新，等待管理员审核。";
                         }
                         else
                         {
                             user.IsApproved = true;  //管理员和供应商无需审核
+                            user.FinishedFirstAudit = "FinishedFirstAudit";
                             messagestr = "用户信息已更新。";
                         }
 
@@ -1170,7 +1196,7 @@ namespace MVCForum.Website.Controllers
                             }
                             #endregion
 
-                            return RedirectToAction("Index", "Members");
+                            return RedirectToAction("Index", "Home");
                         }
                         catch (Exception ex)
                         {
@@ -1384,17 +1410,17 @@ namespace MVCForum.Website.Controllers
                     #region 绑定审核意见信息
 
                     var Items_AuditComments = new List<SelectListItem>();
-                    Items_AuditComments.Add(new SelectListItem { Text = "审核通过", Value = "0" });
-                    Items_AuditComments.Add(new SelectListItem { Text = "驳回，姓名信息不合规", Value = "1" });
-                    Items_AuditComments.Add(new SelectListItem { Text = "驳回，出生日期不合规", Value = "2" });
-                    Items_AuditComments.Add(new SelectListItem { Text = "驳回，身高信息不合规", Value = "3" });
-                    Items_AuditComments.Add(new SelectListItem { Text = "驳回，体重信息不合规", Value = "4" });
-                    Items_AuditComments.Add(new SelectListItem { Text = "驳回，学校名称不合规", Value = "5" });
-                    Items_AuditComments.Add(new SelectListItem { Text = "驳回，家乡信息不合规", Value = "6" });
-                    Items_AuditComments.Add(new SelectListItem { Text = "驳回，职业信息不合规", Value = "7" });
-                    Items_AuditComments.Add(new SelectListItem { Text = "驳回，兴趣爱好不合规", Value = "8" });
-                    Items_AuditComments.Add(new SelectListItem { Text = "驳回，头像内容不合规", Value = "9" });
-                    Items_AuditComments.Add(new SelectListItem { Text = "驳回，个人图片内容不合规", Value = "10" });
+                    Items_AuditComments.Add(new SelectListItem { Text = "审核通过", Value = "审核通过" });
+                    Items_AuditComments.Add(new SelectListItem { Text = "驳回，姓名信息不合规", Value = "驳回，姓名信息不合规" });
+                    Items_AuditComments.Add(new SelectListItem { Text = "驳回，出生日期不合规", Value = "驳回，出生日期不合规" });
+                    Items_AuditComments.Add(new SelectListItem { Text = "驳回，身高信息不合规", Value = "驳回，身高信息不合规" });
+                    Items_AuditComments.Add(new SelectListItem { Text = "驳回，体重信息不合规", Value = "驳回，体重信息不合规" });
+                    Items_AuditComments.Add(new SelectListItem { Text = "驳回，学校名称不合规", Value = "驳回，学校名称不合规" });
+                    Items_AuditComments.Add(new SelectListItem { Text = "驳回，家乡信息不合规", Value = "驳回，家乡信息不合规" });
+                    Items_AuditComments.Add(new SelectListItem { Text = "驳回，职业信息不合规", Value = "驳回，职业信息不合规" });
+                    Items_AuditComments.Add(new SelectListItem { Text = "驳回，兴趣爱好不合规", Value = "驳回，兴趣爱好不合规" });
+                    Items_AuditComments.Add(new SelectListItem { Text = "驳回，头像内容不合规", Value = "驳回，头像内容不合规" });
+                    Items_AuditComments.Add(new SelectListItem { Text = "驳回，个人图片内容不合规", Value = "驳回，个人图片内容不合规" });
 
                     foreach (SelectListItem item in Items_AuditComments)
                     {
@@ -1420,7 +1446,12 @@ namespace MVCForum.Website.Controllers
         {
             if (string.IsNullOrEmpty(userModel.AuditComment) || userModel.Id == Guid.Empty)
             {
-                return View(userModel);
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = "请选定审核意见",
+                    MessageType = GenericMessages.danger
+                };
+                return RedirectToAction("Edit", "Members", new { Id = userModel.Id });
             }
             //此处不校验userModel实例中的其他属性
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
@@ -1432,7 +1463,10 @@ namespace MVCForum.Website.Controllers
                     if (userModel.AuditComment.Contains("审核通过"))
                     {
                         user.IsApproved = true;
-
+                        if (string.IsNullOrEmpty(user.FinishedFirstAudit))
+                        {
+                            user.FinishedFirstAudit = "FinishedFirstAudit";
+                        }
                         // 审核通过照片
                         _MembershipUserPictureService.AuditMembershipUserPicture(user, "默认审核通过", Enum_UploadPictureAuditStatus.Auditted);
                     }
@@ -2063,7 +2097,7 @@ namespace MVCForum.Website.Controllers
 
             #region 绑定收入信息
 
-         var Items_IncomeRange = new List<SelectListItem>();
+            var Items_IncomeRange = new List<SelectListItem>();
             Items_IncomeRange.AddRange(TIncomeRange.LoadForSearchIncomeList().Select(x =>
             {
                 return new SelectListItem { Text = x.IncomeRangeName, Value = x.IncomeRangeId };
@@ -2088,7 +2122,8 @@ namespace MVCForum.Website.Controllers
             var Items_UserStatus = new List<SelectListItem>();
 
             Items_UserStatus.Add(new SelectListItem { Text = "正常已审核的注册会员", Value = "1" });
-            Items_UserStatus.Add(new SelectListItem { Text = "等待审核的注册会员", Value = "2" });
+            Items_UserStatus.Add(new SelectListItem { Text = "等待初次审核的注册会员", Value = "22" });
+            Items_UserStatus.Add(new SelectListItem { Text = "等待再次审核的注册会员", Value = "2" });
             Items_UserStatus.Add(new SelectListItem { Text = "用户状态被锁定", Value = "3" });
             Items_UserStatus.Add(new SelectListItem { Text = "用户状态被禁用", Value = "4" });
             //Items_UserStatus.Add(new SelectListItem { Text = "用户在每日之星推广阶段", Value = "5" });

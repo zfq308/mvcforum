@@ -75,6 +75,7 @@ namespace MVCForum.Services.Data.Mapping
             Property(x => x.FailedPasswordAttemptCount).IsRequired();
             Property(x => x.LoginIdExpires).IsOptional();
             Property(x => x.HasAgreedToTermsAndConditions).IsOptional();
+            Property(x => x.FinishedFirstAudit).IsRequired().HasMaxLength(15);
             #endregion
 
             #region 用户功能定义属性
@@ -111,7 +112,7 @@ namespace MVCForum.Services.Data.Mapping
             Property(x => x.MicrosoftAccessToken).IsOptional().HasMaxLength(450);
             Property(x => x.MicrosoftId).IsOptional();
             Property(x => x.TwitterShowFeed).IsOptional();
-            Property(x => x.QQ).IsOptional().HasMaxLength(15);
+
             Property(x => x.Latitude).IsOptional().HasMaxLength(40);
             Property(x => x.Longitude).IsOptional().HasMaxLength(40);
             Property(x => x.IsExternalAccount).IsOptional();

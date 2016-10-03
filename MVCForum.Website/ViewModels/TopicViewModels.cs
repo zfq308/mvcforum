@@ -213,6 +213,8 @@ namespace MVCForum.Website.ViewModels
 
         public bool IsTopicStarter { get; set; }
 
+        public bool IsShowTitle { get; set; }
+
         /// <summary>
         /// Topic所属类型枚举
         /// </summary>

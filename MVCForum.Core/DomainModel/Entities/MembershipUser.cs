@@ -146,7 +146,7 @@ namespace MVCForum.Domain.DomainModel
         R_Lowthan1W = 1,
         R_1WTo5W = 2,
         R_5WMore = 3,
-        R_NOClass = 4
+
     }
     #endregion
 
@@ -178,12 +178,13 @@ namespace MVCForum.Domain.DomainModel
             LocationCity = "000000";
             LocationCounty = "000000";
             Job = "";
-            IncomeRange = Enum_IncomeRange.R_NOClass;
+            IncomeRange = Enum_IncomeRange.R_1WTo5W;
             Interest = "";
             MobilePhone = "";
             UserType = Enum_UserType.A;
             Comment = "";
             Avatar = "";
+            FinishedFirstAudit = "";
 
             #endregion
 
@@ -366,7 +367,10 @@ namespace MVCForum.Domain.DomainModel
 
         #region 用户状态相关属性
 
-
+        /// <summary>
+        /// 是否完成初次审核
+        /// </summary>
+        public string FinishedFirstAudit { get; set; }
         /// <summary>
         /// 审核意见
         /// </summary>
@@ -534,10 +538,7 @@ namespace MVCForum.Domain.DomainModel
         /// 
         /// </summary>
         public bool? TwitterShowFeed { get; set; }
-        /// <summary>
-        /// QQ
-        /// </summary>
-        public string QQ { get; set; }
+       
         /// <summary>
         /// 纬度信息
         /// </summary>
@@ -568,6 +569,6 @@ namespace MVCForum.Domain.DomainModel
     }
 
 
-  
+
 
 }

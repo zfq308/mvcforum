@@ -181,7 +181,7 @@
                             {
                                 if (!string.IsNullOrEmpty(Model.AuditComment))
                                 {
-                                    <span><Font color='red'>当前账号审核被驳回。驳回原因为：Model.AuditComment</Font></span>
+                                    <span><Font color='red'>当前账号审核被驳回。驳回原因为：@Model.AuditComment</Font></span>
                                 }
                                 else
                                 {
@@ -339,7 +339,7 @@
                     </div>
                 }
                 <div class="form-group">
-                    @if (Model.IsApproved)
+                    @if (User.IsInRole(AppConstants.AdminRoleName) && Model.IsApproved)
                     {
                         <span><Font color='red'>此账号已审核。</Font></span>
                     }

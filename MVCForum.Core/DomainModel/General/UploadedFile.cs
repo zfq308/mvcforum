@@ -24,7 +24,7 @@ namespace MVCForum.Domain.DomainModel
         }
         public string FilePath
         {
-            get { return string.Format("~/content/uploads/{0}/{1}", MembershipUser.Id, Filename); }
+            get { return string.Format("~/uploads/{0}/{1}", MembershipUser.Id, Filename); }
         }
     }
 }

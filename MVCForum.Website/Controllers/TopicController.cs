@@ -99,7 +99,9 @@ namespace MVCForum.Website.Controllers
             if (allowedAccessCategories.Any() && LoggedOnReadOnlyUser.DisablePosting != true)
             {
                 var viewModel = PrePareCreateEditTopicViewModel(allowedAccessCategories);
+                viewModel.IsLocked = true;
                 viewModel.TopicType = Enum_TopicType.Announcement;
+                viewModel.IsTopicStarter = true;
                 return View(viewModel);
             }
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
@@ -130,6 +132,8 @@ namespace MVCForum.Website.Controllers
             {
                 var viewModel = PrePareCreateEditTopicViewModel(allowedAccessCategories);
                 viewModel.TopicType = Enum_TopicType.Announcement;
+                viewModel.IsLocked = true;
+                viewModel.IsTopicStarter = true;
                 return View(viewModel);
             }
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
@@ -157,10 +161,12 @@ namespace MVCForum.Website.Controllers
             if (allowedAccessCategories.Any() && LoggedOnReadOnlyUser.DisablePosting != true)
             {
                 var viewModel = PrePareCreateEditTopicViewModel(allowedAccessCategories);
+
+                viewModel.Name = "***";
                 viewModel.TopicType = Enum_TopicType.Announcement;
                 viewModel.OptionalPermissions.CanLockTopic = false;
                 viewModel.OptionalPermissions.CanStickyTopic = false;
-
+                viewModel.IsShowTitle = false;
                 return View(viewModel);
             }
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
@@ -216,6 +222,27 @@ namespace MVCForum.Website.Controllers
             topicViewModel.Categories = _categoryService.GetBaseSelectListCategories(new List<Category>() { category });
 
             topicViewModel.IsTopicStarter = true;
+
+            if(category.Name=="每日心情")
+            {
+                topicViewModel.IsShowTitle = false;
+                if(string.IsNullOrEmpty(topicViewModel.Name) || topicViewModel.Name=="***")
+                {
+                    if(topicViewModel.Content.Length>20)
+                    {
+                        topicViewModel.Name = topicViewModel.Content.Substring(0, 20)+"...";
+                    }
+                    else
+                    {
+                        topicViewModel.Name = topicViewModel.Content;
+                    }
+                }
+            }
+            else
+            {
+                topicViewModel.IsShowTitle = true;
+            }
+
             if (topicViewModel.PollAnswers == null)
             {
                 topicViewModel.PollAnswers = new List<PollAnswer>();
@@ -599,18 +626,27 @@ namespace MVCForum.Website.Controllers
             {
                 canInsertImages = permissions[SiteConstants.Instance.PermissionInsertEditorImages].IsTicked;
             }
+
+            var OptionalPermissions = new CheckCreateTopicPermissions();
+            OptionalPermissions.CanLockTopic = true;
+
+            if(allowedCategories.Count>0 && allowedCategories[0].Name=="每日心情")
+            {
+                OptionalPermissions.CanUploadFiles = false;
+            }
+            else
+            {
+                OptionalPermissions.CanUploadFiles = true;
+            }
+            OptionalPermissions.CanStickyTopic = true;
+            OptionalPermissions.CanCreatePolls = false;
+            OptionalPermissions.CanInsertImages = true;
+
             return new CreateEditTopicViewModel
             {
                 SubscribeToTopic = true,
                 Categories = _categoryService.GetBaseSelectListCategories(allowedCategories),
-                OptionalPermissions = new CheckCreateTopicPermissions
-                {
-                    CanLockTopic = userIsAdmin,
-                    CanStickyTopic = userIsAdmin,
-                    CanUploadFiles = userIsAdmin,
-                    CanCreatePolls = userIsAdmin,
-                    CanInsertImages = canInsertImages
-                },
+                OptionalPermissions = OptionalPermissions,
                 PollAnswers = new List<PollAnswer>(),
                 IsTopicStarter = true,
                 PollCloseAfterDays = 0
