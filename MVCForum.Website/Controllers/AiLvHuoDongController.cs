@@ -21,6 +21,7 @@ using WxPayAPI;
 using System.Web.Hosting;
 using System.IO;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace MVCForum.Website.Controllers
 {
@@ -737,75 +738,6 @@ namespace MVCForum.Website.Controllers
         }
 
         /// <summary>
-        /// 支付成功后更新记录状态
-        /// </summary>
-        /// <param name="id">活动注册记录实例</param>
-        /// <param name="FeeId">支付交易号</param>
-        /// <returns></returns>
-        [Authorize]
-        [HttpPost]
-        public ActionResult EditPaidInfomation(string id, string FeeId)
-        {
-            LoggingService.Error("更新订单信息，报名DetailsId=" + id + ", 微信流水码为:" + FeeId);
-
-            Guid DetailsId = Guid.Empty;
-            if (Guid.TryParse(id, out DetailsId))
-            {
-                if (DetailsId != Guid.Empty && !string.IsNullOrEmpty(FeeId))
-                {
-                    using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
-                    {
-                        try
-                        {
-                            _ActivityRegisterService.ConfirmPay(DetailsId, FeeId);
-                            unitOfWork.Commit();
-                            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                            {
-                                Message = "已完成活动费用的支付。",
-                                MessageType = GenericMessages.info
-                            };
-                            return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
-                        }
-                        catch (Exception ex)
-                        {
-                            unitOfWork.Rollback();
-                            LoggingService.Error(ex);
-                            ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
-
-                            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                            {
-                                Message = ex.Message,
-                                MessageType = GenericMessages.danger
-                            };
-                            return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
-
-                        }
-                    }
-                }
-                else
-                {
-                    LoggingService.Error("更新订单信息发生错误，报名DetailsId=" + id + ", 微信流水码为:" + FeeId);
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = "更新订单信息发生错误，报名DetailsId=" + id + ", 微信流水码为:" + FeeId,
-                        MessageType = GenericMessages.danger
-                    };
-                    return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
-                }
-            }
-            else
-            {
-                LoggingService.Error("更新订单信息发生错误，报名DetailsId=" + id + ", 微信流水码为:" + FeeId);
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                {
-                    Message = "更新订单信息发生错误，报名DetailsId=" + id + ", 微信流水码为:" + FeeId,
-                    MessageType = GenericMessages.danger
-                };
-                return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
-            }
-        }
-
-        /// <summary>
         /// 导出参加活动的用户清单
         /// </summary>
         /// <param name="id">爱驴活动的Guid编号</param>
@@ -944,8 +876,15 @@ namespace MVCForum.Website.Controllers
                 if (ar != null)
                 {
                     #region 支付金额校验
-                   
-                    string strFee = (double.Parse(strTotal_fee) * 100).ToString(); // *100，转化金额从“分”到“元”
+
+                    //string strFee = (double.Parse(strTotal_fee) * 100).ToString(); // *100，转化金额从“分”到“元”
+                    //jsApiPay.total_fee = int.Parse(strFee);
+
+                    //if (jsApiPay.total_fee != ar.FeeNumber * 100)
+
+
+
+                    string strFee = (double.Parse(strTotal_fee)).ToString(); // *100，转化金额从“分”到“元”
                     jsApiPay.total_fee = int.Parse(strFee);
 
                     if (jsApiPay.total_fee != ar.FeeNumber)
@@ -968,7 +907,7 @@ namespace MVCForum.Website.Controllers
 
                         #endregion
                     }
-                    
+
                     #endregion
 
                     //若传递了相关参数，则调统一下单接口，获得后续相关接口的入口参数
@@ -980,8 +919,8 @@ namespace MVCForum.Website.Controllers
 
                         string strBody = "爱驴网微信支付:" + _aiLvHuoDongService.Get(ar.Id).MingCheng + ":" +
                             _MembershipService.GetUser(ar.UserId).UserName;//商品描述
-
-                        WxPayData unifiedOrderResult = jsApiPay.GetUnifiedOrderResult(strBody);
+                        string attachInfo = ar.Id.ToString();
+                        WxPayData unifiedOrderResult = jsApiPay.GetUnifiedOrderResult(strBody, attachInfo);
                         WxPayData wxJsApiParam = jsApiPay.GetJsApiParameters();//获取H5调起JS API参数
                         var aOrder = new ActivityRegisterForOrder()
                         {
@@ -1286,5 +1225,114 @@ namespace MVCForum.Website.Controllers
             return View(model);
         }
 
+
+        public ActionResult ResultNotifyPage()
+        {
+            var data = GetNotifyData();
+
+            if (data.GetValue("result_code").ToString() != "SUCCESS")
+            {
+                LoggingService.Error("result_code返回不为SUCCESS.");
+                return View();
+            }
+
+            string mId = data.GetValue("attach").ToString();
+            string mFeeId = data.GetValue("transaction_id").ToString();
+            string PayCompletedTimeStr = data.GetValue("time_end").ToString();
+            LoggingService.Error("attach=" + mId);
+            LoggingService.Error("transaction_id=" + mFeeId);
+
+            DateTime PayCompletedTime = DateTime.ParseExact(PayCompletedTimeStr, "yyyyMMddHHmmss", CultureInfo.InvariantCulture);
+            LoggingService.Error("time_end=" + PayCompletedTime.ToString("yyyy-MM-dd HH:mm:ss"));
+
+
+
+
+            //string mId = "dbac362e-97ce-4c5c-994d-a6980042d5af";
+            //string mFeeId = "4010212001201610076009743132";
+            //DateTime PayCompletedTime = DateTime.ParseExact("20161007040338", "yyyyMMddHHmmss", CultureInfo.InvariantCulture);
+
+            Guid DetailsId = Guid.Empty;
+            if (Guid.TryParse(mId, out DetailsId))
+            {
+                if (DetailsId != Guid.Empty && !string.IsNullOrEmpty(mFeeId))
+                {
+                    using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                    {
+                        #region 更新报名记录
+
+                        try
+                        {
+                            _ActivityRegisterService.ConfirmPay(DetailsId, mFeeId, PayCompletedTime);
+                            unitOfWork.Commit();
+                            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                            {
+                                Message = "已完成活动费用的支付。",
+                                MessageType = GenericMessages.info
+                            };
+                            return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
+                        }
+                        catch (Exception ex)
+                        {
+                            unitOfWork.Rollback();
+                            LoggingService.Error(ex);
+                            ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
+
+                            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                            {
+                                Message = ex.Message,
+                                MessageType = GenericMessages.danger
+                            };
+                            return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
+                        }
+
+                        #endregion
+                    }
+                }
+            }
+            //出错时处理
+            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+            {
+                Message = "更新订单信息时返回的参数不符合要求，报名DetailsId=" + mId + ", 微信支付单号:" + mFeeId,
+                MessageType = GenericMessages.danger
+            };
+            return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
+        }
+
+        public WxPayData GetNotifyData()
+        {
+            //接收从微信后台POST过来的数据
+            System.IO.Stream s = Request.InputStream;
+            int count = 0;
+            byte[] buffer = new byte[1024];
+            StringBuilder builder = new StringBuilder();
+            while ((count = s.Read(buffer, 0, 1024)) > 0)
+            {
+                builder.Append(Encoding.UTF8.GetString(buffer, 0, count));
+            }
+            s.Flush();
+            s.Close();
+            s.Dispose();
+
+            Log.Info(this.GetType().ToString(), "Receive data from WeChat B : " + builder.ToString());
+
+            //转换数据格式并验证签名
+            WxPayData data = new WxPayData();
+            try
+            {
+                data.FromXml(builder.ToString());
+            }
+            catch (WxPayException ex)
+            {
+                //若签名错误，则立即返回结果给微信支付后台
+                WxPayData res = new WxPayData();
+                res.SetValue("return_code", "FAIL");
+                res.SetValue("return_msg", ex.Message);
+                Log.Error(this.GetType().ToString(), "Sign check error : " + res.ToXml());
+                Response.Write(res.ToXml());
+                Response.End();
+            }
+            return data;
+        }
     }
 }

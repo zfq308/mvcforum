@@ -142,12 +142,12 @@ namespace WxPayAPI
 		 * @return 统一下单结果
 		 * @失败时抛异常WxPayException
 		 */
-		public WxPayData GetUnifiedOrderResult(string strBody)
+		public WxPayData GetUnifiedOrderResult(string strBody,string attachInfo)
 		{
             //统一下单
             WxPayData data = new WxPayData();
 			data.SetValue("body", strBody);
-			data.SetValue("attach", "附加信息:爱驴网微信支付");
+			data.SetValue("attach", attachInfo);
 			data.SetValue("out_trade_no", WxPayApi.GenerateOutTradeNo());
 			data.SetValue("total_fee", total_fee);
 			data.SetValue("time_start", DateTime.Now.ToString("yyyyMMddHHmmss"));

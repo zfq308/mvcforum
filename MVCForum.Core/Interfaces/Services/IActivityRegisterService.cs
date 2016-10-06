@@ -15,7 +15,7 @@ namespace MVCForum.Domain.Interfaces.Services
         ActivityRegister Get(Guid id);
         ActivityRegister Get(AiLvHuoDong huodong, MembershipUser user);
         bool Delete(ActivityRegister RegisterInfo);
-        void ConfirmPay(Guid DetailsId, String FeeId);
+        void ConfirmPay(Guid DetailsId, String FeeId,DateTime PayCompletedTime);
 
         IList<ActivityRegister> GetActivityRegisterListByHongDongId(Guid HuoDongId);
         IList<ActivityRegister> GetActivityRegisterListByHongDong(AiLvHuoDong HuoDong);

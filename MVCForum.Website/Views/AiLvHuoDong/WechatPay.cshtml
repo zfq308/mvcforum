@@ -139,24 +139,7 @@
            //http://www.cnblogs.com/txw1958/p/wxpay-order-query.html
            if (res.err_msg == "get_brand_wcpay_request:ok") {
                alert("支付成功,请稍后查询余额,如有疑问,请联系管理员.");
-               //ajax
-               $.ajax({
-                   type: "POST",
-                   dataType: "text",
-                   url: '@Url.Action("EditPaidInfomation", "AiLvHuoDong")',
-                   data: {
-                       id: detailsId,
-                       FeeId: res.transaction_id,
-                   },
-                   error: function (request) {
-                       layer.msg("服务器错误！", function () { });
-                       return false;
-                   },
-                   success: function (data) {
-                       window.location.href = "@Url.Action("ZuiXinHuoDong", "AiLvHuoDong")"; //支付成功后跳转的页面
-                   }
-               }); //ajax end
-
+               window.location.href = "@Url.Action("ZuiXinHuoDong", "AiLvHuoDong")"; //支付成功后跳转的页面
            }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
            else {
                alert(res.err_msg);

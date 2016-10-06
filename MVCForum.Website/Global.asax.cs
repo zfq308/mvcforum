@@ -60,7 +60,7 @@ namespace MVCForum.Website
             Application["Version"] = AppHelpers.GetCurrentVersionNo();
 
             LoggingService.Initialise(ConfigUtils.GetAppSettingInt32("LogFileMaxSizeBytes", 10000));
-            //LoggingService.Error("Application_Start");
+            LoggingService.Error("Application_Start");
 
             #region TODO: Benjamin, 可考虑取消这一段“反射badges系列组件”的代码
 

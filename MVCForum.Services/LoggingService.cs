@@ -229,14 +229,14 @@ namespace MVCForum.Services
                 return;
             }
 
-            var message = new StringBuilder(ex.Message + "======StackTrace======" + ex.StackTrace);
+            var message = new StringBuilder(ex.Message );
 
             var inner = ex.InnerException;
             var depthCounter = 0;
             while (inner != null && depthCounter++ < maxExceptionDepth)
             {
                 message.Append(" INNER EXCEPTION: ");
-                message.Append(inner.Message + "======StackTrace======" + ex.StackTrace);
+                message.Append(inner.Message );
                 inner = inner.InnerException;
             }
 

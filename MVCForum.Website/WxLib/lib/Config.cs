@@ -32,7 +32,7 @@ namespace WxPayAPI
         //=======【支付结果通知url】===================================== 
         /* 支付结果通知回调url，用于商户接收支付结果
         */
-        public const string NOTIFY_URL = "/example/ResultNotifyPage.aspx";
+        public const string NOTIFY_URL = "http://www.ailvlove.com/AiLvHuoDong/ResultNotifyPage";
 
         //=======【商户系统后台机器IP】===================================== 
         /* 此参数可手动配置也可在程序中自动获取

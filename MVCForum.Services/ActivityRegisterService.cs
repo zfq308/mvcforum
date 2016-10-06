@@ -278,7 +278,7 @@ namespace MVCForum.Services
             return _context.ActivityRegister.AsNoTracking().Where(x => x.Id == HuoDongId).ToList();
         }
 
-    
+
         public int CountRegistedNumber(Guid HuoDongId)
         {
             return _context.ActivityRegister.AsNoTracking().Where(x => x.Id == HuoDongId).Sum(y => y.JoinPeopleNumber);
@@ -309,7 +309,7 @@ namespace MVCForum.Services
             return 0;
         }
 
-        public void ConfirmPay(Guid DetailsId, string FeeId)
+        public void ConfirmPay(Guid DetailsId, string FeeId, DateTime PayCompletedTime)
         {
             var ar = Get(DetailsId);
             if (ar != null)

@@ -39,7 +39,7 @@ namespace WxPayAPI
             s.Close();
             s.Dispose();
 
-            Log.Info(this.GetType().ToString(), "Receive data from WeChat : " + builder.ToString());
+            Log.Info(this.GetType().ToString(), "Receive data from WeChat A : " + builder.ToString());
 
             //转换数据格式并验证签名
             WxPayData data = new WxPayData();
@@ -58,7 +58,7 @@ namespace WxPayAPI
                 page.Response.End();
             }
 
-            Log.Info(this.GetType().ToString(), "Check sign success");
+            Log.Info(this.GetType().ToString(), "Check sign success A");
             return data;
         }
 

@@ -13,6 +13,7 @@ namespace MVCForum.Website
 
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
             routes.IgnoreRoute("{*favicon}", new { favicon = @"(.*/)?favicon.ico(/.*)?" });
+         
 
             // API Attribute Routes
             //routes.MapMvcAttributeRoutes();

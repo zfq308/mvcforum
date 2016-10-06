@@ -1196,6 +1196,7 @@
     <Content Include="Views\Members\FriendMessage.cshtml" />
     <Content Include="Views\Members\MemberList.cshtml" />
     <Content Include="Views\AiLvHuoDong\WechatPay.cshtml" />
+    <Content Include="Views\AiLvHuoDong\ResultNotifyPage.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />
