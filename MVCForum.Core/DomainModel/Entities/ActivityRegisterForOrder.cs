@@ -32,6 +32,8 @@ namespace MVCForum.Domain.DomainModel
         /// 微信支付后的返回消息
         /// </summary>
         public string msg { get; set; }
+
+        public string detailsId { get; set; }
     }
 
 }

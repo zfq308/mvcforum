@@ -50,9 +50,18 @@ namespace MVCForum.Domain.DomainModel
         /// </summary>
         Fail_VerifyUserApproveStatus = 5,
         /// <summary>
-        /// 报名校验失败--已参加这个活动，不能重复参加
+        /// 报名校验失败--已报名这个免费活动，不能重复报名
         /// </summary>
         Fail_VerifyRegisteredTheActivity = 6,
+        /// <summary>
+        /// 报名校验失败--已报名这个非免费活动，但还未支付
+        /// </summary>
+        Fail_VerifyRegisteredNoPay=7,
+        /// <summary>
+        /// 报名校验失败--已报名这个非免费活动，已完成支付，请勿重复报名
+        /// </summary>
+        Fail_VerifyRegisteredPaied = 8,
+
     }
 
 

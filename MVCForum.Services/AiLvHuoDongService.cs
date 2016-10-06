@@ -90,31 +90,38 @@ namespace MVCForum.Services
                         _context.ActivityRegister.Remove(item);
                     }
                 }
+                _context.SaveChanges();
 
                 // 删除活动记录
                 var allowedAccessCategories = new List<Category>();
                 allowedAccessCategories.Add(_categoryService.GetCategoryByEnumCategoryType(EnumCategoryType.AiLvJiLu));
                 var topic = _topicservice.GetAll(allowedAccessCategories).Where(x => x.Name == "【" + huodong.MingCheng.Trim() + "】的活动记录").FirstOrDefault();
 
-                var postlist = _postservice.GetPostsByTopic(topic.Id);
-
-                _context.SaveChanges();
-
-                if (postlist != null && postlist.Count > 0)
+                if (topic != null)
                 {
-                    foreach (var post in postlist)
+                    var postlist = _postservice.GetPostsByTopic(topic.Id);
+                    if (postlist != null && postlist.Count > 0)
                     {
-                        _context.Post.Attach(post);
-                        _context.Post.Remove(post);
-                        _context.Entry<Post>(post).State = EntityState.Deleted;
+                        foreach (var post in postlist)
+                        {
+                            var uploadfiles = _uploadedFileService.GetAllByPost(post.Id);
+                            foreach (var uploadfile in uploadfiles)
+                            {
+                                _context.UploadedFile.Remove(uploadfile);
+                                _context.Entry<UploadedFile>(uploadfile).State = EntityState.Deleted;
+                            }
+                            //_context.Post.Attach(post);
+                            _context.Post.Remove(post);
+                            _context.Entry<Post>(post).State = EntityState.Deleted;
+                        }
+                        _context.SaveChanges();
                     }
+
+                    _context.Topic.Attach(topic);
+                    _context.Topic.Remove(topic);
+                    _context.Entry<Topic>(topic).State = EntityState.Deleted;
                     _context.SaveChanges();
                 }
-
-                _context.Topic.Attach(topic);
-                _context.Topic.Remove(topic);
-                _context.Entry<Topic>(topic).State = EntityState.Deleted;
-                _context.SaveChanges();
 
                 _context.AiLvHuoDong.Attach(huodong);
                 _context.AiLvHuoDong.Remove(huodong);
@@ -128,6 +135,9 @@ namespace MVCForum.Services
             }
             return false;
         }
+
+
+
 
         #endregion
 

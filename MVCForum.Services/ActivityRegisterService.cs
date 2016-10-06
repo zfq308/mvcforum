@@ -72,9 +72,17 @@ namespace MVCForum.Services
                 return Enum_VerifyActivityRegisterStatus.Fail_VerifyUserApproveStatus;
             }
 
-            if(CheckDuplicationRegister(huodong, user))
+            var result = CheckDuplicationRegister(huodong, user);
+            switch (result)
             {
-                return Enum_VerifyActivityRegisterStatus.Fail_VerifyRegisteredTheActivity;
+                case -1:
+                    return Enum_VerifyActivityRegisterStatus.Fail_VerifyRegisteredTheActivity;
+                case -2:
+                    return Enum_VerifyActivityRegisterStatus.Fail_VerifyRegisteredNoPay;
+                case -3:
+                    return Enum_VerifyActivityRegisterStatus.Fail_VerifyRegisteredPaied;
+                default:
+                    break;
             }
 
             if (!CheckHuoDongJieZhiShijian(huodong))
@@ -100,14 +108,33 @@ namespace MVCForum.Services
         /// <param name="huodong">活动实例</param>
         /// <param name="user">用户实例</param>
         /// <returns></returns>
-        private bool CheckDuplicationRegister(AiLvHuoDong huodong, MembershipUser user)
+        private int CheckDuplicationRegister(AiLvHuoDong huodong, MembershipUser user)
         {
             var item = _context.ActivityRegister.AsNoTracking().Where(x => x.Id == huodong.Id && x.UserId == user.Id);
-            if(item!=null && item.Count()>0)
+            if (item != null && item.Count() > 0)
             {
-                return true;   //已存在注册信息
+                //已存在注册信息
+                if (huodong.Feiyong == 0)
+                {
+                    return -1; // 已注册，但活动为免费活动，无需支付
+                }
+                else
+                {
+                    //已存在注册信息，且活动为非免费活动
+                    if (item.ToList()[0].FeeId == "000000")
+                    {
+                        return -2;   //还未支付
+                    }
+                    else
+                    {
+                        return -3; //已完成支付
+                    }
+                }
             }
-            return false; //无注册此活动
+            else
+            {
+                return 0; //用户暂未注册此活动，可以注册
+            }
         }
 
         /// <summary>
@@ -226,6 +253,17 @@ namespace MVCForum.Services
             return _context.ActivityRegister.AsNoTracking().FirstOrDefault(x => x.DetailsId == id);
         }
 
+
+        public ActivityRegister Get(AiLvHuoDong huodong, MembershipUser user)
+        {
+            var item = _context.ActivityRegister.AsNoTracking().Where(x => x.Id == huodong.Id && x.UserId == user.Id);
+            if (item != null && item.Count() > 0)
+            {
+                return item.ToList()[0];
+            }
+            return null;
+        }
+
         public IList<ActivityRegister> GetActivityRegisterListByHongDong(AiLvHuoDong HuoDong)
         {
             if (HuoDong != null)
@@ -240,16 +278,7 @@ namespace MVCForum.Services
             return _context.ActivityRegister.AsNoTracking().Where(x => x.Id == HuoDongId).ToList();
         }
 
-        /// <summary>
-        /// 确认支付，更新状态（FeeStatus）
-        /// </summary>
-        /// <param name="RegisterInfo"></param>
-        /// <param name="order"></param>
-        public void ConfirmPay(ActivityRegister RegisterInfo, ActivityRegisterForOrder order)
-        {
-            throw new NotImplementedException();
-        }
-
+    
         public int CountRegistedNumber(Guid HuoDongId)
         {
             return _context.ActivityRegister.AsNoTracking().Where(x => x.Id == HuoDongId).Sum(y => y.JoinPeopleNumber);
@@ -278,6 +307,17 @@ namespace MVCForum.Services
                 return CountPaidNumber(HuoDong.Id);
             }
             return 0;
+        }
+
+        public void ConfirmPay(Guid DetailsId, string FeeId)
+        {
+            var ar = Get(DetailsId);
+            if (ar != null)
+            {
+                ar.FeeId = FeeId;
+                ar.FeeStatus = Enum_FeeStatus.PayedFee;
+                _context.Entry<ActivityRegister>(ar).State = System.Data.Entity.EntityState.Modified;
+            }
         }
     }
 

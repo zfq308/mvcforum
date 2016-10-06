@@ -54,3 +54,4 @@ MVCForum.Website/App_Data/MVCForum.sdf
 Thumbs.db
 #Ignore files build by Visual Studio
 *.exe
+*[Ll]ogs/*

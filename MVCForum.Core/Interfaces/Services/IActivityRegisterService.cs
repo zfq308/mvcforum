@@ -13,8 +13,9 @@ namespace MVCForum.Domain.Interfaces.Services
     {
         ActivityRegister Add(ActivityRegister newRegister);
         ActivityRegister Get(Guid id);
+        ActivityRegister Get(AiLvHuoDong huodong, MembershipUser user);
         bool Delete(ActivityRegister RegisterInfo);
-        void ConfirmPay(ActivityRegister RegisterInfo, ActivityRegisterForOrder order);
+        void ConfirmPay(Guid DetailsId, String FeeId);
 
         IList<ActivityRegister> GetActivityRegisterListByHongDongId(Guid HuoDongId);
         IList<ActivityRegister> GetActivityRegisterListByHongDong(AiLvHuoDong HuoDong);
@@ -52,6 +53,9 @@ namespace MVCForum.Domain.Interfaces.Services
         /// <param name="user"></param>
         /// <returns></returns>
         Enum_VerifyActivityRegisterStatus CheckRegisterStatus(AiLvHuoDong huodong, MembershipUser user);
+
+
+
     }
 
 }

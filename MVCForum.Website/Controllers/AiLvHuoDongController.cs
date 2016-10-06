@@ -20,6 +20,7 @@ using System.Text;
 using WxPayAPI;
 using System.Web.Hosting;
 using System.IO;
+using System.Diagnostics;
 
 namespace MVCForum.Website.Controllers
 {
@@ -28,7 +29,8 @@ namespace MVCForum.Website.Controllers
         #region 成员变量
         JsApiPay jsApiPay = new JsApiPay();
 
-        log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        log4net.ILog loggerForCoreActionLog = log4net.LogManager.GetLogger("CoreActionLog");
+        log4net.ILog loggerForPerformanceLog = log4net.LogManager.GetLogger("PerformanceLog");
 
         private readonly IAiLvHuoDongService _aiLvHuoDongService;
         private readonly ITopicService _topicService;
@@ -70,183 +72,6 @@ namespace MVCForum.Website.Controllers
         }
 
         #endregion
-
-        #region 微信支付
-
-        /**
- * 
- * 网页授权获取用户基本信息的全部过程
- * 详情请参看网页授权获取用户基本信息：http://mp.weixin.qq.com/wiki/17/c0f37d5704f0b64713d5d2c37b468d75.html
- * 第一步：利用url跳转获取code
- * 第二步：利用code去获取openid和access_token
- * 
- */
-        public void GetOpenidAndAccessToken()
-        {
-            if (Session["code"] != null)
-            {
-                //获取code码，以获取openid和access_token
-                string code = Session["code"].ToString();
-                jsApiPay.GetOpenidAndAccessTokenFromCode(code);
-            }
-            else
-            {
-                //构造网页授权获取code的URL
-                string host = Request.Url.Host;
-                string path = Request.Path;
-                string redirect_uri = HttpUtility.UrlEncode("http://" + host + path);
-
-                //string redirect_uri = HttpUtility.UrlEncode("http://gzh.lmx.ren");
-                WxPayData data = new WxPayData();
-                data.SetValue("appid", WxPayConfig.APPID);
-                data.SetValue("redirect_uri", redirect_uri);
-
-                data.SetValue("response_type", "code");
-                data.SetValue("scope", "snsapi_base");
-                data.SetValue("state", "STATE" + "#wechat_redirect");
-                string url = "https://open.weixin.qq.com/connect/oauth2/authorize?" + data.ToUrl();
-                Log.Debug(this.GetType().ToString(), "Will Redirect to URL : " + url);
-                Session["url"] = url;
-            }
-        }
-
-        /// <summary>
-        /// 获取code
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        public ActionResult getCode()
-        {
-            object objResult = "";
-            if (Session["url"] != null)
-            {
-                objResult = Session["url"].ToString();
-            }
-            else
-            {
-                objResult = "url为空。";
-            }
-            return Json(objResult);
-        }
-
-        /// <summary>
-        /// 通过code换取网页授权access_token和openid的返回数据
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        public ActionResult getWxInfo()
-        {
-            object objResult = "";
-            string strCode = Request.Form["code"];
-
-            if (Session["access_token"] == null || Session["openid"] == null)
-            {
-                jsApiPay.GetOpenidAndAccessTokenFromCode(strCode);
-            }
-
-            string strAccess_Token = Session["access_token"].ToString();
-            string strOpenid = Session["openid"].ToString();
-            objResult = new { openid = strOpenid, access_token = strAccess_Token };
-            return Json(objResult);
-        }
-
-        /// <summary>
-        /// 支付
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        public ActionResult MeterRecharge()
-        {
-            object objResult = "";
-            string strTotal_fee = Request.Form["totalfee"];
-            string DetailsIdstr = Request.Form["DetailsId"];
-            Guid detailsId = Guid.Parse(DetailsIdstr);
-
-            ActivityRegister ar = _ActivityRegisterService.Get(detailsId);
-            if (ar != null)
-            {
-                string strFee = (double.Parse(strTotal_fee) * 100).ToString();
-                jsApiPay.total_fee = int.Parse(strFee);
-
-                if (jsApiPay.total_fee != ar.FeeNumber)
-                {
-                    base.LoggingService.Error("钱不相等。" + jsApiPay.total_fee.ToString() + ":" + ar.FeeNumber.ToString());
-                    var aOrder = new ActivityRegisterForOrder()
-                    {
-                        appId = "",
-                        nonceStr = "",
-                        packageValue = "",
-                        paySign = "",
-                        timeStamp = "",
-                        msg = "支付信息不匹配,请联系管理员."
-                    };
-                    objResult = aOrder;
-                    return Json(objResult);
-                }
-
-                //若传递了相关参数，则调统一下单接口，获得后续相关接口的入口参数
-                jsApiPay.openid = Session["openid"].ToString();
-
-                try
-                {
-                    #region JSAPI支付预处理
-
-                    string strBody = "爱驴网微信支付:" + _aiLvHuoDongService.Get(ar.Id).MingCheng + ":" +
-                        _MembershipService.GetUser(ar.UserId).UserName;//商品描述
-
-                    WxPayData unifiedOrderResult = jsApiPay.GetUnifiedOrderResult(strBody);
-                    WxPayData wxJsApiParam = jsApiPay.GetJsApiParameters();//获取H5调起JS API参数
-                    var aOrder = new ActivityRegisterForOrder()
-                    {
-                        appId = wxJsApiParam.GetValue("appId").ToString(),
-                        nonceStr = wxJsApiParam.GetValue("nonceStr").ToString(),
-                        packageValue = wxJsApiParam.GetValue("package").ToString(),
-                        paySign = wxJsApiParam.GetValue("paySign").ToString(),
-                        timeStamp = wxJsApiParam.GetValue("timeStamp").ToString(),
-                        msg = "成功下单,正在接入微信支付."
-                    };
-                    objResult = aOrder;
-             
-                    #endregion
-                }
-                catch (Exception ex)
-                {
-                    var aOrder = new ActivityRegisterForOrder()
-                    {
-                        appId = "",
-                        nonceStr = "",
-                        packageValue = "",
-                        paySign = "",
-                        timeStamp = "",
-                        msg = "下单失败，请重试,多次失败,请联系管理员.具体错误信息：" + ex.Message
-                    };
-                    objResult = aOrder;
-                }
-               
-                return Json(objResult); 
-            }
-            else
-            {
-                var aOrder = new ActivityRegisterForOrder()
-                {
-                    appId = "",
-                    nonceStr = "",
-                    packageValue = "",
-                    paySign = "",
-                    timeStamp = "",
-                    msg = "支付信息不匹配,请联系管理员."
-                };
-                objResult = aOrder;
-                return Json(objResult);
-            }
-        }
-
-        #endregion
-
-        public ActionResult Index()
-        {
-            return View();
-        }
 
         #region 爱驴活动模块
 
@@ -751,13 +576,34 @@ namespace MVCForum.Website.Controllers
                 switch (_ActivityRegisterService.CheckRegisterStatus(huodong, LoggedOnReadOnlyUser))
                 {
                     case Enum_VerifyActivityRegisterStatus.Success:
-                        //_ActivityRegisterService.Add(ar);
                         EntityOperationUtils.InsertObject(ar);
                         break;
+
                     case Enum_VerifyActivityRegisterStatus.Fail_VerifyRegisteredTheActivity:
                         TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                         {
-                            Message = "您已提交了这个活动，请勿重复报名。",
+                            Message = "您已报名了这个活动，请勿重复报名。",
+                            MessageType = GenericMessages.danger
+                        };
+                        return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
+
+                    case Enum_VerifyActivityRegisterStatus.Fail_VerifyRegisteredNoPay:
+                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        {
+                            Message = "您已报名了这个活动，请完成费用支付。",
+                            MessageType = GenericMessages.danger
+                        };
+                        var arrecord = _ActivityRegisterService.Get(huodong, LoggedOnReadOnlyUser);
+                        if (arrecord != null)
+                        {
+                            Session["WechatPayDetailsId"] = arrecord.DetailsId;
+                            return RedirectToAction("WechatPay", "AiLvHuoDong");
+                        }
+                        return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");  // 获取数据错误，跳至活动清单页
+                    case Enum_VerifyActivityRegisterStatus.Fail_VerifyRegisteredPaied:
+                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        {
+                            Message = "您已报名并支付了这个活动的费用，请勿重复报名。",
                             MessageType = GenericMessages.danger
                         };
                         return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
@@ -800,6 +646,9 @@ namespace MVCForum.Website.Controllers
                 {
                     unitOfWork.Commit();
 
+                    string log = LoggedOnReadOnlyUser.UserName + "已报名活动:" + huodong.MingCheng + "[" + huodong.Id.ToString() + "].";
+                    loggerForCoreActionLog.Info(log);
+
                     if (ar.FeeNumber > 0)
                     {
                         TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
@@ -810,6 +659,7 @@ namespace MVCForum.Website.Controllers
 
                         //因微信校验目录的原因，此处不能在URL中传参，改用Session传值
                         Session["WechatPayDetailsId"] = ar.DetailsId;
+                        loggerForCoreActionLog.Info(log + "跳至微信支付页面进行支付。");
                         return RedirectToAction("WechatPay", "AiLvHuoDong");
                     }
                     else
@@ -832,6 +682,134 @@ namespace MVCForum.Website.Controllers
             }
         }
 
+
+        [HttpGet]
+        public ActionResult WechatPay()
+        {
+            if (Session["WechatPayDetailsId"] == null)
+            {
+                return View();
+            }
+
+            var Idstr = Session["WechatPayDetailsId"].ToString();
+            Guid Id = Guid.Parse(Idstr);
+
+            var item = _ActivityRegisterService.Get(Id);
+            if (item != null)
+            {
+                if (item.FeeNumber > 0)
+                {
+                    #region 调用微信"网页授权获取用户信息"接口
+
+                    if (Session["openid"] == null)
+                    {
+                        try
+                        {
+                            //调用【网页授权获取用户信息】接口获取用户的openid和access_token
+                            GetOpenidAndAccessToken();
+                        }
+                        catch (Exception ex)
+                        {
+                            base.LoggingService.Error("调用【网页授权获取用户信息】接口失败，Details:" + ex.Message);
+                            Response.Write(ex.ToString());
+                            throw;
+                        }
+                    }
+
+                    #endregion
+                }
+
+                // 授权成功，显示支付详细信息
+                var Model = new WechatPay_Model
+                {
+                    activityregister = item,
+                    User = _MembershipService.GetUser(item.UserId),
+                    PayNumber = item.FeeNumber,
+                    Huodong = _aiLvHuoDongService.Get(item.Id)
+                };
+                return View(Model);
+            }
+            else
+            {
+                base.LoggingService.Error("取得ActivityRegister实例失败，Id:" + Idstr);
+                return View();
+            }
+        }
+
+        /// <summary>
+        /// 支付成功后更新记录状态
+        /// </summary>
+        /// <param name="id">活动注册记录实例</param>
+        /// <param name="FeeId">支付交易号</param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost]
+        public ActionResult EditPaidInfomation(string id, string FeeId)
+        {
+            LoggingService.Error("更新订单信息，报名DetailsId=" + id + ", 微信流水码为:" + FeeId);
+
+            Guid DetailsId = Guid.Empty;
+            if (Guid.TryParse(id, out DetailsId))
+            {
+                if (DetailsId != Guid.Empty && !string.IsNullOrEmpty(FeeId))
+                {
+                    using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                    {
+                        try
+                        {
+                            _ActivityRegisterService.ConfirmPay(DetailsId, FeeId);
+                            unitOfWork.Commit();
+                            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                            {
+                                Message = "已完成活动费用的支付。",
+                                MessageType = GenericMessages.info
+                            };
+                            return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
+                        }
+                        catch (Exception ex)
+                        {
+                            unitOfWork.Rollback();
+                            LoggingService.Error(ex);
+                            ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
+
+                            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                            {
+                                Message = ex.Message,
+                                MessageType = GenericMessages.danger
+                            };
+                            return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
+
+                        }
+                    }
+                }
+                else
+                {
+                    LoggingService.Error("更新订单信息发生错误，报名DetailsId=" + id + ", 微信流水码为:" + FeeId);
+                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    {
+                        Message = "更新订单信息发生错误，报名DetailsId=" + id + ", 微信流水码为:" + FeeId,
+                        MessageType = GenericMessages.danger
+                    };
+                    return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
+                }
+            }
+            else
+            {
+                LoggingService.Error("更新订单信息发生错误，报名DetailsId=" + id + ", 微信流水码为:" + FeeId);
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = "更新订单信息发生错误，报名DetailsId=" + id + ", 微信流水码为:" + FeeId,
+                    MessageType = GenericMessages.danger
+                };
+                return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
+            }
+        }
+
+        /// <summary>
+        /// 导出参加活动的用户清单
+        /// </summary>
+        /// <param name="id">爱驴活动的Guid编号</param>
+        /// <returns></returns>
         [Authorize]
         [HttpPost]
         public ActionResult ExportHuoDongUsers(Guid id)
@@ -867,52 +845,223 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        [HttpGet]
-        public ActionResult WechatPay()
+        #endregion
+
+        #region 微信身份验证
+
+        /// <summary>
+        /// 网页授权获取用户基本信息的全部过程,详情请参看网页授权获取用户基本信息：http://mp.weixin.qq.com/wiki/17/c0f37d5704f0b64713d5d2c37b468d75.html
+        /// 第一步：利用url跳转获取code
+        /// 第二步：利用code去获取openid和access_token
+        /// </summary>
+        public void GetOpenidAndAccessToken()
         {
-            if (Session["WechatPayDetailsId"]==null)
+            if (Session["code"] != null)
             {
-                return View();
-            }
-            var Idstr = Session["WechatPayDetailsId"].ToString();
-            Guid Id = Guid.Parse(Idstr);
-            var item = _ActivityRegisterService.Get(Id);
-            if (item != null)
-            {
-                if (item.FeeNumber > 0)
-                {
-                    #region 调用微信接口
-
-                    if (Session["openid"] == null)
-                    {
-                        try
-                        {
-                            //调用【网页授权获取用户信息】接口获取用户的openid和access_token
-                            GetOpenidAndAccessToken();
-                        }
-                        catch (Exception ex)
-                        {
-                            Response.Write(ex.ToString());
-                            throw;
-                        }
-                    }
-
-                    #endregion
-                }
-
-                var Model = new WechatPay_Model
-                {
-                    activityregister = item,
-                    User = _MembershipService.GetUser(item.UserId),
-                    PayNumber = item.FeeNumber,
-                    Huodong = _aiLvHuoDongService.Get(item.Id)
-                };
-                return View(Model);
+                //获取code码，以获取openid和access_token
+                string code = Session["code"].ToString();
+                jsApiPay.GetOpenidAndAccessTokenFromCode(code);
             }
             else
             {
-                base.LoggingService.Error("Enter  WechatPay5");
-                return View();
+                //构造网页授权获取code的URL
+                string host = Request.Url.Host;
+                string path = Request.Path;
+                string redirect_uri = HttpUtility.UrlEncode("http://" + host + path);
+
+                WxPayData data = new WxPayData();
+                data.SetValue("appid", WxPayConfig.APPID);
+                data.SetValue("redirect_uri", redirect_uri);
+
+                data.SetValue("response_type", "code");
+                data.SetValue("scope", "snsapi_base");
+                data.SetValue("state", "STATE" + "#wechat_redirect");
+                string url = "https://open.weixin.qq.com/connect/oauth2/authorize?" + data.ToUrl();
+                Log.Debug(this.GetType().ToString(), "Will Redirect to URL : " + url);
+                Session["url"] = url;
+            }
+        }
+
+        /// <summary>
+        /// 获取code
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult getCode()
+        {
+            object objResult = "";
+            if (Session["url"] != null)
+            {
+                objResult = Session["url"].ToString();
+            }
+            else
+            {
+                objResult = "url为空。";
+            }
+            return Json(objResult);
+        }
+
+        /// <summary>
+        /// 通过code换取网页授权access_token和openid的返回数据
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult getWxInfo()
+        {
+            object objResult = "";
+            string strCode = Request.Form["code"];
+
+            if (Session["access_token"] == null || Session["openid"] == null)
+            {
+                jsApiPay.GetOpenidAndAccessTokenFromCode(strCode);
+            }
+
+            string strAccess_Token = Session["access_token"].ToString();
+            string strOpenid = Session["openid"].ToString();
+            objResult = new { openid = strOpenid, access_token = strAccess_Token };
+            return Json(objResult);
+        }
+
+        #endregion
+
+        #region 微信支付
+
+        /// <summary>
+        /// 调用JSAPI支付预处理，完成微信支付
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult MeterRecharge()
+        {
+            object objResult = "";
+            string strTotal_fee = Request.Form["totalfee"];
+            string DetailsIdstr = Request.Form["DetailsId"];
+
+            Guid detailsId = Guid.Empty;
+            if (Guid.TryParse(DetailsIdstr, out detailsId))
+            {
+                ActivityRegister ar = _ActivityRegisterService.Get(detailsId);
+                if (ar != null)
+                {
+                    #region 支付金额校验
+                   
+                    string strFee = (double.Parse(strTotal_fee) * 100).ToString(); // *100，转化金额从“分”到“元”
+                    jsApiPay.total_fee = int.Parse(strFee);
+
+                    if (jsApiPay.total_fee != ar.FeeNumber)
+                    {
+                        #region 出错，钱不相等
+
+                        var aOrder = new ActivityRegisterForOrder()
+                        {
+                            appId = "",
+                            nonceStr = "",
+                            packageValue = "",
+                            paySign = "",
+                            timeStamp = "",
+                            msg = "支付信息不匹配,请联系管理员."
+                        };
+                        objResult = aOrder;
+                        base.LoggingService.Error("钱不相等。" + jsApiPay.total_fee.ToString() + ":" + ar.FeeNumber.ToString());
+
+                        return Json(objResult);
+
+                        #endregion
+                    }
+                    
+                    #endregion
+
+                    //若传递了相关参数，则调统一下单接口，获得后续相关接口的入口参数
+                    jsApiPay.openid = Session["openid"].ToString();
+
+                    try
+                    {
+                        #region JSAPI支付预处理
+
+                        string strBody = "爱驴网微信支付:" + _aiLvHuoDongService.Get(ar.Id).MingCheng + ":" +
+                            _MembershipService.GetUser(ar.UserId).UserName;//商品描述
+
+                        WxPayData unifiedOrderResult = jsApiPay.GetUnifiedOrderResult(strBody);
+                        WxPayData wxJsApiParam = jsApiPay.GetJsApiParameters();//获取H5调起JS API参数
+                        var aOrder = new ActivityRegisterForOrder()
+                        {
+                            appId = wxJsApiParam.GetValue("appId").ToString(),
+                            nonceStr = wxJsApiParam.GetValue("nonceStr").ToString(),
+                            packageValue = wxJsApiParam.GetValue("package").ToString(),
+                            paySign = wxJsApiParam.GetValue("paySign").ToString(),
+                            timeStamp = wxJsApiParam.GetValue("timeStamp").ToString(),
+                            msg = "成功下单,正在接入微信支付.",
+                            detailsId = ar.DetailsId.ToString(),
+                        };
+                        objResult = aOrder;
+
+
+                        loggerForCoreActionLog.Info(strBody);
+
+                        #endregion
+                    }
+                    catch (Exception ex)
+                    {
+                        #region 下单失败
+
+                        var aOrder = new ActivityRegisterForOrder()
+                        {
+                            appId = "",
+                            nonceStr = "",
+                            packageValue = "",
+                            paySign = "",
+                            timeStamp = "",
+                            msg = "下单失败，请重试。若多次失败,请联系管理员.具体错误信息：" + ex.Message,
+                            detailsId = ""
+                        };
+                        base.LoggingService.Error("微信支付下单失败，具体错误信息：" + ex.Message);
+                        loggerForCoreActionLog.Error("微信支付下单失败，具体错误信息：" + ex.Message);
+                        objResult = aOrder;
+
+                        #endregion
+                    }
+                    return Json(objResult);
+                }
+                else
+                {
+                    #region 无法获取报名实例
+
+                    var aOrder = new ActivityRegisterForOrder()
+                    {
+                        appId = "",
+                        nonceStr = "",
+                        packageValue = "",
+                        paySign = "",
+                        timeStamp = "",
+                        msg = "未取得用户注册活动信息,请联系管理员.",
+                        detailsId = ""
+                    };
+                    objResult = aOrder;
+                    base.LoggingService.Error("未取得用户注册活动实例信息，detailsId：" + detailsId);
+                    loggerForCoreActionLog.Error("未取得用户注册活动实例信息，detailsId：" + detailsId);
+
+                    #endregion
+                    return Json(objResult);
+                }
+            }
+            else
+            {
+                #region 转换DetailsId参数错误
+                var aOrder = new ActivityRegisterForOrder()
+                {
+                    appId = "",
+                    nonceStr = "",
+                    packageValue = "",
+                    paySign = "",
+                    timeStamp = "",
+                    msg = "未取得用户注册活动信息,请联系管理员.",
+                    detailsId = ""
+                };
+                objResult = aOrder;
+                base.LoggingService.Error("转换DetailsId参数错误，detailsId：" + detailsId);
+                loggerForCoreActionLog.Error("转换DetailsId参数错误，detailsId：" + detailsId);
+                #endregion
+                return Json(objResult);
             }
         }
 
@@ -926,6 +1075,9 @@ namespace MVCForum.Website.Controllers
         /// <returns></returns>
         public ActionResult ZuiXinJilu()
         {
+            Stopwatch MyStopWatch = new Stopwatch();
+            MyStopWatch.Start();
+
             var JiluList = new AiLvJiLu_ListViewModel { Topics = new List<TopicViewModel>() };
             var topics = _topicService.GetAllTopicsByCategory(EnumCategoryType.AiLvJiLu).OrderByDescending(x => x.CreateDate).ToList();
             if (topics != null && topics.Count > 0)
@@ -936,6 +1088,11 @@ namespace MVCForum.Website.Controllers
                 var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, settings);
                 JiluList.Topics.AddRange(topicViewModels);
             }
+
+            MyStopWatch.Stop();
+            decimal t = MyStopWatch.ElapsedMilliseconds;
+            loggerForPerformanceLog.Info("Load ZuiXinJilu list, cost time:" + (t / 1000).ToString() + "second.");
+
             return View(JiluList);
         }
 
@@ -944,6 +1101,8 @@ namespace MVCForum.Website.Controllers
         [HttpPost]
         public ActionResult CreateAiLvHuodongJilu(Guid Id)
         {
+            #region 生成爱驴活动记录的实例
+
             var item = _aiLvHuoDongService.Get(Id);
 
             var model = new CreateEditTopicViewModel();
@@ -976,10 +1135,12 @@ namespace MVCForum.Website.Controllers
             model.Name = "【" + item.MingCheng.Trim() + "】的活动记录";
             model.Content = "请更新" + model.Name;
 
+            #endregion
+
             var checkexistHuodongJilu = _topicService.GetAllTopicsByCategory(category.Id).Where(x => x.Name == model.Name).Count();
             if (checkexistHuodongJilu == 0)
             {
-                //Benjamin, 以POST方式主动提交Action
+                //以POST方式主动提交Action，来创建/保存活动记录
                 TempData["model"] = model;
                 return RedirectToAction("CreateNewTopicRecord", "Topic", new { model });
             }
@@ -1020,6 +1181,9 @@ namespace MVCForum.Website.Controllers
 
         public ActionResult ZuiXinZiXun()
         {
+            Stopwatch MyStopWatch = new Stopwatch();
+            MyStopWatch.Start();
+
             var ziXunList = new AiLvZiXun_ListViewModel { Topics = new List<TopicViewModel>() };
             var topics = _topicService.GetAllTopicsByCategory(EnumCategoryType.AiLvZiXun);
             if (topics != null && topics.Count > 0)
@@ -1030,6 +1194,11 @@ namespace MVCForum.Website.Controllers
                 var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, settings);
                 ziXunList.Topics.AddRange(topicViewModels);
             }
+
+            MyStopWatch.Stop();
+            decimal t = MyStopWatch.ElapsedMilliseconds;
+            loggerForPerformanceLog.Info("Load ZuiXinZiXun list cost time:" + (t / 1000).ToString() + "second.");
+
             return View(ziXunList);
         }
 
@@ -1039,6 +1208,9 @@ namespace MVCForum.Website.Controllers
 
         public ActionResult ZuiXinFuWu()
         {
+            Stopwatch MyStopWatch = new Stopwatch();
+            MyStopWatch.Start();
+
             var fuwuList = new AiLvFuWu_ListViewModel { Topics = new List<TopicViewModel>() };
             var topics = _topicService.GetAllTopicsByCategory(EnumCategoryType.AiLvFuWu);
             if (topics != null && topics.Count > 0)
@@ -1049,10 +1221,20 @@ namespace MVCForum.Website.Controllers
                 var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, settings);
                 fuwuList.Topics.AddRange(topicViewModels);
             }
+
+            MyStopWatch.Stop();
+            decimal t = MyStopWatch.ElapsedMilliseconds;
+            loggerForPerformanceLog.Info("Load ZuiXinFuWu List, cost time:" + (t / 1000).ToString() + "second.");
+
             return View(fuwuList);
         }
 
         #endregion
+
+        public ActionResult Index()
+        {
+            return View();
+        }
 
         /// <summary>
         /// 每日之星
@@ -1060,9 +1242,18 @@ namespace MVCForum.Website.Controllers
         /// <returns></returns>
         public ActionResult MeiRiZhiXing()
         {
+            Stopwatch MyStopWatch = new Stopwatch();
+            MyStopWatch.Start();
+
             MeiRiZhiXing_ListViewModel model = new MeiRiZhiXing_ListViewModel();
             model.MeiRiZhiXingUserList = _membershipTodayStarService.LoadAllAvailidUsers();
+
+            MyStopWatch.Stop();
+            decimal t = MyStopWatch.ElapsedMilliseconds;
+            loggerForPerformanceLog.Info("Load MeiRiZhiXing list cost time:" + (t / 1000).ToString() + "second.");
+
             return View(model);
+
         }
 
         /// <summary>
@@ -1075,19 +1266,25 @@ namespace MVCForum.Website.Controllers
         }
 
         /// <summary>
-        /// 我的
+        /// 我的账户
         /// </summary>
         /// <returns></returns>
         [Authorize]
         public ActionResult AiLvZhangHu()
         {
+            Stopwatch MyStopWatch = new Stopwatch();
+            MyStopWatch.Start();
+
             AiLvZhangHu_ViewModel model = new AiLvZhangHu_ViewModel();
             model.User = LoggedOnReadOnlyUser;
             model.UnReadPrivateMessageGroupCount = _PrivatemessageService.NewPrivateMessageCount(LoggedOnReadOnlyUser.Id);
+            MyStopWatch.Stop();
+
+            decimal t = MyStopWatch.ElapsedMilliseconds;
+            loggerForPerformanceLog.Info("Load AiLvZhangHu For " + LoggedOnReadOnlyUser.UserName + ", cost time:" + (t / 1000).ToString() + "second.");
 
             return View(model);
         }
-
 
     }
 }

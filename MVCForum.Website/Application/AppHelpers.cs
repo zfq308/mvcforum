@@ -464,5 +464,38 @@ namespace MVCForum.Website.Application
         }
 
         #endregion
+
+        #region Random
+        /// <summary>
+        /// 生成一个非重复的随机序列。
+        /// </summary>
+        /// <param name="low">序列最小值。</param>
+        /// <param name="high">序列最大值。</param>
+        /// <returns>序列。</returns>
+        public static int[] GetRandomSequence(int low, int high)
+        {
+            Random random = new Random();
+            int x = 0, tmp = 0;
+            if (low > high)
+            {
+                tmp = low;
+                low = high;
+                high = tmp;
+            }
+            int[] array = new int[high - low + 1];
+            for (int i = low; i <= high; i++)
+            {
+                array[i - low] = i;
+            }
+            for (int i = array.Length - 1; i > 0; i--)
+            {
+                x = random.Next(0, i + 1);
+                tmp = array[i];
+                array[i] = array[x];
+                array[x] = tmp;
+            }
+            return array;
+        }
+        #endregion
     }
 }

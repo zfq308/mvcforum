@@ -27,7 +27,6 @@ namespace MVCForum.Website.Application.ScheduledJobs
             {
                 try
                 {
-                    //TODO: 鉴于系统的首页有较大的计算和流量，可以考虑将KeepAlive访问其他页面
                     var url = _settingsService.GetSettings(false).ForumKeepAliveURL;
                     AppHelpers.Ping(url);
                 }

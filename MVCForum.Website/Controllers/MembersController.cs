@@ -35,9 +35,14 @@ namespace MVCForum.Website.Controllers
 {
     public partial class MembersController : BaseController
     {
-        log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        #region Private defination
+
+        #region 成员变量
+
+        //log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        log4net.ILog loggerForCoreAction = log4net.LogManager.GetLogger("");
+        log4net.ILog loggerForPerformance = log4net.LogManager.GetLogger("");
+
         private readonly IPostService _postService;
         private readonly ITopicService _topicService;
         private readonly IReportService _reportService;
@@ -294,7 +299,7 @@ namespace MVCForum.Website.Controllers
             }
             catch (Exception ex)
             {
-                logger.Error(ex.Message);
+                LoggingService.Error(ex);
                 throw;
             }
         }
@@ -312,7 +317,7 @@ namespace MVCForum.Website.Controllers
             }
             catch (Exception ex)
             {
-                logger.Error(ex.Message);
+                LoggingService.Error(ex);
                 throw;
             }
         }
@@ -344,7 +349,7 @@ namespace MVCForum.Website.Controllers
                     catch (Exception ex)
                     {
                         result = false;// 失败    
-                        logger.Error(ex.Message);
+                        LoggingService.Error(ex.Message);
                     }
                     return Json(result, JsonRequestBehavior.AllowGet);
                 }
@@ -381,13 +386,13 @@ namespace MVCForum.Website.Controllers
                     catch (Exception ex)
                     {
                         result = false;// 失败    
-                        logger.Error(ex.Message);
+                        LoggingService.Error(ex.Message);
                     }
                 }
                 else
                 {
                     result = false;// 失败  
-                    logger.Error(UserName + "对应的用户信息不存在。");
+                    LoggingService.Error(UserName + "对应的用户信息不存在。");
                     //result = "failNoExistUser";// 失败，用户信息不存在。
                     ModelState.AddModelError("NoExistUser", "用户信息不存在。");
                 }
@@ -395,7 +400,7 @@ namespace MVCForum.Website.Controllers
             }
             catch (Exception ex)
             {
-                logger.Error("发生错误，详细信息为：" + ex.Message);
+                LoggingService.Error("发生错误，详细信息为：" + ex.Message);
                 ModelState.AddModelError("", LocalizationService.GetResourceString("Members.ResetPassword.Error"));
                 return View();
             }
@@ -438,7 +443,6 @@ namespace MVCForum.Website.Controllers
             }
             else
             {
-                logger.Warn("当前系统禁止注册。");
                 return RedirectToAction("Index", "Home");   // 调到首页
             }
         }
@@ -662,11 +666,9 @@ namespace MVCForum.Website.Controllers
             }
             else
             {
-                // If not manually authorise then log the user in
                 FormsAuthentication.SetAuthCookie(userToSave.UserName, false);
                 TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                 {
-                    //Message = LocalizationService.GetResourceString("Members.NowRegistered"),
                     Message = "欢迎你，" + userToSave.AliasName,
                     MessageType = GenericMessages.success
                 };
@@ -675,15 +677,11 @@ namespace MVCForum.Website.Controllers
 
         public ActionResult SocialLoginValidator()
         {
-            // Store the viewModel in TempData - Which we'll use in the register logic
             if (TempData[AppConstants.MemberRegisterViewModel] != null)
             {
                 var userModel = (TempData[AppConstants.MemberRegisterViewModel] as MemberAddViewModel);
-
-                // Do the register logic
                 return MemberRegisterLogic(userModel);
             }
-
             ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
             return View("Register");
         }
@@ -938,7 +936,7 @@ namespace MVCForum.Website.Controllers
             if (ModelState.IsValid)
             {
                 #region 基本信息验证
-               
+
                 if (userModel.Height == 0)
                 {
                     ShowMessage(new GenericMessageViewModel
@@ -1101,7 +1099,7 @@ namespace MVCForum.Website.Controllers
                                 ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Members.Errors.DuplicateUserName"));
                                 return View(userModel);
                             }
-                            logger.Info("用户名在更新中发生变更，旧的用户名为：" + user.UserName + ",新的用户名为：" + sanitisedUsername);
+                            loggerForCoreAction.Info("用户名在更新中发生变更，旧的用户名为：" + user.UserName + ",新的用户名为：" + sanitisedUsername);
                             user.UserName = sanitisedUsername;
                             changedUsername = true;
                         }
@@ -1980,15 +1978,66 @@ namespace MVCForum.Website.Controllers
 
         public ActionResult MemberList()
         {
+            int windowsize = 10;
             var viewModel = new MembersList_ViewModel();
             if (LoggedOnReadOnlyUser != null)
             {
                 Guid UserId = LoggedOnReadOnlyUser.Id;
-                viewModel.UserList = MembershipService.GetLatestUsers(200, true, true).Where(x => x.Gender == LoggedOnReadOnlyUser.Gender).Take(20).ToList();
+                var list = MembershipService.GetAll(true).Where(x => x.Gender != LoggedOnReadOnlyUser.Gender).ToList();
+                if (list.Count >= windowsize)
+                {
+                    viewModel.UserList = new List<MembershipUser>();
+                    int[] indexlist = AppHelpers.GetRandomSequence(0, list.Count - 1);
+                    for (int i = 0; i < windowsize; i++)
+                    {
+                        int k = indexlist[i];
+
+                        var user = list[k];
+                        user.LocationProvince = TProvince.LoadProvinceByProvincedId(Convert.ToInt32(user.LocationProvince)).ProvinceName;
+                        user.LocationCity = TCity.LoadCityByCityId(Convert.ToInt32(user.LocationCity)).CityName;
+                        user.LocationCounty = TCountry.LoadCountryByCountryId(Convert.ToInt32(user.LocationCounty)).CountryName;
+
+                        viewModel.UserList.Add(user);
+                    }
+                }
+                else
+                {
+                    foreach (var user in list)
+                    {
+                        user.LocationProvince = TProvince.LoadProvinceByProvincedId(Convert.ToInt32(user.LocationProvince)).ProvinceName;
+                        user.LocationCity = TCity.LoadCityByCityId(Convert.ToInt32(user.LocationCity)).CityName;
+                        user.LocationCounty = TCountry.LoadCountryByCountryId(Convert.ToInt32(user.LocationCounty)).CountryName;
+                    }
+                    viewModel.UserList = list;
+                }
             }
             else
             {
-                viewModel.UserList = MembershipService.GetLatestUsers(20, true, true);
+                var list = MembershipService.GetAll(true);
+                if (list.Count >= windowsize)
+                {
+                    viewModel.UserList = new List<MembershipUser>();
+                    int[] indexlist = AppHelpers.GetRandomSequence(0, list.Count - 1);
+                    for (int i = 0; i < windowsize; i++)
+                    {
+                        int k = indexlist[i];
+                        var user = list[k];
+                        user.LocationProvince = TProvince.LoadProvinceByProvincedId(Convert.ToInt32(user.LocationProvince)).ProvinceName;
+                        user.LocationCity = TCity.LoadCityByCityId(Convert.ToInt32(user.LocationCity)).CityName;
+                        user.LocationCounty = TCountry.LoadCountryByCountryId(Convert.ToInt32(user.LocationCounty)).CountryName;
+                        viewModel.UserList.Add(user);
+                    }
+                }
+                else
+                {
+                    foreach (var user in list)
+                    {
+                        user.LocationProvince = TProvince.LoadProvinceByProvincedId(Convert.ToInt32(user.LocationProvince)).ProvinceName;
+                        user.LocationCity = TCity.LoadCityByCityId(Convert.ToInt32(user.LocationCity)).CityName;
+                        user.LocationCounty = TCountry.LoadCountryByCountryId(Convert.ToInt32(user.LocationCounty)).CountryName;
+                    }
+                    viewModel.UserList = list;
+                }
             }
             return View(viewModel);
         }

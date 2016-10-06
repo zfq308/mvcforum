@@ -11,7 +11,8 @@ namespace MVCForum.Website.Application.ScheduledJobs
     // 定期清理无效的验证码
     public class CleanVerifyCodeJob : IJob
     {
-        log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        //log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        log4net.ILog logger = log4net.LogManager.GetLogger("SchedulerLogs");
 
         private readonly IUnitOfWorkManager _unitOfWorkManager;
         private readonly ILoggingService _loggingService;

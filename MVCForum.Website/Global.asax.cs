@@ -36,14 +36,15 @@ namespace MVCForum.Website
         {
             //配置并定义Log4net
             log4net.Config.XmlConfigurator.Configure(new FileInfo(Server.MapPath("~/Web.config")));
-            log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+            log4net.ILog logger = log4net.LogManager.GetLogger("CoreActionLog");
+            logger.Info("Application_Start.");
 
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
 
-            //此行代码要加在所有EF操作之前
-            MiniProfilerEF6.Initialize();
+            //初始化MiniProfilerEF6。此行代码要加在所有EF操作之前
+            //MiniProfilerEF6.Initialize();
 
             // https://msdn.microsoft.com/zh-cn/library/system.web.helpers.antiforgeryconfig.suppressidentityheuristicchecks.aspx?cs-save-lang=1&cs-lang=fsharp
             // 获取或设置一个值，该值可指示防伪系统是否应跳过检查指示系统滥用的条件。如果防伪系统不应检查可能的滥用，则为 true；否则为 false。
@@ -59,7 +60,7 @@ namespace MVCForum.Website
             Application["Version"] = AppHelpers.GetCurrentVersionNo();
 
             LoggingService.Initialise(ConfigUtils.GetAppSettingInt32("LogFileMaxSizeBytes", 10000));
-            LoggingService.Error("Application_Start");
+            //LoggingService.Error("Application_Start");
 
             #region TODO: Benjamin, 可考虑取消这一段“反射badges系列组件”的代码
 
@@ -90,7 +91,7 @@ namespace MVCForum.Website
             // Finally Run scheduled tasks
             ScheduledRunner.Run(unityContainer);
 
-          
+            logger.Info("Application_Start completed.");
         }
 
         protected void Application_AcquireRequestState(object sender, EventArgs e)

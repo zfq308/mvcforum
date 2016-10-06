@@ -21,19 +21,20 @@
                                 </a>
                             </td>
                             <td style="padding-left:5px;width:100%">
-                                @{
-                                    var Gender = obj.Gender == MVCForum.Domain.DomainModel.Enum_Gender.boy ? "男" : "女";
-                                    var location = obj.LocationProvince + "," + obj.LocationCity;
-                                }
+                                <div class="col-xs-9 col-sm-10 col-md-10 col-lg-11">
+                                    <a href="@obj.NiceUrl">@obj.AliasName</a>
+                                    <br />
+                                    @{
+                                        var Gender = obj.Gender == MVCForum.Domain.DomainModel.Enum_Gender.boy ? "男" : "女";
+                                        var location = obj.LocationProvince + "," + obj.LocationCity;
+                                    }
+                                    <div>
+                                        <span style="display: inline-block;  font-size:8pt; background-color: gray; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@obj.Age 岁</span>
+                                        <span style="display: inline-block;  font-size:8pt; background-color: #39f; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@Gender</span>
+                                        <span style="display: inline-block;  font-size:8pt; background-color: #39f; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@location</span>
+                                    </div>
 
-                                <a href="@obj.NiceUrl">
-                                    @obj.AliasName
-                                </a>
-
-                                <div>
-                                    <span style="display: inline-block;  background-color: gray; border-radius: 2px;   color: #fff;padding: 2px 2px 2px 4px;">@obj.Age 岁</span>
-                                    <span style="display: inline-block;  background-color: #39f; border-radius: 2px;   color: #fff;padding: 2px 2px 2px 4px;">@Gender</span>
-                                    <span style="display: inline-block;  background-color: #39f; border-radius: 2px;   color: #fff;padding: 2px 2px 2px 4px;">@location</span>
+                                    <br />
                                 </div>
                             </td>
                         </tr>

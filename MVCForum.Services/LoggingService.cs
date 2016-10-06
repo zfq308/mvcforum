@@ -18,11 +18,11 @@ namespace MVCForum.Services
     {
         #region 参数定义
 
-        private const string LogFileNameOnly = @"LogFile";
+        private const string LogFileNameOnly = @"ErrLogFile";
         private const string LogFileExtension = @".txt";
-        private const string LogFileDirectory = @"~/App_Data";
+        private const string LogFileDirectory = @"~/Logs";
 
-        private const string DateTimeFormat = @"dd/MM/yyyy HH:mm:ss";
+        private const string DateTimeFormat = @"yyyy/MM/dd/ HH:mm:ss";
         private static readonly Object LogLock = new Object();
         private static string _logFileFolder;
         private static int _maxLogSize = 10000;

@@ -13,7 +13,8 @@ namespace MVCForum.Website.Application.ScheduledJobs
     /// </summary>
     public class ChangeHuoDongInvalidStatusJob : IJob
     {
-        log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        //log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        log4net.ILog logger = log4net.LogManager.GetLogger("SchedulerLogs");
 
         private readonly IUnitOfWorkManager _unitOfWorkManager;
         private readonly ILoggingService _loggingService;

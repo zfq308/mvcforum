@@ -37,7 +37,6 @@
 
 <script type="text/javascript">
     $(function () {
-
         var vCode = getQueryString("code");
         if (vCode != "" && vCode != null) {
             //alert(vCode);
@@ -48,13 +47,8 @@
                 },
                 url: '/AiLvHuoDong/getWxInfo',
                 success: function (sjson) {
-                    //alert("vCode is not null." + sjson);
                     //var vData = JSON.stringify(sjson);
                     //alert(vData);
-                    //$.messager.show({
-                    //    title: '提示',
-                    //    msg: '进入微信支付平台'
-                    //});
                 }
             })
         }
@@ -109,13 +103,10 @@
                 success: function (json) {
                     //alert("调用微信支付模块成功.");
                     //var json = eval("(" + msg + ")");//转换后的JSON对象
-                    //alert("flag3:"+json );
                     onBridgeReady(json);
                 },
                 error: function () {
                     alert("调用微信支付模块失败，请稍后再试。");
-                    //$.messager.progress('close');//记得关闭
-                    //$.messager.alert("提示", '调用微信支付模块失败，请稍后再试。', 'info')
                 }
             })
             //alert("completed call MeterRecharge.");
@@ -125,9 +116,15 @@
         }
     }
 
+    function getGuid(str) {
+        return str.slice(0, 8) + "-" + str.slice(8, 12) + "-" + str.slice(12, 16) +
+        "-" + str.slice(16, 20) + "-" + str.slice(20, str.length + 1)
+    }
+
     //调用微信支付模块
     function onBridgeReady(json) {
         //alert("enter onBridgeReady.appId:" + json.appId + ",timeStamp:" + json.timeStamp + ",nonceStr:" + json.nonceStr + ",package:" + json.packageValue + ",paySign:" + json.paySign);
+        var detailsId = json.detailsId;
         WeixinJSBridge.invoke(
        'getBrandWCPayRequest', {
            "appId": json.appId,     //公众号名称，由商户传入
@@ -139,26 +136,26 @@
        },
        function (res) {
            //alert("onBridgeReady.function (res)");
-          
+           //http://www.cnblogs.com/txw1958/p/wxpay-order-query.html
            if (res.err_msg == "get_brand_wcpay_request:ok") {
                alert("支付成功,请稍后查询余额,如有疑问,请联系管理员.");
-               @*//ajax
+               //ajax
                $.ajax({
                    type: "POST",
                    dataType: "text",
-                   url: '@Url.Action("EditPayStatus", "WeChatWeb")',
+                   url: '@Url.Action("EditPaidInfomation", "AiLvHuoDong")',
                    data: {
-                       userID: '@Model.ID'
+                       id: detailsId,
+                       FeeId: res.transaction_id,
                    },
                    error: function (request) {
-
                        layer.msg("服务器错误！", function () { });
                        return false;
                    },
                    success: function (data) {
-                       window.location.href = "@Url.Action(MVC.Default.Index())"; //支付成功后跳转的页面
+                       window.location.href = "@Url.Action("ZuiXinHuoDong", "AiLvHuoDong")"; //支付成功后跳转的页面
                    }
-               }); //ajax end*@
+               }); //ajax end
 
            }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
            else {

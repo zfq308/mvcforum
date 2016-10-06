@@ -35,8 +35,8 @@ namespace MVCForum.Services.Migrations
 
             Stopwatch MyStopWatch = new Stopwatch(); //性能计时器
 
-            log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-            logger.Debug("Start Configuration.Seed.");
+            log4net.ILog logger = log4net.LogManager.GetLogger("CoreActionLog");
+            logger.Info("Start_Configuration.Seed().");
 
             MyStopWatch.Start(); //启动计时器
 
@@ -635,7 +635,7 @@ namespace MVCForum.Services.Migrations
             MyStopWatch.Stop();
             decimal t = MyStopWatch.ElapsedMilliseconds;
 
-            logger.Debug(string.Format("Configuration.Seed() execution completed.Timecost:{0} seconds, flag:{1}.", t / 1000, IsInitProcess.ToString()));
+            logger.Info(string.Format("Configuration.Seed() execution completed.Timecost:{0} seconds, IsInitProcess:{1}.", t / 1000, IsInitProcess.ToString()));
 
         }
     }
