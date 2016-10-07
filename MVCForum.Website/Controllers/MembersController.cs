@@ -36,12 +36,11 @@ namespace MVCForum.Website.Controllers
     public partial class MembersController : BaseController
     {
 
-
         #region 成员变量
 
         //log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        log4net.ILog loggerForCoreAction = log4net.LogManager.GetLogger("");
-        log4net.ILog loggerForPerformance = log4net.LogManager.GetLogger("");
+        log4net.ILog loggerForCoreAction = log4net.LogManager.GetLogger("CoreActionLog");
+        log4net.ILog loggerForPerformance = log4net.LogManager.GetLogger("PerformanceLog");
 
         private readonly IPostService _postService;
         private readonly ITopicService _topicService;
@@ -345,11 +344,12 @@ namespace MVCForum.Website.Controllers
                     {
                         _verifyCodeService.SendVerifyCode(new VerifyCode(MobilePhone, VerifyCodeStatus.Waiting, code));
                         result = true;// 成功    
+                        loggerForCoreAction.Info("发送验证码GetVerifyCode成功，目标手机为：" + MobilePhone);
                     }
                     catch (Exception ex)
                     {
                         result = false;// 失败    
-                        LoggingService.Error(ex.Message);
+                        loggerForCoreAction.Error("发送验证码GetVerifyCode失败，详细错误信息为：" + ex.Message);
                     }
                     return Json(result, JsonRequestBehavior.AllowGet);
                 }
@@ -360,6 +360,7 @@ namespace MVCForum.Website.Controllers
             }
             catch (Exception ex)
             {
+                loggerForCoreAction.Error("MembersController.GetVerifyCode方法执行出现异常，详细错误信息为：" + ex.Message);
                 throw ex;
             }
         }
@@ -381,26 +382,27 @@ namespace MVCForum.Website.Controllers
                     try
                     {
                         _verifyCodeService.SendVerifyCode(new VerifyCode(user.MobilePhone, VerifyCodeStatus.Waiting, code));
-                        result = true;// 成功    
+                        result = true;// 成功  
+                        loggerForCoreAction.Info("发送验证码GetVerifyCodeByAccount成功，目标手机为：" + user.MobilePhone);
                     }
                     catch (Exception ex)
                     {
                         result = false;// 失败    
                         LoggingService.Error(ex.Message);
+                        loggerForCoreAction.Error("发送验证码GetVerifyCodeByAccount失败，详细错误信息为：" + ex.Message);
                     }
                 }
                 else
                 {
                     result = false;// 失败  
-                    LoggingService.Error(UserName + "对应的用户信息不存在。");
-                    //result = "failNoExistUser";// 失败，用户信息不存在。
+                    LoggingService.Error(string.Format("对应的用户信息：{0}不存在。", UserName));
                     ModelState.AddModelError("NoExistUser", "用户信息不存在。");
                 }
                 return Json(result, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-                LoggingService.Error("发生错误，详细信息为：" + ex.Message);
+                loggerForCoreAction.Error("GetVerifyCodeByAccount()方法发生错误，详细信息为：" + ex.Message);
                 ModelState.AddModelError("", LocalizationService.GetResourceString("Members.ResetPassword.Error"));
                 return View();
             }
@@ -518,9 +520,12 @@ namespace MVCForum.Website.Controllers
                 }
                 else //用户注册成功
                 {
+                    loggerForCoreAction.Info(string.Format("新注册用户{0}成功,真实姓名{1},电话{2}.", userToSave.UserName, userToSave.RealName, userToSave.MobilePhone));
+
                     //将等待验证（Waiting）的验证码的状态改为验证完成
                     VerifyCode mVerifyCode = new VerifyCode(userModel.MobilePhone.Trim(), VerifyCodeStatus.Waiting, userModel.VerifyCode);
                     new VerifyCodeService().CompleteVerifyCode(mVerifyCode);
+                    loggerForCoreAction.Info("注册时完成验证码的验证。用户手机号：" + userModel.MobilePhone.Trim());
 
                     // See if this is a social login and we have their profile pic
                     #region 处理SocialProfileImageUrl
@@ -1194,6 +1199,8 @@ namespace MVCForum.Website.Controllers
                             }
                             #endregion
 
+                            loggerForCoreAction.Info(string.Format("用户{0}更新了个人信息。", userModel.UserName));
+
                             return RedirectToAction("Index", "Home");
                         }
                         catch (Exception ex)
@@ -1317,43 +1324,46 @@ namespace MVCForum.Website.Controllers
                         ad.OriginFileName = adViewModel.UploadFileName;
                         ad.FileName = uploadResult.UploadedFileUrl;
 
-                        _context.MembershipUserPicture.Add(ad);
-                        _context.SaveChanges();
 
-                        #region 重置审核标志位
-
-                        if (!UserIsAdmin)
+                        using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                         {
-                            var user = base.MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
-                            user.AuditComments = "";
-                            user.IsApproved = false;
-                            _context.Entry<MembershipUser>(user).State = System.Data.Entity.EntityState.Modified;
-                            _context.SaveChanges();
-                        }
+                            _MembershipUserPictureService.Add(ad);
+                            try
+                            {
+                                unitOfWork.Commit();
+                                loggerForCoreAction.Info(string.Format("用户{0}新上传个人照片：{1}", LoggedOnReadOnlyUser.UserName, ad.FileName));
 
-                        #endregion
+                                #region 重置审核标志位
+
+                                if (!UserIsAdmin)
+                                {
+                                    var user = base.MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+                                    user.AuditComments = "";
+                                    user.IsApproved = false;
+                                    _context.Entry<MembershipUser>(user).State = System.Data.Entity.EntityState.Modified;
+                                    _context.SaveChanges();
+
+                                    loggerForCoreAction.Info(string.Format("用户{0}因新上传个人照片：{1}导致其账户需要重新审核。", LoggedOnReadOnlyUser.UserName, ad.FileName));
+                                }
+
+                                #endregion
+                            }
+                            catch (Exception ex)
+                            {
+                                unitOfWork.Rollback();
+                                loggerForCoreAction.Error(string.Format("用户{0}新上传个人照片失败。详细错误为：{1}", LoggedOnReadOnlyUser.UserName, ex.Message));
+                            }
+                        }
                     }
                     #endregion
 
-                    string outputstr = "";
-                    if (!UserIsAdmin)
-                    {
-                        outputstr = "个人照片已上传，等待管理员审核。";
-                    }
-                    else
-                    {
-                        outputstr = "个人照片已上传。";
-                    }
-
                     TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                     {
-
-                        Message = outputstr,
+                        Message = !UserIsAdmin ? "个人照片已上传，等待管理员审核。" : "个人照片已上传。",
                         MessageType = GenericMessages.info
                     };
                     return RedirectToAction("PrivatePictureList", "Members", new { Id = LoggedOnReadOnlyUser.Id });
                 }
-
             }
             return View(adViewModel);
         }
@@ -1364,13 +1374,17 @@ namespace MVCForum.Website.Controllers
             var ad = _MembershipUserPictureService.GetMembershipUserPicture(Id);
             try
             {
+                string filename = ad.FileName;
                 _MembershipUserPictureService.Delete(ad);
                 _context.Entry<MembershipUserPicture>(ad).State = EntityState.Deleted;
                 _context.SaveChanges();
+
+                loggerForCoreAction.Info(string.Format("用户{0}删除个人照片：{1}", LoggedOnReadOnlyUser.UserName, filename));
             }
             catch (Exception ex)
             {
-                LoggingService.Error(ex);
+                //LoggingService.Error(ex);
+                loggerForCoreAction.Error(string.Format("用户{0}删除个人照片失败。详细错误为：{1}", LoggedOnReadOnlyUser.UserName, ex.Message));
             }
 
             return RedirectToAction("PrivatePictureList", "Members", new { Id = LoggedOnReadOnlyUser.Id });
@@ -1386,10 +1400,6 @@ namespace MVCForum.Website.Controllers
             model.MembershipUserPictures = MembershipUserPictureslist;
             return View(model);
         }
-
-
-
-
 
         #endregion
 
@@ -1474,7 +1484,6 @@ namespace MVCForum.Website.Controllers
                     }
 
                     _context.Entry<MembershipUser>(user).State = System.Data.Entity.EntityState.Modified;
-                    //EntityOperationUtils.ModifyObject(user);
                     unitOfWork.Commit();
                 }
                 catch (Exception ex)
@@ -1753,22 +1762,23 @@ namespace MVCForum.Website.Controllers
                     try
                     {
                         unitOfWork.Commit();
+
+                        loggerForCoreAction.Info(string.Format("用户{0}更改了密码。", LoggedOnReadOnlyUser.UserName));
                     }
                     catch (Exception ex)
                     {
                         unitOfWork.Rollback();
-                        LoggingService.Error(ex);
+                        //LoggingService.Error(ex);
+                        loggerForCoreAction.Error(string.Format("用户{0}更改密码失败。详细信息为：{1}", LoggedOnReadOnlyUser.UserName, ex.Message));
                         changePasswordSucceeded = false;
                     }
                 }
             }
 
-            // Commited successfully carry on
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 if (changePasswordSucceeded)
                 {
-                    // We use temp data because we are doing a redirect
                     TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                     {
                         Message = LocalizationService.GetResourceString("Members.ChangePassword.Success"),
@@ -1814,6 +1824,9 @@ namespace MVCForum.Website.Controllers
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
                 user = MembershipService.GetUser(forgotPasswordViewModel.UserName);
+
+                #region 参数校验
+
                 if (user == null)
                 {
                     ModelState.AddModelError("NoExistUser", "用户不存在。");
@@ -1829,11 +1842,15 @@ namespace MVCForum.Website.Controllers
                     return View(forgotPasswordViewModel);
                 }
 
+                #endregion
+
                 try
                 {
                     // If the user is registered then create a security token and a timestamp that will allow a change of password
                     MembershipService.UpdatePasswordResetToken(user);
                     unitOfWork.Commit();
+
+                    loggerForCoreAction.Info(string.Format("用户{0}完成UpdatePasswordResetToken操作。", user.UserName));
                 }
                 catch (Exception ex)
                 {
@@ -1844,13 +1861,7 @@ namespace MVCForum.Website.Controllers
                 }
             }
 
-
-            //var settings = SettingsService.GetSettings();
-            //var s2 = settings.ForumUrl.TrimEnd('/');
             var s = Url.Action("ResetPassword", "Members", new { user.Id, token = user.PasswordResetToken });
-            //var RedirectURL = string.Concat(s2, s);
-            //var url = new Uri(RedirectURL);
-            //return Redirect(url.ToString());
 
             #region 发送重置密码的邮件
 
@@ -1890,7 +1901,6 @@ namespace MVCForum.Website.Controllers
 
             return Redirect(s);
 
-
         }
 
         #endregion
@@ -1922,41 +1932,43 @@ namespace MVCForum.Website.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult ResetPassword(ResetPasswordViewModel postedModel)
+        public ActionResult ResetPassword(ResetPasswordViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                return View(postedModel);
+                return View(model);
             }
 
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
-                if (postedModel.Id != null)
+                if (model.Id != null)
                 {
-                    var user = MembershipService.GetUser(postedModel.Id.Value);
+                    var user = MembershipService.GetUser(model.Id.Value);
 
                     // if the user id wasn't found then we can't proceed
                     // if the token submitted is not valid then do not proceed
-                    if (user == null || user.PasswordResetToken == null || !MembershipService.IsPasswordResetTokenValid(user, postedModel.Token))
+                    if (user == null || user.PasswordResetToken == null || !MembershipService.IsPasswordResetTokenValid(user, model.Token))
                     {
                         ModelState.AddModelError("", LocalizationService.GetResourceString("Members.ResetPassword.InvalidToken"));
-                        return View(postedModel);
+                        return View(model);
                     }
 
                     try
                     {
                         // The security token is valid so change the password
-                        MembershipService.ResetPassword(user, postedModel.NewPassword);
+                        MembershipService.ResetPassword(user, model.NewPassword);
                         // Clear the token and the timestamp so that the URL cannot be used again
                         MembershipService.ClearPasswordResetToken(user);
                         unitOfWork.Commit();
+
+                        loggerForCoreAction.Info(string.Format("用户{0}完成重置密码操作。", user.UserName));
                     }
                     catch (Exception ex)
                     {
                         unitOfWork.Rollback();
-                        LoggingService.Error(ex);
+                        LoggingService.Error("重置密码失败，详细信息为：" + ex);
                         ModelState.AddModelError("", LocalizationService.GetResourceString("Members.ResetPassword.InvalidToken"));
-                        return View(postedModel);
+                        return View(model);
                     }
                 }
             }

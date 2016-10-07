@@ -171,8 +171,6 @@ namespace MVCForum.Website.ViewModels
 
     }
 
-
-
     public class AiLvZhangHu_ViewModel
     {
         public MembershipUser User { get; set; }
@@ -193,6 +191,11 @@ namespace MVCForum.Website.ViewModels
 
     }
 
+    public  class ExportAiLvHuodongUser_Model
+    {
+        public ActivityRegister activityregister { get; set; }
+        public MembershipUser User { get; set; }
+    }
 
     public class MeiRiZhiXing_ListViewModel
     {

@@ -22,6 +22,7 @@ using System.Web.Hosting;
 using System.IO;
 using System.Diagnostics;
 using System.Globalization;
+using MVCForum.Domain.DomainModel.General;
 
 namespace MVCForum.Website.Controllers
 {
@@ -647,7 +648,7 @@ namespace MVCForum.Website.Controllers
                 {
                     unitOfWork.Commit();
 
-                    string log = LoggedOnReadOnlyUser.UserName + "已报名活动:" + huodong.MingCheng + "[" + huodong.Id.ToString() + "].";
+                    string log = LoggedOnReadOnlyUser.UserName + "已报名活动:" + huodong.MingCheng + ",活动的主键Id为：" + huodong.Id.ToString() + ".";
                     loggerForCoreActionLog.Info(log);
 
                     if (ar.FeeNumber > 0)
@@ -660,7 +661,7 @@ namespace MVCForum.Website.Controllers
 
                         //因微信校验目录的原因，此处不能在URL中传参，改用Session传值
                         Session["WechatPayDetailsId"] = ar.DetailsId;
-                        loggerForCoreActionLog.Info(log + "跳至微信支付页面进行支付。");
+                        // 跳至微信支付页面进行支付
                         return RedirectToAction("WechatPay", "AiLvHuoDong");
                     }
                     else
@@ -738,9 +739,124 @@ namespace MVCForum.Website.Controllers
         }
 
         /// <summary>
+        /// 接收微信下单的返回结果
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ResultNotifyPage()
+        {
+            var data = GetNotifyData();
+
+            if (data.GetValue("result_code").ToString() != "SUCCESS")
+            {
+                LoggingService.Error("result_code返回不为SUCCESS.");
+                return View();
+            }
+
+            string mId = data.GetValue("attach").ToString();
+            string mFeeId = data.GetValue("transaction_id").ToString();
+            string PayCompletedTimeStr = data.GetValue("time_end").ToString();
+            LoggingService.Error("attach=" + mId);
+            LoggingService.Error("transaction_id=" + mFeeId);
+
+            DateTime PayCompletedTime = DateTime.ParseExact(PayCompletedTimeStr, "yyyyMMddHHmmss", CultureInfo.InvariantCulture);
+            LoggingService.Error("time_end=" + PayCompletedTime.ToString("yyyy-MM-dd HH:mm:ss"));
+
+            //string mId = "dbac362e-97ce-4c5c-994d-a6980042d5af";
+            //string mFeeId = "4010212001201610076009743132";
+            //DateTime PayCompletedTime = DateTime.ParseExact("20161007040338", "yyyyMMddHHmmss", CultureInfo.InvariantCulture);
+
+            Guid DetailsId = Guid.Empty;
+            if (Guid.TryParse(mId, out DetailsId))
+            {
+                if (DetailsId != Guid.Empty && !string.IsNullOrEmpty(mFeeId))
+                {
+                    using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                    {
+                        #region 更新报名记录
+
+                        try
+                        {
+                            _ActivityRegisterService.ConfirmPay(DetailsId, mFeeId, PayCompletedTime);
+                            unitOfWork.Commit();
+                            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                            {
+                                Message = "已完成活动费用的支付。",
+                                MessageType = GenericMessages.info
+                            };
+                            return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
+                        }
+                        catch (Exception ex)
+                        {
+                            unitOfWork.Rollback();
+                            LoggingService.Error(ex);
+                            ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
+
+                            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                            {
+                                Message = ex.Message,
+                                MessageType = GenericMessages.danger
+                            };
+                            return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
+                        }
+
+                        #endregion
+                    }
+                }
+            }
+            //出错时处理
+            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+            {
+                Message = "更新订单信息时返回的参数不符合要求，报名DetailsId=" + mId + ", 微信支付单号:" + mFeeId,
+                MessageType = GenericMessages.danger
+            };
+            return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
+        }
+
+        /// <summary>
+        /// 解析微信JSAPI支付后的返回信息，返回的地址在微信Config类中定义
+        /// </summary>
+        /// <returns></returns>
+        public WxPayData GetNotifyData()
+        {
+            //接收从微信后台POST过来的数据
+            System.IO.Stream s = Request.InputStream;
+            int count = 0;
+            byte[] buffer = new byte[1024];
+            StringBuilder builder = new StringBuilder();
+            while ((count = s.Read(buffer, 0, 1024)) > 0)
+            {
+                builder.Append(Encoding.UTF8.GetString(buffer, 0, count));
+            }
+            s.Flush();
+            s.Close();
+            s.Dispose();
+
+            Log.Info(this.GetType().ToString(), "Receive data from WeChat B : " + builder.ToString());
+
+            //转换数据格式并验证签名
+            WxPayData data = new WxPayData();
+            try
+            {
+                data.FromXml(builder.ToString());
+            }
+            catch (WxPayException ex)
+            {
+                //若签名错误，则立即返回结果给微信支付后台
+                WxPayData res = new WxPayData();
+                res.SetValue("return_code", "FAIL");
+                res.SetValue("return_msg", ex.Message);
+                Log.Error(this.GetType().ToString(), "Sign check error : " + res.ToXml());
+                Response.Write(res.ToXml());
+                Response.End();
+            }
+            return data;
+        }
+
+
+        /// <summary>
         /// 导出参加活动的用户清单
         /// </summary>
-        /// <param name="id">爱驴活动的Guid编号</param>
+        /// <param name="id">爱驴活动实例的Guid编号</param>
         /// <returns></returns>
         [Authorize]
         [HttpPost]
@@ -748,34 +864,137 @@ namespace MVCForum.Website.Controllers
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                List<MembershipUser> customers = null;
+                List<ExportAiLvHuodongUser_Model> customers = null;
+
+
                 var collection = _ActivityRegisterService.GetActivityRegisterListByHongDongId(id).ToList();
                 if (collection != null && collection.Count > 0)
                 {
-                    customers = new List<MembershipUser>();
-                    foreach (var item in collection)
+                    customers = new List<ExportAiLvHuodongUser_Model>();
+                    foreach (ActivityRegister item in collection)
                     {
                         MembershipUser user = _MembershipService.GetUser(item.UserId);
-                        if (!customers.Contains(user))
+
+                        ExportAiLvHuodongUser_Model model = new ExportAiLvHuodongUser_Model();
+                        model.activityregister = item;
+                        model.User = user;
+
+
+                        if (!customers.Contains(model))
                         {
-                            customers.Add(user);
+                            customers.Add(model);
                         }
                     }
                 }
 
                 if (this.HttpContext.IsMobileDevice())
                 {
-                    var csvcontent = MembershipService.ToCsv(customers, UserIsAdmin);
+                    var csvcontent = ToCsv(customers);
                     return Content(csvcontent);
                 }
                 else
                 {
-                    var csvcontent = MembershipService.ToCsv(customers, UserIsAdmin);
+                    var csvcontent = ToCsv(customers);
                     byte[] fileContents = Encoding.UTF8.GetBytes(MembershipService.RemoveHTMLToCSV(csvcontent));
                     return File(fileContents, "application/vnd.ms-excel", "MVCForumUsers.csv");
                 }
             }
         }
+
+        private string ToCsv(List<ExportAiLvHuodongUser_Model> userlist)
+        {
+
+            var csv = new StringBuilder("");
+            if (userlist != null && userlist.Count > 0)
+            {
+                csv.Append("<table border='1' bordercolor='#a0c6e5' style='border-collapse:collapse;'>");
+                csv.Append("<tr>");
+                csv.AppendLine("<td>账号</td><td>昵称</td><td>真实姓名</td><td>联系方式</td><td>性别</td><td>年龄</td><td>婚否</td><td>身高</td><td>体重</td><td>现居地</td><td>最后登录时间</td><td>审核标志位</td><td>会员状态</td><td>会员类别</td><td>缴费情况</td><td>微信单号</td>");
+                csv.Append("</tr>");
+                foreach (var ExportAiLvHuodongUser in userlist)
+                {
+                    if (ExportAiLvHuodongUser == null) continue;
+
+                    var user = ExportAiLvHuodongUser.User;
+                    var ar = ExportAiLvHuodongUser.activityregister;
+
+                    var UserName = string.Empty;
+                    var AliasName = string.Empty;
+                    var RealName = string.Empty;
+                    var MobilePhone = string.Empty;
+                    var Gender = string.Empty;
+                    var Age = string.Empty;
+                    var IsMarried = string.Empty;
+                    var Height = string.Empty;
+                    var Weight = string.Empty;
+                    var Location = string.Empty;
+                    var IsApproved = string.Empty;
+                    var IsBanned = string.Empty;
+                    var UserType = string.Empty;
+                    var LastLoginDate = "";
+                    var PaidFlag = "";
+                    var tran_id = ar.FeeId;
+
+                    try
+                    {
+                        UserName = user.UserName;
+                        AliasName = user.AliasName;
+                        RealName = user.RealName;
+                        MobilePhone = user.MobilePhone;
+                        Gender = user.Gender == Enum_Gender.boy ? "男" : "女";
+                        Age = user.Age.ToString();
+                        IsMarried = user.IsMarried == Enum_MarriedStatus.Married ? "已婚" : "单身";
+                        Height = user.Height.ToString();
+                        Weight = user.Weight.ToString();
+                        Location = string.Concat(TProvince.LoadProvinceByProvincedId(Convert.ToInt32(user.LocationProvince)).ProvinceName,
+                                      TCity.LoadCityByCityId(Convert.ToInt32(user.LocationCity)).CityName,
+                                      TCountry.LoadCountryByCountryId(Convert.ToInt32(user.LocationCounty)).CountryName);
+                        LastLoginDate = user.LastLoginDate.ToString("yyyy-MM-dd HH:mm:ss");
+                        IsApproved = user.IsApproved ? "已审核" : "待审核";
+                        IsBanned = user.IsBanned ? "用户已隐藏" : "正常状态";
+                        UserType = user.UserType.ToString();
+
+                        if(ar.FeeNumber>0)
+                        {
+                            PaidFlag = ar.FeeStatus == Enum_FeeStatus.PayedFee ? "已支付" : "待支付";
+                        }
+                        else
+                        {
+                            PaidFlag = "免费项目";
+                        }
+                       
+                        csv.Append("<tr>");
+                        csv.AppendFormat("<td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td><td>{6}</td><td>{7}</td><td>{8}</td><td>{9}</td><td>{10}</td><td>{11}</td><td>{12}</td><td>{13}</td><td>{14}</td><td>{15}</td>",
+                            UserName,
+                            AliasName,
+                            RealName,
+                            MobilePhone,
+                            Gender,
+                            Age,
+                            IsMarried,
+                            Height,
+                            Weight,
+                            Location,
+                            LastLoginDate,
+                            IsApproved,
+                            IsBanned,
+                            UserType,
+                            PaidFlag,
+                            tran_id
+                            );
+                        csv.Append("</tr>");
+                        csv.AppendLine();
+                    }
+                    catch (Exception ex)
+                    {
+                        loggerForCoreActionLog.Error("导出活动用户清单失败。详细信息为：" + ex.Message);
+                    }
+                }
+                csv.Append("</table>");
+            }
+            return csv.ToString();
+        }
+
 
         #endregion
 
@@ -809,7 +1028,7 @@ namespace MVCForum.Website.Controllers
                 data.SetValue("scope", "snsapi_base");
                 data.SetValue("state", "STATE" + "#wechat_redirect");
                 string url = "https://open.weixin.qq.com/connect/oauth2/authorize?" + data.ToUrl();
-                Log.Debug(this.GetType().ToString(), "Will Redirect to URL : " + url);
+                //Log.Debug(this.GetType().ToString(), "Will Redirect to URL : " + url);
                 Session["url"] = url;
             }
         }
@@ -919,7 +1138,7 @@ namespace MVCForum.Website.Controllers
 
                         string strBody = "爱驴网微信支付:" + _aiLvHuoDongService.Get(ar.Id).MingCheng + ":" +
                             _MembershipService.GetUser(ar.UserId).UserName;//商品描述
-                        string attachInfo = ar.Id.ToString();
+                        string attachInfo = ar.DetailsId.ToString(); // 传入ActivityRegister的主键字段DetailsId
                         WxPayData unifiedOrderResult = jsApiPay.GetUnifiedOrderResult(strBody, attachInfo);
                         WxPayData wxJsApiParam = jsApiPay.GetJsApiParameters();//获取H5调起JS API参数
                         var aOrder = new ActivityRegisterForOrder()
@@ -935,7 +1154,7 @@ namespace MVCForum.Website.Controllers
                         objResult = aOrder;
 
 
-                        loggerForCoreActionLog.Info(strBody);
+                        loggerForCoreActionLog.Info("微信支付下单完成。Body信息为：" + strBody + ",对应的ActivityRegister主键字段值为：" + attachInfo);
 
                         #endregion
                     }
@@ -1003,6 +1222,9 @@ namespace MVCForum.Website.Controllers
                 return Json(objResult);
             }
         }
+
+
+
 
         #endregion
 
@@ -1225,114 +1447,5 @@ namespace MVCForum.Website.Controllers
             return View(model);
         }
 
-
-        public ActionResult ResultNotifyPage()
-        {
-            var data = GetNotifyData();
-
-            if (data.GetValue("result_code").ToString() != "SUCCESS")
-            {
-                LoggingService.Error("result_code返回不为SUCCESS.");
-                return View();
-            }
-
-            string mId = data.GetValue("attach").ToString();
-            string mFeeId = data.GetValue("transaction_id").ToString();
-            string PayCompletedTimeStr = data.GetValue("time_end").ToString();
-            LoggingService.Error("attach=" + mId);
-            LoggingService.Error("transaction_id=" + mFeeId);
-
-            DateTime PayCompletedTime = DateTime.ParseExact(PayCompletedTimeStr, "yyyyMMddHHmmss", CultureInfo.InvariantCulture);
-            LoggingService.Error("time_end=" + PayCompletedTime.ToString("yyyy-MM-dd HH:mm:ss"));
-
-
-
-
-            //string mId = "dbac362e-97ce-4c5c-994d-a6980042d5af";
-            //string mFeeId = "4010212001201610076009743132";
-            //DateTime PayCompletedTime = DateTime.ParseExact("20161007040338", "yyyyMMddHHmmss", CultureInfo.InvariantCulture);
-
-            Guid DetailsId = Guid.Empty;
-            if (Guid.TryParse(mId, out DetailsId))
-            {
-                if (DetailsId != Guid.Empty && !string.IsNullOrEmpty(mFeeId))
-                {
-                    using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
-                    {
-                        #region 更新报名记录
-
-                        try
-                        {
-                            _ActivityRegisterService.ConfirmPay(DetailsId, mFeeId, PayCompletedTime);
-                            unitOfWork.Commit();
-                            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                            {
-                                Message = "已完成活动费用的支付。",
-                                MessageType = GenericMessages.info
-                            };
-                            return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
-                        }
-                        catch (Exception ex)
-                        {
-                            unitOfWork.Rollback();
-                            LoggingService.Error(ex);
-                            ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
-
-                            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                            {
-                                Message = ex.Message,
-                                MessageType = GenericMessages.danger
-                            };
-                            return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
-                        }
-
-                        #endregion
-                    }
-                }
-            }
-            //出错时处理
-            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-            {
-                Message = "更新订单信息时返回的参数不符合要求，报名DetailsId=" + mId + ", 微信支付单号:" + mFeeId,
-                MessageType = GenericMessages.danger
-            };
-            return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
-        }
-
-        public WxPayData GetNotifyData()
-        {
-            //接收从微信后台POST过来的数据
-            System.IO.Stream s = Request.InputStream;
-            int count = 0;
-            byte[] buffer = new byte[1024];
-            StringBuilder builder = new StringBuilder();
-            while ((count = s.Read(buffer, 0, 1024)) > 0)
-            {
-                builder.Append(Encoding.UTF8.GetString(buffer, 0, count));
-            }
-            s.Flush();
-            s.Close();
-            s.Dispose();
-
-            Log.Info(this.GetType().ToString(), "Receive data from WeChat B : " + builder.ToString());
-
-            //转换数据格式并验证签名
-            WxPayData data = new WxPayData();
-            try
-            {
-                data.FromXml(builder.ToString());
-            }
-            catch (WxPayException ex)
-            {
-                //若签名错误，则立即返回结果给微信支付后台
-                WxPayData res = new WxPayData();
-                res.SetValue("return_code", "FAIL");
-                res.SetValue("return_msg", ex.Message);
-                Log.Error(this.GetType().ToString(), "Sign check error : " + res.ToXml());
-                Response.Write(res.ToXml());
-                Response.End();
-            }
-            return data;
-        }
     }
 }
