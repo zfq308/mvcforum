@@ -748,18 +748,18 @@ namespace MVCForum.Website.Controllers
 
             if (data.GetValue("result_code").ToString() != "SUCCESS")
             {
-                LoggingService.Error("result_code返回不为SUCCESS.");
+                LoggingService.Error("微信支付result_code返回不为SUCCESS.");
                 return View();
             }
 
             string mId = data.GetValue("attach").ToString();
             string mFeeId = data.GetValue("transaction_id").ToString();
             string PayCompletedTimeStr = data.GetValue("time_end").ToString();
-            LoggingService.Error("attach=" + mId);
-            LoggingService.Error("transaction_id=" + mFeeId);
+            //LoggingService.Error("attach=" + mId);
+            //LoggingService.Error("transaction_id=" + mFeeId);
 
             DateTime PayCompletedTime = DateTime.ParseExact(PayCompletedTimeStr, "yyyyMMddHHmmss", CultureInfo.InvariantCulture);
-            LoggingService.Error("time_end=" + PayCompletedTime.ToString("yyyy-MM-dd HH:mm:ss"));
+            //LoggingService.Error("time_end=" + PayCompletedTime.ToString("yyyy-MM-dd HH:mm:ss"));
 
             //string mId = "dbac362e-97ce-4c5c-994d-a6980042d5af";
             //string mFeeId = "4010212001201610076009743132";
@@ -783,6 +783,7 @@ namespace MVCForum.Website.Controllers
                                 Message = "已完成活动费用的支付。",
                                 MessageType = GenericMessages.info
                             };
+                            loggerForCoreActionLog.Info("已完成活动费用的支付.DetailsId=" + DetailsId.ToString() + ",微信单号为：" + mFeeId);
                             return RedirectToAction("ZuiXinHuoDong", "AiLvHuoDong");
                         }
                         catch (Exception ex)
@@ -1096,17 +1097,10 @@ namespace MVCForum.Website.Controllers
                 {
                     #region 支付金额校验
 
-                    //string strFee = (double.Parse(strTotal_fee) * 100).ToString(); // *100，转化金额从“分”到“元”
-                    //jsApiPay.total_fee = int.Parse(strFee);
-
-                    //if (jsApiPay.total_fee != ar.FeeNumber * 100)
-
-
-
-                    string strFee = (double.Parse(strTotal_fee)).ToString(); // *100，转化金额从“分”到“元”
+                    string strFee = (double.Parse(strTotal_fee) * 100).ToString(); // *100，转化金额从“分”到“元”
                     jsApiPay.total_fee = int.Parse(strFee);
 
-                    if (jsApiPay.total_fee != ar.FeeNumber)
+                    if (jsApiPay.total_fee != ar.FeeNumber * 100)
                     {
                         #region 出错，钱不相等
 
@@ -1222,9 +1216,6 @@ namespace MVCForum.Website.Controllers
                 return Json(objResult);
             }
         }
-
-
-
 
         #endregion
 

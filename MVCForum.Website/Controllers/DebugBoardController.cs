@@ -134,22 +134,19 @@ namespace MVCForum.Website.Controllers
         //[ValidateAntiForgeryToken]
         public ActionResult ClearAiLvHuodong()
         {
-
-            var allHuodong = _aiLvHuoDongService.GetAll();
-            if (allHuodong != null && allHuodong.Count > 0)
-            {
-                foreach (var item in allHuodong)
-                {
-                    _aiLvHuoDongService.Delete(item);
-                    //_context.Entry<AiLvHuoDong>(item).State = EntityState.Deleted;
-                }
-            }
-
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
                 try
                 {
-
+                    var allHuodong = _aiLvHuoDongService.GetAll();
+                    if (allHuodong != null && allHuodong.Count > 0)
+                    {
+                        foreach (var item in allHuodong)
+                        {
+                            _aiLvHuoDongService.Delete(item);
+                            _context.Entry<AiLvHuoDong>(item).State = EntityState.Deleted;
+                        }
+                    }
                     _context.SaveChanges();
                     unitOfWork.Commit();
                     TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel

@@ -984,6 +984,20 @@ namespace MVCForum.Website.Controllers
                     return Edit(userModel.Id);
                 }
 
+                // Get the user from DB
+                var user = MembershipService.GetUser(userModel.Id);
+                if(user.Avatar=="" && userModel.Files==null)
+                {
+                    ShowMessage(new GenericMessageViewModel
+                    {
+                        //Message = LocalizationService.GetResourceString("Member.ProfileUpdated"),
+                        Message = "请上传您的靓照作为头像哦。",
+                        MessageType = GenericMessages.danger
+                    });
+                    return Edit(userModel.Id);
+                }
+
+
                 #endregion
 
                 using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
@@ -994,8 +1008,7 @@ namespace MVCForum.Website.Controllers
                     // Check is has permissions
                     if (UserIsAdmin || loggedOnUserId == userModel.Id || permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
                     {
-                        // Get the user from DB
-                        var user = MembershipService.GetUser(userModel.Id);
+                       
 
                         #region 对用户输入的信息进行停用词检查
 
@@ -1696,7 +1709,7 @@ namespace MVCForum.Website.Controllers
         {
             if (!string.IsNullOrEmpty(OriginalURL))
             {
-                if (OriginalURL == "/ailvhuodong/createactivityregister/") { return "/ailvhuodong/ZuiXinHuoDong/"; }
+                if (OriginalURL.ToLower() == "/ailvhuodong/createactivityregister/") { return "/ailvhuodong/ZuiXinHuoDong/"; }
                 return OriginalURL;
             }
             return "/Home/Index";
