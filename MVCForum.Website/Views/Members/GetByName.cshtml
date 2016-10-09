@@ -147,37 +147,58 @@
                                 <p>
                                     <b>学历:</b>
                                     @{
-                                        var educationstr = TEducation.LoadEducationByEducationId(Model.User.Education).EducationName;
+                                        var educationstr = "";
+                                        if (!string.IsNullOrEmpty(Model.User.Education))
+                                        {
+                                            educationstr = TEducation.LoadEducationByEducationId(Model.User.Education).EducationName;
+                                        }
                                     }
                                     @educationstr
                                 </p>
                                 <p><b>毕业院校:</b> @Model.User.SchoolName</p>
                             </div>
-                            <div class="col-md-6">
-                                <p><b>家乡:</b> @Model.User.HomeTown</p>
-                                <p>
-                                    <b>现居住地:</b> @Html.Raw(TProvince.LoadProvinceByProvincedId(Convert.ToInt32(Model.User.LocationProvince)).ProvinceName),
-                                    @Html.Raw(TCity.LoadCityByCityId(Convert.ToInt32(Model.User.LocationCity)).CityName),
-                                    @Html.Raw(TCountry.LoadCountryByCountryId(Convert.ToInt32(Model.User.LocationCounty)).CountryName)
-                                </p>
-                                <p><b>职业:</b> @Model.User.Job</p>
-                                <p>
-                                    <b>月收入:</b>
-                                    @Html.ConvertIncomeRange((int)Model.User.IncomeRange);
-                                </p>
-                                <p><b>账号创建时间:</b> @DatesUI.GetPrettyDate(Model.User.CreateDate.ToString())</p>
-                                <p><b>账号状态:</b> @Html.Raw(Model.User.IsApproved ? "已审核" : "待审核")</p>
-                                @if (Model.User.LastActivityDate != null)
-                                {
-                                    <p><b>最后上线时间:</b> @DatesUI.GetPrettyDate(Model.User.LastActivityDate.ToString())</p>
-                                }
-                                <p>
-                                    @if (User.IsInRole(AppConstants.AdminRoleName))
+                                <div class="col-md-6">
+                                    <p><b>家乡:</b> @Model.User.HomeTown</p>
+                                    <p>
+                                        <b>现居住地:</b>
+                                        @{ 
+                                            var ProvinceName = TProvince.LoadProvinceByProvincedId(Convert.ToInt32(Model.User.LocationProvince)).ProvinceName;
+                                            var CityName = TCity.LoadCityByCityId(Convert.ToInt32(Model.User.LocationCity)).CityName;
+                                            var CountryName = TCountry.LoadCountryByCountryId(Convert.ToInt32(Model.User.LocationCounty)).CountryName;
+                                            if(ProvinceName== "==请选择==")
+                                            {
+                                                ProvinceName = "";
+                                            }
+                                            if (CityName == "==请选择==")
+                                            {
+                                                CityName = "";
+                                            }
+                                            if (CountryName == "==请选择==")
+                                            {
+                                                CountryName = "";
+                                            }
+                                            var location = ProvinceName + CityName + CountryName;
+                                        }
+                                     @location
+                                    </p>
+                                    <p><b>职业:</b> @Model.User.Job</p>
+                                    <p>
+                                        <b>月收入:</b>
+                                        @Html.ConvertIncomeRange((int)Model.User.IncomeRange);
+                                    </p>
+                                    <p><b>账号创建时间:</b> @DatesUI.GetPrettyDate(Model.User.CreateDate.ToString())</p>
+                                    <p><b>账号状态:</b> @Html.Raw(Model.User.IsApproved ? "已审核" : "待审核")</p>
+                                    @if (Model.User.LastActivityDate != null)
                                     {
-                                        <b>用户类型:</b> @Model.User.UserType
+                                        <p><b>最后上线时间:</b> @DatesUI.GetPrettyDate(Model.User.LastActivityDate.ToString())</p>
                                     }
-                                </p>
-                            </div>
+                                    <p>
+                                        @if (User.IsInRole(AppConstants.AdminRoleName))
+                                        {
+                                            <b>用户类型:</b> @Model.User.UserType
+                                        }
+                                    </p>
+                                </div>
                                         }
                                         else
                                         {
@@ -190,11 +211,11 @@
                 <div class="form-group">
                     <h3>个人相册</h3>
                     @if (Model.User.IsApproved || User.IsInRole(AppConstants.AdminRoleName))
-                {
-                    var model2 = new MemberFrontEndEditViewModel();
-                    model2.UserName = Model.User.UserName;
-                    model2.Id = Model.LoggedOnUserId;
-                    model2.MembershipUserPictures = Model.MembershipUserPictures;
+                    {
+                        var model2 = new MemberFrontEndEditViewModel();
+                        model2.UserName = Model.User.UserName;
+                        model2.Id = Model.LoggedOnUserId;
+                        model2.MembershipUserPictures = Model.MembershipUserPictures;
                         @Html.Partial("PrivatePictureList", model2)
                     }
                     else
@@ -208,23 +229,23 @@
                     <div class="form-group">
                         <h3>每日之星</h3>
                         @using (Html.BeginForm("SubmitMeiRiZhiXing", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
-                    {
+                        {
                             @Html.HiddenFor(x => x.MeiRiZhiXing.UserId)
                             <div class="form-group">
                                 <span>开始时间</span>
                                 @Html.TextBoxFor(model => model.MeiRiZhiXing.StartTime, new { @class = "form-control" })
                                 @Html.ValidationMessageFor(model => model.MeiRiZhiXing.StartTime)
                             </div>
-                            <div class="form-group">
-                                <span>结束时间</span>
-                                @Html.TextBoxFor(model => model.MeiRiZhiXing.StopTime, new { @class = "form-control" })
-                                @Html.ValidationMessageFor(model => model.MeiRiZhiXing.StopTime)
-                            </div>
-                            <div class="form-group">
-                                <span>激活每日之星</span>
-                                @Html.CheckBoxFor(model => model.MeiRiZhiXing.Status, new { @class = "form-control" })
-                                @Html.ValidationMessageFor(model => model.MeiRiZhiXing.Status)
-                            </div>
+                                        <div class="form-group">
+                                            <span>结束时间</span>
+                                            @Html.TextBoxFor(model => model.MeiRiZhiXing.StopTime, new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(model => model.MeiRiZhiXing.StopTime)
+                                        </div>
+                                        <div class="form-group">
+                                            <span>激活每日之星</span>
+                                            @Html.CheckBoxFor(model => model.MeiRiZhiXing.Status, new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(model => model.MeiRiZhiXing.Status)
+                                        </div>
                             if (Model.User.Id != Guid.Empty)
                             {
                                 <button type="submit" name="btn_SubmitMeiRiZhiXing" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
@@ -233,37 +254,37 @@
                             }
                         }
                     </div>
-                    <div class="form-group">
-                        <h3>变更权限</h3>
-                        @using (Html.BeginForm("ChangeUserRoles", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
-                        {
-                            @Html.HiddenFor(x => x.LoggedOnUserId)
-                            <div class="form-group">
-                                <span>角色列表</span>
-                                @Html.DropDownListFor(x => x.RoleId, ViewData["RoleList"] as List<SelectListItem>, new { @class = "form-control" })<SelectListItem>
-                                    @Html.ValidationMessageFor(x => x.RoleId)
-                            </div>
-                            <button type="submit" name="btn_SubmitChangeUserRoles" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
-                                变更用户角色
-                            </button><br />
-                        }
-                    </div>
+                                <div class="form-group">
+                                    <h3>变更权限</h3>
+                                    @using (Html.BeginForm("ChangeUserRoles", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                    {
+                                        @Html.HiddenFor(x => x.LoggedOnUserId)
+                                        <div class="form-group">
+                                            <span>角色列表</span>
+                                            @Html.DropDownListFor(x => x.RoleId, ViewData["RoleList"] as List<SelectListItem>, new { @class = "form-control" })<SelectListItem>
+                                                @Html.ValidationMessageFor(x => x.RoleId)
+                                        </div>
+                                        <button type="submit" name="btn_SubmitChangeUserRoles" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
+                                            变更用户角色
+                                        </button><br />
+                                    }
+                                </div>
 
-                    <div class="form-group">
-                        <h3>变更用户类型</h3>
-                        @using (Html.BeginForm("ChangeUserType", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
-                        {
-                            @Html.HiddenFor(x => x.LoggedOnUserId)
-                            <div class="form-group">
-                                <span>用户类型</span>
-                                @Html.DropDownListFor(x => x.UserType, ViewData["UserTypeList"] as List<SelectListItem>, new { @class = "form-control" })<SelectListItem>
-                                    @Html.ValidationMessageFor(x => x.UserType)
-                            </div>
-                            <button type="submit" name="btn_SubmitChangeUserRoles" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
-                                变更用户类型
-                            </button><br />
-                        }
-                    </div>
+                                <div class="form-group">
+                                    <h3>变更用户类型</h3>
+                                    @using (Html.BeginForm("ChangeUserType", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                    {
+                                        @Html.HiddenFor(x => x.LoggedOnUserId)
+                                        <div class="form-group">
+                                            <span>用户类型</span>
+                                            @Html.DropDownListFor(x => x.UserType, ViewData["UserTypeList"] as List<SelectListItem>, new { @class = "form-control" })<SelectListItem>
+                                                @Html.ValidationMessageFor(x => x.UserType)
+                                        </div>
+                                        <button type="submit" name="btn_SubmitChangeUserRoles" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
+                                            变更用户类型
+                                        </button><br />
+                                    }
+                                </div>
 
                 }
 
