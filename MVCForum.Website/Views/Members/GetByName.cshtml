@@ -15,6 +15,7 @@
     {
         ViewBag.Title = "";
     }
+    
 }
 
 @section side
@@ -26,7 +27,7 @@
     @if (Model != null && Model.User != null)
     {
         <div class="row">
-            @if (Model.User.IsApproved || User.IsInRole(AppConstants.AdminRoleName))
+            @if (Model.CurrentLoginUser.IsApproved || User.IsInRole(AppConstants.AdminRoleName))
             {
                 <div class="col-md-3 memberavatardetails">
 
@@ -35,9 +36,11 @@
                     </p>
 
                     @if (User.Identity.IsAuthenticated && //当前用户已登录
-                Model.User.UserName != User.Identity.Name && //当前用户不是要展示的用户
-                Html.CurrentMember().DisablePrivateMessages != true && Html.Settings().EnablePrivateMessages  //允许私信操作
-                )
+                         Model.User.UserName != User.Identity.Name && //当前用户不是要展示的用户
+                         Html.CurrentMember().DisablePrivateMessages != true &&
+                         Model.CurrentLoginUser.IsApproved &&
+                         Html.Settings().EnablePrivateMessages  //允许私信操作
+                         )
                     {
                         <p>
                             <a href="@Url.Action("View", "PrivateMessage", new { from = Model.User.Id }, null)"
@@ -48,7 +51,7 @@
                         </p>
                     }
 
-                    @if (User.Identity.IsAuthenticated && Model.User.UserName != User.Identity.Name)
+                    @if (User.Identity.IsAuthenticated && Model.User.UserName != User.Identity.Name && Model.CurrentLoginUser.IsApproved )
                     {
                         if (Model.FollowStatus == 0) // 未关注，可关注
                         {
@@ -140,7 +143,7 @@
                                     </p>
                                 }
                                 <p><b>性别:</b> @Html.Raw(Model.User.Gender == MVCForum.Domain.DomainModel.Enum_Gender.boy ? "男生" : "女生")</p>
-                                <p><b>年龄:</b> @Html.Raw(Model.User.Age > 0 ? Model.User.Age.ToString() : "")</p>
+                                <p><b>年龄:</b> @Html.Raw(Model.User.Age > 0 && Model.User.Age<100 ? Model.User.Age.ToString() : "")</p>
                                 <p><b>婚姻状态:</b> @Html.Raw(Model.User.IsMarried == MVCForum.Domain.DomainModel.Enum_MarriedStatus.Single ? "未婚" : "已婚")</p>
                                 <p><b>身高(cm):</b> @Model.User.Height</p>
                                 <p><b>体重(kg):</b> @Model.User.Weight</p>
@@ -148,9 +151,11 @@
                                     <b>学历:</b>
                                     @{
                                         var educationstr = "";
-                                        if (!string.IsNullOrEmpty(Model.User.Education))
                                         {
-                                            educationstr = TEducation.LoadEducationByEducationId(Model.User.Education).EducationName;
+                                            if(!string.IsNullOrEmpty(Model.User.Education))
+                                            {
+                                                educationstr = TEducation.LoadEducationByEducationId(Model.User.Education).EducationName;
+                                            }
                                         }
                                     }
                                     @educationstr
@@ -184,7 +189,14 @@
                                     <p><b>职业:</b> @Model.User.Job</p>
                                     <p>
                                         <b>月收入:</b>
-                                        @Html.ConvertIncomeRange((int)Model.User.IncomeRange);
+                                        @if ((int)Model.User.IncomeRange != 0)
+                                        {
+                                           @Html.ConvertIncomeRange((int)Model.User.IncomeRange);
+                                        }
+                                        else
+                                        {
+                                            <span></span>
+                                        }
                                     </p>
                                     <p><b>账号创建时间:</b> @DatesUI.GetPrettyDate(Model.User.CreateDate.ToString())</p>
                                     <p><b>账号状态:</b> @Html.Raw(Model.User.IsApproved ? "已审核" : "待审核")</p>

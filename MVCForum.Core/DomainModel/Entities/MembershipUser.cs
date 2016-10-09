@@ -143,6 +143,7 @@ namespace MVCForum.Domain.DomainModel
 
     public enum Enum_IncomeRange
     {
+        R_Nosetting=0,
         R_Lowthan1W = 1,
         R_1WTo5W = 2,
         R_5WMore = 3,
@@ -164,7 +165,7 @@ namespace MVCForum.Domain.DomainModel
             RealName = "";
             AliasName = "";
             Gender = Enum_Gender.boy;
-            Birthday = new DateTime(2000, 1, 1);
+            Birthday = new DateTime(1900, 1, 1);
             IsLunarCalendar = Enum_Calendar.PublicCalendar;
             IsMarried = Enum_MarriedStatus.Single;
             Height = 0;
@@ -178,7 +179,7 @@ namespace MVCForum.Domain.DomainModel
             LocationCity = "000000";
             LocationCounty = "000000";
             Job = "";
-            IncomeRange = Enum_IncomeRange.R_1WTo5W;
+            IncomeRange = Enum_IncomeRange.R_Nosetting;
             Interest = "";
             MobilePhone = "";
             UserType = Enum_UserType.A;

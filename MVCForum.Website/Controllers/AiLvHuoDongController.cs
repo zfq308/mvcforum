@@ -96,7 +96,7 @@ namespace MVCForum.Website.Controllers
                     model.StartTime = DateTime.Today.AddDays(14).AddHours(8);
                     model.StopTime = DateTime.Today.AddDays(15);
                     model.BaoMingJieZhiTime = DateTime.Today.AddDays(10).AddHours(20);
-                    model.LeiBie = Enum_HuoDongLeiBie.FreeRegister;
+                    //model.LeiBie = Enum_HuoDongLeiBie.FreeRegister;
 
                     return View(model);
                 }

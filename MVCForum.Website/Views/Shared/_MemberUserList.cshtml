@@ -20,7 +20,7 @@
                     var location = obj.LocationProvince + "," + obj.LocationCity;
                 }
                 <div>
-                    <span style="display: inline-block;  font-size:8pt; background-color: gray; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@obj.Age 岁</span>
+                    <span style="display: inline-block;  font-size:8pt; background-color: gray; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@{var age = obj.Age > 100 ? "" : obj.Age.ToString() + "岁";} @age </span>
                     <span style="display: inline-block;  font-size:8pt; background-color: #39f; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@Gender</span>
                     <span style="display: inline-block;  font-size:8pt; background-color: #39f; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@location</span>
                 </div>
@@ -29,5 +29,5 @@
             </div>
             <div class="clearfix"></div>
         </li>
-    }
-}
+                            }
+                        }

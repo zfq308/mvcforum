@@ -17,7 +17,7 @@ namespace MVCForum.Services.Data.Mapping
         {
             HasKey(x => x.Id);
             Property(x => x.Id).IsRequired();
-            Property(x => x.MingCheng).IsRequired().HasMaxLength(50)
+            Property(x => x.MingCheng).IsRequired().HasMaxLength(200)
                                     .HasColumnAnnotation("Index",
                                     new IndexAnnotation(new IndexAttribute("IX_AiLvHuoDong_MingCheng", 1) { IsUnique = true }));
             Property(x => x.LeiBie).IsRequired();
@@ -25,11 +25,11 @@ namespace MVCForum.Services.Data.Mapping
             Property(x => x.StartTime).IsRequired();
             Property(x => x.StopTime).IsRequired();
             Property(x => x.BaoMingJieZhiTime).IsRequired();
-            Property(x => x.DiDian).IsRequired().HasMaxLength(20);
-            Property(x => x.LiuCheng).IsRequired().HasMaxLength(2000);
+            Property(x => x.DiDian).IsRequired().HasMaxLength(400);
+            Property(x => x.LiuCheng).IsRequired().HasMaxLength(4000);
             Property(x => x.Feiyong).IsRequired();
-            Property(x => x.FeiyongShuoMing).IsRequired().HasMaxLength(400);
-            Property(x => x.ZhuYiShiXiang).IsRequired().HasMaxLength(400);
+            Property(x => x.FeiyongShuoMing).IsRequired().HasMaxLength(4000);
+            Property(x => x.ZhuYiShiXiang).IsRequired().HasMaxLength(4000);
             Property(x => x.YuGuRenShu).IsRequired();
             Property(x => x.XingBieBiLi).IsRequired().HasMaxLength(20);
             Property(x => x.YaoQingMa).IsRequired().HasMaxLength(20);

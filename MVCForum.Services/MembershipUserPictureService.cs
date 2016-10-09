@@ -35,14 +35,16 @@ namespace MVCForum.Services
         public void AuditMembershipUserPicture(Guid PictureOwnerId, string AuditComment, Enum_UploadPictureAuditStatus Status)
         {
             var collection = _context.MembershipUserPicture.Where(x => x.UserId == PictureOwnerId).ToList();
-            foreach (var item in collection)
+            if (collection != null && collection.Count > 0)
             {
-                item.AuditComment = AuditComment;
-                item.AuditTime = DateTime.Now;
-                item.AuditStatus = Status;
+                foreach (var item in collection)
+                {
+                    item.AuditComment = AuditComment;
+                    item.AuditTime = DateTime.Now;
+                    item.AuditStatus = Status;
+                }
+                _context.SaveChanges();
             }
-            _context.SaveChanges();
-
         }
 
         public void AuditMembershipUserPicture(MembershipUser PictureOwner, string AuditComment, Enum_UploadPictureAuditStatus Status)

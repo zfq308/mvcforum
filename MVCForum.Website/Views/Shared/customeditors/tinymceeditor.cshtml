@@ -14,7 +14,7 @@
             theme: "modern",
             language: "zh_CN",
             plugins: [
-                "autosave link image lists hr anchor forumimageinsert autoresize",
+                "autosave link image lists hr anchor forumimageinsert autoresize paste",
                 "wordcount visualblocks visualchars code fullscreen media nonbreaking"
             ],
 
@@ -27,6 +27,11 @@
             menubar: false,
             toolbar_items_size: 'small',
             content_css: app_base + "content/tinymce.css",
+            paste_auto_cleanup_on_paste: true,
+            paste_remove_styles: true,
+            paste_remove_styles_if_webkit: true,
+            paste_strip_class_attributes: true,
+
             nonbreaking_force_tab: true,
             readonly: flag,
         });

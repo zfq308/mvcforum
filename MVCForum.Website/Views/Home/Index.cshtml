@@ -73,7 +73,7 @@
                                                 ,<label class="bg-success">@item.YuGuRenShu 人团</label>
                                                 @if (item.LeiBie == MVCForum.Domain.DomainModel.Enum_HuoDongLeiBie.SpecicalRegister)
                                                 {
-                                                <label class="glyphicon glyphicon-lock" title="特定人群组团，需要输入邀请码。"></label>
+                                                    <label class="glyphicon glyphicon-lock" title="特定人群组团，需要输入邀请码。"></label>
                                                 }
                                             </td>
                                         </tr>
@@ -105,11 +105,11 @@
                                         </tr>
                                         @if (item.XingBieBiLi != "/")
                                         {
-                                        <tr>
-                                            <td>
-                                                <small>男女比例：<span>@item.XingBieBiLi</span></small>
-                                            </td>
-                                        </tr>
+                                            <tr>
+                                                <td>
+                                                    <small>男女比例：<span>@item.XingBieBiLi</span></small>
+                                                </td>
+                                            </tr>
                                         }
                                         <tr><td><small>活动地点：<span>@item.DiDian</span></small></td></tr>
                                         <tr>
@@ -141,12 +141,12 @@
                                                 <small>
                                                     报名截止至：@item.BaoMingJieZhiTime.ToString("MM-dd HH:mm")
                                                     @{
-                                                var Timelimit = "";
-                                                if (item.BaoMingJieZhiTime>DateTime.Now)
-                                                {
-                                                    var ts = item.BaoMingJieZhiTime.Subtract(DateTime.Now);
-                                                    Timelimit="还剩：" +ts.Days.ToString()+"天"+ts.Hours.ToString()+"小时"+ts.Minutes.ToString()+"分钟";
-                                                }
+                                                        var Timelimit = "";
+                                                        if (item.BaoMingJieZhiTime > DateTime.Now)
+                                                        {
+                                                            var ts = item.BaoMingJieZhiTime.Subtract(DateTime.Now);
+                                                            Timelimit = "还剩：" + ts.Days.ToString() + "天" + ts.Hours.ToString() + "小时" + ts.Minutes.ToString() + "分钟";
+                                                        }
                                                     }
                                                     @Timelimit
                                                 </small>
@@ -237,7 +237,7 @@
                                             <td style="padding-left:5px;width:100%">
                                                 @{
                                                     var Gender = obj.Gender == MVCForum.Domain.DomainModel.Enum_Gender.boy ? "男" : "女";
-                                                    var location = obj.LocationProvince + "," + obj.LocationCity ;
+                                                    var location = obj.LocationProvince + "," + obj.LocationCity;
                                                 }
 
                                                 <a href="@obj.NiceUrl">
@@ -245,24 +245,24 @@
                                                 </a>
 
                                                 <div>
-                                                    <span style="display: inline-block;  font-size:8pt; background-color: gray; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@obj.Age 岁</span>
+                                                    <span style="display: inline-block;  font-size:8pt; background-color: gray; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@{var age = obj.Age > 100 ? "" : obj.Age.ToString() + "岁";} @age </span>
                                                     <span style="display: inline-block;  font-size:8pt; background-color: #39f; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@Gender</span>
                                                     <span style="display: inline-block;  font-size:8pt; background-color: #39f; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@location</span>
-      </div>
-                                              
+                                                </div>
+
                                             </td>
                                         </tr>
                                     </table>
                                 </div>
-                                                        idx_Star = idx_Star + 1;
-                                                    }
+                                                            idx_Star = idx_Star + 1;
+                                                        }
                         </div>
                     </div>
-                                                    }
-                                                    else
-                                                    {
-                                                        <p>暂无每日之星数据</p>
-                                                    }
+                                                        }
+                                                        else
+                                                        {
+                                                            <p>暂无每日之星数据</p>
+                                                        }
             </div>
         </div>
 
@@ -300,20 +300,20 @@
                                     </div>
                                 </td>
                             </tr>
-                        }
+                                        }
                         <tr>
                             <td align="right" colspan="2">
                                 <a href="@Url.Action("SearchEx","Members")">更多...</a>
                             </td>
                         </tr>
                     </table>
-                }
-                else
-                {
-                    <p>
-                        暂无会员信息
-                    </p>
-                }
+                                        }
+                                        else
+                                        {
+                                            <p>
+                                                暂无会员信息
+                                            </p>
+                                        }
             </div>
         </div>
     </div>

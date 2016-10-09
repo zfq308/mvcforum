@@ -14,6 +14,7 @@ namespace MVCForum.Domain.DomainModel.General
         public static List<TIncomeRange> LoadAllIncomeList()
         {
             var list = new List<TIncomeRange>();
+            list.Add(new TIncomeRange() { IncomeRangeId = "0", IncomeRangeName = "==请选择==" });
             list.Add(new TIncomeRange() { IncomeRangeId = "1", IncomeRangeName = "1万以下" });
             list.Add(new TIncomeRange() { IncomeRangeId = "2", IncomeRangeName = "1万至5万" });
             list.Add(new TIncomeRange() { IncomeRangeId = "3", IncomeRangeName = "5万以上" });

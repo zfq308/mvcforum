@@ -75,7 +75,7 @@ namespace MVCForum.Services.Data.Mapping
             Property(x => x.FailedPasswordAttemptCount).IsRequired();
             Property(x => x.LoginIdExpires).IsOptional();
             Property(x => x.HasAgreedToTermsAndConditions).IsOptional();
-            Property(x => x.FinishedFirstAudit).IsRequired().HasMaxLength(15);
+            Property(x => x.FinishedFirstAudit).IsRequired().HasMaxLength(30);
             #endregion
 
             #region 用户功能定义属性

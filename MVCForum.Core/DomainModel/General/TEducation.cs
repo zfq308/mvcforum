@@ -18,6 +18,7 @@ namespace MVCForum.Domain.DomainModel.General
         public static List<TEducation> LoadAllEducationList()
         {
             var list = new List<TEducation>();
+            list.Add(new TEducation() { EducationId = "0", EducationName = "==请选择==" });
             list.Add(new TEducation() { EducationId = "1", EducationName = "高中以下" });
             list.Add(new TEducation() { EducationId = "2", EducationName = "高中，中专" });
             list.Add(new TEducation() { EducationId = "3", EducationName = "大专" });

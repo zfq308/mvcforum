@@ -345,6 +345,7 @@ namespace MVCForum.Website.ViewModels
         public string RoleId { get; set; }
         public int FollowStatus { get; set; }
         public int UserType { get; set; }
+        public MembershipUser CurrentLoginUser { get; set; }
 
     }
 

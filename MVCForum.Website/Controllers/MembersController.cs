@@ -942,6 +942,36 @@ namespace MVCForum.Website.Controllers
             {
                 #region 基本信息验证
 
+                if (userModel.Birthday.Year < 1901)
+                {
+                    ShowMessage(new GenericMessageViewModel
+                    {
+                        Message = "请设置您的出生日期。",
+                        MessageType = GenericMessages.danger
+                    });
+                    return Edit(userModel.Id);
+                }
+
+                if (userModel.Education == "==请选择==")
+                {
+                    ShowMessage(new GenericMessageViewModel
+                    {
+                        Message = "请设置您的学历信息。",
+                        MessageType = GenericMessages.danger
+                    });
+                    return Edit(userModel.Id);
+                }
+
+                if (userModel.IncomeRange == Enum_IncomeRange.R_Nosetting)
+                {
+                    ShowMessage(new GenericMessageViewModel
+                    {
+                        Message = "请设置您的收入信息。",
+                        MessageType = GenericMessages.danger
+                    });
+                    return Edit(userModel.Id);
+                }
+
                 if (userModel.Height == 0)
                 {
                     ShowMessage(new GenericMessageViewModel
@@ -986,7 +1016,7 @@ namespace MVCForum.Website.Controllers
 
                 // Get the user from DB
                 var user = MembershipService.GetUser(userModel.Id);
-                if(user.Avatar=="" && userModel.Files==null)
+                if (user.Avatar == "" && (userModel.Files==null ||userModel.Files.Count() == 0))
                 {
                     ShowMessage(new GenericMessageViewModel
                     {
@@ -1008,7 +1038,7 @@ namespace MVCForum.Website.Controllers
                     // Check is has permissions
                     if (UserIsAdmin || loggedOnUserId == userModel.Id || permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
                     {
-                       
+
 
                         #region 对用户输入的信息进行停用词检查
 
@@ -1505,8 +1535,13 @@ namespace MVCForum.Website.Controllers
                     LoggingService.Error(ex);
                     ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
                 }
-
-                return RedirectToAction("Edit", "Members", new { Id = userModel.Id });
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = "已完成审核动作",
+                    MessageType = GenericMessages.info
+                };
+                //return RedirectToAction("Edit", "Members", new { Id = userModel.Id });
+                return RedirectToAction("Index", "Home");
             }
 
         }
@@ -2525,6 +2560,7 @@ namespace MVCForum.Website.Controllers
                         RoleId = member.Roles.FirstOrDefault().Id.ToString(),
                         FollowStatus = followFlag,
                         UserType = (int)member.UserType,
+                        CurrentLoginUser = LoggedOnReadOnlyUser
                     });
                 }
                 else
