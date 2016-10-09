@@ -101,7 +101,7 @@ namespace MVCForum.Website.Controllers
                 var viewModel = PrePareCreateEditTopicViewModel(allowedAccessCategories);
                 viewModel.IsLocked = true;
                 viewModel.TopicType = Enum_TopicType.Announcement;
-                viewModel.IsTopicStarter = true;
+                viewModel.IsShowTitle = true;
                 return View(viewModel);
             }
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
@@ -133,7 +133,7 @@ namespace MVCForum.Website.Controllers
                 var viewModel = PrePareCreateEditTopicViewModel(allowedAccessCategories);
                 viewModel.TopicType = Enum_TopicType.Announcement;
                 viewModel.IsLocked = true;
-                viewModel.IsTopicStarter = true;
+                viewModel.IsShowTitle = true;
                 return View(viewModel);
             }
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));

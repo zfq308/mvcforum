@@ -366,7 +366,7 @@ namespace MVCForum.Website.ViewModels.Mapping
             // Check for online status
             var date = DateTime.Now.AddMinutes(-AppConstants.TimeSpanInMinutesToShowMembers);
             var MinimalPostFlag = true;
-            if (topic.Category.Name=="活动记录")
+            if (topic.Category.Name == Category.CategoryName_AiLvJilu || topic.Category.Name == Category.CategoryName_Zuixinzixun || topic.Category.Name == Category.CategoryName_ZuiXinFuWu)
             {
                 MinimalPostFlag = false;
             }
