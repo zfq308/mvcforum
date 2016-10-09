@@ -949,7 +949,7 @@ namespace MVCForum.Website.Controllers
                         Message = "请设置您的出生日期。",
                         MessageType = GenericMessages.danger
                     });
-                    return Edit(userModel.Id);
+                    return View(userModel);
                 }
 
                 if (userModel.Education == "==请选择==")
@@ -959,7 +959,7 @@ namespace MVCForum.Website.Controllers
                         Message = "请设置您的学历信息。",
                         MessageType = GenericMessages.danger
                     });
-                    return Edit(userModel.Id);
+                    return View(userModel);
                 }
 
                 if (userModel.IncomeRange == Enum_IncomeRange.R_Nosetting)
@@ -969,7 +969,7 @@ namespace MVCForum.Website.Controllers
                         Message = "请设置您的收入信息。",
                         MessageType = GenericMessages.danger
                     });
-                    return Edit(userModel.Id);
+                    return View(userModel);
                 }
 
                 if (userModel.Height == 0)
@@ -979,7 +979,7 @@ namespace MVCForum.Website.Controllers
                         Message = "请填写您的身高信息。",
                         MessageType = GenericMessages.danger
                     });
-                    return Edit(userModel.Id);
+                    return View(userModel);
                 }
 
                 if (userModel.Weight == 0)
@@ -989,7 +989,7 @@ namespace MVCForum.Website.Controllers
                         Message = "请填写您的体重信息。",
                         MessageType = GenericMessages.danger
                     });
-                    return Edit(userModel.Id);
+                    return View(userModel);
                 }
 
                 if (userModel.LocationProvince == "0" || userModel.LocationCity == "0" || userModel.LocationCounty == "0")
@@ -1000,7 +1000,7 @@ namespace MVCForum.Website.Controllers
                         Message = "请选择您的居住地信息。",
                         MessageType = GenericMessages.danger
                     });
-                    return Edit(userModel.Id);
+                    return View(userModel);
                 }
 
                 if (userModel.SchoolProvince == "0" || userModel.SchoolCity == "0")
@@ -1011,7 +1011,7 @@ namespace MVCForum.Website.Controllers
                         Message = "请选择您的学校所在地信息。",
                         MessageType = GenericMessages.danger
                     });
-                    return Edit(userModel.Id);
+                    return View(userModel);
                 }
 
                 // Get the user from DB
@@ -1024,7 +1024,7 @@ namespace MVCForum.Website.Controllers
                         Message = "请上传您的靓照作为头像哦。",
                         MessageType = GenericMessages.danger
                     });
-                    return Edit(userModel.Id);
+                    return View(userModel);
                 }
 
 
@@ -1263,7 +1263,7 @@ namespace MVCForum.Website.Controllers
             else
             {
                 var errors = ModelState.Values.SelectMany(v => v.Errors);
-                return Edit(userModel.Id);
+                return View(userModel);
             }
         }
 

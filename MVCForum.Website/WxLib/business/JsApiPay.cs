@@ -110,12 +110,14 @@ namespace WxPayAPI
                 data.SetValue("appid", WxPayConfig.APPID);
                 data.SetValue("secret", WxPayConfig.APPSECRET);
                 data.SetValue("code", code);
+                Log.Info(this.GetType().ToString(), "Code : " + code);
                 data.SetValue("grant_type", "authorization_code");
                 string url = "https://api.weixin.qq.com/sns/oauth2/access_token?" + data.ToUrl();
 
                 //请求url以获取数据
+                Log.Info(this.GetType().ToString(), "URL : " + url);
                 string result = HttpService.Get(url);
-
+                Log.Info(this.GetType().ToString(), "Get URL done:result= "+ result);
                 //保存access_token，用于收货地址获取
                 JsonData jd = JsonMapper.ToObject(result);
                 access_token = (string)jd["access_token"];

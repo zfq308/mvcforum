@@ -203,17 +203,17 @@
                     @Html.ValidationMessageFor(x => x.RealName)
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(x => x.AliasName)
+                    @Html.LabelFor(x => x.AliasName)<span><Font color='red'>(*)</Font></span>
                     @Html.TextBoxFor(x => x.AliasName, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.AliasName)
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(x => x.Gender)
+                    @Html.LabelFor(x => x.Gender)<span><Font color='red'>(*)</Font></span>
                     @Html.DropDownListFor(x => x.Gender, ViewData["GenderList"] as List<SelectListItem>, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.Gender)
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(x => x.Birthday)
+                    @Html.LabelFor(x => x.Birthday)<span><Font color='red'>(*)</Font></span>
                     @Html.TextBoxFor(x => x.Birthday, "{0:yyyy-MM-dd}",
                                                       new
                                                       {
@@ -228,22 +228,22 @@
                     @Html.ValidationMessageFor(x => x.IsLunarCalendar)
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(x => x.IsMarried)
+                    @Html.LabelFor(x => x.IsMarried)<span><Font color='red'>(*)</Font></span>
                     @Html.DropDownListFor(m => m.IsMarried, ViewData["Married"] as List<SelectListItem>, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.IsMarried)
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(x => x.Height)
+                    @Html.LabelFor(x => x.Height)<span><Font color='red'>(*)</Font></span>
                     @Html.TextBoxFor(x => x.Height, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.Height)
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(x => x.Weight)
+                    @Html.LabelFor(x => x.Weight)<span><Font color='red'>(*)</Font></span>
                     @Html.TextBoxFor(x => x.Weight, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.Weight)
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(x => x.Education)
+                    @Html.LabelFor(x => x.Education)<span><Font color='red'>(*)</Font></span>
                     @Html.DropDownListFor(x => x.Education, ViewData["EducationList"] as List<SelectListItem>, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.Education)
                 </div>
@@ -263,37 +263,37 @@
                     @Html.ValidationMessageFor(x => x.SchoolName)
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(x => x.LocationProvince)
+                    @Html.LabelFor(x => x.LocationProvince)<span><Font color='red'>(*)</Font></span>
                     @Html.DropDownListFor(x => x.LocationProvince, ViewData["HomeTownProvinceList"] as List<SelectListItem>, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.LocationProvince)
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(x => x.LocationCity)
+                    @Html.LabelFor(x => x.LocationCity)<span><Font color='red'>(*)</Font></span>
                     @Html.DropDownListFor(x => x.LocationCity, ViewData["HomeTownCityList"] as List<SelectListItem>, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.LocationCity)
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(x => x.LocationCounty)
+                    @Html.LabelFor(x => x.LocationCounty)<span><Font color='red'>(*)</Font></span>
                     @Html.DropDownListFor(x => x.LocationCounty, ViewData["HomeTownCountyList"] as List<SelectListItem>, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.LocationCounty)
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(x => x.HomeTown)@*<span><Font color='red'>(格式范例：广东省深圳市)</Font></span>*@
+                    @Html.LabelFor(x => x.HomeTown)<span><Font color='red'>(格式范例：广东省深圳市)</Font></span>
                     @Html.TextBoxFor(x => x.HomeTown, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.HomeTown)
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(x => x.Job)
+                    @Html.LabelFor(x => x.Job)<span><Font color='red'>(*)</Font></span>
                     @Html.TextBoxFor(x => x.Job, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.Job)
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(x => x.IncomeRange)
+                    @Html.LabelFor(x => x.IncomeRange)<span><Font color='red'>(*)</Font></span>
                     @Html.DropDownListFor(x => x.IncomeRange, ViewData["IncomeRangeList"] as List<SelectListItem>, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.IncomeRange)
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(x => x.Interest)
+                    @Html.LabelFor(x => x.Interest)<span><Font color='red'>(*)</Font></span>
                     @Html.TextBoxFor(x => x.Interest, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.Interest)
                 </div>
@@ -304,7 +304,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>头像</label>
+                    <label>头像</label><span><Font color='red'>(*)</Font></span>
                 </div>
 
                 <div class="row membereditavatar">
