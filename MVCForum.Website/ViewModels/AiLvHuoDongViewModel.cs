@@ -31,7 +31,7 @@ namespace MVCForum.Website.ViewModels
         /// </summary>
         [Required(ErrorMessage = "你是不是忘记填写活动名称？")]
         [Display(Name = "活动名称")]
-        [StringLength(50)]
+        [StringLength(200)]
         public string MingCheng { get; set; }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace MVCForum.Website.ViewModels
         /// </summary>
         [Required(ErrorMessage = "你是不是忘记填写活动地址？")]
         [Display(Name = "活动举办地点")]
-        [StringLength(50)]
+        [StringLength(400)]
         public string DiDian { get; set; }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace MVCForum.Website.ViewModels
         [UIHint(AppConstants.EditorType), AllowHtml]
         [Required(ErrorMessage = "你是不是忘记填写活动费用说明？")]
         [Display(Name = "活动费用说明")]
-        [StringLength(400)]
+        [StringLength(4000)]
         public string FeiyongShuoMing { get; set; }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace MVCForum.Website.ViewModels
         [UIHint(AppConstants.EditorType), AllowHtml]
         [Required(ErrorMessage = "你是不是忘记填写活动注意事项？")]
         [Display(Name = "活动注意事项")]
-        [StringLength(400)]
+        [StringLength(4000)]
         public string ZhuYiShiXiang { get; set; }
 
         /// <summary>

@@ -1447,10 +1447,15 @@ namespace MVCForum.Services
                             total = total.Where(p => p.IsApproved == true).ToList();
                             break;
                         case "2":
-                            total = total.Where(p => p.IsApproved == false && p.FinishedFirstAudit != "").ToList();
+                            total = total.Where(p => p.IsApproved == false && p.FinishedFirstAudit != "" ).ToList();
+                            break;
+                        case "21":
+                            //此处加入一段特殊逻辑，用头像的有无，做为用户个人信息是否填写完整的标记
+                            total = total.Where(p => p.IsApproved == false && p.FinishedFirstAudit == "" && p.Avatar == "").ToList();
                             break;
                         case "22":
-                            total = total.Where(p => p.IsApproved == false && p.FinishedFirstAudit=="").ToList();
+                            //此处加入一段特殊逻辑，用头像的有无，做为用户个人信息是否填写完整的标记
+                            total = total.Where(p => p.IsApproved == false && p.FinishedFirstAudit=="" && p.Avatar!="").ToList();
                             break;
                         case "3":
                             total = total.Where(p => p.IsLockedOut == true).ToList();

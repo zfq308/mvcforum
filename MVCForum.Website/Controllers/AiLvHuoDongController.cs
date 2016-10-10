@@ -198,12 +198,14 @@ namespace MVCForum.Website.Controllers
                         LoggingService.Error(ex);
                         ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
                     }
+                    BindControlData();
                     return View(ViewModel);
                 }
             }
             else
             {
                 var errors = ModelState.Values.SelectMany(v => v.Errors);
+                BindControlData();
                 return View(ViewModel);
             }
         }

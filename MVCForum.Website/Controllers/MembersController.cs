@@ -938,6 +938,7 @@ namespace MVCForum.Website.Controllers
         [Authorize]
         public ActionResult Edit(MemberFrontEndEditViewModel userModel)
         {
+            var user = MembershipService.GetUser(userModel.Id);
             if (ModelState.IsValid)
             {
                 #region 基本信息验证
@@ -949,6 +950,7 @@ namespace MVCForum.Website.Controllers
                         Message = "请设置您的出生日期。",
                         MessageType = GenericMessages.danger
                     });
+                    BindControlData(user);
                     return View(userModel);
                 }
 
@@ -959,6 +961,7 @@ namespace MVCForum.Website.Controllers
                         Message = "请设置您的学历信息。",
                         MessageType = GenericMessages.danger
                     });
+                    BindControlData(user);
                     return View(userModel);
                 }
 
@@ -969,6 +972,7 @@ namespace MVCForum.Website.Controllers
                         Message = "请设置您的收入信息。",
                         MessageType = GenericMessages.danger
                     });
+                    BindControlData(user);
                     return View(userModel);
                 }
 
@@ -979,6 +983,7 @@ namespace MVCForum.Website.Controllers
                         Message = "请填写您的身高信息。",
                         MessageType = GenericMessages.danger
                     });
+                    BindControlData(user);
                     return View(userModel);
                 }
 
@@ -989,6 +994,7 @@ namespace MVCForum.Website.Controllers
                         Message = "请填写您的体重信息。",
                         MessageType = GenericMessages.danger
                     });
+                    BindControlData(user);
                     return View(userModel);
                 }
 
@@ -1000,6 +1006,7 @@ namespace MVCForum.Website.Controllers
                         Message = "请选择您的居住地信息。",
                         MessageType = GenericMessages.danger
                     });
+                    BindControlData(user);
                     return View(userModel);
                 }
 
@@ -1011,12 +1018,13 @@ namespace MVCForum.Website.Controllers
                         Message = "请选择您的学校所在地信息。",
                         MessageType = GenericMessages.danger
                     });
+                    BindControlData(user);
                     return View(userModel);
                 }
 
                 // Get the user from DB
-                var user = MembershipService.GetUser(userModel.Id);
-                if (user.Avatar == "" && (userModel.Files==null ||userModel.Files.Count() == 0))
+
+                if (user.Avatar == "" && (userModel.Files.Count() == 1 && userModel.Files[0] == null))
                 {
                     ShowMessage(new GenericMessageViewModel
                     {
@@ -1024,9 +1032,9 @@ namespace MVCForum.Website.Controllers
                         Message = "请上传您的靓照作为头像哦。",
                         MessageType = GenericMessages.danger
                     });
+                    BindControlData(user);
                     return View(userModel);
                 }
-
 
                 #endregion
 
@@ -1038,8 +1046,6 @@ namespace MVCForum.Website.Controllers
                     // Check is has permissions
                     if (UserIsAdmin || loggedOnUserId == userModel.Id || permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
                     {
-
-
                         #region 对用户输入的信息进行停用词检查
 
                         // Before we do anything - Check stop words
@@ -1263,6 +1269,9 @@ namespace MVCForum.Website.Controllers
             else
             {
                 var errors = ModelState.Values.SelectMany(v => v.Errors);
+                ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
+
+                BindControlData(user);
                 return View(userModel);
             }
         }
@@ -2231,6 +2240,7 @@ namespace MVCForum.Website.Controllers
             var Items_UserStatus = new List<SelectListItem>();
 
             Items_UserStatus.Add(new SelectListItem { Text = "正常已审核的注册会员", Value = "1" });
+            Items_UserStatus.Add(new SelectListItem { Text = "还没完成资料填写的会员", Value = "21" });
             Items_UserStatus.Add(new SelectListItem { Text = "等待初次审核的注册会员", Value = "22" });
             Items_UserStatus.Add(new SelectListItem { Text = "等待再次审核的注册会员", Value = "2" });
             Items_UserStatus.Add(new SelectListItem { Text = "用户状态被锁定", Value = "3" });
@@ -2383,10 +2393,7 @@ namespace MVCForum.Website.Controllers
                     _loggingService.Error("Session_searchconfigurationmodel为空。");
                     return Content("无法转换查询条件,请重新查询。");
                 }
-                else
-                {
 
-                }
                 MembershipUserSearchModel ConfigModel = Session["searchconfigurationmodel"] as MembershipUserSearchModel;
                 var customers = MembershipService.SearchMembers(ConfigModel, 1000).ToList();
                 if (customers != null && customers.Count > 0)
@@ -2405,7 +2412,7 @@ namespace MVCForum.Website.Controllers
                 }
                 else
                 {
-                    return Content("customers.Count=0");
+                    return Content("当前无符合条件的导出数据。");
                 }
             }
         }

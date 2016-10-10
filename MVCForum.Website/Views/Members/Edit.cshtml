@@ -179,16 +179,22 @@
                         <div class="panel-body">
                             @if (!Model.AuditResult)
                             {
-                                if (!string.IsNullOrEmpty(Model.AuditComment))
+                                if (string.IsNullOrEmpty(Model.Avatar))
                                 {
-                                    <span><Font color='red'>当前账号审核被驳回。驳回原因为：@Model.AuditComment</Font></span>
+                                    <span><Font color='red'>请完善您的个人资料并提交管理员审核。</Font></span>
                                 }
                                 else
                                 {
-                                    <span><Font color='red'>当前账号还在管理员审核阶段，请耐心等候。</Font></span>
+                                    if (!string.IsNullOrEmpty(Model.AuditComment))
+                                    {
+                                        <span><Font color='red'>当前账号审核被驳回。驳回原因为：@Model.AuditComment</Font></span>
+                                    }
+                                    else
+                                    {
+                                        <span><Font color='red'>当前账号还在管理员审核阶段，请耐心等候。</Font></span>
+                                    }
                                 }
                             }
-
                         </div>
                     </div>
                 }
