@@ -19,8 +19,8 @@
         foreach (var obj in Model.MeiRiZhiXingUserList)
         {
             <table style="width:100%">
-                <tr style="margin-bottom:30px">
-                    <td>
+                <tr style="margin-bottom:30px;">
+                    <td width="10%" style="padding-top:15px;padding-bottom:15px">
                         <a href="@obj.NiceUrl">
                             <img src="@AppHelpers.MemberImage(obj.Avatar, "", obj.Id, 48)" alt="@obj.UserName">
                         </a>
@@ -37,6 +37,6 @@
 
                 </tr>
             </table>
-       }
-   }
+                                }
+                            }
 </div>

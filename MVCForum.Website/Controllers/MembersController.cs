@@ -1517,6 +1517,17 @@ namespace MVCForum.Website.Controllers
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
                 var user = MembershipService.GetUser(userModel.Id);
+
+                if(string.IsNullOrEmpty(user.Avatar))
+                {
+                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    {
+                        Message = "用户似乎还没有完善其个人基本信息，暂时不能审核。",
+                        MessageType = GenericMessages.danger
+                    };
+                    return RedirectToAction("Edit", "Members", new { Id = userModel.Id });
+                }
+
                 try
                 {
                     user.AuditComments = userModel.AuditComment;
