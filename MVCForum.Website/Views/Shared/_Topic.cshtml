@@ -87,18 +87,16 @@
                         @Html.LanguageString("Topic.LatestBy")
                     </a>*@
                 <a href="@Model.Topic.LastPost.User.NiceUrl">
-                    @Model.Topic.LastPost.User.UserName
+                    @Model.Topic.LastPost.User.AliasName
                 </a>
-
-
                 @*@DatesUI.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString())*@
 
                 提交于 @Model.Topic.LastPost.DateCreated.ToString("yyyy-MM-dd")
 
                 <span class="stats topicanswers" title="回复数"><span class="glyphicon glyphicon-comment" aria-hidden="true"></span> @Model.Answers.KiloFormat()</span>
                 <span class="stats topicviews" title="阅读数"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> @Model.Views.KiloFormat()</span>
-                <span class="stats topicupvotes" title="点赞数"><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> @Model.VotesUp.KiloFormat()</span>
-                <span class="stats topicdownvotes" title="拍砖数"><span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span> @Model.VotesDown.KiloFormat()</span>
+                @*<span class="stats topicupvotes" title="点赞数"><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> @Model.VotesUp.KiloFormat()</span>
+                <span class="stats topicdownvotes" title="拍砖数"><span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span> @Model.VotesDown.KiloFormat()</span>*@
                 @if (Model.Topic.Solved)
                 {
                     <span class="stats topicsolved"><span class="glyphicon glyphicon-ok green-colour" aria-hidden="true"></span></span>

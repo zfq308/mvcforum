@@ -207,36 +207,62 @@ namespace MVCForum.Website.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult CreateNewTopicRecord(CreateEditTopicViewModel topicViewModel)
         {
+            #region 禁止重复提交
+            try
+            {
+                var listt = _topicService.GetAllTopicsByCondition(EnumCategoryType.MeiRiXinqing, LoggedOnReadOnlyUser).OrderByDescending(x => x.CreateDate).ToList();
+                if (DateTime.Now.Subtract(listt[0].CreateDate).TotalSeconds < 60)
+                {
+                    ShowMessage(new GenericMessageViewModel
+                    {
+                        Message = "1分钟内不能连续提交。",
+                        MessageType = GenericMessages.danger
+                    });
+
+                    return RedirectToAction("AiLvZhangHu", "AiLvHuoDong");
+                }
+            }
+            catch (Exception)
+            {
+                //Do nothing               
+            }
+
+            #endregion
+
             #region 创建实例前对topicViewModel相关属性进行赋值
 
             var category = _categoryService.Get(topicViewModel.CategoryId);
-
-            // First check this user is allowed to create topics in this category
             var permissionSet = RoleService.GetPermissions(category, UsersRole);
-
-            // Now we have the category and permissionSet - Populate the optional permissions 
-            // This is just in case the viewModel is return back to the view also sort the allowedCategories
             topicViewModel.OptionalPermissions = GetCheckCreateTopicPermissions(permissionSet);
-
-            //topicViewModel.Categories = _categoryService.GetBaseSelectListCategories(AllowedCreateCategories());
             topicViewModel.Categories = _categoryService.GetBaseSelectListCategories(new List<Category>() { category });
-
             topicViewModel.IsTopicStarter = true;
 
-            if(category.Name=="每日心情")
+            if (category.Name == Category.CategoryName_DailyRecord)  //针对每日心情做特别设置
             {
+                #region 针对每日心情做特别设置
+
                 topicViewModel.IsShowTitle = false;
-                if(string.IsNullOrEmpty(topicViewModel.Name) || topicViewModel.Name=="***")
+                if (string.IsNullOrEmpty(topicViewModel.Name) || topicViewModel.Name == "***")
                 {
-                    if(topicViewModel.Content.Length>20)
+                    var title = StringUtils.SafePlainText(topicViewModel.Content);
+                    if (title.Length > 20)
                     {
-                        topicViewModel.Name = topicViewModel.Content.Substring(0, 20)+"...";
+                        topicViewModel.Name = title.Substring(0, 20) + "...";
                     }
                     else
                     {
-                        topicViewModel.Name = topicViewModel.Content;
+                        if (string.IsNullOrEmpty(title))
+                        {
+                            topicViewModel.Name = "无题，于" + DateTime.Now.ToString("yyyy-MM-dd HH：mm：ss");
+                        }
+                        else
+                        {
+                            topicViewModel.Name = title;
+                        }
                     }
                 }
+
+                #endregion
             }
             else
             {
@@ -247,7 +273,6 @@ namespace MVCForum.Website.Controllers
             {
                 topicViewModel.PollAnswers = new List<PollAnswer>();
             }
-            /*---- End Re-populate ViewModel ----*/
             #endregion
 
             if (ModelState.IsValid)
@@ -630,7 +655,7 @@ namespace MVCForum.Website.Controllers
             var OptionalPermissions = new CheckCreateTopicPermissions();
             OptionalPermissions.CanLockTopic = true;
 
-            if(allowedCategories.Count>0 && allowedCategories[0].Name=="每日心情")
+            if (allowedCategories.Count > 0 && allowedCategories[0].Name == "每日心情")
             {
                 OptionalPermissions.CanUploadFiles = false;
             }
@@ -665,15 +690,6 @@ namespace MVCForum.Website.Controllers
             }
             return allowedAccessCategories;
         }
-
-
-
-
-
-
-
-
-
 
 
         #region 创建帖子
