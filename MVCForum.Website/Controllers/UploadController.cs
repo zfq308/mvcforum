@@ -45,23 +45,15 @@ namespace MVCForum.Website.Controllers
 
                 try
                 {
-
-                    // First this to do is get the post
                     var post = _postService.Get(attachFileToPostViewModel.UploadPostId);
                     if (post != null)
                     {
-                        // Now get the topic
                         topic = post.Topic;
-
-                        // Check we get a valid post back and have some file
                         if (attachFileToPostViewModel.Files != null && attachFileToPostViewModel.Files.Any())
                         {
-                            // Now get the category
-                            var category = topic.Category;
+                            #region 校验权限
 
-                            // Get the permissions for this category, and check they are allowed to update and 
-                            // not trying to be a sneaky mofo
-                            var permissions = RoleService.GetPermissions(category, UsersRole);
+                            var permissions = RoleService.GetPermissions(topic.Category, UsersRole);
                             if (permissions[SiteConstants.Instance.PermissionAttachFiles].IsTicked == false || LoggedOnReadOnlyUser.DisableFileUploads == true)
                             {
                                 TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
@@ -73,13 +65,16 @@ namespace MVCForum.Website.Controllers
                                 return Redirect(topic.NiceUrl);
                             }
 
-                            // woot! User has permission and all seems ok
-                            // Before we save anything, check the user already has an upload folder and if not create one
+                            #endregion
+
                             var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath, LoggedOnReadOnlyUser.Id));
                             if (!Directory.Exists(uploadFolderPath))
                             {
                                 Directory.CreateDirectory(uploadFolderPath);
                             }
+
+                            #region     循环上传文件
+
 
                             // Loop through each file and get the file info and save to the users folder and Db
                             foreach (var file in attachFileToPostViewModel.Files)
@@ -110,8 +105,8 @@ namespace MVCForum.Website.Controllers
 
                                 }
                             }
+                            #endregion
 
-                            //Commit
                             unitOfWork.Commit();
 
                             // Redirect to the topic with a success message
@@ -136,7 +131,7 @@ namespace MVCForum.Website.Controllers
                     LoggingService.Error(ex);
                     TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                     {
-                        Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
+                        Message = LocalizationService.GetResourceString("Errors.GenericMessage") + ex.Message,
                         MessageType = GenericMessages.danger
                     };
                     return topic != null ? Redirect(topic.NiceUrl) : ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));

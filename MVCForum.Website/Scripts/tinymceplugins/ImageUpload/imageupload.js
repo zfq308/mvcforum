@@ -6,13 +6,14 @@
             editor.windowManager.open({
                 title: buttonTitle,
                 url: app_base + "file/imageuploadtinymce/",
-                width: 500,
+                width: 450,
                 height: 170,
                 buttons: [
                     {
                         text: buttonOk,
                         classes: 'widget btn btn-default first abs-layout-item',
                         onclick: function () {
+                            
                             var b = editor.windowManager.getWindows()[0];
                             var uploadFile = b.getContentWindow().document.getElementById('content');
                             var imageDesc = b.getContentWindow().document.getElementById('desc');
@@ -30,6 +31,7 @@
                                     var imageAlt = imageDesc.value;
                                     var imageSrc = externalUrl.value;
                                     var imageTag = '<img src="' + imageSrc + '?width=690" alt="' + imageAlt + '" />';
+                              
                                     editor.insertContent(imageTag), b.close();
                                 }
                             } else {
@@ -50,15 +52,15 @@
                                     alert(onlyImages);
                                     return false;
                                 }
-
+                                
                                 // Show wait notice
                                 waitNotice.style.display = 'block';
 
                                 var data;
-
+                                
                                 data = new FormData();
                                 data.append('file', uploadFile.files[0]);
-
+                     
                                 $.ajax({
                                     url: app_base + 'api/TinyMce/UploadImage',
                                     data: data,

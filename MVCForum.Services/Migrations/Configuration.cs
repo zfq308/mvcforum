@@ -499,6 +499,14 @@ namespace MVCForum.Services.Migrations
                 //    IsTicked = true,
                 //});
 
+
+                GlobalPermissionForRoleService gprs = new GlobalPermissionForRoleService(context);
+                gprs.Add(new GlobalPermissionForRole()
+                {
+                    MembershipRole = standardRole,
+                    Permission = Permission_Global_InsertEditorImages,
+                    IsTicked = true,
+                });
                 context.SaveChanges();
 
                 #endregion

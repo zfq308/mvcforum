@@ -19,36 +19,39 @@
                     <img src="~/Content/Images/t4.jpg" title="编辑个人信息" />
                     <a style="margin-left:15px" href="@Url.Action("Edit", "Members", new { id = Model.User.Id })">编辑 @Model.User.UserName</a>
                 </div>
-                <div class="form-group">
-                    <img src="~/Content/Images/t2.jpg" title="相册" />
-                    <a style="margin-left:15px" href="@Url.Action("PrivatePictureList", "Members", new { id = Model.User.Id })">相册</a>
-                </div>
-                <div class="form-group">
-                    <img src="~/Content/Images/t3.jpg" title="每日心情" />
-                    <a style="margin-left:15px" href="@Url.Action("DailyRecord", "AiLvHuoDong", new { id = Model.User.Id })">每日心情</a>
-                </div>
-                <div class="form-group">
-                    <img src="~/Content/Images/t4.png" title="好友列表" />
-                    <a style="margin-left:15px" href="@Url.Action("Follow", "Members", new { id = Model.User.Id })">好友列表</a>
-                </div>
-                <div class="form-group">
-                    <img src="~/Content/Images/t5.png" title="好友动态" />
-                    <a style="margin-left:15px" href="@Url.Action("FriendMessage", "Members", new { id = Model.User.Id })">好友动态</a>
-                </div>
-                <div class="form-group">
-                    <img src="~/Content/Images/t6.jpg" title="私信" />
-                    @{
-                        var privatemessage = "";
-                        if (Model.UnReadPrivateMessageGroupCount > 0)
-                        {
-                            privatemessage = "（有" + Model.UnReadPrivateMessageGroupCount.ToString() + "位爱驴伙伴给您发了私信）";
+                @if (Model.User.FinishedFirstAudit != "")
+                {
+                    <div class="form-group">
+                        <img src="~/Content/Images/t2.jpg" title="相册" />
+                        <a style="margin-left:15px" href="@Url.Action("PrivatePictureList", "Members", new { id = Model.User.Id })">相册</a>
+                    </div>
+                    <div class="form-group">
+                        <img src="~/Content/Images/t3.jpg" title="每日心情" />
+                        <a style="margin-left:15px" href="@Url.Action("DailyRecord", "AiLvHuoDong", new { id = Model.User.Id })">每日心情</a>
+                    </div>
+                    <div class="form-group">
+                        <img src="~/Content/Images/t4.png" title="好友列表" />
+                        <a style="margin-left:15px" href="@Url.Action("Follow", "Members", new { id = Model.User.Id })">好友列表</a>
+                    </div>
+                    <div class="form-group">
+                        <img src="~/Content/Images/t5.png" title="好友动态" />
+                        <a style="margin-left:15px" href="@Url.Action("FriendMessage", "Members", new { id = Model.User.Id })">好友动态</a>
+                    </div>
+                    <div class="form-group">
+                        <img src="~/Content/Images/t6.jpg" title="私信" />
+                        @{
+                            var privatemessage = "";
+                            if (Model.UnReadPrivateMessageGroupCount > 0)
+                            {
+                                privatemessage = "（有" + Model.UnReadPrivateMessageGroupCount.ToString() + "位爱驴伙伴给您发了私信）";
+                            }
                         }
-                    }
                         <a style="margin-left:15px" href="@Url.Action("Index", "PrivateMessage", new { id = Model.User.Id })">私信 @privatemessage</a>
                     </div>
-                </fieldset>
-            </div>
+                 }
+            </fieldset>
         </div>
     </div>
+</div>
 
 
