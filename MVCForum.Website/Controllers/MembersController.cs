@@ -1414,7 +1414,7 @@ namespace MVCForum.Website.Controllers
                         Message = !UserIsAdmin ? "个人照片已上传，等待管理员审核。" : "个人照片已上传。",
                         MessageType = GenericMessages.info
                     };
-                    return RedirectToAction("PrivatePictureList", "Members", new { Id = LoggedOnReadOnlyUser.Id });
+                    return RedirectToAction("AiLvZhangHu", "AiLvHuoDong", new { Id = LoggedOnReadOnlyUser.Id });
                 }
             }
             return View(adViewModel);
@@ -1439,7 +1439,7 @@ namespace MVCForum.Website.Controllers
                 loggerForCoreAction.Error(string.Format("用户{0}删除个人照片失败。详细错误为：{1}", LoggedOnReadOnlyUser.UserName, ex.Message));
             }
 
-            return RedirectToAction("PrivatePictureList", "Members", new { Id = LoggedOnReadOnlyUser.Id });
+            return RedirectToAction("AiLvZhangHu", "AiLvHuoDong", new { Id = LoggedOnReadOnlyUser.Id });
         }
 
         [Authorize]
