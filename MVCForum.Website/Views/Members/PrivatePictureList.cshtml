@@ -18,7 +18,7 @@
                     </tr>
                     <tr>
                         <td align="right">
-                            @*@if (ad.Description.Length > 15)
+                            @if (ad.Description.Length > 15)
                             {
                                 <span>
                                     @ad.Description.Substring(0, 15)...
@@ -27,7 +27,7 @@
                             else
                             {
                                 <span>@ad.Description</span>
-                            }*@
+                            }
 
                             @if (User.Identity.Name == Model.UserName)
                             {

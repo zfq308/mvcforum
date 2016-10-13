@@ -61,7 +61,7 @@ namespace MVCForum.Website.ViewModels
         [Display(Name = "上传图片文件")]
         public string UploadFileName { get; set; }
 
-        //[Required]
+        [Required]
         [Display(Name = "上传图片描述")]
         public string Description { get; set; }
 
