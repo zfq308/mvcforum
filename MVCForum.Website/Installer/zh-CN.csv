@@ -396,7 +396,7 @@ TinyMCE.InsertImage.EnterValidUrl,请输入有效的网址
 TinyMCE.InsertImage.ExternalImage,外部图片文件
 TinyMCE.InsertImage.ImageDescription,图片描述
 TinyMCE.InsertImage.LabelUploadImage,上传图片
-TinyMCE.InsertImage.MaxFileSize,图片文件的最大为2M
+TinyMCE.InsertImage.MaxFileSize,图片文件的最大为5M
 TinyMCE.InsertImage.OnlyImages,仅JPEG、PNG和 GIF类型的图片文件支持上传
 TinyMCE.InsertImage.SelectFile,请选择一个文件
 Topic.AlreadyAnswered,Questions that may already have your answer

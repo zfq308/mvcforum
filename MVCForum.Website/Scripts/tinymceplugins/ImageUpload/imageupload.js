@@ -42,7 +42,7 @@
                                     return false;
                                 }
 
-                                if (uploadFile.files[0].size > 2000 * 1024) {
+                                if (uploadFile.files[0].size > 5000 * 1024) {
                                     alert(maxImageFileSize);
                                     return false;
                                 }

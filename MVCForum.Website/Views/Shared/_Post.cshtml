@@ -87,12 +87,12 @@
             {
                 <div class="postsocial">
                     <ul>
-                        <li class="permalink">
+                        @*<li class="permalink">
                             <a href="@Html.Raw(Model.PermaLink)">
                                 #静态连结
                             </a>
-                        </li>
-                        <li>
+                        </li>*@
+                        @*<li>
                             <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
                             @if (Html.Settings().EnablePoints)
                             {
@@ -121,8 +121,8 @@
                                     </a>
                                 }
                             </li>
-                        }
-                        <li>
+                        }*@
+                        @*<li>
                             <span class="glyphicon @(Model.MemberHasFavourited ? "glyphicon glyphicon-star" : "glyphicon-star-empty")" aria-hidden="true"></span>
                             <span class="count">@Model.Favourites.Count</span>
                             @if (Html.CurrentMember() != null && Model.Post.User.Id != loggedOnUserId)
@@ -131,7 +131,7 @@
                                     @(Model.MemberHasFavourited ? Html.Lang("Post.Favourited") : Html.Lang("Post.Favourite"))
                                 </a>
                             }
-                        </li>
+                        </li>*@
 
                         @if (Html.Settings().EnableMarkAsSolution)
                         {
@@ -193,7 +193,7 @@
                                     }
                                     else
                                     {
-                                        <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
+                                        <span class="glyphicon glyphicon-file" aria-hidden="true"></span>@file.FriendlyFilename
                                     }
                                 </a>
                                 @if (Model.Post.User.Id == loggedOnUserId || User.IsInRole(AppConstants.AdminRoleName))
