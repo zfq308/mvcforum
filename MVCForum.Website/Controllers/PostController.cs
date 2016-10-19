@@ -13,6 +13,7 @@ using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
 using MVCForum.Website.ViewModels;
 using MVCForum.Website.ViewModels.Mapping;
+using MVCForum.Utilities;
 
 namespace MVCForum.Website.Controllers
 {
@@ -60,6 +61,10 @@ namespace MVCForum.Website.Controllers
         [HttpPost]
         public ActionResult CreatePost(CreateAjaxPostViewModel post)
         {
+            if(string.IsNullOrEmpty(post.PostContent) || StringUtils.SafePlainText(post.PostContent)=="")
+            {
+                throw new Exception("请填写内容。");
+            }
             var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
             if (loggedOnUser.IsLockedOut || !loggedOnUser.IsApproved)
             {
@@ -84,7 +89,7 @@ namespace MVCForum.Website.Controllers
                     }
 
                     topic = _topicService.Get(post.Topic);
-
+                    post.PostContent = StringUtils.SafePlainText(post.PostContent);
                     var postContent = _bannedWordService.SanitiseBannedWords(post.PostContent);
 
                     var akismetHelper = new AkismetHelper(SettingsService);

@@ -231,7 +231,7 @@
                 </div>
             }
 
-            @Html.Partial("_PostLikedBy", new MVCForum.Website.ViewModels.PostLikedByViewModel { Post = Model.Post, Votes = upVotes })
+            @*@Html.Partial("_PostLikedBy", new MVCForum.Website.ViewModels.PostLikedByViewModel { Post = Model.Post, Votes = upVotes })*@
         </div>
 
         @if (Html.CurrentMember() != null && !Model.MinimalPost)

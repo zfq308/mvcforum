@@ -214,14 +214,17 @@ namespace MVCForum.Services
                 if (item.StopTime < DateTime.Now)
                 {
                     item.ZhuangTai = Enum_HuoDongZhuangTai.Finished;
+                    _context.Entry<AiLvHuoDong>(item).State = System.Data.Entity.EntityState.Modified;
                     continue;
                 }
                 if (item.ZhuangTai == Enum_HuoDongZhuangTai.Registing && item.BaoMingJieZhiTime < DateTime.Now)
                 {
                     item.ZhuangTai = Enum_HuoDongZhuangTai.StopRegister;
+                    _context.Entry<AiLvHuoDong>(item).State = System.Data.Entity.EntityState.Modified;
                     continue;
                 }
             }
+            _context.SaveChanges();
             return true;
         }
 
