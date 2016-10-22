@@ -635,7 +635,10 @@ namespace MVCForum.Website.Controllers
                         }
                         else
                         {
-                            return RedirectToAction("Edit", "Members", new { area = string.Empty, Id = MembershipService.GetUser(userToSave.UserName).Id });
+                            var NewMemberId = MembershipService.GetUser(userToSave.UserName).Id;
+                            FormsAuthentication.SetAuthCookie(userToSave.UserName, false);
+                            Session["NewMemberId"] = NewMemberId;
+                            return RedirectToAction("Edit", "Members", new { area = string.Empty, Id = NewMemberId });
                         }
                     }
                     catch (Exception ex)
@@ -695,12 +698,17 @@ namespace MVCForum.Website.Controllers
 
         #region 用户编辑
 
-        [Authorize]
+        //[Authorize]
         public ActionResult Edit(Guid id)
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var loggedOnUserId = LoggedOnReadOnlyUser?.Id ?? Guid.Empty;
+
+                if (loggedOnUserId == Guid.Empty && Session["NewMemberId"] != null)
+                {
+                    loggedOnUserId = (Guid)Session["NewMemberId"];
+                }
 
                 var permissions = RoleService.GetPermissions(null, UsersRole);
 
@@ -1518,7 +1526,7 @@ namespace MVCForum.Website.Controllers
             {
                 var user = MembershipService.GetUser(userModel.Id);
 
-                if(string.IsNullOrEmpty(user.Avatar))
+                if (string.IsNullOrEmpty(user.Avatar))
                 {
                     TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                     {
