@@ -12,7 +12,7 @@
 }
 
 <script src="~/Scripts/hammer.min.js" type="text/javascript"></script>
-
+<script src="~/Scripts/jquery.hammer.js" type="text/javascript"></script>
 @*广告窗区*@
 <div id="myCarousel" class="carousel sp-slider" data-ride="carousel" data-wrap="true" data-interval="3000">
     <ol class="carousel-indicators hidden">
@@ -28,8 +28,8 @@
         @foreach (var ad in Model.AiLv_ADCollectionTop5)
         {
             <div class="item @if (idx == 0) { @Html.Raw("active"); }">
-                <a href="@ad.Link" class="thumbnail" style="height:200px; width:auto">
-                    <img src="@Html.Settings().ForumUrl.TrimEnd('/')@ad.ImageSaveURL" alt="AD">
+                <a href="@ad.Link" class="thumbnail" style="height:190px; width:auto">
+                    <img src="@Html.Settings().ForumUrl.TrimEnd('/')@ad.ImageSaveURL" alt="AD" style="height:180px; width:100%">
                 </a>
             </div>
             idx = idx + 1;
@@ -384,13 +384,22 @@
 
 <script>
     $(function () {
-        var myElement = $('#myCarousel');  // document.getElementById('myCarousel')
-        var hm = new Hammer(myElement);
-        hm.on("swipeleft", function () {
-            $('#myCarousel').carousel('next')
-        })
-        hm.on("swiperight", function () {
-            $('#myCarousel').carousel('prev')
-        })
+        //var myElement = $('#myCarousel');  // document.getElementById('myCarousel')
+        //var hm = new Hammer(myElement);
+        //hm.on("swipeleft", function () {
+        //    $('#myCarousel').carousel('next')
+        //})
+        //hm.on("swiperight", function () {
+        //    $('#myCarousel').carousel('prev')
+        //})
+
+
+        ////有需求的可以把左右箭头注释掉
+        $('#myCarousel').hammer().on('swipeleft', function () {
+            $(this).carousel('next');
+        });
+        $('#myCarousel').hammer().on('swiperight', function () {
+            $(this).carousel('prev');
+        });
     })
 </script>
