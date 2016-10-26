@@ -55,10 +55,10 @@
                 @*@DatesUI.GetPrettyDate(Model.Post.DateCreated.ToString())*@
                 发布此内容
 
-                @if (isAdmin && !string.IsNullOrEmpty(Model.Post.IpAddress))
+                @*@if (isAdmin && !string.IsNullOrEmpty(Model.Post.IpAddress))
                 {
                     <text> - @Model.Post.IpAddress</text>
-                }
+                }*@
                 <span class="hidden-xs">
                     @if (Html.Settings().DisplayEditedBy && Model.Post.DateEdited > Model.Post.DateCreated)
                     {

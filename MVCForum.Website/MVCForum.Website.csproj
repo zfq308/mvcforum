@@ -896,6 +896,7 @@
     <Content Include="Scripts\bbeditor\themes\square.min.css" />
     <Content Include="Content\bootstrap\js\bootstrap-prettify.js" />
     <Content Include="Scripts\cache\Cache.txt" />
+    <Content Include="Scripts\hammer.min.js" />
     <Content Include="Scripts\tinymce\tinymce.min.js" />
     <Content Include="WxLib\lib\LitJson.dll" />
     <Content Include="WxLib\lib\NPOI.dll" />
