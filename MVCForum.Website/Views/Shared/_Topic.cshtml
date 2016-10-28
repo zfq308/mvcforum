@@ -86,12 +86,12 @@
                 @*<a href="@Html.Raw(Model.LastPostPermaLink)">
                         @Html.LanguageString("Topic.LatestBy")
                     </a>*@
-                <a href="@Model.Topic.LastPost.User.NiceUrl">
+              发表人：  <a href="@Model.Topic.LastPost.User.NiceUrl">
                     @Model.Topic.LastPost.User.AliasName
                 </a>
                 @*@DatesUI.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString())*@
 
-                提交于 @Model.Topic.LastPost.DateCreated.ToString("yyyy-MM-dd")
+                发表时间： @Model.Topic.LastPost.DateCreated.ToString("yyyy-MM-dd")
 
                 <span class="stats topicanswers" title="回复数"><span class="glyphicon glyphicon-comment" aria-hidden="true"></span> @Model.Answers.KiloFormat()</span>
                 <span class="stats topicviews" title="阅读数"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> @Model.Views.KiloFormat()</span>
