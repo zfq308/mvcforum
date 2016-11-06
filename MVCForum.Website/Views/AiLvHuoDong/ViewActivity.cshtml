@@ -216,11 +216,11 @@
                             foreach (var user in Model.BoyJoinner)
                             {
                                 <li class="list-group-item">
-                                    <div class="col-xs-6 col-sm-2 col-md-1">
+                                    <div class="col-xs-6 col-sm-1 col-md-1">
                                         <img src="@AppHelpers.MemberImage(user.Avatar, "", user.Id, 48)" alt="@user.UserName">
 
                                     </div>
-                                    <div class="col-xs-6 col-sm-10 col-md-8 col-lg-2">
+                                    <div class="col-xs-6 col-sm-11 col-md-8 col-lg-2">
                                         @*<span class="text-muted">@user.UserName</span><br />*@
                                         <a href="@user.NiceUrl">@user.AliasName</a><br />
                                     </div>
@@ -240,10 +240,10 @@
                             foreach (var user in Model.GirlJoiner)
                             {
                                 <li class="list-group-item">
-                                    <div class="col-xs-6 col-sm-2 col-md-1">
+                                    <div class="col-xs-6 col-sm-1 col-md-1">
                                         <img src="@AppHelpers.MemberImage(user.Avatar, "", user.Id, 48)" alt="@user.UserName">
                                     </div>
-                                    <div class="col-xs-6 col-sm-10 col-md-8 col-lg-2">
+                                    <div class="col-xs-6 col-sm-11 col-md-8 col-lg-2">
                                         @*<span class="text-muted">@user.UserName</span><br />*@
                                         <a href="@user.NiceUrl">@user.AliasName</a><br />
                                     </div>

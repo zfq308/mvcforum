@@ -81,18 +81,15 @@
 
             <p class="topicrowfooterinfo">
                 <a href="@Html.Raw(Model.LastPostPermaLink)">
-                    <img src="@Model.Topic.LastPost.User.MemberImage(SiteConstants.Instance.GravatarLatestBySize)" class="latestby" alt="@Model.Topic.LastPost.User.UserName">
+                    <img src="@Model.Topic.User.MemberImage(SiteConstants.Instance.GravatarLatestBySize)" class="latestby" alt="@Model.Topic.User.UserName">
                 </a>
                 @*<a href="@Html.Raw(Model.LastPostPermaLink)">
                         @Html.LanguageString("Topic.LatestBy")
                     </a>*@
-              发表人：  <a href="@Model.Topic.LastPost.User.NiceUrl">
-                    @Model.Topic.LastPost.User.AliasName
+              发表人：  <a href="@Model.Topic.User.NiceUrl">
+                    @Model.Topic.User.AliasName
                 </a>
-                @*@DatesUI.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString())*@
-
-                发表时间： @Model.Topic.LastPost.DateCreated.ToString("yyyy-MM-dd")
-
+                发表时间： @Model.Topic.CreateDate.ToString("yyyy-MM-dd")
                 <span class="stats topicanswers" title="回复数"><span class="glyphicon glyphicon-comment" aria-hidden="true"></span> @Model.Answers.KiloFormat()</span>
                 <span class="stats topicviews" title="阅读数"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> @Model.Views.KiloFormat()</span>
                 @*<span class="stats topicupvotes" title="点赞数"><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> @Model.VotesUp.KiloFormat()</span>

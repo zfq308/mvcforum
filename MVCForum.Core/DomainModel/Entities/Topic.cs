@@ -17,11 +17,11 @@ namespace MVCForum.Domain.DomainModel
         /// <summary>
         /// 个人话题类型
         /// </summary>
-        PersonalTopic=2,
+        PersonalTopic = 2,
         /// <summary>
         /// 其他类型，暂定
         /// </summary>
-        Other=3,
+        Other = 3,
     }
 
 
@@ -39,7 +39,7 @@ namespace MVCForum.Domain.DomainModel
         }
 
         #region 属性
-      
+
         /// <summary>
         /// 话题实体定义的Id编号
         /// </summary>
