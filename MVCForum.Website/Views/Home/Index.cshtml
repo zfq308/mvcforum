@@ -29,7 +29,7 @@
         {
             <div class="item @if (idx == 0) { @Html.Raw("active"); }">
                 <a href="@ad.Link" class="thumbnail" style="height:190px; width:auto">
-                    <img src="@Html.Settings().ForumUrl.TrimEnd('/')@ad.ImageSaveURL" alt="AD" style="height:180px; width:100%">
+                    <img src="@Html.Settings().ForumUrl.TrimEnd('/')@ad.ImageSaveURL" alt="AD" style="height:180px; width:100%" class="img-responsive center-block" >
                 </a>
             </div>
             idx = idx + 1;
@@ -384,21 +384,18 @@
 
 <script>
     $(function () {
-        //var myElement = $('#myCarousel');  // document.getElementById('myCarousel')
-        //var hm = new Hammer(myElement);
-        //hm.on("swipeleft", function () {
-        //    $('#myCarousel').carousel('next')
-        //})
-        //hm.on("swiperight", function () {
-        //    $('#myCarousel').carousel('prev')
-        //})
-
-
         ////有需求的可以把左右箭头注释掉
         $('#myCarousel').hammer().on('swipeleft', function () {
             $(this).carousel('next');
         });
         $('#myCarousel').hammer().on('swiperight', function () {
+            $(this).carousel('prev');
+        });
+
+        $('#myCarousel2').hammer().on('swipeleft', function () {
+            $(this).carousel('next');
+        });
+        $('#myCarousel2').hammer().on('swiperight', function () {
             $(this).carousel('prev');
         });
     })
