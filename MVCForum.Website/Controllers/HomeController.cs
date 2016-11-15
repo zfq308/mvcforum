@@ -68,7 +68,7 @@ namespace MVCForum.Website.Controllers
             returnView.AiLv_ZuiXinZiXunTop5 = (List<Topic>)_topicService.GetRecentTopics(5, _categoryService.GetCategoryByEnumCategoryType(EnumCategoryType.AiLvZiXun));
             returnView.AiLv_ZuiXinFuWuTop5 = (List<Topic>)_topicService.GetRecentTopics(5, _categoryService.GetCategoryByEnumCategoryType(EnumCategoryType.AiLvFuWu));
 
-            var userlist=(List<MembershipUser>)_membershipService.GetLatestUsers(10, true, true);
+            var userlist=(List<MembershipUser>)_membershipService.GetLatestUsers(5, true, true);
             if(userlist!=null && userlist.Count>0)
             {
                 foreach (var user in userlist)

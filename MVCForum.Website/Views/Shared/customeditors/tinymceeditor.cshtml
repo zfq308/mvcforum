@@ -13,7 +13,7 @@
         theme: "modern",
         language: "zh_CN",
         plugins: [
-            "autosave link image lists hr anchor forumimageinsert autoresize paste",
+            "autosave link image lists hr anchor forumimageinsert autoresize paste textcolor",
             "visualblocks visualchars nonbreaking"
         ],
 
@@ -25,7 +25,7 @@
             }
             else
             {
-                expr = "bold italic underline bullist hr | link unlink " + (ViewBag.ImageUploadType ?? "image") + " | formatselect";
+                expr = "bold italic underline bullist hr | forecolor backcolor fontselect fontsizeselect link unlink " + (ViewBag.ImageUploadType ?? "image") + " | formatselect";
             }
         }
         toolbar:"@expr",

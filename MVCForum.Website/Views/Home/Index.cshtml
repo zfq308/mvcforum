@@ -28,8 +28,9 @@
         @foreach (var ad in Model.AiLv_ADCollectionTop5)
         {
             <div class="item @if (idx == 0) { @Html.Raw("active"); }">
-                <a href="@ad.Link" class="thumbnail" style="height:190px; width:auto">
-                    <img src="@Html.Settings().ForumUrl.TrimEnd('/')@ad.ImageSaveURL" alt="AD" style="height:180px; width:100%" class="img-responsive center-block" >
+                <a href="@ad.Link" class="thumbnail" @*style="height:190px; width:auto"*@>
+                    <img src="@Html.Settings().ForumUrl.TrimEnd('/')@ad.ImageSaveURL" alt="AD" @*style="height:180px; width:100%"*@ 
+                         class="img-responsive center-block">
                 </a>
             </div>
             idx = idx + 1;
@@ -44,16 +45,16 @@
             <div class="panel-body">
                 @if (Model.AiLv_ZuiXinHuoDongTop5 != null && Model.AiLv_ZuiXinHuoDongTop5.Count > 0)
                 {
-                <table style="border:none" width="100%">
-                    @foreach (var item in Model.AiLv_ZuiXinHuoDongTop5)
+                    <table style="border:none" width="100%">
+                        @foreach (var item in Model.AiLv_ZuiXinHuoDongTop5)
                         {
-                        <tr>
-                            <td style="padding-left:5px; width:100%;">
-                                <table class="pad" width="100%">
-                                    <tr>
-                                        <td valign="top">
-                                            <a href="@Url.Action("ViewActivity","AiLvHuoDong", new { item.Id })">
-                                                @{
+                            <tr>
+                                <td style="padding-left:5px; width:100%;">
+                                    <table class="pad" width="100%">
+                                        <tr>
+                                            <td valign="top">
+                                                <a href="@Url.Action("ViewActivity","AiLvHuoDong", new { item.Id })">
+                                                    @{
                                                         var filestr = "";
                                                         if (!string.IsNullOrEmpty(item.Avatar))
                                                         {
@@ -63,27 +64,27 @@
                                                         {
                                                             filestr = "/Content/Images/bar1.jpg";
                                                         }
-                                                }
-                                                <img src="@filestr" alt="" style="margin-bottom:0px;width:100%;height:80px" />
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <a href="@Url.Action("ViewActivity","AiLvHuoDong", new { item.Id })">
-                                                <span>【@item.MingCheng】</span>
-                                            </a>
-                                            ,<label class="bg-success">@item.YuGuRenShu 人团</label>
-                                            @if (item.LeiBie == MVCForum.Domain.DomainModel.Enum_HuoDongLeiBie.SpecicalRegister)
+                                                    }
+                                                    <img src="@filestr" alt="" style="margin-bottom:0px;width:100%;height:80px" />
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <a href="@Url.Action("ViewActivity","AiLvHuoDong", new { item.Id })">
+                                                    <span>【@item.MingCheng】</span>
+                                                </a>
+                                                ,<label class="bg-success">@item.YuGuRenShu 人团</label>
+                                                @if (item.LeiBie == MVCForum.Domain.DomainModel.Enum_HuoDongLeiBie.SpecicalRegister)
                                                 {
-                                                <label class="glyphicon glyphicon-lock" title="特定人群组团，需要输入邀请码。"></label>
+                                                    <label class="glyphicon glyphicon-lock" title="特定人群组团，需要输入邀请码。"></label>
                                                 }
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <small>
-                                                @{
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <small>
+                                                    @{
                                                         var FeiYongStr = "";
                                                         if (item.Feiyong == 0)
                                                         {
@@ -93,32 +94,32 @@
                                                         {
                                                             FeiYongStr = "￥" + item.Feiyong.ToString() + " /人";
                                                         }
-                                                }
-                                                活动费用： @FeiYongStr &nbsp;
-                                                @*发布时间: @item.CreatedTime.ToString("MM-dd HH:mm")*@
-                                            </small>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <small>
-                                                活动时间： @item.StartTime.ToString("MM-dd HH:mm") ~ @item.StopTime.ToString("MM-dd HH:mm")
-                                            </small>
-                                        </td>
-                                    </tr>
-                                    @if (item.XingBieBiLi != "/")
-                                        {
-                                        <tr>
-                                            <td>
-                                                <small>男女比例：<span>@item.XingBieBiLi</span></small>
+                                                    }
+                                                    活动费用： @FeiYongStr &nbsp;
+                                                    @*发布时间: @item.CreatedTime.ToString("MM-dd HH:mm")*@
+                                                </small>
                                             </td>
                                         </tr>
+                                        <tr>
+                                            <td>
+                                                <small>
+                                                    活动时间： @item.StartTime.ToString("MM-dd HH:mm") ~ @item.StopTime.ToString("MM-dd HH:mm")
+                                                </small>
+                                            </td>
+                                        </tr>
+                                        @if (item.XingBieBiLi != "/")
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <small>男女比例：<span>@item.XingBieBiLi</span></small>
+                                                </td>
+                                            </tr>
                                         }
-                                    <tr><td><small>活动地点：<span>@item.DiDian</span></small></td></tr>
-                                    <tr>
-                                        <td>
-                                            <small>
-                                                @{
+                                        <tr><td><small>活动地点：<span>@item.DiDian</span></small></td></tr>
+                                        <tr>
+                                            <td>
+                                                <small>
+                                                    @{
                                                         var zhuangtaistr = "";
                                                         switch (item.ZhuangTai)
                                                         {
@@ -134,47 +135,47 @@
                                                             default:
                                                                 break;
                                                         }
-                                                }
-                                                活动状态：@zhuangtaistr
-                                            </small>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <small>
-                                                报名截止至：@item.BaoMingJieZhiTime.ToString("MM-dd HH:mm")
-                                                @{
+                                                    }
+                                                    活动状态：@zhuangtaistr
+                                                </small>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <small>
+                                                    报名截止至：@item.BaoMingJieZhiTime.ToString("MM-dd HH:mm")
+                                                    @{
                                                         var Timelimit = "";
                                                         if (item.BaoMingJieZhiTime > DateTime.Now)
                                                         {
                                                             var ts = item.BaoMingJieZhiTime.Subtract(DateTime.Now);
                                                             Timelimit = "还剩：" + ts.Days.ToString() + "天" + ts.Hours.ToString() + "小时" + ts.Minutes.ToString() + "分钟";
                                                         }
-                                                }
-                                                @Timelimit
-                                            </small>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="text-align:right;">
-                                <a href="@Url.Action("ViewActivity","AiLvHuoDong", new { item.Id })" class="btn btn-mvc">
-                                    点击查看
-                                </a>
-                            </td>
-                        </tr>
-                        <tr><td><hr style="height:1px;border:none;border-top:1px dashed #0066CC;" /></td></tr>
+                                                    }
+                                                    @Timelimit
+                                                </small>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right;">
+                                    <a href="@Url.Action("ViewActivity","AiLvHuoDong", new { item.Id })" class="btn btn-mvc">
+                                        点击查看
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr><td><hr style="height:1px;border:none;border-top:1px dashed #0066CC;" /></td></tr>
                                                         }
-                    <tr><td align="right"><a href="@Url.Action("ZuiXinHuoDong","AiLvHuoDong")">更多...</a></td></tr>
-                </table>
+                        <tr><td align="right"><a href="@Url.Action("ZuiXinHuoDong","AiLvHuoDong")">更多...</a></td></tr>
+                    </table>
                                                         }
                                                         else
                                                         {
-                <p>
-                    暂无活动信息
-                </p>
+                                                            <p>
+                                                                暂无活动信息
+                                                            </p>
                                                         }
             </div>
         </div>
@@ -186,24 +187,24 @@
             <div class="panel-body">
                 @if (Model.AiLv_ZuiXiJiLuTop5 != null && Model.AiLv_ZuiXiJiLuTop5.Count > 0)
                 {
-                <table width="100%">
-                    @foreach (var JiLu in Model.AiLv_ZuiXiJiLuTop5)
+                    <table width="100%">
+                        @foreach (var JiLu in Model.AiLv_ZuiXiJiLuTop5)
                         {
-                        <tr>
-                            <td>
-                                <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span>
-                                <a href="@JiLu.NiceUrl">@JiLu.Name</a>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td>
+                                    <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span>
+                                    <a href="@JiLu.NiceUrl">@JiLu.Name</a>
+                                </td>
+                            </tr>
                         }
-                    <tr><td align="right"><a href="@Url.Action("ZuiXinJiLu","AiLvHuoDong")">更多...</a></td></tr>
-                </table>
+                        <tr><td align="right"><a href="@Url.Action("ZuiXinJiLu","AiLvHuoDong")">更多...</a></td></tr>
+                    </table>
                 }
                 else
                 {
-                <p>
-                    暂无活动记录信息
-                </p>
+                    <p>
+                        暂无活动记录信息
+                    </p>
                 }
             </div>
         </div>
@@ -216,55 +217,55 @@
             <div class="panel-body">
                 @if (Model.AiLv_MeiRiZhiXingTop5 != null)
                 {
-                <div id="myCarousel2" class="carousel sp-slider" data-ride="carousel" data-wrap="true" data-interval="3000">
-                    <ol class="carousel-indicators hidden">
-                        @{ int idx_Star2 = 0;}
-                        @foreach (var star in Model.AiLv_MeiRiZhiXingTop5)
+                    <div id="myCarousel2" class="carousel sp-slider" data-ride="carousel" data-wrap="true" data-interval="3000">
+                        <ol class="carousel-indicators hidden">
+                            @{ int idx_Star2 = 0;}
+                            @foreach (var star in Model.AiLv_MeiRiZhiXingTop5)
                             {
-                            <li data-target="#myCarousel2" data-slide-to="@Html.Raw(idx_Star2.ToString())" class="@if (idx_Star2 == 0) { @Html.Raw("active"); }"></li>
+                                <li data-target="#myCarousel2" data-slide-to="@Html.Raw(idx_Star2.ToString())" class="@if (idx_Star2 == 0) { @Html.Raw("active"); }"></li>
                                 idx_Star2 = idx_Star2 + 1;
                             }
-                    </ol>
-                    <div class="carousel-inner">
-                        @{ int idx_Star = 0;}
-                        @foreach (var obj in Model.AiLv_MeiRiZhiXingTop5)
+                        </ol>
+                        <div class="carousel-inner">
+                            @{ int idx_Star = 0;}
+                            @foreach (var obj in Model.AiLv_MeiRiZhiXingTop5)
                             {
-                            <div class="item @if (idx_Star == 0) { @Html.Raw("active"); }">
-                                <table style="width:100%">
-                                    <tr>
-                                        <td>
-                                            <a href="@obj.NiceUrl">
-                                                <img src="@AppHelpers.MemberImage(obj.Avatar, "", obj.Id, 48)" alt="@obj.UserName">
-                                            </a>
-                                        </td>
-                                        <td style="padding-left:5px;width:100%">
-                                            @{
+                                <div class="item @if (idx_Star == 0) { @Html.Raw("active"); }">
+                                    <table style="width:100%">
+                                        <tr>
+                                            <td>
+                                                <a href="@obj.NiceUrl">
+                                                    <img src="@AppHelpers.MemberImage(obj.Avatar, "", obj.Id, 96)" alt="@obj.UserName">
+                                                </a>
+                                            </td>
+                                            <td style="padding-left:5px;width:100%">
+                                                @{
                                                     var Gender = obj.Gender == MVCForum.Domain.DomainModel.Enum_Gender.boy ? "男" : "女";
                                                     var location = obj.LocationProvince + "," + obj.LocationCity;
-                                            }
+                                                }
 
-                                            <a href="@obj.NiceUrl">
-                                                @obj.AliasName
-                                            </a>
+                                                <a href="@obj.NiceUrl">
+                                                    @obj.AliasName
+                                                </a>
 
-                                            <div>
-                                                <span style="display: inline-block;  font-size:8pt; background-color: gray; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@{var age = obj.Age > 100 ? "" : obj.Age.ToString() + "岁";} @age </span>
-                                                <span style="display: inline-block;  font-size:8pt; background-color: #39f; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@Gender</span>
-                                                <span style="display: inline-block;  font-size:8pt; background-color: #39f; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@location</span>
-                                            </div>
+                                                <div>
+                                                    <span style="display: inline-block;  font-size:8pt; background-color: gray; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@{var age = obj.Age > 100 ? "" : obj.Age.ToString() + "岁";} @age </span>
+                                                    <span style="display: inline-block;  font-size:8pt; background-color: #39f; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@Gender</span>
+                                                    <span style="display: inline-block;  font-size:8pt; background-color: #39f; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@location</span>
+                                                </div>
 
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
                                                             idx_Star = idx_Star + 1;
                                                         }
+                        </div>
                     </div>
-                </div>
                                                         }
                                                         else
                                                         {
-                <p>暂无每日之星数据</p>
+                                                            <p>暂无每日之星数据</p>
                                                         }
             </div>
         </div>
@@ -277,45 +278,45 @@
             <div class="panel-body">
                 @if (Model.AiLv_ZuiXinHuiYuanTop5 != null && Model.AiLv_ZuiXinHuiYuanTop5.Count > 0)
                 {
-                <table width="100%">
-                    @foreach (var obj in Model.AiLv_ZuiXinHuiYuanTop5)
+                    <table width="100%">
+                        @foreach (var obj in Model.AiLv_ZuiXinHuiYuanTop5)
                         {
-                        <tr style="height:60px">
-                            <td>
-                                <a href="@obj.NiceUrl">
-                                    <img src="@AppHelpers.MemberImage(obj.Avatar, "", obj.Id, 48)" alt="@obj.UserName">
-                                </a>
-                            </td>
-                            <td style="padding-left:5px;width:100%">
-                                @{
+                            <tr style="height:96px">
+                                <td>
+                                    <a href="@obj.NiceUrl">
+                                        <img src="@AppHelpers.MemberImage(obj.Avatar, "", obj.Id, 96)" alt="@obj.UserName">
+                                    </a>
+                                </td>
+                                <td style="padding-left:5px;width:100%">
+                                    @{
                                         var Gender = obj.Gender == MVCForum.Domain.DomainModel.Enum_Gender.boy ? "男" : "女";
                                         var location = obj.LocationProvince + "," + obj.LocationCity;
-                                }
+                                    }
 
-                                <a href="@obj.NiceUrl">
-                                    @obj.AliasName
-                                </a>
+                                    <a href="@obj.NiceUrl">
+                                        @obj.AliasName
+                                    </a>
 
-                                <div>
-                                    <span style="display: inline-block;  font-size:8pt; background-color: gray; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@obj.Age 岁</span>
-                                    <span style="display: inline-block;  font-size:8pt; background-color: #39f; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@Gender</span>
-                                    <span style="display: inline-block;  font-size:8pt; background-color: #39f; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@location</span>
-                                </div>
+                                    <div>
+                                        <span style="display: inline-block;  font-size:8pt; background-color: gray; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@obj.Age 岁</span>
+                                        <span style="display: inline-block;  font-size:8pt; background-color: #39f; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@Gender</span>
+                                        <span style="display: inline-block;  font-size:8pt; background-color: #39f; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@location</span>
+                                    </div>
+                                </td>
+                            </tr>
+                                        }
+                        <tr>
+                            <td align="right" colspan="2">
+                                <a href="@Url.Action("SearchEx","Members")">更多...</a>
                             </td>
                         </tr>
-                                        }
-                    <tr>
-                        <td align="right" colspan="2">
-                            <a href="@Url.Action("SearchEx","Members")">更多...</a>
-                        </td>
-                    </tr>
-                </table>
+                    </table>
                                         }
                                         else
                                         {
-                <p>
-                    暂无会员信息
-                </p>
+                                            <p>
+                                                暂无会员信息
+                                            </p>
                                         }
             </div>
         </div>
@@ -327,24 +328,24 @@
             <div class="panel-body">
                 @if (Model.AiLv_ZuiXinFuWuTop5 != null && Model.AiLv_ZuiXinFuWuTop5.Count > 0)
                 {
-                <table width="100%">
-                    @foreach (var fuwu in Model.AiLv_ZuiXinFuWuTop5)
+                    <table width="100%">
+                        @foreach (var fuwu in Model.AiLv_ZuiXinFuWuTop5)
                         {
-                        <tr>
-                            <td>
-                                <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span>
-                                <a href="@fuwu.NiceUrl">@fuwu.Name</a>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td>
+                                    <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span>
+                                    <a href="@fuwu.NiceUrl">@fuwu.Name</a>
+                                </td>
+                            </tr>
                         }
-                    <tr><td align="right"><a href="@Url.Action("ZuiXinFuWu","AiLvHuoDong")">更多...</a></td></tr>
-                </table>
+                        <tr><td align="right"><a href="@Url.Action("ZuiXinFuWu","AiLvHuoDong")">更多...</a></td></tr>
+                    </table>
                 }
                 else
                 {
-                <p>
-                    暂无服务信息
-                </p>
+                    <p>
+                        暂无服务信息
+                    </p>
                 }
 
             </div>
@@ -357,24 +358,24 @@
             <div class="panel-body">
                 @if (Model.AiLv_ZuiXinZiXunTop5 != null && Model.AiLv_ZuiXinZiXunTop5.Count > 0)
                 {
-                <table width="100%">
-                    @foreach (var zixun in Model.AiLv_ZuiXinZiXunTop5)
+                    <table width="100%">
+                        @foreach (var zixun in Model.AiLv_ZuiXinZiXunTop5)
                         {
-                        <tr>
-                            <td>
-                                <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span>
-                                <a href="@zixun.NiceUrl">@zixun.Name</a>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td>
+                                    <span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span>
+                                    <a href="@zixun.NiceUrl">@zixun.Name</a>
+                                </td>
+                            </tr>
                         }
-                    <tr><td align="right"><a href="@Url.Action("ZuiXinZiXun","AiLvHuoDong")">更多...</a></td></tr>
-                </table>
+                        <tr><td align="right"><a href="@Url.Action("ZuiXinZiXun","AiLvHuoDong")">更多...</a></td></tr>
+                    </table>
                 }
                 else
                 {
-                <p>
-                    暂无资讯信息
-                </p>
+                    <p>
+                        暂无资讯信息
+                    </p>
                 }
             </div>
         </div>
