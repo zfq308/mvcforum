@@ -32,7 +32,11 @@
                 <div class="col-md-3 memberavatardetails">
 
                     <p class="memberavatar">
-                        <img src="@Model.User.MemberImage(SiteConstants.Instance.GravatarProfileSize)" alt="@Model.User.UserName">
+
+                        <a href="@AppHelpers.MemberImage(Model.User.Avatar, "", Model.User.Id, 320)">
+                            <img src="@Model.User.MemberImage(SiteConstants.Instance.GravatarProfileSize)" alt="@Model.User.UserName" >
+                        </a>
+
                     </p>
 
                     @if (User.Identity.IsAuthenticated && //当前用户已登录
@@ -253,11 +257,11 @@
                                 @Html.TextBoxFor(model => model.MeiRiZhiXing.StopTime, new { @class = "form-control" })
                                 @Html.ValidationMessageFor(model => model.MeiRiZhiXing.StopTime)
                             </div>
-                                        <div class="form-group">
-                                            <span>激活每日之星</span>
-                                            @Html.CheckBoxFor(model => model.MeiRiZhiXing.Status, new { @class = "form-control" })
-                                            @Html.ValidationMessageFor(model => model.MeiRiZhiXing.Status)
-                                        </div>
+                            <div class="form-group">
+                                <span>激活每日之星</span>
+                                @Html.CheckBoxFor(model => model.MeiRiZhiXing.Status, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.MeiRiZhiXing.Status)
+                            </div>
                             if (Model.User.Id != Guid.Empty)
                             {
                                 <button type="submit" name="btn_SubmitMeiRiZhiXing" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
@@ -276,27 +280,27 @@
                                 @Html.DropDownListFor(x => x.RoleId, ViewData["RoleList"] as List<SelectListItem>, new { @class = "form-control" })<SelectListItem>
                                     @Html.ValidationMessageFor(x => x.RoleId)
                             </div>
-                                        <button type="submit" name="btn_SubmitChangeUserRoles" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
-                                            变更用户角色
-                                        </button><br />
+                            <button type="submit" name="btn_SubmitChangeUserRoles" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
+                                变更用户角色
+                            </button><br />
                         }
                     </div>
 
-                                <div class="form-group">
-                                    <h3>变更用户类型</h3>
-                                    @using (Html.BeginForm("ChangeUserType", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
-                                    {
-                                        @Html.HiddenFor(x => x.LoggedOnUserId)
-                                        <div class="form-group">
-                                            <span>用户类型</span>
-                                            @Html.DropDownListFor(x => x.UserType, ViewData["UserTypeList"] as List<SelectListItem>, new { @class = "form-control" })<SelectListItem>
-                                                @Html.ValidationMessageFor(x => x.UserType)
-                                        </div>
+                    <div class="form-group">
+                        <h3>变更用户类型</h3>
+                        @using (Html.BeginForm("ChangeUserType", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            @Html.HiddenFor(x => x.LoggedOnUserId)
+                            <div class="form-group">
+                                <span>用户类型</span>
+                                @Html.DropDownListFor(x => x.UserType, ViewData["UserTypeList"] as List<SelectListItem>, new { @class = "form-control" })<SelectListItem>
+                                    @Html.ValidationMessageFor(x => x.UserType)
+                            </div>
                                         <button type="submit" name="btn_SubmitChangeUserRoles" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
                                             变更用户类型
                                         </button><br />
-                                    }
-                                </div>
+                        }
+                    </div>
 
                 }
 

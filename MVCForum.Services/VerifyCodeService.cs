@@ -16,7 +16,7 @@ namespace MVCForum.Services
 
     public partial class VerifyCodeService : IVerifyCodeService
     {
-     log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         #region 建构式
 

@@ -1,4 +1,5 @@
 ﻿@using MVCForum.Website.Application
+@using MVCForum.Domain.DomainModel.General
 @model MVCForum.Website.ViewModels.AiLvHomeViewModel
 @{
     Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
@@ -240,8 +241,9 @@
                                             </td>
                                             <td style="padding-left:5px;width:100%">
                                                 @{
-                                                    var Gender = obj.Gender == MVCForum.Domain.DomainModel.Enum_Gender.boy ? "男" : "女";
+                                                    var Gender = obj.Gender == MVCForum.Domain.DomainModel.Enum_Gender.boy ? "帅哥" : "美女";
                                                     var location = obj.LocationProvince + "," + obj.LocationCity;
+                                                    var GenderColor = Gender == "帅哥" ? "#39f" : "#FFB6C1";
                                                 }
 
                                                 <a href="@obj.NiceUrl">
@@ -250,8 +252,22 @@
 
                                                 <div>
                                                     <span style="display: inline-block;  font-size:8pt; background-color: gray; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@{var age = obj.Age > 100 ? "" : obj.Age.ToString() + "岁";} @age </span>
-                                                    <span style="display: inline-block;  font-size:8pt; background-color: #39f; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@Gender</span>
-                                                    <span style="display: inline-block;  font-size:8pt; background-color: #39f; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@location</span>
+                                                    <span style="display: inline-block;  font-size:8pt; background-color: @GenderColor; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@Gender</span>
+                                                </div>
+                                                <div>
+                                                    <span style="display: inline-block;  font-size:8pt; background-color: #FA8072; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@location</span>
+                                                </div>
+                                                <div>
+                                                    @{
+                                                        var educationstr = "";
+                                                        {
+                                                            if (!string.IsNullOrEmpty(@obj.Education))
+                                                            {
+                                                                educationstr = TEducation.LoadEducationByEducationId(@obj.Education).EducationName;
+                                                            }
+                                                        }
+                                                    }
+                                                    <span style="display: inline-block;  font-size:8pt; background-color: #00CD66; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">学历：@educationstr</span>
                                                 </div>
 
                                             </td>
@@ -289,8 +305,9 @@
                                 </td>
                                 <td style="padding-left:5px;width:100%">
                                     @{
-                                        var Gender = obj.Gender == MVCForum.Domain.DomainModel.Enum_Gender.boy ? "男" : "女";
+                                        var Gender = obj.Gender == MVCForum.Domain.DomainModel.Enum_Gender.boy ? "帅哥" : "美女";
                                         var location = obj.LocationProvince + "," + obj.LocationCity;
+                                        var GenderColor = Gender == "帅哥" ? "#39f" : "#FFB6C1";
                                     }
 
                                     <a href="@obj.NiceUrl">
@@ -298,11 +315,27 @@
                                     </a>
 
                                     <div>
-                                        <span style="display: inline-block;  font-size:8pt; background-color: gray; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@obj.Age 岁</span>
-                                        <span style="display: inline-block;  font-size:8pt; background-color: #39f; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@Gender</span>
-                                        <span style="display: inline-block;  font-size:8pt; background-color: #39f; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@location</span>
+                                        <span style="display: inline-block;  font-size:8pt; background-color: gray; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@{var age = obj.Age > 100 ? "" : obj.Age.ToString() + "岁";} @age </span>
+                                        <span style="display: inline-block;  font-size:8pt; background-color: @GenderColor; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@Gender</span>
                                     </div>
+                                    <div>
+                                        <span style="display: inline-block;  font-size:8pt; background-color: #FA8072; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@location</span>
+                                    </div>
+                                    <div>
+                                        @{
+                                            var educationstr = "";
+                                            {
+                                                if (!string.IsNullOrEmpty(@obj.Education))
+                                                {
+                                                    educationstr = TEducation.LoadEducationByEducationId(@obj.Education).EducationName;
+                                                }
+                                            }
+                                        }
+                                        <span style="display: inline-block;  font-size:8pt; background-color: #00CD66; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">学历：@educationstr</span>
+                                    </div>
+
                                 </td>
+
                             </tr>
                                         }
                         <tr>
