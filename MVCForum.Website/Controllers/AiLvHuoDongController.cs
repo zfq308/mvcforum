@@ -957,7 +957,7 @@ namespace MVCForum.Website.Controllers
                         IsBanned = user.IsBanned ? "用户已隐藏" : "正常状态";
                         UserType = user.UserType.ToString();
 
-                        if(ar.FeeNumber>0)
+                        if (ar.FeeNumber > 0)
                         {
                             PaidFlag = ar.FeeStatus == Enum_FeeStatus.PayedFee ? "已支付" : "待支付";
                         }
@@ -965,7 +965,7 @@ namespace MVCForum.Website.Controllers
                         {
                             PaidFlag = "免费项目";
                         }
-                       
+
                         csv.Append("<tr>");
                         csv.AppendFormat("<td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td><td>{6}</td><td>{7}</td><td>{8}</td><td>{9}</td><td>{10}</td><td>{11}</td><td>{12}</td><td>{13}</td><td>{14}</td><td>{15}</td>",
                             UserName,
@@ -1287,7 +1287,7 @@ namespace MVCForum.Website.Controllers
             model.PollCloseAfterDays = 0;
 
             model.Name = "【" + item.MingCheng.Trim() + "】的活动记录";
-            model.Content = "请更新" + model.Name;
+            model.Content = "&nbsp;";// "请更新" + model.Name;
 
             #endregion
 
@@ -1400,8 +1400,19 @@ namespace MVCForum.Website.Controllers
             MyStopWatch.Start();
 
             MeiRiZhiXing_ListViewModel model = new MeiRiZhiXing_ListViewModel();
-            model.MeiRiZhiXingUserList = _membershipTodayStarService.LoadAllAvailidUsers();
+            var userlist = _membershipTodayStarService.LoadAllAvailidUsers();
 
+
+            if (userlist != null && userlist.Count > 0)
+            {
+                foreach (var user in userlist)
+                {
+                    user.LocationProvince = TProvince.LoadProvinceByProvincedId(Convert.ToInt32(user.LocationProvince)).ProvinceName;
+                    user.LocationCity = TCity.LoadCityByCityId(Convert.ToInt32(user.LocationCity)).CityName;
+                    user.LocationCounty = TCountry.LoadCountryByCountryId(Convert.ToInt32(user.LocationCounty)).CountryName;
+                }
+            }
+            model.MeiRiZhiXingUserList = userlist;
             MyStopWatch.Stop();
             decimal t = MyStopWatch.ElapsedMilliseconds;
             loggerForPerformanceLog.Info("Load MeiRiZhiXing list cost time:" + (t / 1000).ToString() + "second.");

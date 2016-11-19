@@ -33,8 +33,8 @@
 
                     <p class="memberavatar">
 
-                        <a href="@AppHelpers.MemberImage(Model.User.Avatar, "", Model.User.Id, 320)">
-                            <img src="@Model.User.MemberImage(SiteConstants.Instance.GravatarProfileSize)" alt="@Model.User.UserName" >
+                        <a href="@AppHelpers.MemberImage(Model.User.Avatar, "", Model.User.Id, 320)" style="height:auto;width:100%">
+                            <img src="@Model.User.MemberImage(SiteConstants.Instance.GravatarProfileSize)" alt="@Model.User.UserName">
                         </a>
 
                     </p>
@@ -296,9 +296,9 @@
                                 @Html.DropDownListFor(x => x.UserType, ViewData["UserTypeList"] as List<SelectListItem>, new { @class = "form-control" })<SelectListItem>
                                     @Html.ValidationMessageFor(x => x.UserType)
                             </div>
-                                        <button type="submit" name="btn_SubmitChangeUserRoles" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
-                                            变更用户类型
-                                        </button><br />
+                            <button type="submit" name="btn_SubmitChangeUserRoles" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
+                                变更用户类型
+                            </button><br />
                         }
                     </div>
 
