@@ -20,7 +20,7 @@
         foreach (var obj in Model.MeiRiZhiXingUserList)
         {
            <table style="width:100%">
-                <tr>
+                <tr style="height:100px">
                     <td>
                         <a href="@obj.NiceUrl">
                             <img src="@AppHelpers.MemberImage(obj.Avatar, "", obj.Id, 96)" alt="@obj.UserName">
@@ -30,7 +30,7 @@
                         @{
                             var Gender = obj.Gender == MVCForum.Domain.DomainModel.Enum_Gender.boy ? "帅哥" : "美女";
                             var location = obj.LocationProvince + "," + obj.LocationCity;
-                            var GenderColor = Gender == "帅哥" ? "#39f" : "#FFB6C1";
+                            var GenderColor = Gender == "帅哥" ? "#39f" : "red";
                         }
 
                         <a href="@obj.NiceUrl">
@@ -38,11 +38,11 @@
                         </a>
 
                         <div>
-                            <span style="display: inline-block;  font-size:8pt; background-color: gray; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@{var age = obj.Age > 100 ? "" : obj.Age.ToString() + "岁";} @age </span>
-                            <span style="display: inline-block;  font-size:8pt; background-color: @GenderColor; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@Gender</span>
+                            <span style="display: inline-block;  font-size:9pt; color: gray; border-radius: 2px;   background-color: #fff;padding: 0px 2px 0px 4px;">@{var age = obj.Age > 100 ? "" : obj.Age.ToString() + "岁";} @age </span>
+                            <span style="display: inline-block;  font-size:9pt; color: @GenderColor; border-radius: 2px;   background-color: #fff;padding: 0px 2px 0px 4px;">@Gender</span>
                         </div>
                         <div>
-                            <span style="display: inline-block;  font-size:8pt; background-color: #FA8072; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@location</span>
+                            <span style="display: inline-block;  font-size:9pt; color: gray; border-radius: 2px;   background-color: #fff;padding: 0px 2px 0px 4px;">@location</span>
                         </div>
                         <div>
                             @{
@@ -54,7 +54,7 @@
                                     }
                                 }
                             }
-                            <span style="display: inline-block;  font-size:8pt; background-color: #00CD66; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">学历：@educationstr</span>
+                            <span style="display: inline-block;  font-size:9pt;color: gray; border-radius: 2px;   background-color: #fff;padding: 0px 2px 0px 4px;">学历：@educationstr</span>
                         </div>
 
                     </td>

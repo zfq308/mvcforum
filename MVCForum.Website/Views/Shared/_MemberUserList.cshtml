@@ -1,4 +1,5 @@
-﻿@{
+﻿@using MVCForum.Domain.DomainModel.General
+@{
     Random random = new Random();
 }
 
@@ -7,22 +8,42 @@
     foreach (var cust in (ViewBag.Customers as Dictionary<int, MVCForum.Domain.DomainModel.MembershipUser>))
     {
         MVCForum.Domain.DomainModel.MembershipUser obj = cust.Value;
-        <li class="list-group-item">
-            <div class="col-xs-3 col-sm-2 col-md-2  col-lg-1">
-                <img src="@AppHelpers.MemberImage(obj.Avatar, "", obj.Id, 48)" alt="@obj.UserName">
+        <li class="list-group-item" style="height:100px">
+            <div class="col-xs-4 col-sm-4 col-md-2  col-lg-2">
+                <img src="@AppHelpers.MemberImage(obj.Avatar, "", obj.Id, 96)" alt="@obj.UserName">
                 @*<img src="http://api.randomuser.me/portraits/men/@(random.Next(99)).jpg" alt="@obj.Id" class="img-responsive img-circle">*@
             </div>
-            <div class="col-xs-9 col-sm-10 col-md-10 col-lg-11">
+            <div class="col-xs-8 col-sm-8 col-md-10 col-lg-10">
                 <a href="@obj.NiceUrl">@obj.AliasName</a>
                 <br />
                 @{
-                    var Gender = obj.Gender == MVCForum.Domain.DomainModel.Enum_Gender.boy ? "男" : "女";
+                    var Gender = obj.Gender == MVCForum.Domain.DomainModel.Enum_Gender.boy ? "帅哥" : "美女";
                     var location = obj.LocationProvince + "," + obj.LocationCity;
+                    var GenderColor = Gender == "帅哥" ? "#39f" : "red";
                 }
+                @*<div>
+                <span style="display: inline-block;  font-size:8pt; background-color: gray; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@{var age = obj.Age > 100 ? "" : obj.Age.ToString() + "岁";} @age </span>
+                <span style="display: inline-block;  font-size:8pt; background-color: #39f; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@Gender</span>
+                <span style="display: inline-block;  font-size:8pt; background-color: #39f; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@location</span>
+            </div>*@
                 <div>
-                    <span style="display: inline-block;  font-size:8pt; background-color: gray; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@{var age = obj.Age > 100 ? "" : obj.Age.ToString() + "岁";} @age </span>
-                    <span style="display: inline-block;  font-size:8pt; background-color: #39f; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@Gender</span>
-                    <span style="display: inline-block;  font-size:8pt; background-color: #39f; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@location</span>
+                    <span style="display: inline-block;  font-size:9pt; color: gray; border-radius: 2px;   background-color: #fff;padding: 0px 2px 0px 4px;">@{var age = obj.Age > 100 ? "" : obj.Age.ToString() + "岁";} @age </span>
+                    <span style="display: inline-block;  font-size:9pt;color: @GenderColor; border-radius: 2px;   background-color: #fff;padding: 0px 2px 0px 4px;">@Gender</span>
+                </div>
+                <div>
+                    <span style="display: inline-block;  font-size:9pt; color: gray; border-radius: 2px;   background-color: #fff;padding: 0px 2px 0px 4px;">@location</span>
+                </div>
+                <div>
+                    @{
+                        var educationstr = "";
+                        {
+                            if (!string.IsNullOrEmpty(@obj.Education))
+                            {
+                                educationstr = TEducation.LoadEducationByEducationId(@obj.Education).EducationName;
+                            }
+                        }
+                    }
+                    <span style="display: inline-block;  font-size:9pt; color: gray; border-radius: 2px;   background-color: #fff;padding: 0px 2px 0px 4px;">学历：@educationstr</span>
                 </div>
 
                 <br />

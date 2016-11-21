@@ -1,4 +1,5 @@
-﻿@model MVCForum.Website.ViewModels.MembersList_ViewModel
+﻿@using MVCForum.Domain.DomainModel.General
+@model MVCForum.Website.ViewModels.MembersList_ViewModel
 @{
     Layout = "~/Views/AiLvHuoDong/AiLvZhangHuLayout.cshtml";
     ViewBag.Title = "爱驴会员";
@@ -14,31 +15,46 @@
                 <table width="100%">
                     @foreach (var obj in Model.UserList)
                     {
-                        <tr style="height:60px">
+                        <tr style="height:100px">
                             <td>
                                 <a href="@obj.NiceUrl">
-                                    <img src="@AppHelpers.MemberImage(obj.Avatar, "", obj.Id, 64)" alt="@obj.UserName">
+                                    <img src="@AppHelpers.MemberImage(obj.Avatar, "", obj.Id, 96)" alt="@obj.UserName">
                                 </a>
                             </td>
                             <td style="padding-left:5px;width:100%">
-                                <div class="col-xs-9 col-sm-10 col-md-10 col-lg-11">
-                                    <a href="@obj.NiceUrl">@obj.AliasName</a>
-                                    <br />
-                                    @{
-                                        var Gender = obj.Gender == MVCForum.Domain.DomainModel.Enum_Gender.boy ? "男" : "女";
-                                        var location = obj.LocationProvince + "," + obj.LocationCity;
-                                    }
-                                    <div>
-                                        <span style="display: inline-block;  font-size:8pt; background-color: gray; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@{var age = obj.Age > 100 ? "" : obj.Age.ToString() + "岁";} @age </span>
-                                        <span style="display: inline-block;  font-size:8pt; background-color: #39f; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@Gender</span>
-                                        <span style="display: inline-block;  font-size:8pt; background-color: #39f; border-radius: 2px;   color: #fff;padding: 0px 2px 0px 4px;">@location</span>
-                                    </div>
+                                @{
+                                    var Gender = obj.Gender == MVCForum.Domain.DomainModel.Enum_Gender.boy ? "帅哥" : "美女";
+                                    var location = obj.LocationProvince + "," + obj.LocationCity;
+                                    var GenderColor = Gender == "帅哥" ? "#39f" : "red";
+                                }
 
-                                    <br />
+                                <a href="@obj.NiceUrl">
+                                    @obj.AliasName
+                                </a>
+
+                                <div>
+                                    <span style="display: inline-block;  font-size:9pt; color: gray; border-radius: 2px;   background-color: #fff;padding: 0px 2px 0px 4px;">@{var age = obj.Age > 100 ? "" : obj.Age.ToString() + "岁";} @age </span>
+                                    <span style="display: inline-block;  font-size:9pt; color: @GenderColor; border-radius: 2px;   background-color: #fff;padding: 0px 2px 0px 4px;">@Gender</span>
                                 </div>
+                                <div>
+                                    <span style="display: inline-block;  font-size:9pt; color: gray; border-radius: 2px;   background-color: #fff;padding: 0px 2px 0px 4px;">@location</span>
+                                </div>
+                                <div>
+                                    @{
+                                        var educationstr = "";
+                                        {
+                                            if (!string.IsNullOrEmpty(@obj.Education))
+                                            {
+                                                educationstr = TEducation.LoadEducationByEducationId(@obj.Education).EducationName;
+                                            }
+                                        }
+                                    }
+                                    <span style="display: inline-block;  font-size:9pt; color: gray; border-radius: 2px;   background-color: #fff;padding: 0px 2px 0px 4px;">学历：@educationstr</span>
+                                </div>
+
                             </td>
                         </tr>
-                                            }
+                                        }
                     <tr>
                         <td align="right" colspan="2">
                             <a href="@Url.Action("SearchEx","Members")">查找更多朋友...</a>
