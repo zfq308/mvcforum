@@ -490,6 +490,14 @@ namespace MVCForum.Utilities
 
         #region 图像旋转
 
+        public static Bitmap RotateImage(string imageFile, float angle)
+        {
+            System.Drawing.Image image = System.Drawing.Image.FromFile(imageFile);
+            System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(image);
+            image.Dispose();
+            return RotateImage(bmp, new PointF((float)bmp.Width / 2, (float)bmp.Height / 2), angle);
+        }
+
         /// <summary>
         /// 旋转图像，Creates a new Image containing the same image only rotated
         /// </summary>
@@ -545,7 +553,7 @@ namespace MVCForum.Utilities
 
             //draw passed in image onto graphics object
             g.DrawImage(image, new PointF(0, 0));
-
+            
             return rotatedBmp;
         }
 

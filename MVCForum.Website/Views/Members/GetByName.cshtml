@@ -33,8 +33,10 @@
 
                     <p class="memberavatar">
 
-                        <a href="@AppHelpers.MemberImage(Model.User.Avatar, "", Model.User.Id, 480)" style="height:auto;width:100%" title="">
+                        <a href="@AppHelpers.MemberImage(Model.User.Avatar, "", Model.User.Id)" style="height:auto;width:100%" title="">
                             <img src="@Model.User.MemberImage(SiteConstants.Instance.GravatarProfileSize)" alt="@Model.User.UserName">
+
+
                         </a>
 
                     </p>
@@ -46,13 +48,13 @@
                          Html.Settings().EnablePrivateMessages  //允许私信操作
                          )
                     {
-                        <p>
-                            <a href="@Url.Action("View", "PrivateMessage", new { from = Model.User.Id }, null)"
-                               class="btn-mvc pm-panel"
-                               data-name="@string.Concat(Html.LanguageString("PM.Title"), Model.User.UserName)">
-                                @Html.LanguageString("Members.MessageMe")
-                            </a>
-                        </p>
+                    <p>
+                        <a href="@Url.Action("View", "PrivateMessage", new { from = Model.User.Id }, null)"
+                           class="btn-mvc pm-panel"
+                           data-name="@string.Concat(Html.LanguageString("PM.Title"), Model.User.UserName)">
+                            @Html.LanguageString("Members.MessageMe")
+                        </a>
+                    </p>
                     }
 
                     @if (User.Identity.IsAuthenticated && Model.User.UserName != User.Identity.Name && (Model.CurrentLoginUser != null && Model.CurrentLoginUser.IsApproved))
@@ -61,47 +63,47 @@
                         {
                             using (Html.BeginForm("AddFollow", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
                             {
-                                @Html.HiddenFor(x => x.LoggedOnUserId)
-                                <p>
-                                    <button type="submit" name="btn_AddFollow" class="btn-mvc">
-                                        关注此人
-                                    </button>
-                                </p>
+                    @Html.HiddenFor(x => x.LoggedOnUserId)
+                    <p>
+                        <button type="submit" name="btn_AddFollow" class="btn-mvc">
+                            关注此人
+                        </button>
+                    </p>
                             }
                         }
                         if (Model.FollowStatus == 1) //已关注
                         {
                             using (Html.BeginForm("CancelFollow", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
                             {
-                                @Html.HiddenFor(x => x.LoggedOnUserId)
-                                <p>
-                                    <button type="submit" name="btn_CancelFollow" class="btn-mvc">
-                                        取消关注
-                                    </button>
-                                </p>
+                    @Html.HiddenFor(x => x.LoggedOnUserId)
+                    <p>
+                        <button type="submit" name="btn_CancelFollow" class="btn-mvc">
+                            取消关注
+                        </button>
+                    </p>
                             }
                         }
 
                         using (Html.BeginForm("AddBlackList", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
                         {
-                            @Html.HiddenFor(x => x.LoggedOnUserId)
-                            <p>
-                                <button type="submit" name="btn_AddBlackList" class="btn-mvc">
-                                    加到黑名单
-                                </button>
-                            </p>
+                    @Html.HiddenFor(x => x.LoggedOnUserId)
+                    <p>
+                        <button type="submit" name="btn_AddBlackList" class="btn-mvc">
+                            加到黑名单
+                        </button>
+                    </p>
                         }
 
                         if (Model.FollowStatus == -1) //已加入黑名单
                         {
                             using (Html.BeginForm("CancelBlackList", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
                             {
-                                @Html.HiddenFor(x => x.LoggedOnUserId)
-                                <p>
-                                    <button type="submit" name="btn_CancelBlackList" class="btn-mvc">
-                                        从黑名单中去除
-                                    </button>
-                                </p>
+                    @Html.HiddenFor(x => x.LoggedOnUserId)
+                    <p>
+                        <button type="submit" name="btn_CancelBlackList" class="btn-mvc">
+                            从黑名单中去除
+                        </button>
+                    </p>
                             }
                         }
                     }
@@ -109,16 +111,16 @@
 
                     @if (User.Identity.IsAuthenticated && Html.Settings().EnableMemberReporting && Model.User.Id != Model.LoggedOnUserId)
                     {
-                        <p><a href="@Url.Action("Report", "Members", new { id = Model.User.Id }, null)" class="btn-mvc">@Html.LanguageString("Buttons.Report")</a></p>
+                    <p><a href="@Url.Action("Report", "Members", new { id = Model.User.Id }, null)" class="btn-mvc">@Html.LanguageString("Buttons.Report")</a></p>
                     }
 
                     @if (Model.Permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
                     {
                         if (!Model.User.Roles.Any(x => x.RoleName.Contains(AppConstants.AdminRoleName)))
                         {
-                            <div class="memberprofileadminsection">
-                                @Html.Partial("AdminMemberProfileTools")
-                            </div>
+                    <div class="memberprofileadminsection">
+                        @Html.Partial("AdminMemberProfileTools")
+                    </div>
                         }
                     }
                 </div>
@@ -148,6 +150,8 @@
                                 }
                                 <p><b>性别:</b> @Html.Raw(Model.User.Gender == MVCForum.Domain.DomainModel.Enum_Gender.boy ? "男生" : "女生")</p>
                                 <p><b>年龄:</b> @Html.Raw(Model.User.Age > 0 && Model.User.Age < 100 ? Model.User.Age.ToString() : "")</p>
+                                <p><b>出生日期：</b>@Html.Raw(Model.User.Birthday.ToString("yyyy-MM-dd"))</p>
+                                <p><b>生日历法:</b> @Html.Raw(Model.User.IsLunarCalendar == MVCForum.Domain.DomainModel.Enum_Calendar.PublicCalendar ? "公历" : "农历")</p>
                                 <p><b>婚姻状态:</b> @Html.Raw(Model.User.IsMarried == MVCForum.Domain.DomainModel.Enum_MarriedStatus.Single ? "未婚" : "已婚")</p>
                                 <p><b>身高(cm):</b> @Model.User.Height</p>
                                 <p><b>体重(kg):</b> @Model.User.Weight</p>

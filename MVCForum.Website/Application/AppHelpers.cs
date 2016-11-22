@@ -314,6 +314,18 @@ namespace MVCForum.Website.Application
             return null;
         }
 
+        public static string MemberImage(string avatar, string email, Guid userId)
+        {
+            if (!string.IsNullOrEmpty(avatar))
+            {
+                // Has an avatar image
+                var storageProvider = StorageProvider.Current;
+                return storageProvider.BuildFileUrl(userId, "/", avatar);
+            }
+            email = userId.ToString().Replace("-", "") + "@163.com";
+            return StringUtils.GetGravatarImage(email, 96);
+        }
+
         public static string MemberImage(string avatar, string email, Guid userId, int size)
         {
             if (!string.IsNullOrEmpty(avatar))

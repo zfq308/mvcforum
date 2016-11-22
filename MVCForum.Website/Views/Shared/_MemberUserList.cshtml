@@ -9,11 +9,14 @@
     {
         MVCForum.Domain.DomainModel.MembershipUser obj = cust.Value;
         <li class="list-group-item" style="height:100px">
-            <div class="col-xs-4 col-sm-4 col-md-2  col-lg-2">
-                <img src="@AppHelpers.MemberImage(obj.Avatar, "", obj.Id, 96)" alt="@obj.UserName">
+            <div class="col-xs-5 col-sm-5 col-md-3  col-lg-3">
+                <a href="@AppHelpers.MemberImage(Model.User.Avatar, "", Model.User.Id)" style="height:auto;width:100%">
+                    <img src="@AppHelpers.MemberImage(obj.Avatar, "", obj.Id, 96)" alt="@obj.UserName">
+                </a>
+              
                 @*<img src="http://api.randomuser.me/portraits/men/@(random.Next(99)).jpg" alt="@obj.Id" class="img-responsive img-circle">*@
             </div>
-            <div class="col-xs-8 col-sm-8 col-md-10 col-lg-10">
+            <div class="col-xs-7 col-sm-7 col-md-9 col-lg-9">
                 <a href="@obj.NiceUrl">@obj.AliasName</a>
                 <br />
                 @{

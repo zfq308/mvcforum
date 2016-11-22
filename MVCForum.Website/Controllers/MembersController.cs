@@ -1451,6 +1451,34 @@ namespace MVCForum.Website.Controllers
         }
 
         [Authorize]
+        public ActionResult RotateImage(Guid Id)
+        {
+            var ad = _MembershipUserPictureService.GetMembershipUserPicture(Id);
+            try
+            {
+                string filename = ad.FileName;
+                var oldfilepath = HostingEnvironment.MapPath(filename);
+                var bitmap = ImageHelper.RotateImage(oldfilepath, 90);
+                var fi = new FileInfo(oldfilepath);
+                var oldfilename = fi.Name;
+                var newfilename = Guid.NewGuid().ToString() + ".jpg";
+                var newfilepath = Path.Combine(fi.Directory.FullName, newfilename);
+                fi.Delete();
+                ImageHelper.SaveQuality(bitmap, newfilepath);
+                ad.FileName = filename.Replace(oldfilename, newfilename);
+                _context.Entry<MembershipUserPicture>(ad).State = EntityState.Modified;
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                //LoggingService.Error(ex);
+                loggerForCoreAction.Error(string.Format("用户{0}旋转个人照片失败。详细错误为：{1}", LoggedOnReadOnlyUser.UserName, ex.Message));
+            }
+            return RedirectToAction("Edit", "Members", new { Id = LoggedOnReadOnlyUser.Id });
+
+        }
+
+        [Authorize]
         public ActionResult PrivatePictureList(Guid Id)
         {
             MemberFrontEndEditViewModel model = new MemberFrontEndEditViewModel();

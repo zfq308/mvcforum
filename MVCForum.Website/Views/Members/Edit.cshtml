@@ -312,12 +312,15 @@
                 <div class="form-group">
                     <label>头像</label><span><Font color='red'>(*)</Font></span>
                 </div>
+                <div class="form-group">
+                    <label>&nbsp;&nbsp;请在上传前自行编辑头像，为更好地展示您的个性风采。</label>
+                </div>
 
                 <div class="row membereditavatar">
-                    <div class="col-md-2">
+                    <div class="col-md-4">
                         <img src="@AppHelpers.MemberImage(Model.Avatar, "mail@163.com", Model.Id, SiteConstants.Instance.GravatarProfileSize)" alt="@Model.UserName">
                     </div>
-                    <div class="col-md-10">
+                    <div class="col-md-8">
                         @Html.LabelFor(x => x.Files)
                         <div class="input-group">
                             <span class="input-group-btn">

@@ -34,6 +34,10 @@
                                 <a href="@Url.Action("DeletePrivatePicture", new { ad.Id })" class="btn btn-link" style="padding-top:0px; padding-bottom:0px;" title="删除这张照片" onclick="return confirm('你确认需要删除这张照片吗?')">
                                     <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                                 </a>
+
+                                <a href="@Url.Action("RotateImage", new { ad.Id })" class="btn btn-link" style="padding-top:0px; padding-bottom:0px;" title="旋转这张照片">
+                                    <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
+                                </a>
                             }
                         </td>
                     </tr>
