@@ -1371,7 +1371,7 @@ namespace MVCForum.Website.Controllers
                         }
                         #endregion
 
-                        var uploadResult = AppHelpers.UploadFile(adViewModel.UploadFile, uploadFolderPath, LocalizationService);
+                        var uploadResult = AppHelpers.UploadFile(adViewModel.UploadFile, uploadFolderPath, LocalizationService, true);
                         if (!uploadResult.UploadSuccessful)
                         {
                             TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
