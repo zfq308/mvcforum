@@ -1323,6 +1323,11 @@ namespace MVCForum.Website.Controllers
 
         #endregion
 
+        public ActionResult ViewPic(string from)
+        {
+            return View(new ViewPicViewModel() { ImagePath = from });
+        }
+
         #region 个人图片管理
 
         [Authorize]

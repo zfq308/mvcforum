@@ -33,7 +33,7 @@
 
                     <p class="memberavatar">
 
-                        <a href="@AppHelpers.MemberImage(Model.User.Avatar, "", Model.User.Id)" style="height:auto;width:100%" title="">
+                        <a href="@Url.Action("ViewPic", "Members", new { from =AppHelpers.MemberImage(Model.User.Avatar, "", Model.User.Id) }, null)" style="height:auto;width:100%" title="">
                             <img src="@Model.User.MemberImage(SiteConstants.Instance.GravatarProfileSize)" alt="@Model.User.UserName">
 
 

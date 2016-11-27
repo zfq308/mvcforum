@@ -335,6 +335,11 @@ namespace MVCForum.Website.ViewModels
         public string VerifyCode { get; set; }
     }
 
+    public class ViewPicViewModel
+    {
+        public string ImagePath { get; set; }
+    }
+
     public class ViewMemberViewModel
     {
         public MembershipUser User { get; set; }
