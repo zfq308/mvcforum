@@ -29,8 +29,8 @@
         @foreach (var ad in Model.AiLv_ADCollectionTop5)
         {
             <div class="item @if (idx == 0) { @Html.Raw("active"); }">
-                <a href="@ad.Link" class="thumbnail">
-                    <img src="@Html.Settings().ForumUrl.TrimEnd('/')@ad.ImageSaveURL" alt="AD" style="height:auto; width:100%" 
+                <a href="@ad.Link" class="thumbnail" @*style="height:190px; width:auto"*@>
+                    <img src="@Html.Settings().ForumUrl.TrimEnd('/')@ad.ImageSaveURL" alt="AD" style="height:auto; width:100%"
                          class="img-responsive center-block">
                 </a>
             </div>
@@ -50,11 +50,11 @@
                         @foreach (var item in Model.AiLv_ZuiXinHuoDongTop5)
                         {
                             <tr>
-                                <td style="padding-left:5px; width:100%;">
-                                    <table class="pad" width="100%">
+                                <td>
+                                    <table width="100%">
                                         <tr>
                                             <td valign="top">
-                                                <a href="@Url.Action("ViewActivity","AiLvHuoDong", new { item.Id })">
+                                                <a href="@Url.Action("ViewActivity","AiLvHuoDong", new { item.Id })" class="thumbnail">
                                                     @{
                                                         var filestr = "";
                                                         if (!string.IsNullOrEmpty(item.Avatar))
@@ -66,7 +66,7 @@
                                                             filestr = "/Content/Images/bar1.jpg";
                                                         }
                                                     }
-                                                    <img src="@filestr" alt="" style="margin-bottom:0px;height:auto; width:100%" />
+                                                    <img src="@filestr" alt="" style="margin-bottom:0px;width:100%;height:auto" />
                                                 </a>
                                             </td>
                                         </tr>
@@ -337,20 +337,20 @@
                                 </td>
 
                             </tr>
-                                        }
+                                            }
                         <tr>
                             <td align="right" colspan="2">
                                 <a href="@Url.Action("SearchEx","Members")">更多...</a>
                             </td>
                         </tr>
                     </table>
-                                        }
-                                        else
-                                        {
-                                            <p>
-                                                暂无会员信息
-                                            </p>
-                                        }
+                                            }
+                                            else
+                                            {
+                                                <p>
+                                                    暂无会员信息
+                                                </p>
+                                            }
             </div>
         </div>
     </div>
