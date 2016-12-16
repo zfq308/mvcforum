@@ -1,7 +1,7 @@
 ﻿@*@if (!Context.IsMobileDevice())
     {*@
 <script src="@Url.Content("~/scripts/tinymce/tinymce.min.js")" type="text/javascript"></script>
-<script src="@Url.Content("~/Scripts/tinymceplugins/ImageUpload/imageupload.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/tinymceplugins/ImageUpload/imageupload.min.js")" type="text/javascript"></script>
 <script type="text/javascript">
     var flag = false;
     if ("@(ViewBag.EditorReadOnly)" == "readonly") {
@@ -10,10 +10,15 @@
 
     tinymce.init({
         selector: "textarea.rte",
+        setup: function (editor) {
+            editor.on('change', function () {
+                editor.save();
+            });
+        },
         theme: "modern",
         language: "zh_CN",
         plugins: [
-            "autosave link image lists hr anchor forumimageinsert autoresize paste textcolor",
+            "autosave link image lists hr anchor forumimageinsert autoresize paste textcolor save code",
             "visualblocks visualchars nonbreaking"
         ],
 
@@ -25,13 +30,18 @@
             }
             else
             {
-                expr = "bold italic underline bullist hr | forecolor backcolor fontselect fontsizeselect link unlink " + (ViewBag.ImageUploadType ?? "image") + " | formatselect";
+                expr = "bold italic underline |  forecolor |  | backcolor | link unlink image " + (ViewBag.ImageUploadType ?? "image") + " | bullist | removeformat | formatselect fontsizeselect | code ";
             }
         }
-        toolbar:"@expr",
-        theme_advanced_toolbar_location: "top",
+        toolbar: "@expr",
+        theme_advanced_toolbar_location: "bottom",
         theme_advanced_toolbar_align: "left",
         theme_advanced_resizing: true,
+        removeformat: [
+           {selector: 'b,strong,em,i,font,u,strike', remove : 'all', split : true, expand : false, block_expand: true, deep : true},
+           {selector: 'span', attributes : ['style', 'class'], remove : 'empty', split : true, expand : false, deep : true},
+           {selector: '*', attributes : ['style', 'class'], split : false, expand : false, deep : true}
+        ],
         remove_linebreaks: false,
         relative_urls: false,
         menubar: false,
@@ -44,9 +54,10 @@
         statusbar: false,
         nonbreaking_force_tab: true,
         readonly: flag,
+        
     });
 
-    var buttonTitle = '插入图片（小屏幕设备请拖动此标题栏）';
+    var buttonTitle = '上传图片';
     var buttonOk = '@(Html.Lang("TinyMCE.InsertImage.ButtonOk"))';
     var buttonClose = '@(Html.Lang("TinyMCE.InsertImage.ButtonClose"))';
     var enterValidUrl = '@(Html.Lang("TinyMCE.InsertImage.EnterValidUrl"))';

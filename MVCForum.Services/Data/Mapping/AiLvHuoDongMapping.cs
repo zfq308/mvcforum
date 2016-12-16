@@ -26,7 +26,7 @@ namespace MVCForum.Services.Data.Mapping
             Property(x => x.StopTime).IsRequired();
             Property(x => x.BaoMingJieZhiTime).IsRequired();
             Property(x => x.DiDian).IsRequired().HasMaxLength(400);
-            Property(x => x.LiuCheng).IsRequired().HasMaxLength(4000);
+            Property(x => x.LiuCheng).IsRequired().IsMaxLength().HasColumnType("ntext");
             Property(x => x.Feiyong).IsRequired();
             Property(x => x.FeiyongShuoMing).IsRequired().HasMaxLength(4000);
             Property(x => x.ZhuYiShiXiang).IsRequired().HasMaxLength(4000);

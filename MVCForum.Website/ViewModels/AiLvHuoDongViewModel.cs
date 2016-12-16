@@ -82,7 +82,7 @@ namespace MVCForum.Website.ViewModels
         [UIHint(AppConstants.EditorType), AllowHtml]
         [Required(ErrorMessage = "你是不是忘记填写活动流程？")]
         [Display(Name = "活动举办流程")]
-        [StringLength(4000)]
+        //[StringLength(10000)]
         public string LiuCheng { get; set; }
 
         /// <summary>

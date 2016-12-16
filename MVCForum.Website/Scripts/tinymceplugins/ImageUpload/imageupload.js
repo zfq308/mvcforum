@@ -1,6 +1,6 @@
 ﻿tinymce.PluginManager.add("forumimageinsert", function (editor, url) {
     editor.addButton("forumimageinsert", {
-        icon: "image",
+        icon: "media",
         tooltip: buttonTitle,
         onclick: function () {
             editor.windowManager.open({
@@ -13,7 +13,7 @@
                         text: buttonOk,
                         classes: 'widget btn btn-default first abs-layout-item',
                         onclick: function () {
-                            
+
                             var b = editor.windowManager.getWindows()[0];
                             var uploadFile = b.getContentWindow().document.getElementById('content');
                             var imageDesc = b.getContentWindow().document.getElementById('desc');
@@ -24,14 +24,14 @@
                             if (externalUrl.value != '') {
                                 // We have an external url so use that
                                 // Check for http
-                                if (!externalUrl.value.startsWith('http') ) {
+                                if (!externalUrl.value.startsWith('http')) {
                                     alert(enterValidUrl);
                                     return false;
                                 } else {
                                     var imageAlt = imageDesc.value;
                                     var imageSrc = externalUrl.value;
-                                    var imageTag = '<img src="' + imageSrc + '?width=690" alt="' + imageAlt + '" />';
-                              
+                                    var imageTag = '<img class="img-responsive" src="' + imageSrc + '?width=690" alt="' + imageAlt + '" />';
+
                                     editor.insertContent(imageTag), b.close();
                                 }
                             } else {
@@ -52,15 +52,15 @@
                                     alert(onlyImages);
                                     return false;
                                 }
-                                
+
                                 // Show wait notice
                                 waitNotice.style.display = 'block';
 
                                 var data;
-                                
+
                                 data = new FormData();
                                 data.append('file', uploadFile.files[0]);
-                     
+
                                 $.ajax({
                                     url: app_base + 'api/TinyMce/UploadImage',
                                     data: data,
@@ -72,7 +72,8 @@
                                     if (msg != '') {
                                         var imageAlt = imageDesc.value;
                                         var imageSrc = msg;
-                                        var imageTag = '<img src="' + imageSrc + '?width=690&upscale=false" alt="' + imageAlt + '" />';
+
+                                        var imageTag = '<img class="img-responsive" src="' + imageSrc + '?width=690&upscale=false" alt="' + imageAlt + '" />';
                                         editor.insertContent(imageTag), b.close();
                                     } else {
                                         alert(generalError);
@@ -92,7 +93,8 @@
                         onclick: "close"
                     }
                 ]
-            })
+            });
+            //alert(app_base + "file/imageuploadtinymce/");
         }
     });
 });

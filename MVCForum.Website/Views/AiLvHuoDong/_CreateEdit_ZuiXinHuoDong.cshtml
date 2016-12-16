@@ -32,6 +32,13 @@
                     $("#divyaoqingma").show();
                 }
             }
+
+            function SaveTinyMCE()
+            {
+                $('#LiuCheng').tinymce().save();
+                $('#FeiyongShuoMing').tinymce().save();
+                $('#ZhuYiShiXiang').tinymce().save();
+            }
         </script>
 
         <fieldset>
@@ -103,7 +110,7 @@
 
             <div class="editor-field editorholder">
                 @Html.LabelFor(x => x.LiuCheng)
-                @Html.EditorFor(model => model.LiuCheng, new { @class = "form-control postcontent" })
+                @Html.EditorFor(model => model.LiuCheng, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.LiuCheng)
             </div>
 
@@ -212,7 +219,7 @@
                 </div>
             }
             <div class="submit-holder">
-                <button type="submit" name="btn_Save" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
+                <button type="submit" name="btn_Save" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth" onclick="SaveTinyMCE">
                     保存
                 </button><br />
 

@@ -898,6 +898,7 @@
     <Content Include="Scripts\cache\Cache.txt" />
     <Content Include="Scripts\hammer.min.js" />
     <Content Include="Scripts\jquery.hammer.js" />
+    <Content Include="Scripts\tinymceplugins\ImageUpload\imageupload.min.js" />
     <Content Include="Scripts\tinymce\tinymce.min.js" />
     <Content Include="WxLib\lib\LitJson.dll" />
     <Content Include="WxLib\lib\NPOI.dll" />
